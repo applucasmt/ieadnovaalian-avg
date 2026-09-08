@@ -462,7 +462,7 @@
                 </div>
             </div>
             
-            <!-- PÁGINA MARKETING (DESIGN SLIDER VITRINE) -->
+            <!-- PÁGINA MARKETING -->
             <div id="marketing-page" class="page-content hidden w-full h-full animate-fade-in">
                 <div class="marketing-container max-w-7xl mx-auto px-6 md:px-12 w-full">
                     <div class="w-full md:w-5/12 min-h-[40vh] h-auto md:h-full flex flex-col justify-center z-20 relative space-y-3 md:space-y-6 order-1 md:order-1 pb-10 md:pb-0">
@@ -519,7 +519,7 @@
                 <div id="ministerios-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
 
-            <!-- PÁGINA EBD (ADICIONADA) -->
+            <!-- PÁGINA EBD -->
             <div id="ebd-page" class="page-content hidden w-full h-full animate-fade-in">
                 <div class="w-full bg-gradient-to-b from-black/80 to-transparent p-4 flex justify-between items-center relative z-20">
                     <div class="flex items-center gap-4">
@@ -682,8 +682,6 @@
     </div>
     
     <script>
-    // O JavaScript permanece o mesmo das versões anteriores com as melhorias
-    // de upload para Drive, configurações e correção do formato das imagens
     document.addEventListener('DOMContentLoaded', function() {
         // --- CONFIG ---
         const CONFIG = {
@@ -704,6 +702,52 @@
             currentTab: 'eventos',
             currentData: []
         };
+
+        // --- FUNÇÃO PARA CONVERTER URL DO DRIVE PARA FORMATO CORRETO ---
+        function convertToDriveImageUrl(url) {
+            if (!url) return '#';
+            
+            // Se já for lh3.googleusercontent.com, retorna o original
+            if (url.includes('lh3.googleusercontent.com')) {
+                return url;
+            }
+            
+            // Se for assets/ ou local, retorna como está (mas vai dar 404)
+            if (url.startsWith('assets/')) {
+                return url;
+            }
+            
+            // Se for drive.google.com/uc?export=view&id=...
+            if (url.includes('drive.google.com/uc')) {
+                const match = url.match(/id=([^&]+)/);
+                if (match && match[1]) {
+                    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+                }
+            }
+            
+            // Se for drive.google.com/file/d/.../view
+            if (url.includes('drive.google.com/file/d/')) {
+                const match = url.match(/\/d\/([^\/]+)/);
+                if (match && match[1]) {
+                    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+                }
+            }
+            
+            // Se for open?id=...
+            if (url.includes('open?id=')) {
+                const match = url.match(/id=([^&]+)/);
+                if (match && match[1]) {
+                    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+                }
+            }
+            
+            // Se já for o formato correto mas sem o https
+            if (url.startsWith('//lh3.googleusercontent.com')) {
+                return 'https:' + url;
+            }
+            
+            return url;
+        }
 
         // --- FUNÇÃO PARA UPLOAD DE IMAGEM PARA O DRIVE ---
         window.uploadImageToDrive = function(file, folder = 'configuracoes') {
@@ -839,8 +883,9 @@
             }
         }
 
-        // --- FUNÇÃO PARA APLICAR CONFIGURAÇÕES NO SITE ---
+        // --- FUNÇÃO PARA APLICAR CONFIGURAÇÕES NO SITE (CORRIGIDA) ---
         function applySiteConfig() {
+            // Título do site
             if (siteConfig.site_titulo) {
                 document.title = siteConfig.site_titulo;
                 document.getElementById('site-titulo').textContent = siteConfig.site_titulo;
@@ -849,29 +894,39 @@
                 document.getElementById('og-titulo').content = siteConfig.site_titulo;
             }
             
+            // Descrição
             if (siteConfig.site_descricao) {
                 document.getElementById('site-descricao').content = siteConfig.site_descricao;
                 document.getElementById('og-descricao').content = siteConfig.site_descricao;
             }
             
+            // Logo - converte para formato correto do Drive
             if (siteConfig.logo_url && siteConfig.logo_url !== '#' && siteConfig.logo_url !== '') {
-                document.getElementById('header-logo').src = siteConfig.logo_url;
-                document.getElementById('footer-logo').src = siteConfig.logo_url;
+                const logoUrl = convertToDriveImageUrl(siteConfig.logo_url);
+                document.getElementById('header-logo').src = logoUrl;
+                document.getElementById('footer-logo').src = logoUrl;
             }
             
+            // Favicon
             if (siteConfig.favicon_url && siteConfig.favicon_url !== '#' && siteConfig.favicon_url !== '') {
-                document.querySelector('link[rel="shortcut icon"]').href = siteConfig.favicon_url;
-                document.querySelector('link[rel="icon"]').href = siteConfig.favicon_url;
+                const faviconUrl = convertToDriveImageUrl(siteConfig.favicon_url);
+                document.querySelector('link[rel="shortcut icon"]').href = faviconUrl;
+                document.querySelector('link[rel="icon"]').href = faviconUrl;
             }
             
+            // Banner
             if (siteConfig.banner_url && siteConfig.banner_url !== '#' && siteConfig.banner_url !== '') {
-                document.getElementById('banner-image').src = siteConfig.banner_url;
+                const bannerUrl = convertToDriveImageUrl(siteConfig.banner_url);
+                document.getElementById('banner-image').src = bannerUrl;
             }
             
+            // OG Image
             if (siteConfig.og_image_url && siteConfig.og_image_url !== '#' && siteConfig.og_image_url !== '') {
-                document.getElementById('og-imagem').content = siteConfig.og_image_url;
+                const ogUrl = convertToDriveImageUrl(siteConfig.og_image_url);
+                document.getElementById('og-imagem').content = ogUrl;
             }
             
+            // Pastor
             if (siteConfig.pastor_nome) {
                 document.getElementById('pastor-nome').textContent = siteConfig.pastor_nome;
             }
@@ -879,6 +934,7 @@
                 document.getElementById('pastor-cargo').textContent = siteConfig.pastor_cargo;
             }
             
+            // Contato
             if (siteConfig.whatsapp_secretaria) {
                 document.getElementById('whatsapp-secretaria').href = `https://wa.me/${siteConfig.whatsapp_secretaria}`;
             }
@@ -897,6 +953,7 @@
                 document.getElementById('contato-endereco').innerHTML = siteConfig.endereco.replace(/, /g, '<br>');
             }
             
+            // Redes Sociais
             if (siteConfig.instagram_url) {
                 document.getElementById('social-instagram').href = siteConfig.instagram_url;
             }
@@ -907,15 +964,18 @@
                 document.getElementById('social-youtube').href = siteConfig.youtube_url;
             }
             
+            // Rádio
             if (siteConfig.radio_url) {
                 document.getElementById('radio-iframe').src = siteConfig.radio_url;
                 document.getElementById('radio-link').href = siteConfig.radio_url;
             }
             
+            // Mapa
             if (siteConfig.maps_url) {
                 document.getElementById('maps-iframe').src = siteConfig.maps_url;
             }
             
+            // YouTube Channel
             if (siteConfig.youtube_channel) {
                 CONFIG.youtubeChannel = siteConfig.youtube_channel;
             }
@@ -995,7 +1055,8 @@
             displayData.forEach((item, index) => {
                 const realIndex = data.length - 1 - index;
                 const imgUrl = item.coverUrl || item.capa || item.coverImageUrl;
-                const imgHtml = imgUrl ? `<img src="${imgUrl}" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display='none'" loading="lazy">` : '';
+                const displayImgUrl = imgUrl ? convertToDriveImageUrl(imgUrl) : '';
+                const imgHtml = displayImgUrl ? `<img src="${displayImgUrl}" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display='none'" loading="lazy">` : '';
                 html += `
                 <div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">
                     <div class="flex items-center overflow-hidden pr-4 w-full">
@@ -1070,9 +1131,10 @@
                 
                 let previewHtml = '';
                 if (isImageField && valor && valor !== '#' && valor !== '') {
+                    const displayUrl = convertToDriveImageUrl(valor);
                     previewHtml = `
                         <div class="mt-2">
-                            <img src="${valor}" class="config-preview-img" onerror="this.style.display='none'">
+                            <img src="${displayUrl}" class="config-preview-img" onerror="this.style.display='none'">
                         </div>
                     `;
                 }
@@ -1467,7 +1529,8 @@
                         
                         const updatePreview = (url) => {
                             if(url) {
-                                preview.src = url;
+                                const displayUrl = convertToDriveImageUrl(url);
+                                preview.src = displayUrl;
                                 preview.classList.add('show');
                             } else {
                                 preview.classList.remove('show');
@@ -1598,7 +1661,8 @@
             const timeEl = document.getElementById('modal-time').querySelector('span');
             const title = document.getElementById('modal-title');
             const desc = document.getElementById('modal-desc');
-            img.src = event.coverUrl || '#';
+            const displayUrl = event.coverUrl ? convertToDriveImageUrl(event.coverUrl) : '#';
+            img.src = displayUrl;
             img.onerror = () => img.src = '#';
             let dateObj = parseDate(event.date);
             dateEl.textContent = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
@@ -1668,10 +1732,11 @@
                     const endTime = parseDate(data.endDate).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                     timeString += ` - ${endTime}`;
                 }
+                const displayUrl = data.coverUrl ? convertToDriveImageUrl(data.coverUrl) : '#';
                 return `
                 <div class="glass-panel group rounded-2xl overflow-hidden hover:-translate-y-2 active:scale-95 transition-all duration-300 flex flex-col h-full bg-brand-surface/50">
                     <div class="relative w-full aspect-[4/5] overflow-hidden cursor-pointer" onclick="window.openEventModal(${data._id})">
-                        <img src="${data.coverUrl}" onerror="this.src='#'" class="w-full h-full object-cover" loading="lazy">
+                        <img src="${displayUrl}" onerror="this.src='#'" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute top-4 left-4 bg-brand-dark/90 backdrop-blur-sm rounded-lg p-2 text-center min-w-[60px] border border-white/10 shadow-lg z-10">
                             <span class="block text-xl font-bold text-white">${day}</span>
                             <span class="block text-xs font-bold text-brand-yellow">${month}</span>
@@ -1700,10 +1765,11 @@
                 </div>`;
             }
             if (type === 'ministerio') {
+                const displayUrl = data.capa ? convertToDriveImageUrl(data.capa) : '#';
                 return `
                 <div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95">
                     <div class="relative h-56">
-                        <img src="${data.capa}" onerror="this.src='#'" class="w-full h-full object-cover" loading="lazy">
+                        <img src="${displayUrl}" onerror="this.src='#'" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>
                         <div class="absolute bottom-4 left-4">
                             <h3 class="text-2xl font-bold text-white">${data.nome}</h3>
@@ -1729,10 +1795,11 @@
                 </div>`;
             }
             if (type === 'talento') {
+                const displayUrl = data.capa ? convertToDriveImageUrl(data.capa) : '#';
                 return `
                 <div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">
                     <div class="relative h-64 sm:h-72">
-                        <img src="${data.capa}" onerror="this.src='#'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+                        <img src="${displayUrl}" onerror="this.src='#'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
                         <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>
                         <div class="absolute bottom-4 left-4 right-4">
                             <h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">${data.nome}</h3>
@@ -1755,9 +1822,10 @@
                 </div>`;
             }
             if (type === 'album') {
+                const displayUrl = data.coverImageUrl ? convertToDriveImageUrl(data.coverImageUrl) : '#';
                  return `
                 <a href="${data.albumUrl}" target="_blank" class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform">
-                    <img src="${data.coverImageUrl}" onerror="this.src='#'" class="w-full h-full object-cover" loading="lazy">
+                    <img src="${displayUrl}" onerror="this.src='#'" class="w-full h-full object-cover" loading="lazy">
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
                         <div class="text-center p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                             <i class="fas fa-images text-3xl text-brand-yellow mb-2"></i>
@@ -1786,7 +1854,8 @@
             for(let i=0; i<3; i++) {
                 if(marketingQueue[i]) {
                     const img = document.createElement('img');
-                    img.src = marketingQueue[i].image;
+                    const displayUrl = marketingQueue[i].image ? convertToDriveImageUrl(marketingQueue[i].image) : '#';
+                    img.src = displayUrl;
                     img.className = `depth-layer ${i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2'}`;
                     img.dataset.index = i;
                     img.onerror = function() { this.src = '#'; };
@@ -1839,7 +1908,8 @@
                     queueContainer.innerHTML = ''; 
                     for(let i=0; i<3; i++) {
                         const img = document.createElement('img');
-                        img.src = marketingQueue[i].image;
+                        const displayUrl = marketingQueue[i].image ? convertToDriveImageUrl(marketingQueue[i].image) : '#';
+                        img.src = displayUrl;
                         img.className = `depth-layer ${i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2'}`;
                         img.onerror = function() { this.src = '#'; };
                         img.loading = 'lazy';
@@ -1853,7 +1923,8 @@
                 marketingQueue.unshift(last);
                 updateMarketingText(marketingQueue[0]);
                 const newMain = document.createElement('img');
-                newMain.src = last.image;
+                const displayUrl = last.image ? convertToDriveImageUrl(last.image) : '#';
+                newMain.src = displayUrl;
                 newMain.className = 'depth-layer product-hidden-left';
                 newMain.onerror = function() { this.src = '#'; };
                 newMain.loading = 'lazy';
@@ -1893,7 +1964,8 @@
             };
              if (pastor && pastor.length > 0 && pastor[0].capa) {
                 const pastorContainer = document.getElementById('pastor-img-container');
-                if (pastorContainer) pastorContainer.innerHTML = `<img src="${pastor[0].capa}" alt="Pastor" class="w-full h-full object-cover" loading="lazy">`;
+                const displayUrl = convertToDriveImageUrl(pastor[0].capa);
+                if (pastorContainer) pastorContainer.innerHTML = `<img src="${displayUrl}" alt="Pastor" class="w-full h-full object-cover" loading="lazy">`;
             }
             if (events && events.length) {
                 const normalizedEvents = events.map((e, i) => {
@@ -2169,10 +2241,11 @@
                          const dateParts = item.date.split('-');
                          const dateFormatted = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
                          const t = globalTeachers.find(x => x.id == item.teacherId) || {name: 'Professor', photo: ''};
+                         const displayPhoto = t.photo ? convertToDriveImageUrl(t.photo) : '#';
                          html += `
                             <div class="glass-panel rounded-xl overflow-hidden flex flex-col items-center text-center p-6 border border-white/5 hover:border-[#EEBC5A]/50 transition-all group active:scale-95 relative bg-[#1e293b]/40">
                                 <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-[#EEBC5A] mb-3 shadow-[0_0_15px_rgba(238,188,90,0.3)] bg-[#1e293b]">
-                                    <img src="${t.photo || '#'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='#'" loading="lazy">
+                                    <img src="${displayPhoto}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='#'" loading="lazy">
                                 </div>
                                 <h3 class="text-base font-bold text-white mb-1 leading-tight">${t.name}</h3>
                                 <span class="text-[#EEBC5A] text-[10px] font-bold uppercase tracking-wider mb-3 block opacity-90 border border-[#EEBC5A]/30 px-2 py-0.5 rounded bg-[#EEBC5A]/10">${item.class || 'Geral'}</span>
