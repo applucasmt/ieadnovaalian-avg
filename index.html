@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     
-    <title>IEAD Setor Nova Aliança</title>
+    <title id="site-titulo">IEAD Setor Nova Aliança</title>
 
     <link rel="shortcut icon" href="assets/favicon.png" type="image/png">
     <link rel="icon" href="assets/favicon.png" type="image/png">
 
-    <meta name="description" content="Site oficial da Igreja Evangélica Assembleia de Deus, Setor Jardim Nova Aliança.">
+    <meta name="description" id="site-descricao" content="Igreja Evangélica Assembleia de Deus - Setor Jardim Nova Aliança">
 
-    <meta property="og:title" content="IEAD Setor Nova Aliança">
-    <meta property="og:description" content="Fazendo discípulos, cuidando de vidas e impactando a nossa geração.">
-    <meta property="og:image" content="assets/og-image.png">
+    <meta property="og:title" id="og-titulo" content="IEAD Setor Nova Aliança">
+    <meta property="og:description" id="og-descricao" content="Fazendo discípulos, cuidando de vidas e impactando a nossa geração.">
+    <meta property="og:image" id="og-imagem" content="assets/og-image.png">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
 
@@ -140,6 +140,7 @@
             outline: none;
         }
         .admin-field:focus { border-color: #EEBC5A; }
+        .admin-field:read-only { opacity: 0.6; cursor: not-allowed; }
         .input-dark { background: #333; border: 1px solid #444; color: white; border-radius: 4px; padding: 12px 16px; }
         .input-dark:focus { outline: none; border-color: white; background: #444; }
 
@@ -152,9 +153,7 @@
             margin-top: 8px;
             display: none;
         }
-        .upload-preview.show {
-            display: block;
-        }
+        .upload-preview.show { display: block; }
         .upload-progress {
             width: 100%;
             height: 4px;
@@ -164,14 +163,26 @@
             margin-top: 8px;
             display: none;
         }
-        .upload-progress.show {
-            display: block;
-        }
+        .upload-progress.show { display: block; }
         .upload-progress-bar {
             height: 100%;
             background: #EEBC5A;
             width: 0%;
             transition: width 0.3s ease;
+        }
+        .config-preview-img {
+            max-height: 60px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .config-color-picker {
+            width: 60px;
+            height: 40px;
+            padding: 2px;
+            border-radius: 6px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -239,6 +250,9 @@
                     <button onclick="loadAdminTab('talentos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="talentos">Talentos</button>
                     <button onclick="loadAdminTab('albuns')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="albuns">Galeria</button>
                     <button onclick="loadAdminTab('pastor')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="pastor">Pastor/Sobre</button>
+                    <button onclick="loadAdminTab('configuracoes')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="configuracoes">
+                        <i class="fas fa-cog"></i> Configurações
+                    </button>
                 </div>
                 <div class="flex-grow overflow-y-auto p-4" id="admin-content-area">
                     <div class="text-center py-10 text-gray-500">Selecione uma aba acima para editar.</div>
@@ -279,12 +293,12 @@
             <nav class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
                 <a href="#" data-page="igreja" class="nav-link flex items-center gap-3 group active:scale-95 transition-transform">
                     <div class="relative">
-                        <img src="assets/logo.png" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300" loading="lazy">
+                        <img id="header-logo" src="assets/logo.png" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300" loading="lazy">
                         <div class="absolute inset-0 bg-brand-yellow blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
                     </div>
                     <div class="flex flex-col">
                         <span class="text-[0.65rem] sm:text-sm text-gray-400 font-medium tracking-widest uppercase">IEAD Setor</span>
-                        <span class="text-sm sm:text-lg font-bold text-white leading-none">Nova Aliança</span>
+                        <span id="header-titulo" class="text-sm sm:text-lg font-bold text-white leading-none">Nova Aliança</span>
                     </div>
                 </a>
 
@@ -338,7 +352,7 @@
             <div id="igreja-page" class="page-content">
                 <section class="relative min-h-[85vh] sm:min-h-[80vh] flex items-center justify-center overflow-hidden">
                     <div class="absolute inset-0 z-0" style="-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);">
-                        <img src="assets/banner-igreja.jpg" class="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105" style="animation: slowZoom 20s infinite alternate;" alt="Interior da Igreja" loading="lazy">
+                        <img id="banner-image" src="assets/banner-igreja.jpg" class="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105" style="animation: slowZoom 20s infinite alternate;" alt="Interior da Igreja" loading="lazy">
                         <div class="absolute inset-0 bg-[#0f172a]/50"></div>
                     </div>
                     <div class="relative z-10 text-center px-4 w-full max-w-5xl mx-auto animate-fade-in pt-10 sm:pt-0">
@@ -391,7 +405,7 @@
                             <button id="marketing-action-btn" class="glass-btn px-6 py-3 rounded-full text-white font-bold tracking-widest text-[10px] md:text-xs uppercase flex items-center gap-2 hover:bg-brand-yellow hover:text-black transition-all">
                                 Ver Detalhes <i class="fas fa-arrow-right"></i>
                             </button>
-                            <a href="https://wa.me/5565992977124?text=Paz do Senhor! Gostaria de solicitar o cartaz do culto." target="_blank" class="glass-btn px-6 py-3 rounded-full text-white font-bold tracking-widest text-[10px] md:text-xs uppercase flex items-center gap-2 hover:bg-[#25D366] hover:border-[#25D366] transition-all">
+                            <a id="whatsapp-cartaz" href="https://wa.me/5565992977124?text=Paz do Senhor! Gostaria de solicitar o cartaz do culto." target="_blank" class="glass-btn px-6 py-3 rounded-full text-white font-bold tracking-widest text-[10px] md:text-xs uppercase flex items-center gap-2 hover:bg-[#25D366] hover:border-[#25D366] transition-all">
                                 <i class="fab fa-whatsapp text-lg"></i> Solicitar Cartaz
                             </a>
                         </div>
@@ -475,8 +489,8 @@
                                 <i class="fas fa-user-tie text-xl sm:text-2xl"></i>
                             </div>
                             <div>
-                                <h3 class="!m-0 text-lg sm:text-xl text-white">Pr. Lourival Soares</h3>
-                                <p class="!m-0 text-sm text-gray-400">Pastor Setorial</p>
+                                <h3 id="pastor-nome" class="!m-0 text-lg sm:text-xl text-white">Pr. Lourival Soares</h3>
+                                <p id="pastor-cargo" class="!m-0 text-sm text-gray-400">Pastor Setorial</p>
                             </div>
                         </div>
                         <h2>No que Cremos</h2>
@@ -525,13 +539,13 @@
                     <div class="glass-panel p-2 rounded-2xl shadow-[0_0_50px_rgba(73,73,133,0.2)] mb-8">
                         <div class="video-wrapper rounded-xl overflow-hidden bg-black relative group">
                              <div class="absolute inset-0 bg-brand-blue/20 animate-pulse pointer-events-none z-10 opacity-20"></div>
-                             <iframe src="https://nazarenofm.com/" title="Rádio" style="border:0;" class="relative z-20"></iframe>
+                             <iframe id="radio-iframe" src="https://nazarenofm.com/" title="Rádio" style="border:0;" class="relative z-20"></iframe>
                         </div>
                     </div>
                     <div class="flex flex-col sm:flex-row justify-center gap-4">
                         <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-3 active:scale-95 transition-transform">
                             <i class="fas fa-globe text-brand-yellow text-2xl"></i>
-                            <div class="text-left"><span class="block text-xs text-gray-400">Acesse o site</span><a href="https://nazarenofm.com/" target="_blank" class="font-bold text-white hover:text-brand-yellow transition-colors">nazarenofm.com</a></div>
+                            <div class="text-left"><span class="block text-xs text-gray-400">Acesse o site</span><a id="radio-link" href="https://nazarenofm.com/" target="_blank" class="font-bold text-white hover:text-brand-yellow transition-colors">nazarenofm.com</a></div>
                         </div>
                         <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-3 active:scale-95 transition-transform">
                             <i class="fab fa-whatsapp text-[#25D366] text-2xl"></i>
@@ -551,17 +565,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-6 sm:space-y-8 h-full">
                             <h3 class="text-2xl font-bold text-brand-yellow mb-4 sm:mb-6">Informações</h3>
-                            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-brand-yellow"><i class="fas fa-map-marker-alt"></i></div><div><h4 class="font-bold text-white">Endereço</h4><p class="text-gray-400 text-sm">Rua Alameda Jaime Campos, nº 1 <br> Várzea Grande - MT</p></div></div>
-                            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-brand-yellow"><i class="fas fa-envelope"></i></div><div><h4 class="font-bold text-white">Email</h4><a href="mailto:contatosetornovaalianca@gmail.com" class="text-gray-400 hover:text-white transition text-sm break-all">contatosetornovaalianca@gmail.com</a></div></div>
-                            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-brand-yellow"><i class="fas fa-phone"></i></div><div><h4 class="font-bold text-white">Telefone</h4><p class="text-gray-400 text-sm">+55 (65) 99331-0965</p></div></div>
+                            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-brand-yellow"><i class="fas fa-map-marker-alt"></i></div><div><h4 class="font-bold text-white">Endereço</h4><p id="contato-endereco" class="text-gray-400 text-sm">Rua Alameda Jaime Campos, nº 1 <br> Várzea Grande - MT</p></div></div>
+                            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-brand-yellow"><i class="fas fa-envelope"></i></div><div><h4 class="font-bold text-white">Email</h4><a id="contato-email" href="mailto:contatosetornovaalianca@gmail.com" class="text-gray-400 hover:text-white transition text-sm break-all">contatosetornovaalianca@gmail.com</a></div></div>
+                            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-brand-yellow"><i class="fas fa-phone"></i></div><div><h4 class="font-bold text-white">Telefone</h4><p id="contato-telefone" class="text-gray-400 text-sm">+55 (65) 99331-0965</p></div></div>
                         </div>
                         <div class="flex flex-col gap-4">
                             <div class="glass-panel p-1 rounded-2xl overflow-hidden shadow-lg h-64 md:h-auto flex-grow">
-                                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d340.5458688212981!2d-56.1817715216967!3d-15.609228399753025!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1spt-BR!2sbr!4v1758666312117!5m2!1spt-BR!2sbr" class="w-full h-full opacity-80 hover:opacity-100 transition-opacity" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                                <iframe id="maps-iframe" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d340.5458688212981!2d-56.1817715216967!3d-15.609228399753025!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1spt-BR!2sbr!4v1758666312117!5m2!1spt-BR!2sbr" class="w-full h-full opacity-80 hover:opacity-100 transition-opacity" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
-                                <a href="https://wa.me/5565993043834" target="_blank" class="bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-xl flex flex-col items-center justify-center gap-2 active:scale-95 transition-all shadow-lg"><i class="fab fa-whatsapp text-3xl"></i><span class="font-bold text-xs sm:text-sm">Secretaria</span></a>
-                                <a href="https://wa.me/5565992977124" target="_blank" class="bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-xl flex flex-col items-center justify-center gap-2 active:scale-95 transition-all shadow-lg"><i class="fab fa-whatsapp text-3xl"></i><span class="font-bold text-xs sm:text-sm">Marketing</span></a>
+                                <a id="whatsapp-secretaria" href="https://wa.me/5565993043834" target="_blank" class="bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-xl flex flex-col items-center justify-center gap-2 active:scale-95 transition-all shadow-lg"><i class="fab fa-whatsapp text-3xl"></i><span class="font-bold text-xs sm:text-sm">Secretaria</span></a>
+                                <a id="whatsapp-marketing" href="https://wa.me/5565992977124" target="_blank" class="bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-xl flex flex-col items-center justify-center gap-2 active:scale-95 transition-all shadow-lg"><i class="fab fa-whatsapp text-3xl"></i><span class="font-bold text-xs sm:text-sm">Marketing</span></a>
                             </div>
                         </div>
                     </div>
@@ -573,14 +587,14 @@
             <div class="container mx-auto px-4 sm:px-6">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
                     <div class="text-center md:text-left">
-                        <img src="assets/logo.png" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all" loading="lazy">
-                        <h3 class="font-bold text-white text-lg">IEAD Jardim Nova Aliança</h3>
+                        <img id="footer-logo" src="assets/logo.png" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all" loading="lazy">
+                        <h3 id="footer-titulo" class="font-bold text-white text-lg">IEAD Jardim Nova Aliança</h3>
                         <p class="text-gray-500 text-sm mt-2 max-w-xs mx-auto md:mx-0">Levando a palavra de Deus e transformando vidas através do amor de Cristo.</p>
                     </div>
                     <div class="flex gap-6">
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-instagram text-xl"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-facebook text-xl"></i></a>
-                        <a href="https://www.youtube.com/@ieadsetornovaalianca" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-youtube text-xl"></i></a>
+                        <a id="social-instagram" href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-instagram text-xl"></i></a>
+                        <a id="social-facebook" href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-facebook text-xl"></i></a>
+                        <a id="social-youtube" href="https://www.youtube.com/@ieadsetornovaalianca" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-youtube text-xl"></i></a>
                     </div>
                 </div>
                 <div class="border-t border-white/5 pt-6 text-center text-gray-600 text-xs sm:text-sm flex flex-col md:flex-row justify-between items-center gap-4">
@@ -597,7 +611,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         // --- CONFIG ---
         const CONFIG = {
-            // COLE AQUI A URL DO SEU GOOGLE APPS SCRIPT
             scriptUrl: 'https://script.google.com/macros/s/AKfycbz1qCqLXnj6vaT5OvhbZhPVtw6GVT6vHUwqkG2d7yzv5anRG6LFf9eUggzTG8oAJTyv/exec',
             youtubeKey: 'AIzaSyAov1GBz0bCyGsBLUkT6qjDPzT5TZbHrf8',
             youtubeChannel: 'UCEhO2WiTY8qy_cBoQpwoJjQ',
@@ -606,6 +619,7 @@
 
         let globalEvents = [];
         let isMarketingAnimating = false;
+        let siteConfig = {};
         
         window.adminState = {
             isAuthenticated: false,
@@ -613,6 +627,135 @@
             currentTab: 'eventos',
             currentData: []
         };
+
+        // --- FUNÇÃO PARA CARREGAR CONFIGURAÇÕES DO SITE ---
+        async function loadSiteConfig() {
+            try {
+                const data = await fetchWithCache(`${CONFIG.scriptUrl}?sheet=configuracoes`, 'cache_configuracoes_v2', true);
+                if (data && data.length > 0) {
+                    data.forEach(item => {
+                        siteConfig[item.chave] = item.valor;
+                    });
+                    applySiteConfig();
+                }
+            } catch(e) {
+                console.log('Erro ao carregar configurações:', e);
+            }
+        }
+
+        // --- FUNÇÃO PARA APLICAR CONFIGURAÇÕES NO SITE ---
+        function applySiteConfig() {
+            // Título do site
+            if (siteConfig.site_titulo) {
+                document.title = siteConfig.site_titulo;
+                document.getElementById('site-titulo').textContent = siteConfig.site_titulo;
+                document.getElementById('header-titulo').textContent = siteConfig.site_titulo.replace('IEAD Setor ', '');
+                document.getElementById('footer-titulo').textContent = siteConfig.site_titulo;
+                document.getElementById('og-titulo').content = siteConfig.site_titulo;
+            }
+            
+            // Descrição
+            if (siteConfig.site_descricao) {
+                document.getElementById('site-descricao').content = siteConfig.site_descricao;
+                document.getElementById('og-descricao').content = siteConfig.site_descricao;
+            }
+            
+            // Logo
+            if (siteConfig.logo_url) {
+                document.getElementById('header-logo').src = siteConfig.logo_url;
+                document.getElementById('footer-logo').src = siteConfig.logo_url;
+            }
+            
+            // Favicon
+            if (siteConfig.favicon_url) {
+                document.querySelector('link[rel="shortcut icon"]').href = siteConfig.favicon_url;
+                document.querySelector('link[rel="icon"]').href = siteConfig.favicon_url;
+            }
+            
+            // Banner
+            if (siteConfig.banner_url) {
+                document.getElementById('banner-image').src = siteConfig.banner_url;
+            }
+            
+            // OG Image
+            if (siteConfig.og_image_url) {
+                document.getElementById('og-imagem').content = siteConfig.og_image_url;
+            }
+            
+            // Pastor
+            if (siteConfig.pastor_nome) {
+                document.getElementById('pastor-nome').textContent = siteConfig.pastor_nome;
+            }
+            if (siteConfig.pastor_cargo) {
+                document.getElementById('pastor-cargo').textContent = siteConfig.pastor_cargo;
+            }
+            
+            // Contato
+            if (siteConfig.whatsapp_secretaria) {
+                document.getElementById('whatsapp-secretaria').href = `https://wa.me/${siteConfig.whatsapp_secretaria}`;
+            }
+            if (siteConfig.whatsapp_marketing) {
+                document.getElementById('whatsapp-marketing').href = `https://wa.me/${siteConfig.whatsapp_marketing}`;
+                document.getElementById('whatsapp-cartaz').href = `https://wa.me/${siteConfig.whatsapp_marketing}?text=Paz do Senhor! Gostaria de solicitar o cartaz do culto.`;
+            }
+            if (siteConfig.email_contato) {
+                document.getElementById('contato-email').href = `mailto:${siteConfig.email_contato}`;
+                document.getElementById('contato-email').textContent = siteConfig.email_contato;
+            }
+            if (siteConfig.telefone_contato) {
+                document.getElementById('contato-telefone').textContent = siteConfig.telefone_contato;
+            }
+            if (siteConfig.endereco) {
+                document.getElementById('contato-endereco').innerHTML = siteConfig.endereco.replace(/, /g, '<br>');
+            }
+            
+            // Redes Sociais
+            if (siteConfig.instagram_url) {
+                document.getElementById('social-instagram').href = siteConfig.instagram_url;
+            }
+            if (siteConfig.facebook_url) {
+                document.getElementById('social-facebook').href = siteConfig.facebook_url;
+            }
+            if (siteConfig.youtube_url) {
+                document.getElementById('social-youtube').href = siteConfig.youtube_url;
+            }
+            
+            // Rádio
+            if (siteConfig.radio_url) {
+                document.getElementById('radio-iframe').src = siteConfig.radio_url;
+                document.getElementById('radio-link').href = siteConfig.radio_url;
+            }
+            
+            // Mapa
+            if (siteConfig.maps_url) {
+                document.getElementById('maps-iframe').src = siteConfig.maps_url;
+            }
+            
+            // YouTube Channel
+            if (siteConfig.youtube_channel) {
+                CONFIG.youtubeChannel = siteConfig.youtube_channel;
+            }
+            
+            // Cores - Aplicar via CSS custom properties
+            if (siteConfig.cor_primaria) {
+                document.documentElement.style.setProperty('--cor-primaria', siteConfig.cor_primaria);
+                // Atualiza elementos com a cor primária
+                document.querySelectorAll('.bg-brand-yellow, .border-brand-yellow, .text-brand-yellow').forEach(el => {
+                    if (el.classList.contains('bg-brand-yellow')) {
+                        el.style.backgroundColor = siteConfig.cor_primaria;
+                    }
+                    if (el.classList.contains('border-brand-yellow')) {
+                        el.style.borderColor = siteConfig.cor_primaria;
+                    }
+                    if (el.classList.contains('text-brand-yellow')) {
+                        el.style.color = siteConfig.cor_primaria;
+                    }
+                });
+            }
+            if (siteConfig.cor_secundaria) {
+                document.documentElement.style.setProperty('--cor-secundaria', siteConfig.cor_secundaria);
+            }
+        }
 
         // --- FUNÇÃO PARA UPLOAD DE IMAGEM PARA O DRIVE ---
         window.uploadImageToDrive = function(file, folder = 'capas') {
@@ -622,13 +765,11 @@
                     return;
                 }
 
-                // Verifica se é uma imagem
                 if (!file.type.startsWith('image/')) {
                     reject('O arquivo deve ser uma imagem');
                     return;
                 }
 
-                // Verifica tamanho (máx 5MB)
                 if (file.size > 5 * 1024 * 1024) {
                     reject('A imagem deve ter no máximo 5MB');
                     return;
@@ -638,15 +779,13 @@
                 reader.onload = function(e) {
                     const img = new Image();
                     img.onload = function() {
-                        // COMPRESSÃO DA IMAGEM
                         const MAX_WIDTH = 1200;
                         const MAX_HEIGHT = 1600;
-                        const QUALITY = 0.7; // 70% de qualidade
+                        const QUALITY = 0.7;
                         
                         let width = img.width;
                         let height = img.height;
                         
-                        // Redimensiona mantendo proporção
                         if (width > MAX_WIDTH) {
                             height = (height * MAX_WIDTH) / width;
                             width = MAX_WIDTH;
@@ -656,7 +795,6 @@
                             height = MAX_HEIGHT;
                         }
                         
-                        // Cria canvas para compressão
                         const canvas = document.createElement('canvas');
                         canvas.width = width;
                         canvas.height = height;
@@ -664,17 +802,14 @@
                         ctx.imageSmoothingQuality = 'high';
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Converte para JPEG com qualidade reduzida
                         const dataUrl = canvas.toDataURL('image/jpeg', QUALITY);
                         
-                        // Prepara dados para envio
                         const formData = new FormData();
                         formData.append('fileData', dataUrl);
                         formData.append('fileName', file.name.replace(/\.[^.]+$/, '') + '.jpg');
                         formData.append('mimeType', 'image/jpeg');
                         formData.append('folder', folder);
                         
-                        // Envia para o backend
                         fetch(CONFIG.scriptUrl, {
                             method: 'POST',
                             body: formData
@@ -786,7 +921,11 @@
             try {
                 const data = await fetchWithCache(`${CONFIG.scriptUrl}?sheet=${tab}`, `admin_${tab}`, true);
                 window.adminState.currentData = data;
-                renderAdminTable(data, tab);
+                if (tab === 'configuracoes') {
+                    loadConfiguracoes();
+                } else {
+                    renderAdminTable(data, tab);
+                }
             } catch (e) {
                 contentArea.innerHTML = '<p class="text-red-400 text-center">Erro ao carregar dados.</p>';
             }
@@ -828,6 +967,219 @@
             html += '</div>';
             container.innerHTML = html;
         };
+
+        // --- FUNÇÃO PARA CARREGAR CONFIGURAÇÕES ---
+        function loadConfiguracoes() {
+            const container = document.getElementById('admin-content-area');
+            const data = window.adminState.currentData;
+            
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-center py-10">Nenhuma configuração encontrada.</p>';
+                return;
+            }
+            
+            let html = `
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-white mb-2">⚙️ Personalização do Site</h3>
+                    <p class="text-gray-400 text-sm">Edite os valores abaixo para personalizar completamente o site</p>
+                    <div class="h-1 w-20 bg-brand-yellow rounded-full mt-2"></div>
+                </div>
+                <div class="grid gap-3">
+            `;
+            
+            const groups = {
+                'Site': ['site_titulo', 'site_descricao', 'logo_url', 'favicon_url', 'banner_url', 'og_image_url'],
+                'Pastor': ['pastor_nome', 'pastor_cargo'],
+                'Contato': ['whatsapp_secretaria', 'whatsapp_marketing', 'email_contato', 'telefone_contato', 'endereco'],
+                'Redes Sociais': ['instagram_url', 'facebook_url', 'youtube_url', 'youtube_channel'],
+                'Outros': ['cor_primaria', 'cor_secundaria', 'radio_url', 'maps_url']
+            };
+            
+            data.forEach(item => {
+                const chave = item.chave;
+                const valor = item.valor || '';
+                const descricao = item.descricao || '';
+                
+                let grupo = 'Outros';
+                for (const [g, keys] of Object.entries(groups)) {
+                    if (keys.includes(chave)) {
+                        grupo = g;
+                        break;
+                    }
+                }
+                
+                let previewHtml = '';
+                if (chave.includes('url') && (chave.includes('logo') || chave.includes('banner') || chave.includes('og_') || chave.includes('favicon'))) {
+                    previewHtml = `
+                        <div class="mt-2">
+                            <img src="${valor}" class="config-preview-img" onerror="this.style.display='none'">
+                        </div>
+                    `;
+                }
+                
+                let inputType = 'text';
+                let extraClass = '';
+                if (chave.includes('cor_')) {
+                    inputType = 'color';
+                    extraClass = 'config-color-picker';
+                }
+                
+                html += `
+                    <div class="bg-white/5 p-4 rounded-lg border border-white/5 hover:border-brand-yellow/30 transition-colors">
+                        <div class="flex flex-col md:flex-row md:items-center gap-3">
+                            <div class="md:w-1/4">
+                                <label class="text-xs text-gray-400 uppercase font-bold block">${chave}</label>
+                                <span class="text-[10px] text-gray-500">${descricao}</span>
+                            </div>
+                            <div class="md:w-3/4 flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+                                <input type="${inputType}" 
+                                       id="config_${chave}" 
+                                       value="${valor}" 
+                                       class="admin-field ${extraClass} flex-1"
+                                       ${chave === 'chave' || chave === 'descricao' ? 'readonly' : ''}>
+                                ${previewHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                </div>
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <button onclick="saveConfiguracoes()" class="bg-brand-yellow text-brand-dark font-bold px-6 py-2.5 rounded-lg hover:bg-white transition-colors flex items-center gap-2">
+                        <i class="fas fa-save"></i> Salvar Configurações
+                    </button>
+                    <button onclick="loadAdminTab('configuracoes')" class="bg-white/5 text-gray-300 px-6 py-2.5 rounded-lg hover:bg-white/10 transition-colors">
+                        <i class="fas fa-undo"></i> Recarregar
+                    </button>
+                    <button onclick="resetConfiguracoes()" class="bg-red-600/20 text-red-400 px-6 py-2.5 rounded-lg hover:bg-red-600/30 transition-colors">
+                        <i class="fas fa-undo-alt"></i> Restaurar Padrão
+                    </button>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // --- FUNÇÃO PARA SALVAR CONFIGURAÇÕES ---
+        window.saveConfiguracoes = async function() {
+            const btn = document.querySelector('#admin-content-area .bg-brand-yellow');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+            }
+            
+            try {
+                const data = window.adminState.currentData;
+                const updates = [];
+                
+                data.forEach(item => {
+                    const chave = item.chave;
+                    const input = document.getElementById(`config_${chave}`);
+                    if (input && !input.readOnly) {
+                        const novoValor = input.value;
+                        if (novoValor !== item.valor) {
+                            updates.push({ chave, valor: novoValor });
+                        }
+                    }
+                });
+                
+                if (updates.length === 0) {
+                    window.showToast('Nenhuma alteração para salvar.');
+                    if (btn) { btn.innerHTML = 'Salvar Configurações'; btn.disabled = false; }
+                    return;
+                }
+                
+                for (const update of updates) {
+                    const payload = {
+                        sheet: 'configuracoes',
+                        action: 'edit',
+                        password: window.adminState.password,
+                        originalId: update.chave,
+                        data: { chave: update.chave, valor: update.valor }
+                    };
+                    
+                    const res = await fetch(CONFIG.scriptUrl, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await res.json();
+                    if (!result.success) {
+                        throw new Error(result.message);
+                    }
+                }
+                
+                window.showToast('✅ Configurações salvas com sucesso!');
+                
+                // Recarrega os dados
+                await loadAdminTab('configuracoes');
+                
+                // Recarrega o site com as novas configurações
+                await loadSiteConfig();
+                loadData();
+                
+            } catch(err) {
+                window.showToast('❌ Erro: ' + err.message);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Salvar Configurações';
+                }
+            }
+        };
+
+        // --- FUNÇÃO PARA RESTAURAR CONFIGURAÇÕES PADRÃO ---
+        window.resetConfiguracoes = async function() {
+            if (!confirm('Tem certeza que deseja restaurar todas as configurações para o padrão?')) return;
+            
+            const defaults = {
+                'site_titulo': 'IEAD Setor Nova Aliança',
+                'site_descricao': 'Igreja Evangélica Assembleia de Deus - Setor Jardim Nova Aliança',
+                'logo_url': 'assets/logo.png',
+                'favicon_url': 'assets/favicon.png',
+                'banner_url': 'assets/banner-igreja.jpg',
+                'og_image_url': 'assets/og-image.png',
+                'pastor_nome': 'Pr. Lourival Soares',
+                'pastor_cargo': 'Pastor Setorial',
+                'cor_primaria': '#EEBC5A',
+                'cor_secundaria': '#494985',
+                'whatsapp_secretaria': '5565993043834',
+                'whatsapp_marketing': '5565992977124',
+                'email_contato': 'contatosetornovaalianca@gmail.com',
+                'telefone_contato': '(65) 99331-0965',
+                'endereco': 'Rua Alameda Jaime Campos, nº 1, Várzea Grande - MT',
+                'youtube_channel': 'UCEhO2WiTY8qy_cBoQpwoJjQ',
+                'instagram_url': 'https://instagram.com/ieadnovaalianca',
+                'facebook_url': 'https://facebook.com/ieadnovaalianca',
+                'youtube_url': 'https://youtube.com/@ieadsetornovaalianca',
+                'radio_url': 'https://nazarenofm.com/',
+                'maps_url': 'https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d340.5458688212981!2d-56.1817715216967!3d-15.609228399753025!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1spt-BR!2sbr!4v1758666312117!5m2!1spt-BR!2sbr'
+            };
+            
+            const data = window.adminState.currentData;
+            for (const item of data) {
+                const chave = item.chave;
+                if (defaults[chave] !== undefined) {
+                    const payload = {
+                        sheet: 'configuracoes',
+                        action: 'edit',
+                        password: window.adminState.password,
+                        originalId: chave,
+                        data: { chave: chave, valor: defaults[chave] }
+                    };
+                    await fetch(CONFIG.scriptUrl, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                }
+            }
+            
+            window.showToast('✅ Configurações restauradas!');
+            await loadAdminTab('configuracoes');
+            await loadSiteConfig();
+            loadData();
+        };
         
         const SCHEMAS = {
             eventos: [
@@ -867,6 +1219,11 @@
                 {key: 'nome', label: 'Nome', type: 'text'},
                 {key: 'capa', label: 'URL da Foto (Imagem)', type: 'text', isImage: true},
                 {key: 'uploadFile', label: '📤 Fazer Upload da Imagem', type: 'file', folder: 'pastor'}
+            ],
+            configuracoes: [
+                {key: 'chave', label: 'Chave', type: 'text', readonly: true},
+                {key: 'valor', label: 'Valor', type: 'text'},
+                {key: 'descricao', label: 'Descrição', type: 'text', readonly: true}
             ]
         };
 
@@ -887,7 +1244,6 @@
             btn.dataset.mode = mode;
             btn.dataset.index = index;
 
-            // Mapeia qual campo de URL corresponde ao upload
             let urlFieldKey = null;
             schema.forEach(field => {
                 if (field.isImage) {
@@ -905,7 +1261,6 @@
                 wrapper.appendChild(label);
 
                 if (field.type === 'file') {
-                    // Campo de upload de arquivo
                     const input = document.createElement('input');
                     input.type = 'file';
                     input.accept = 'image/*';
@@ -929,7 +1284,6 @@
                         const file = e.target.files[0];
                         if (!file) return;
                         
-                        // Mostra preview
                         const reader = new FileReader();
                         reader.onload = function(ev) {
                             preview.src = ev.target.result;
@@ -937,23 +1291,18 @@
                         };
                         reader.readAsDataURL(file);
                         
-                        // Mostra progresso
                         progressContainer.classList.add('show');
                         progressBar.style.width = '30%';
                         
                         try {
-                            // Faz upload para o Drive
                             const url = await window.uploadImageToDrive(file, field.folder || 'capas');
-                            
                             progressBar.style.width = '100%';
                             window.showToast('✅ Imagem enviada com sucesso!');
                             
-                            // Preenche o campo de URL correspondente
                             if (urlFieldKey) {
                                 const urlField = document.getElementById(`field-${urlFieldKey}`);
                                 if (urlField) {
                                     urlField.value = url;
-                                    // Dispara evento para atualizar preview da URL
                                     urlField.dispatchEvent(new Event('input'));
                                 }
                             }
@@ -985,6 +1334,9 @@
                     input.type = field.type || 'text';
                     input.className = 'admin-field';
                     input.id = `field-${field.key}`;
+                    if (field.readonly) {
+                        input.readOnly = true;
+                    }
                     let val = itemData[field.key] || '';
                     if(field.type === 'datetime-local' && val) {
                         try {
@@ -996,7 +1348,6 @@
                     input.value = val;
                     wrapper.appendChild(input);
 
-                    // Preview para campos de imagem
                     if (field.isImage) {
                         const preview = document.createElement('img');
                         preview.className = 'upload-preview';
@@ -1072,7 +1423,12 @@
                         timestamp: Date.now(),
                         content: window.adminState.currentData
                     }));
-                    renderAdminTable(window.adminState.currentData, tab);
+                    if (tab === 'configuracoes') {
+                        loadConfiguracoes();
+                        await loadSiteConfig();
+                    } else {
+                        renderAdminTable(window.adminState.currentData, tab);
+                    }
                     loadData();
                     window.showToast('✅ Salvo com sucesso!');
                     closeEditModal();
@@ -1107,7 +1463,11 @@
                  if(result.success) {
                     window.showToast('✅ Excluído com sucesso!');
                     window.adminState.currentData.splice(index, 1);
-                    renderAdminTable(window.adminState.currentData, tab);
+                    if (tab === 'configuracoes') {
+                        loadConfiguracoes();
+                    } else {
+                        renderAdminTable(window.adminState.currentData, tab);
+                    }
                     loadAdminTab(tab); 
                 } else {
                     window.showToast('❌ ' + result.message);
@@ -1422,7 +1782,7 @@
             };
              if (pastor && pastor.length > 0 && pastor[0].capa) {
                 const pastorContainer = document.getElementById('pastor-img-container');
-                if (pastorContainer) pastorContainer.innerHTML = `<img src="${pastor[0].capa}" alt="Pastor Lourival Soares" class="w-full h-full object-cover" loading="lazy">`;
+                if (pastorContainer) pastorContainer.innerHTML = `<img src="${pastor[0].capa}" alt="Pastor" class="w-full h-full object-cover" loading="lazy">`;
             }
             if (events && events.length) {
                 const normalizedEvents = events.map((e, i) => {
@@ -1839,9 +2199,14 @@
         })();
 
         // --- INIT ---
-        const init = () => {
+        const init = async () => {
             document.getElementById('current-year').textContent = new Date().getFullYear();
             setupNav();
+            
+            // Carrega configurações do site
+            await loadSiteConfig();
+            
+            // Carrega dados
             loadData();
         };
         init();
