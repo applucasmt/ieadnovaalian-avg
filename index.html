@@ -8,8 +8,8 @@
     <title>IEAD Setor Nova Aliança</title>
 
     <!-- Favicon (Ícone do Navegador) -->
-    <link rel="shortcut icon" href="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" type="image/png">
-    <link rel="icon" href="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" type="image/png">
+    <link rel="shortcut icon" href="assets/favicon.png" type="image/png">
+    <link rel="icon" href="assets/favicon.png" type="image/png">
 
     <!-- Meta Descrição para SEO -->
     <meta name="description" content="Site oficial da Igreja Evangélica Assembleia de Deus, Setor Jardim Nova Aliança. Acompanhe nossos eventos, cultos ao vivo e galeria de fotos.">
@@ -17,11 +17,11 @@
     <!-- Otimização para Redes Sociais (Open Graph) -->
     <meta property="og:title" content="IEAD Setor Nova Aliança">
     <meta property="og:description" content="Fazendo discípulos, cuidando de vidas e impactando a nossa geração.">
-    <meta property="og:image" content="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png">
+    <meta property="og:image" content="assets/og-image.png">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
 
-    <!-- CDN Tailwind CSS (Production) -->
+    <!-- CDN Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Fontes -->
@@ -30,43 +30,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'brand-blue': '#494985',
-                        'brand-yellow': '#EEBC5A',
-                        'brand-dark': '#0f172a',
-                        'brand-surface': '#1e293b',
-                        'netflix-red': '#EEBC5A', 
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.6s ease-out forwards',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'modal-in': 'modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        modalIn: {
-                            '0%': { opacity: '0', transform: 'scale(0.95)' },
-                            '100%': { opacity: '1', transform: 'scale(1)' },
-                        }
-                    },
-                    screens: {
-                        'xs': '475px', 
-                    }
-                }
-            }
-        }
-    </script>
-
     <style>
         /* Reset & Base */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -82,7 +45,6 @@
         ::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background-color: #EEBC5A; }
 
-        /* Utility Glass */
         .glass-panel {
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(12px);
@@ -100,7 +62,6 @@
             }
         }
 
-        /* Marketing Page Layout */
         .marketing-container {
             min-height: 100vh;
             width: 100vw;
@@ -124,7 +85,6 @@
             }
         }
 
-        /* Animations */
         .fade-in-up { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
         .fade-in-up.visible { opacity: 1; transform: translateY(0); }
         .fade-in-right { opacity: 0; transform: translateX(-20px); transition: all 0.6s ease; }
@@ -139,7 +99,6 @@
         .glass-btn:hover { background: rgba(238, 188, 90, 0.8); color: #0f172a; transform: scale(1.05); border-color: #EEBC5A; }
         .glass-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* Depth Layers for Marketing Queue */
         .product-queue-container {
             position: relative;
             width: 100%;
@@ -177,7 +136,6 @@
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         .prose-custom p { margin-bottom: 1rem; line-height: 1.75; color: #cbd5e1; }
 
-        /* Admin & EBD Fields */
         .admin-modal-bg { background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
         .admin-field {
             background: rgba(255,255,255,0.05);
@@ -191,15 +149,20 @@
         .admin-field:focus { border-color: #EEBC5A; }
         .input-dark { background: #333; border: 1px solid #444; color: white; border-radius: 4px; padding: 12px 16px; }
         .input-dark:focus { outline: none; border-color: white; background: #444; }
+
+        /* Loading Shimmer */
+        .shimmer {
+            background: linear-gradient(90deg, #1e293b 25%, #2d3a4f 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-yellow/30 selection:text-brand-yellow">
-
-    <!-- Background Animado (Global) -->
-    <div class="animated-bg absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-    </div>
 
     <!-- MODAL DE DETALHES DO EVENTO -->
     <div id="event-modal" class="fixed inset-0 z-[60] hidden opacity-0 transition-opacity duration-300" aria-modal="true" role="dialog">
@@ -207,7 +170,7 @@
         <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
             <div class="bg-[#1e293b] w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto transform scale-95 transition-all duration-300 border border-white/10" id="modal-content-box">
                 <div class="relative h-56 sm:h-72 shrink-0 bg-black group">
-                     <img id="modal-img" src="" class="w-full h-full object-contain bg-black/50 transition-transform duration-700 group-hover:scale-105">
+                     <img id="modal-img" src="" class="w-full h-full object-contain bg-black/50 transition-transform duration-700 group-hover:scale-105" loading="lazy">
                      <button onclick="window.closeEventModal()" class="absolute top-4 right-4 bg-black/40 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/20 hover:text-red-400 transition-all backdrop-blur-md border border-white/10 z-10 shadow-lg"><i class="fas fa-times text-lg"></i></button>
                      <div class="absolute inset-0 bg-gradient-to-t from-[#1e293b] to-transparent opacity-80"></div>
                 </div>
@@ -243,7 +206,6 @@
     <div id="admin-modal" class="fixed inset-0 z-[70] hidden opacity-0 transition-opacity duration-300" aria-modal="true" role="dialog">
         <div class="absolute inset-0 admin-modal-bg transition-opacity" onclick="window.closeAdmin()"></div>
         <div class="absolute inset-0 flex items-center justify-center p-4">
-            <!-- TELA DE LOGIN -->
             <div id="admin-login-screen" class="bg-[#1e293b] w-full max-w-md p-8 rounded-2xl shadow-2xl border border-white/10 transform scale-95 transition-all">
                 <h2 class="text-2xl font-bold text-white mb-6 text-center"><i class="fas fa-user-lock text-brand-yellow mr-2"></i> Acesso Administrativo</h2>
                 <div class="space-y-4">
@@ -252,7 +214,6 @@
                     <button onclick="window.closeAdmin()" class="w-full text-gray-400 py-2 hover:text-white text-sm">Cancelar</button>
                 </div>
             </div>
-            <!-- DASHBOARD DE ADMINISTRAÇÃO -->
             <div id="admin-dashboard" class="hidden bg-[#1e293b] w-full max-w-6xl h-[90vh] rounded-2xl shadow-2xl border border-white/10 flex flex-col pointer-events-auto">
                 <div class="p-4 border-b border-white/10 flex justify-between items-center bg-black/20">
                     <h2 class="text-xl font-bold text-white"><i class="fas fa-cog text-brand-yellow mr-2"></i> Painel de Controle</h2>
@@ -305,7 +266,7 @@
             <nav class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
                 <a href="#" data-page="igreja" class="nav-link flex items-center gap-3 group active:scale-95 transition-transform">
                     <div class="relative">
-                        <img src="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300">
+                        <img src="assets/logo.png" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300" loading="lazy">
                         <div class="absolute inset-0 bg-brand-yellow blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
                     </div>
                     <div class="flex flex-col">
@@ -366,7 +327,7 @@
             <div id="igreja-page" class="page-content">
                 <section class="relative min-h-[85vh] sm:min-h-[80vh] flex items-center justify-center overflow-hidden">
                     <div class="absolute inset-0 z-0" style="-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);">
-                        <img src="https://i.ibb.co/zhDMwkLJ/dji-fly-20241201-110126-166-1733065539755-photo-optimized.jpg" class="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105" style="animation: slowZoom 20s infinite alternate;" alt="Interior da Igreja">
+                        <img src="assets/banner-igreja.jpg" class="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105" style="animation: slowZoom 20s infinite alternate;" alt="Interior da Igreja" loading="lazy">
                         <div class="absolute inset-0 bg-[#0f172a]/50"></div>
                     </div>
                     <div class="relative z-10 text-center px-4 w-full max-w-5xl mx-auto animate-fade-in pt-10 sm:pt-0">
@@ -601,7 +562,7 @@
             <div class="container mx-auto px-4 sm:px-6">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
                     <div class="text-center md:text-left">
-                        <img src="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all">
+                        <img src="assets/logo.png" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all" loading="lazy">
                         <h3 class="font-bold text-white text-lg">IEAD Jardim Nova Aliança</h3>
                         <p class="text-gray-500 text-sm mt-2 max-w-xs mx-auto md:mx-0">Levando a palavra de Deus e transformando vidas através do amor de Cristo.</p>
                     </div>
@@ -735,7 +696,7 @@
             displayData.forEach((item, index) => {
                 const realIndex = data.length - 1 - index;
                 const imgUrl = item.coverUrl || item.capa || item.coverImageUrl;
-                const imgHtml = imgUrl ? `<img src="${imgUrl}" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display='none'">` : '';
+                const imgHtml = imgUrl ? `<img src="${imgUrl}" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display='none'" loading="lazy">` : '';
                 html += `
                 <div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">
                     <div class="flex items-center overflow-hidden pr-4 w-full">
@@ -761,7 +722,7 @@
                 {key: 'date', label: 'Data Início (AAAA-MM-DDTHH:MM)', type: 'datetime-local'},
                 {key: 'endDate', label: 'Data Fim (Opcional)', type: 'datetime-local'},
                 {key: 'description', label: 'Descrição', type: 'textarea'},
-                {key: 'coverUrl', label: 'URL da Capa (Imagem)', type: 'text'}
+                {key: 'coverUrl', label: 'URL da Capa (assets/capas/nome.jpg)', type: 'text'}
             ],
             avisos: [
                 {key: 'texto', label: 'Texto do Aviso', type: 'textarea'}
@@ -771,23 +732,23 @@
                 {key: 'lideres', label: 'Líderes', type: 'text'},
                 {key: 'regentes', label: 'Regentes', type: 'text'},
                 {key: 'telefone', label: 'Whatsapp (somente números)', type: 'text'},
-                {key: 'capa', label: 'URL da Foto', type: 'text'}
+                {key: 'capa', label: 'URL da Foto (assets/ministerios/nome.jpg)', type: 'text'}
             ],
             talentos: [
                 {key: 'nome', label: 'Nome', type: 'text'},
                 {key: 'descricao', label: 'Descrição/Função', type: 'textarea'},
                 {key: 'telefone', label: 'Whatsapp', type: 'text'},
                 {key: 'video', label: 'Link YouTube', type: 'text'},
-                {key: 'capa', label: 'URL da Foto', type: 'text'}
+                {key: 'capa', label: 'URL da Foto (assets/talentos/nome.jpg)', type: 'text'}
             ],
             albuns: [
                 {key: 'albumName', label: 'Nome do Álbum', type: 'text'},
-                {key: 'coverImageUrl', label: 'URL da Capa', type: 'text'},
+                {key: 'coverImageUrl', label: 'URL da Capa (assets/galeria/nome.jpg)', type: 'text'},
                 {key: 'albumUrl', label: 'Link do Álbum (Google Photos/Drive)', type: 'text'}
             ],
             pastor: [
                 {key: 'nome', label: 'Nome', type: 'text'},
-                {key: 'capa', label: 'URL da Foto', type: 'text'}
+                {key: 'capa', label: 'URL da Foto (assets/pastor/nome.jpg)', type: 'text'}
             ]
         };
 
@@ -960,8 +921,8 @@
             const timeEl = document.getElementById('modal-time').querySelector('span');
             const title = document.getElementById('modal-title');
             const desc = document.getElementById('modal-desc');
-            img.src = event.coverUrl || 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
-            img.onerror = () => img.src = 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
+            img.src = event.coverUrl || 'assets/placeholder.jpg';
+            img.onerror = () => img.src = 'assets/placeholder.jpg';
             let dateObj = parseDate(event.date);
             dateEl.textContent = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
             timeEl.textContent = dateObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + 'h';
@@ -1033,7 +994,7 @@
                 return `
                 <div class="glass-panel group rounded-2xl overflow-hidden hover:-translate-y-2 active:scale-95 transition-all duration-300 flex flex-col h-full bg-brand-surface/50">
                     <div class="relative w-full aspect-[4/5] overflow-hidden cursor-pointer" onclick="window.openEventModal(${data._id})">
-                        <img src="${data.coverUrl}" onerror="this.src='https://placehold.co/1080x1350/1e293b/FFFFFF?text=Evento'" class="w-full h-full object-cover">
+                        <img src="${data.coverUrl}" onerror="this.src='assets/placeholder.jpg'" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute top-4 left-4 bg-brand-dark/90 backdrop-blur-sm rounded-lg p-2 text-center min-w-[60px] border border-white/10 shadow-lg z-10">
                             <span class="block text-xl font-bold text-white">${day}</span>
                             <span class="block text-xs font-bold text-brand-yellow">${month}</span>
@@ -1065,7 +1026,7 @@
                 return `
                 <div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95">
                     <div class="relative h-56">
-                        <img src="${data.capa}" onerror="this.src='https://placehold.co/600x400/1e293b/FFFFFF?text=${encodeURIComponent(data.nome)}'" class="w-full h-full object-cover">
+                        <img src="${data.capa}" onerror="this.src='assets/placeholder.jpg'" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>
                         <div class="absolute bottom-4 left-4">
                             <h3 class="text-2xl font-bold text-white">${data.nome}</h3>
@@ -1094,7 +1055,7 @@
                 return `
                 <div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">
                     <div class="relative h-64 sm:h-72">
-                        <img src="${data.capa}" onerror="this.src='https://placehold.co/600x400/1e293b/FFFFFF?text=${encodeURIComponent(data.nome)}'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <img src="${data.capa}" onerror="this.src='assets/placeholder.jpg'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
                         <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>
                         <div class="absolute bottom-4 left-4 right-4">
                             <h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">${data.nome}</h3>
@@ -1119,7 +1080,7 @@
             if (type === 'album') {
                  return `
                 <a href="${data.albumUrl}" target="_blank" class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform">
-                    <img src="${data.coverImageUrl}" onerror="this.src='https://placehold.co/400x400/1e293b/FFFFFF?text=Galeria'" class="w-full h-full object-cover">
+                    <img src="${data.coverImageUrl}" onerror="this.src='assets/placeholder.jpg'" class="w-full h-full object-cover" loading="lazy">
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
                         <div class="text-center p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                             <i class="fas fa-images text-3xl text-brand-yellow mb-2"></i>
@@ -1151,7 +1112,8 @@
                     img.src = marketingQueue[i].image;
                     img.className = `depth-layer ${i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2'}`;
                     img.dataset.index = i;
-                    img.onerror = function() { this.src = 'https://placehold.co/1080x1350/1e293b/FFFFFF?text=Cartaz'; };
+                    img.onerror = function() { this.src = 'assets/placeholder.jpg'; };
+                    img.loading = 'lazy';
                     queueContainer.appendChild(img);
                 }
             }
@@ -1202,7 +1164,8 @@
                         const img = document.createElement('img');
                         img.src = marketingQueue[i].image;
                         img.className = `depth-layer ${i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2'}`;
-                        img.onerror = function() { this.src = 'https://placehold.co/1080x1350/1e293b/FFFFFF?text=Cartaz'; };
+                        img.onerror = function() { this.src = 'assets/placeholder.jpg'; };
+                        img.loading = 'lazy';
                         queueContainer.appendChild(img);
                     }
                     updateMarketingText(marketingQueue[0]);
@@ -1215,7 +1178,8 @@
                 const newMain = document.createElement('img');
                 newMain.src = last.image;
                 newMain.className = 'depth-layer product-hidden-left';
-                newMain.onerror = function() { this.src = 'https://placehold.co/1080x1350/1e293b/FFFFFF?text=Cartaz'; };
+                newMain.onerror = function() { this.src = 'assets/placeholder.jpg'; };
+                newMain.loading = 'lazy';
                 queueContainer.prepend(newMain);
                 void newMain.offsetWidth;
                 const currentItems = Array.from(queueContainer.children);
@@ -1252,7 +1216,7 @@
             };
              if (pastor && pastor.length > 0 && pastor[0].capa) {
                 const pastorContainer = document.getElementById('pastor-img-container');
-                if (pastorContainer) pastorContainer.innerHTML = `<img src="${pastor[0].capa}" alt="Pastor Lourival Soares" class="w-full h-full object-cover">`;
+                if (pastorContainer) pastorContainer.innerHTML = `<img src="${pastor[0].capa}" alt="Pastor Lourival Soares" class="w-full h-full object-cover" loading="lazy">`;
             }
             if (events && events.length) {
                 const normalizedEvents = events.map((e, i) => {
@@ -1531,7 +1495,7 @@
                          html += `
                             <div class="glass-panel rounded-xl overflow-hidden flex flex-col items-center text-center p-6 border border-white/5 hover:border-[#EEBC5A]/50 transition-all group active:scale-95 relative bg-[#1e293b]/40">
                                 <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-[#EEBC5A] mb-3 shadow-[0_0_15px_rgba(238,188,90,0.3)] bg-[#1e293b]">
-                                    <img src="${t.photo || 'https://via.placeholder.com/150'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=random'">
+                                    <img src="${t.photo || 'assets/placeholder.jpg'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='assets/placeholder.jpg'" loading="lazy">
                                 </div>
                                 <h3 class="text-base font-bold text-white mb-1 leading-tight">${t.name}</h3>
                                 <span class="text-[#EEBC5A] text-[10px] font-bold uppercase tracking-wider mb-3 block opacity-90 border border-[#EEBC5A]/30 px-2 py-0.5 rounded bg-[#EEBC5A]/10">${item.class || 'Geral'}</span>
@@ -1589,7 +1553,7 @@
                                         </div>
                                         <button class="bg-[#333] hover:bg-[#444] text-white px-4 rounded border border-[#555]"><i class="fas fa-plus"></i></button>
                                     </form>
-                                    <div class="mt-4 flex flex-wrap gap-2 max-h-40 overflow-y-auto">${globalTeachers.map(t => `<div class="bg-[#222] px-3 py-1 rounded-full border border-[#333] flex items-center gap-2 text-xs"><img src="${t.photo}" class="w-4 h-4 rounded-full object-cover"><span class="text-gray-300">${t.name}</span><button onclick="window.ebd.deleteItem('deleteTeacher', ${t.id})" class="text-[#EEBC5A] hover:text-white ml-1">×</button></div>`).join('')}</div>
+                                    <div class="mt-4 flex flex-wrap gap-2 max-h-40 overflow-y-auto">${globalTeachers.map(t => `<div class="bg-[#222] px-3 py-1 rounded-full border border-[#333] flex items-center gap-2 text-xs"><img src="${t.photo}" class="w-4 h-4 rounded-full object-cover" loading="lazy"><span class="text-gray-300">${t.name}</span><button onclick="window.ebd.deleteItem('deleteTeacher', ${t.id})" class="text-[#EEBC5A] hover:text-white ml-1">×</button></div>`).join('')}</div>
                                 </div>
                                 <div class="bg-[#181818] p-6 rounded border border-[#333]">
                                     <h3 class="text-lg font-bold text-white mb-4">Escala Atual</h3>
@@ -1639,7 +1603,7 @@
                 if(file) {
                     payload.fileName = file.name; payload.mimeType = file.type;
                     payload.fileData = await toBase64(file);
-                } else payload.photo = "https://via.placeholder.com/150";
+                } else payload.photo = "assets/placeholder.jpg";
                 sendToApi(payload);
             }
             function deleteItem(act, id) { if(confirm("Apagar?")) sendToApi({action: act, id}); }
@@ -1687,4 +1651,3 @@
     </script>
 </body>
 </html>
-```
