@@ -17,6 +17,7 @@
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
 
+    <!-- Tailwind CSS via CDN (pode ser usado em produção, é seguro) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -203,6 +204,10 @@
         .config-upload-btn input {
             display: none;
         }
+        /* Placeholder para imagens que não carregam */
+        img[src="#"], img[src=""] {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-yellow/30 selection:text-brand-yellow">
@@ -213,7 +218,7 @@
         <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
             <div class="bg-[#1e293b] w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto transform scale-95 transition-all duration-300 border border-white/10" id="modal-content-box">
                 <div class="relative h-56 sm:h-72 shrink-0 bg-black group">
-                     <img id="modal-img" src="" class="w-full h-full object-contain bg-black/50 transition-transform duration-700 group-hover:scale-105" loading="lazy">
+                     <img id="modal-img" src="#" class="w-full h-full object-contain bg-black/50 transition-transform duration-700 group-hover:scale-105" loading="lazy">
                      <button onclick="window.closeEventModal()" class="absolute top-4 right-4 bg-black/40 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/20 hover:text-red-400 transition-all backdrop-blur-md border border-white/10 z-10 shadow-lg"><i class="fas fa-times text-lg"></i></button>
                      <div class="absolute inset-0 bg-gradient-to-t from-[#1e293b] to-transparent opacity-80"></div>
                 </div>
@@ -799,25 +804,25 @@
                 document.getElementById('og-descricao').content = siteConfig.site_descricao;
             }
             
-            // Logo
-            if (siteConfig.logo_url && siteConfig.logo_url !== '#') {
+            // Logo - só atualiza se tiver valor válido
+            if (siteConfig.logo_url && siteConfig.logo_url !== '#' && siteConfig.logo_url !== '') {
                 document.getElementById('header-logo').src = siteConfig.logo_url;
                 document.getElementById('footer-logo').src = siteConfig.logo_url;
             }
             
             // Favicon
-            if (siteConfig.favicon_url && siteConfig.favicon_url !== '#') {
+            if (siteConfig.favicon_url && siteConfig.favicon_url !== '#' && siteConfig.favicon_url !== '') {
                 document.querySelector('link[rel="shortcut icon"]').href = siteConfig.favicon_url;
                 document.querySelector('link[rel="icon"]').href = siteConfig.favicon_url;
             }
             
             // Banner
-            if (siteConfig.banner_url && siteConfig.banner_url !== '#') {
+            if (siteConfig.banner_url && siteConfig.banner_url !== '#' && siteConfig.banner_url !== '') {
                 document.getElementById('banner-image').src = siteConfig.banner_url;
             }
             
             // OG Image
-            if (siteConfig.og_image_url && siteConfig.og_image_url !== '#') {
+            if (siteConfig.og_image_url && siteConfig.og_image_url !== '#' && siteConfig.og_image_url !== '') {
                 document.getElementById('og-imagem').content = siteConfig.og_image_url;
             }
             
@@ -1012,7 +1017,7 @@
                             <i class="fas fa-cloud-upload-alt"></i> ${label}
                             <input type="file" accept="image/*" onchange="window.handleConfigUpload(event, '${chave}')">
                         </label>
-                        ${hasImage ? `<span class="text-[10px] text-green-400"><i class="fas fa-check-circle"></i> Imagem carregada</span>` : ''}
+                        ${hasImage ? `<span class="text-[10px] text-green-400"><i class="fas fa-check-circle"></i></span>` : ''}
                         ${hasImage ? `<button onclick="window.removeConfigImage('${chave}')" class="text-red-400 hover:text-red-300 text-xs"><i class="fas fa-times"></i></button>` : ''}
                     </div>
                 `;
@@ -1109,22 +1114,18 @@
             const file = event.target.files[0];
             if (!file) return;
             
-            // Mostra progresso
             window.showToast(`📤 Enviando ${file.name}...`);
             
             try {
                 const url = await window.uploadImageToDrive(file, 'configuracoes');
                 
-                // Atualiza o campo de texto com a URL
                 const input = document.getElementById(`config_${chave}`);
                 if (input) {
                     input.value = url;
                 }
                 
-                // Atualiza o cache
                 configCache[chave] = url;
                 
-                // Recarrega a página de configurações para mostrar preview
                 loadAdminTab('configuracoes');
                 
                 window.showToast('✅ Imagem enviada com sucesso!');
@@ -1196,10 +1197,7 @@
                 
                 window.showToast('✅ Configurações salvas com sucesso!');
                 
-                // Recarrega os dados
                 await loadAdminTab('configuracoes');
-                
-                // Recarrega o site com as novas configurações
                 await loadSiteConfig();
                 loadData();
                 
@@ -2288,10 +2286,7 @@
             document.getElementById('current-year').textContent = new Date().getFullYear();
             setupNav();
             
-            // Carrega configurações do site
             await loadSiteConfig();
-            
-            // Carrega dados
             loadData();
         };
         init();
