@@ -42,7 +42,7 @@
                         'brand-yellow': '#EEBC5A',
                         'brand-dark': '#0f172a',
                         'brand-surface': '#1e293b',
-                        'netflix-red': '#EEBC5A', // Alterado para Dourado
+                        'netflix-red': '#EEBC5A',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -63,7 +63,7 @@
                         }
                     },
                     screens: {
-                        'xs': '475px', // Breakpoint extra para celulares pequenos
+                        'xs': '475px',
                     }
                 }
             }
@@ -79,7 +79,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- ESTILOS GERAIS DO SITE --- */
         ::-webkit-scrollbar { width: 6px; } 
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 4px; }
@@ -102,7 +101,6 @@
             }
         }
 
-        /* --- MARKETING PAGE SPECIFIC STYLES --- */
         .marketing-container {
             min-height: 100vh;
             width: 100vw;
@@ -127,14 +125,12 @@
             }
         }
 
-        /* Animações de Texto */
         .fade-in-up { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
         .fade-in-up.visible { opacity: 1; transform: translateY(0); }
         
         .fade-in-right { opacity: 0; transform: translateX(-20px); transition: all 0.6s ease; }
         .fade-in-right.visible { opacity: 1; transform: translateX(0); }
 
-        /* Botões de Vidro */
         .glass-btn {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -144,7 +140,6 @@
         .glass-btn:hover { background: rgba(238, 188, 90, 0.8); color: #0f172a; transform: scale(1.05); border-color: #EEBC5A; }
         .glass-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* FILA DE IMAGENS (QUEUE) */
         .product-queue-container {
             position: relative;
             width: 100%;
@@ -155,7 +150,6 @@
             perspective: 1000px;
         }
 
-        /* CORREÇÃO VISUAL DAS CAPAS (NO CORTES) */
         .depth-layer {
             position: absolute;
             transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
@@ -170,7 +164,6 @@
         .depth-layer { height: 55vh; width: auto; max-width: 85vw; }
         @media (min-width: 768px) { .depth-layer { height: 70vh; max-height: 750px; } }
 
-        /* ESTADOS DA ANIMAÇÃO */
         .product-main { opacity: 1; transform: translate(0, 0) scale(1); z-index: 30; filter: blur(0px) drop-shadow(0 30px 60px rgba(0,0,0,0.8)); }
         .product-next { opacity: 0.7; transform: translate(40%, -5%) scale(0.85) rotate(4deg); z-index: 20; filter: blur(6px) brightness(0.6); }
         .product-next-2 { opacity: 0.4; transform: translate(80%, -10%) scale(0.7) rotate(8deg); z-index: 10; filter: blur(12px) brightness(0.4); }
@@ -186,7 +179,6 @@
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         .prose-custom p { margin-bottom: 1rem; line-height: 1.75; color: #cbd5e1; }
 
-        /* ADMIN STYLES */
         .admin-modal-bg { background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
         .admin-field {
             background: rgba(255,255,255,0.05);
@@ -199,7 +191,6 @@
         }
         .admin-field:focus { border-color: #EEBC5A; }
 
-        /* --- EBD STYLES --- */
         .input-dark { background: #333; border: 1px solid #444; color: white; border-radius: 4px; padding: 12px 16px; }
         .input-dark:focus { outline: none; border-color: white; background: #444; }
     </style>
@@ -281,6 +272,7 @@
                     <button onclick="loadAdminTab('talentos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="talentos">Talentos</button>
                     <button onclick="loadAdminTab('albuns')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="albuns">Galeria</button>
                     <button onclick="loadAdminTab('pastor')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="pastor">Pastor/Sobre</button>
+                    <button onclick="loadAdminTab('config')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="config"><i class="fas fa-palette mr-1"></i> Site/Config</button>
                 </div>
 
                 <!-- Lista de Itens -->
@@ -291,7 +283,7 @@
                 <!-- Footer Admin -->
                 <div class="p-4 border-t border-white/10 bg-black/20 flex justify-between items-center">
                     <span class="text-xs text-gray-500">As alterações podem levar alguns segundos.</span>
-                    <button onclick="openEditModal('add')" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 shadow-lg"><i class="fas fa-plus"></i> Novo Item</button>
+                    <button onclick="openEditModal('add')" id="btn-new-item" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 shadow-lg"><i class="fas fa-plus"></i> Novo Item</button>
                 </div>
             </div>
         </div>
@@ -327,7 +319,8 @@
             <nav class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
                 <a href="#" data-page="igreja" class="nav-link flex items-center gap-3 group active:scale-95 transition-transform">
                     <div class="relative">
-                        <img src="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300">
+                        <!-- LOGO DINÂMICA -->
+                        <img id="site-logo" src="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300">
                         <div class="absolute inset-0 bg-brand-yellow blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
                     </div>
                     <div class="flex flex-col">
@@ -389,7 +382,8 @@
             <div id="igreja-page" class="page-content">
                 <section class="relative min-h-[85vh] sm:min-h-[80vh] flex items-center justify-center overflow-hidden">
                     <div class="absolute inset-0 z-0" style="-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);">
-                        <img src="https://i.ibb.co/zhDMwkLJ/dji-fly-20241201-110126-166-1733065539755-photo-optimized.jpg" class="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105" style="animation: slowZoom 20s infinite alternate;" alt="Interior da Igreja">
+                        <!-- HERO IMAGE DINÂMICA -->
+                        <img id="site-hero" src="https://i.ibb.co/zhDMwkLJ/dji-fly-20241201-110126-166-1733065539755-photo-optimized.jpg" class="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105" style="animation: slowZoom 20s infinite alternate;" alt="Interior da Igreja">
                         <div class="absolute inset-0 bg-[#0f172a]/50"></div>
                     </div>
                     <div class="relative z-10 text-center px-4 w-full max-w-5xl mx-auto animate-fade-in pt-10 sm:pt-0">
@@ -403,7 +397,6 @@
                             Um lugar de adoração, comunhão e crescimento espiritual. Venha fazer parte desta família.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0">
-                            <!-- Botões usando window.switchPage -->
                             <button onclick="window.switchPage('aovivo')" class="bg-brand-yellow text-brand-dark font-bold py-3 sm:py-4 px-8 rounded-full active:scale-95 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(238,188,90,0.4)] w-full sm:w-auto flex justify-center items-center gap-2">
                                 <i class="fas fa-play text-sm"></i> Assistir Culto
                             </button>
@@ -426,57 +419,40 @@
                 </div>
             </div>
             
-            <!-- PÁGINA MARKETING (DESIGN SLIDER VITRINE) -->
+            <!-- PÁGINA MARKETING -->
             <div id="marketing-page" class="page-content hidden w-full h-full animate-fade-in">
                 <div class="marketing-container max-w-7xl mx-auto px-6 md:px-12 w-full">
-                    
-                    <!-- Lado Esquerdo: Texto -->
                     <div class="w-full md:w-5/12 min-h-[40vh] h-auto md:h-full flex flex-col justify-center z-20 relative space-y-3 md:space-y-6 order-1 md:order-1 pb-10 md:pb-0">
                         <div class="overflow-hidden">
                             <p id="marketing-category" class="text-[10px] md:text-sm font-bold tracking-[0.2em] text-brand-yellow uppercase fade-in-right">EVENTOS</p>
                         </div>
                         <div class="overflow-hidden pb-2">
-                            <h1 id="marketing-title" class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight fade-in-up uppercase break-words drop-shadow-lg">
-                                <!-- JS Injeta Aqui -->
-                            </h1>
+                            <h1 id="marketing-title" class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight fade-in-up uppercase break-words drop-shadow-lg"></h1>
                         </div>
                         <div class="overflow-hidden">
-                            <p id="marketing-desc" class="text-gray-300 max-w-md text-xs sm:text-sm md:text-base leading-relaxed fade-in-up shadow-black drop-shadow-md">
-                                <!-- JS Injeta Aqui -->
-                            </p>
+                            <p id="marketing-desc" class="text-gray-300 max-w-md text-xs sm:text-sm md:text-base leading-relaxed fade-in-up shadow-black drop-shadow-md"></p>
                         </div>
-                        
-                        <!-- BOTÕES DE AÇÃO -->
                         <div id="marketing-btns" class="pt-4 overflow-hidden fade-in-up flex flex-wrap gap-3 z-30 relative">
                             <button id="marketing-action-btn" class="glass-btn px-6 py-3 rounded-full text-white font-bold tracking-widest text-[10px] md:text-xs uppercase flex items-center gap-2 hover:bg-brand-yellow hover:text-black transition-all">
                                 Ver Detalhes <i class="fas fa-arrow-right"></i>
                             </button>
-                            
                             <a href="https://wa.me/5565992977124?text=Paz do Senhor! Gostaria de solicitar o cartaz do culto." target="_blank" class="glass-btn px-6 py-3 rounded-full text-white font-bold tracking-widest text-[10px] md:text-xs uppercase flex items-center gap-2 hover:bg-[#25D366] hover:border-[#25D366] transition-all">
                                 <i class="fab fa-whatsapp text-lg"></i> Solicitar Cartaz
                             </a>
                         </div>
                     </div>
 
-                    <!-- Lado Direito: Fila de Imagens -->
                     <div class="w-full md:w-7/12 h-[50vh] md:h-full relative flex items-center justify-center order-2 md:order-2 p-4">
-                        <!-- Fundo Decorativo -->
                         <div id="bg-blob" class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-[300px] h-[300px] md:w-[800px] md:h-[800px] rounded-full bg-brand-blue opacity-20 blur-[80px] md:blur-[100px] transition-colors duration-700 pointer-events-none -z-10"></div>
-                        
-                        <!-- Container da Fila -->
-                        <div id="product-queue" class="product-queue-container">
-                            <!-- Imagens injetadas via JS -->
-                        </div>
+                        <div id="product-queue" class="product-queue-container"></div>
                     </div>
                 </div>
 
-                <!-- Footer/Controles do Marketing -->
                 <div class="absolute bottom-4 md:bottom-8 left-0 w-full px-6 md:px-12 z-30 pointer-events-none">
                     <div class="max-w-7xl mx-auto flex justify-center md:justify-end items-end gap-4 pointer-events-auto pb-2 md:pb-0">
                         <button id="prev-marketing" class="glass-btn w-12 h-12 rounded-full flex items-center justify-center text-gray-300 hover:text-white disabled:opacity-30 active:scale-95 transition-all shadow-lg">
                             <i class="fas fa-chevron-left text-lg"></i>
                         </button>
-
                         <button id="next-marketing" class="glass-btn w-12 h-12 rounded-full flex items-center justify-center text-gray-300 hover:text-white disabled:opacity-30 active:scale-95 transition-all shadow-lg">
                             <i class="fas fa-chevron-right text-lg"></i>
                         </button>
@@ -499,13 +475,11 @@
                     <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Ministérios</h1>
                     <p class="text-gray-400 max-w-2xl mx-auto">Cada ministério é uma oportunidade de servir e crescer. Encontre o seu lugar.</p>
                 </div>
-                <!-- Container com Fallback caso vazio -->
                 <div id="ministerios-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
 
-            <!-- PÁGINA EBD (ADICIONADA) -->
+            <!-- PÁGINA EBD -->
             <div id="ebd-page" class="page-content hidden w-full h-full animate-fade-in">
-                <!-- EBD Header dentro do conteúdo -->
                 <div class="w-full bg-gradient-to-b from-black/80 to-transparent p-4 flex justify-between items-center relative z-20">
                     <div class="flex items-center gap-4">
                         <span class="text-2xl md:text-3xl font-bold text-[#EEBC5A] tracking-tighter uppercase shadow-black drop-shadow-md">
@@ -516,13 +490,7 @@
                         <i class="fas fa-user-circle text-xl text-gray-300"></i>
                     </button>
                 </div>
-
-                <!-- Conteúdo EBD Injetado -->
-                <div id="ebd-content-area" class="w-full relative z-0 pb-12">
-                    <!-- Renderizado via JS -->
-                </div>
-
-                <!-- Footer EBD -->
+                <div id="ebd-content-area" class="w-full relative z-0 pb-12"></div>
                 <div class="py-8 text-center text-[#808080] text-sm px-4">
                     <div id="ebdConnectionStatus" class="inline-block border border-[#808080] px-2 py-1 text-xs mb-2 rounded">
                         Conectando...
@@ -540,7 +508,7 @@
                 <div id="talentos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
 
-            <!-- OUTRAS PÁGINAS MANTIDAS IGUAIS -->
+            <!-- PÁGINA SOBRE -->
             <div id="sobre-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="max-w-4xl mx-auto">
                     <div class="text-center mb-10 sm:mb-12">
@@ -552,7 +520,6 @@
                         <p>A Assembleia de Deus no setor Jardim Nova Aliança nasceu de um sonho de evangelizar e transformar vidas através da palavra de Deus. Ao longo dos anos, temos visto o agir de Deus transformando famílias e restaurando destinos.</p>
                         <h2>Nossa Liderança</h2>
                         <div class="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/5 mt-4">
-                            <!-- FOTO DO PASTOR DINÂMICA -->
                             <div id="pastor-img-container" class="w-14 h-14 sm:w-16 sm:h-16 bg-brand-yellow/20 rounded-full flex items-center justify-center text-brand-yellow shrink-0 overflow-hidden">
                                 <i class="fas fa-user-tie text-xl sm:text-2xl"></i>
                             </div>
@@ -577,10 +544,7 @@
                         <span class="inline-block px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm font-bold mb-4 animate-pulse">EM TEMPO REAL</span>
                         <h1 class="text-3xl sm:text-5xl font-bold text-white">Culto Online</h1>
                     </div>
-                    
-                    <!-- Container Principal -->
                     <div id="live-container" class="glass-panel p-2 sm:p-4 rounded-2xl shadow-2xl bg-black/50 min-h-[300px] flex items-center justify-center border border-white/10">
-                        <!-- Conteúdo injetado via JS (Fallback Inicial) -->
                         <div class="text-center animate-pulse">
                             <i class="fas fa-circle-notch fa-spin text-4xl text-brand-yellow mb-4"></i>
                             <p class="text-gray-400">Verificando status da transmissão...</p>
@@ -654,7 +618,7 @@
             <div class="container mx-auto px-4 sm:px-6">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
                     <div class="text-center md:text-left">
-                        <img src="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all">
+                        <img id="footer-logo" src="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all">
                         <h3 class="font-bold text-white text-lg">IEAD Jardim Nova Aliança</h3>
                         <p class="text-gray-500 text-sm mt-2 max-w-xs mx-auto md:mx-0">Levando a palavra de Deus e transformando vidas através do amor de Cristo.</p>
                     </div>
@@ -666,8 +630,6 @@
                 </div>
                 <div class="border-t border-white/5 pt-6 text-center text-gray-600 text-xs sm:text-sm flex flex-col md:flex-row justify-between items-center gap-4">
                     <p>&copy; <span id="current-year"></span> IEAD Setor Nova Aliança. Todos os direitos reservados.</p>
-                    
-                    <!-- Botão de Admin -->
                     <button onclick="window.openAdmin()" class="text-gray-700 hover:text-brand-yellow transition-colors" title="Acesso Administrativo">
                         <i class="fas fa-lock"></i>
                     </button>
@@ -683,34 +645,23 @@
             scriptUrl: 'https://script.google.com/macros/s/AKfycbxfp4FgLF0s_6UNQ8MrU3EBeJvCMLvS92xpLZ-HeO7H0FPlEtkSd_DWsGw4FJxC0hJ_ag/exec',
             youtubeKey: 'AIzaSyAov1GBz0bCyGsBLUkT6qjDPzT5TZbHrf8',
             youtubeChannel: 'UCEhO2WiTY8qy_cBoQpwoJjQ',
-            cacheTime: 3600000 // 1 Hora em milissegundos
+            cacheTime: 3600000
         };
 
         // --- OTIMIZAÇÃO DE IMAGENS (Proxy wsrv.nl) ---
-        // Redimensiona e converte para WebP automaticamente, sem alterar a URL original
-        // Cache global do Cloudflare = carregamento instantâneo após 1ª visita
         const optimizeImage = (url, width = 800) => {
             if (!url || typeof url !== 'string') return url;
-            
-            // Se já for uma URL do proxy, retorna como está
             if (url.includes('wsrv.nl')) return url;
-            
-            // Detecta URLs http/https (ImgBB, Google Drive, etc)
             if (url.startsWith('http://') || url.startsWith('https://')) {
-                // wsrv.nl: proxy gratuito que redimensiona, converte para WebP e faz cache global
-                // w=largura, q=qualidade, output=webp, we=1 (sem upscale), il (inline)
                 const encodedUrl = encodeURIComponent(url.replace(/^https?:\/\//, ''));
                 return `https://wsrv.nl/?url=${encodedUrl}&w=${width}&q=75&output=webp&we=1&il`;
             }
-            
             return url;
         };
 
-        // Estado Global de Eventos para o Modal
         let globalEvents = [];
         let isMarketingAnimating = false;
         
-        // ESTADO GLOBAL DO ADMIN
         window.adminState = {
             isAuthenticated: false,
             password: '',
@@ -718,7 +669,7 @@
             currentData: []
         };
 
-        // --- CACHE SYSTEM (LOCAL STORAGE) ---
+        // --- CACHE SYSTEM ---
         const fetchWithCache = async (url, key, force = false) => {
             const cached = localStorage.getItem(key);
             
@@ -790,19 +741,178 @@
                 if(b.dataset.tab === tab) b.classList.add('active', 'bg-white/10', 'text-white');
                 else b.classList.remove('active', 'bg-white/10', 'text-white');
             });
+
+            // Esconde o botão "Novo Item" para a aba config
+            const btnNewItem = document.getElementById('btn-new-item');
+            if (tab === 'config') {
+                btnNewItem.style.display = 'none';
+            } else {
+                btnNewItem.style.display = 'flex';
+            }
             
             const contentArea = document.getElementById('admin-content-area');
             contentArea.innerHTML = '<div class="text-center py-10"><i class="fas fa-spinner fa-spin text-3xl text-brand-yellow"></i><p class="mt-2 text-gray-400">Carregando dados...</p></div>';
             
             try {
                 const data = await fetchWithCache(`${CONFIG.scriptUrl}?sheet=${tab}`, `admin_${tab}`, true);
-                window.adminState.currentData = data;
-                renderAdminTable(data, tab);
+                
+                // Para a aba config, garantimos que seja um array com pelo menos 1 item
+                if (tab === 'config') {
+                    const configData = Array.isArray(data) && data.length > 0 ? data : [{ logoUrl: '', heroUrl: '' }];
+                    window.adminState.currentData = configData;
+                    renderConfigForm(configData[0]);
+                } else {
+                    window.adminState.currentData = data;
+                    renderAdminTable(data, tab);
+                }
             } catch (e) {
                 contentArea.innerHTML = '<p class="text-red-400 text-center">Erro ao carregar dados.</p>';
             }
         };
 
+        // --- FORMULÁRIO ESPECIAL PARA CONFIG ---
+        const renderConfigForm = (config) => {
+            const container = document.getElementById('admin-content-area');
+            
+            const logoUrl = config.logoUrl || '';
+            const heroUrl = config.heroUrl || '';
+            
+            container.innerHTML = `
+                <div class="max-w-3xl mx-auto py-4">
+                    <div class="mb-6 pb-4 border-b border-white/10">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fas fa-palette text-brand-yellow"></i> Identidade Visual do Site
+                        </h3>
+                        <p class="text-xs text-gray-400 mt-1">Altere a logomarca e a foto de fundo da página inicial.</p>
+                    </div>
+
+                    <div class="space-y-8">
+                        <!-- LOGO -->
+                        <div class="bg-white/5 p-5 rounded-xl border border-white/10">
+                            <label class="block text-xs uppercase text-brand-yellow font-bold mb-2">
+                                <i class="fas fa-image mr-2"></i> URL da Logomarca
+                            </label>
+                            <input type="text" id="config-logoUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="${logoUrl}">
+                            
+                            <div class="mt-4">
+                                <p class="text-xs text-gray-400 mb-2">Pré-visualização:</p>
+                                <div class="w-24 h-24 bg-black/30 rounded-lg flex items-center justify-center border border-white/10 overflow-hidden">
+                                    <img id="preview-logo" src="${optimizeImage(logoUrl, 200)}" class="max-w-full max-h-full object-contain" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HERO -->
+                        <div class="bg-white/5 p-5 rounded-xl border border-white/10">
+                            <label class="block text-xs uppercase text-brand-yellow font-bold mb-2">
+                                <i class="fas fa-panorama mr-2"></i> URL da Foto de Fundo (Hero)
+                            </label>
+                            <input type="text" id="config-heroUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="${heroUrl}">
+                            
+                            <div class="mt-4">
+                                <p class="text-xs text-gray-400 mb-2">Pré-visualização:</p>
+                                <div class="w-full aspect-video bg-black/30 rounded-lg flex items-center justify-center border border-white/10 overflow-hidden">
+                                    <img id="preview-hero" src="${optimizeImage(heroUrl, 800)}" class="max-w-full max-h-full object-cover" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOTÃO SALVAR -->
+                    <div class="mt-8 pt-4 border-t border-white/10 flex justify-end">
+                        <button onclick="saveConfig()" class="bg-brand-yellow text-brand-dark font-bold px-8 py-3 rounded-lg hover:bg-white transition-colors flex items-center gap-2 shadow-lg">
+                            <i class="fas fa-save"></i> Salvar Configurações
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Listeners de preview em tempo real
+            const inputLogo = document.getElementById('config-logoUrl');
+            const inputHero = document.getElementById('config-heroUrl');
+            const previewLogo = document.getElementById('preview-logo');
+            const previewHero = document.getElementById('preview-hero');
+
+            inputLogo.addEventListener('input', (e) => {
+                const url = e.target.value.trim();
+                if (url) {
+                    previewLogo.src = optimizeImage(url, 200);
+                    previewLogo.style.display = 'block';
+                } else {
+                    previewLogo.style.display = 'none';
+                }
+            });
+
+            inputHero.addEventListener('input', (e) => {
+                const url = e.target.value.trim();
+                if (url) {
+                    previewHero.src = optimizeImage(url, 800);
+                    previewHero.style.display = 'block';
+                } else {
+                    previewHero.style.display = 'none';
+                }
+            });
+        };
+
+        // --- SALVAR CONFIG ---
+        window.saveConfig = async () => {
+            const logoUrl = document.getElementById('config-logoUrl').value.trim();
+            const heroUrl = document.getElementById('config-heroUrl').value.trim();
+            
+            const payload = {
+                sheet: 'config',
+                action: 'edit',
+                password: window.adminState.password,
+                originalId: '', // Não usado para config
+                data: { logoUrl, heroUrl }
+            };
+            
+            try {
+                const res = await fetch(CONFIG.scriptUrl, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                
+                if (result.success) {
+                    // Atualiza o cache local
+                    localStorage.setItem('cache_config_v2', JSON.stringify({
+                        timestamp: Date.now(),
+                        content: [{ logoUrl, heroUrl }]
+                    }));
+                    
+                    // Aplica imediatamente no site
+                    applyConfigImages({ logoUrl, heroUrl });
+                    
+                    alert('Configurações salvas com sucesso!');
+                } else {
+                    alert('Erro: ' + result.message);
+                }
+            } catch(e) {
+                alert('Erro de conexão: ' + e.message);
+            }
+        };
+
+        // --- APLICAR CONFIG NO SITE ---
+        const applyConfigImages = (config) => {
+            if (!config) return;
+            
+            // Logo (header + footer)
+            if (config.logoUrl) {
+                const logoHeader = document.getElementById('site-logo');
+                const logoFooter = document.getElementById('footer-logo');
+                if (logoHeader) logoHeader.src = optimizeImage(config.logoUrl, 200);
+                if (logoFooter) logoFooter.src = optimizeImage(config.logoUrl, 200);
+            }
+            
+            // Hero (foto de fundo)
+            if (config.heroUrl) {
+                const hero = document.getElementById('site-hero');
+                if (hero) hero.src = optimizeImage(config.heroUrl, 1920);
+            }
+        };
+
+        // --- ADMIN TABLE (para abas normais) ---
         const renderAdminTable = (data, tab) => {
             const container = document.getElementById('admin-content-area');
             if(!data || data.length === 0) {
@@ -817,12 +927,10 @@
             if(data[0].texto) displayKey = 'texto';
 
             let html = '<div class="grid gap-2">';
-            
             const displayData = [...data].reverse();
 
             displayData.forEach((item, index) => {
                 const realIndex = data.length - 1 - index;
-
                 const imgUrl = item.coverUrl || item.capa || item.coverImageUrl;
                 const imgHtml = imgUrl ? `<img src="${optimizeImage(imgUrl, 100)}" loading="lazy" decoding="async" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display='none'">` : '';
 
@@ -845,6 +953,7 @@
             container.innerHTML = html;
         };
         
+        // --- SCHEMAS ---
         const SCHEMAS = {
             eventos: [
                 {key: 'name', label: 'Nome do Evento', type: 'text'},
@@ -951,7 +1060,6 @@
 
                     updatePreview(input.value);
                     input.addEventListener('input', (e) => updatePreview(e.target.value));
-                    
                     wrapper.appendChild(preview);
                 }
 
@@ -1006,14 +1114,12 @@
                         window.adminState.currentData.push(newData);
                     }
 
-                    const cacheKey = `admin_${tab}`;
-                    localStorage.setItem(cacheKey, JSON.stringify({
+                    localStorage.setItem(`admin_${tab}`, JSON.stringify({
                         timestamp: Date.now(),
                         content: window.adminState.currentData
                     }));
                     
-                    const publicCacheKey = `cache_${tab}_v2`;
-                    localStorage.setItem(publicCacheKey, JSON.stringify({
+                    localStorage.setItem(`cache_${tab}_v2`, JSON.stringify({
                         timestamp: Date.now(),
                         content: window.adminState.currentData
                     }));
@@ -1067,7 +1173,7 @@
         };
 
 
-        // --- MODAL FUNCTIONS (Global Scope for HTML access) ---
+        // --- MODAL EVENTOS ---
         window.openEventModal = (eventId) => {
             const event = globalEvents.find(e => e._id === eventId);
             if(!event) return;
@@ -1079,7 +1185,6 @@
             const title = document.getElementById('modal-title');
             const desc = document.getElementById('modal-desc');
 
-            // Imagem em tamanho maior para o modal (1000px de largura, qualidade 80)
             img.src = optimizeImage(event.coverUrl, 1000) || 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
             img.onerror = () => img.src = 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
             
@@ -1152,7 +1257,6 @@
                 const day = date.getDate().toString().padStart(2, '0');
                 const month = date.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase().replace('.', '');
                 const statusBadge = getEventStatusBadge(data.date, data.endDate);
-                // Cards de evento: 600px de largura em WebP = ~40-60KB
                 const optimizedCover = optimizeImage(data.coverUrl, 600);
                 
                 let timeString = date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
@@ -1291,7 +1395,7 @@
             }
         };
 
-        // --- MARKETING CAROUSEL LOGIC (MAGIC SLIDER) ---
+        // --- MARKETING SLIDER ---
         let marketingQueue = [];
         const initMarketingSlider = (events) => {
             const queueContainer = document.getElementById('product-queue');
@@ -1313,7 +1417,6 @@
             for(let i=0; i<3; i++) {
                 if(marketingQueue[i]) {
                     const img = document.createElement('img');
-                    // Slider: imagens grandes (900px) em WebP para exibição em destaque
                     img.src = optimizeImage(marketingQueue[i].image, 900);
                     img.className = `depth-layer ${i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2'}`;
                     img.dataset.index = i;
@@ -1427,7 +1530,7 @@
             return new Date();
         };
 
-        const renderComponents = (events, avisos, ministerios, albums, talentos, pastor) => {
+        const renderComponents = (events, avisos, ministerios, albums, talentos, pastor, config) => {
              const containers = {
                 avisos: document.getElementById('avisos-container'),
                 upcoming: document.getElementById('upcoming-events-container'),
@@ -1437,7 +1540,12 @@
                 albums: document.getElementById('albums-container')
             };
 
-             if (pastor && pastor.length > 0 && pastor[0].capa) {
+            // APLICA CONFIG (LOGO + HERO)
+            if (config && config.length > 0) {
+                applyConfigImages(config[0]);
+            }
+
+            if (pastor && pastor.length > 0 && pastor[0].capa) {
                 const pastorContainer = document.getElementById('pastor-img-container');
                 if (pastorContainer) pastorContainer.innerHTML = `<img src="${optimizeImage(pastor[0].capa, 200)}" loading="lazy" decoding="async" alt="Pastor Lourival Soares" class="w-full h-full object-cover">`;
             }
@@ -1488,7 +1596,7 @@
         };
 
         const loadData = async () => {
-            const cachedKeys = ['cache_eventos_v2', 'cache_avisos_v2', 'cache_ministerios_v2', 'cache_albuns_v2', 'cache_talentos_v2', 'cache_pastor_v2'];
+            const cachedKeys = ['cache_eventos_v2', 'cache_avisos_v2', 'cache_ministerios_v2', 'cache_albuns_v2', 'cache_talentos_v2', 'cache_pastor_v2', 'cache_config_v2'];
             const cachedData = cachedKeys.map(key => {
                 const saved = localStorage.getItem(key);
                 return saved ? JSON.parse(saved).content : [];
@@ -1497,16 +1605,17 @@
             renderComponents(...cachedData);
 
             try {
-                const [events, avisos, ministerios, albums, talentos, pastor] = await Promise.all([
+                const [events, avisos, ministerios, albums, talentos, pastor, config] = await Promise.all([
                     fetchWithCache(`${CONFIG.scriptUrl}?sheet=eventos`, 'cache_eventos_v2'),
                     fetchWithCache(`${CONFIG.scriptUrl}?sheet=avisos`, 'cache_avisos_v2'),
                     fetchWithCache(`${CONFIG.scriptUrl}?sheet=ministerios`, 'cache_ministerios_v2'),
                     fetchWithCache(`${CONFIG.scriptUrl}?sheet=albuns`, 'cache_albuns_v2'),
                     fetchWithCache(`${CONFIG.scriptUrl}?sheet=talentos`, 'cache_talentos_v2'),
-                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=pastor`, 'cache_pastor_v2')
+                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=pastor`, 'cache_pastor_v2'),
+                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=config`, 'cache_config_v2')
                 ]);
 
-                renderComponents(events, avisos, ministerios, albums, talentos, pastor);
+                renderComponents(events, avisos, ministerios, albums, talentos, pastor, config);
             } catch (e) {
                 console.log("Usando versão em cache devido a erro de rede ou cache hit");
             }
