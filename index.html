@@ -1,303 +1,209 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
-<meta name="color-scheme" content="dark">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    
+    <!-- Título Principal -->
+    <title>IEAD Setor Nova Aliança</title>
 
-<title id="site-titulo">IEAD Setor Nova Aliança</title>
+    <!-- Favicon (Ícone do Navegador) -->
+    <link rel="shortcut icon" href="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" type="image/png">
+    <link rel="icon" href="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" type="image/png">
 
-<link rel="shortcut icon" id="favicon-link" href="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" type="image/png">
-<link rel="icon" id="favicon-link-2" href="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" type="image/png">
-<link rel="apple-touch-icon" href="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png">
+    <!-- Meta Descrição para SEO -->
+    <meta name="description" content="Site oficial da Igreja Evangélica Assembleia de Deus, Setor Jardim Nova Aliança. Acompanhe nossos eventos, cultos ao vivo e galeria de fotos.">
 
-<meta name="description" id="site-descricao" content="Site oficial da Igreja Evangélica Assembleia de Deus, Setor Jardim Nova Aliança. Acompanhe nossos eventos, cultos ao vivo e galeria de fotos.">
-<meta name="robots" content="index, follow, max-image-preview:large">
+    <!-- Otimização para Redes Sociais (Open Graph) -->
+    <meta property="og:title" content="IEAD Setor Nova Aliança">
+    <meta property="og:description" content="Fazendo discípulos, cuidando de vidas e impactando a nossa geração.">
+    <meta property="og:image" content="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
 
-<meta property="og:title" id="og-titulo" content="IEAD Setor Nova Aliança">
-<meta property="og:description" id="og-descricao" content="Fazendo discípulos, cuidando de vidas e impactando a nossa geração.">
-<meta property="og:image" id="og-imagem" content="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="pt_BR">
-<meta name="twitter:card" content="summary_large_image">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://cdnjs.cloudflare.com">
-<link rel="dns-prefetch" href="https://script.google.com">
-<link rel="dns-prefetch" href="https://lh3.googleusercontent.com">
-<link rel="dns-prefetch" href="https://i.ibb.co">
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Church",
-  "name": "IEAD Setor Nova Aliança",
-  "description": "Igreja Evangélica Assembleia de Deus - Setor Jardim Nova Aliança",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "Rua Alameda Jaime Campos, nº 1",
-    "addressLocality": "Várzea Grande",
-    "addressRegion": "MT",
-    "addressCountry": "BR"
-  }
-}
-</script>
-
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        'brand-blue': '#494985',
-        'brand-yellow': '#EEBC5A',
-        'brand-dark': '#0f172a',
-        'brand-surface': '#1e293b',
-        'netflix-red': '#EEBC5A'
-      },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif']
-      },
-      animation: {
-        'fade-in': 'fadeIn 0.6s ease-out forwards',
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'modal-in': 'modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards'
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' }
-        },
-        modalIn: {
-          '0%': { opacity: '0', transform: 'scale(0.95)' },
-          '100%': { opacity: '1', transform: 'scale(1)' }
+    <!-- CDN Tailwind CSS (Development Mode) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-blue': '#494985',
+                        'brand-yellow': '#EEBC5A',
+                        'brand-dark': '#0f172a',
+                        'brand-surface': '#1e293b',
+                        'netflix-red': '#EEBC5A', // Alterado para Dourado
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'modal-in': 'modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        modalIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        }
+                    },
+                    screens: {
+                        'xs': '475px', // Breakpoint extra para celulares pequenos
+                    }
+                }
+            }
         }
-      },
-      screens: {
-        'xs': '475px'
-      }
-    }
-  }
-}
-</script>
+    </script>
 
-<style>
-  body {
-    background-color: #0f172a;
-    color: #e2e8f0;
-    overflow-x: hidden;
-    font-family: 'Inter', system-ui, sans-serif;
-    -webkit-tap-highlight-color: transparent;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-  }
+    <style>
+        body { 
+            background-color: #0f172a;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #0f172a; }
-  ::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background-color: #EEBC5A; }
+        /* --- ESTILOS GERAIS DO SITE --- */
+        ::-webkit-scrollbar { width: 6px; } 
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background-color: #EEBC5A; }
 
-  .glass-panel {
-    background: rgba(30, 41, 59, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .nav-link.active-nav { color: #EEBC5A; position: relative; }
+        @media (min-width: 1024px) {
+            .nav-link.active-nav::after {
+                content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 2px;
+                background-color: #EEBC5A; box-shadow: 0 0 8px #EEBC5A;
+            }
+        }
 
-  .nav-link.active-nav { color: #EEBC5A; position: relative; }
-  @media (min-width: 1024px) {
-    .nav-link.active-nav::after {
-      content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 2px;
-      background-color: #EEBC5A; box-shadow: 0 0 8px #EEBC5A;
-    }
-  }
+        /* --- MARKETING PAGE SPECIFIC STYLES --- */
+        .marketing-container {
+            min-height: 100vh;
+            width: 100vw;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 80px; 
+            padding-bottom: 100px; 
+        }
 
-  .marketing-container {
-    min-height: 100vh;
-    width: 100vw;
-    position: relative;
-    overflow-x: hidden;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-top: 80px;
-    padding-bottom: 100px;
-  }
+        @media (min-width: 768px) {
+            .marketing-container {
+                flex-direction: row;
+                align-items: center;
+                padding-top: 0;
+                padding-bottom: 0;
+                height: 100vh;
+                overflow: hidden;
+            }
+        }
 
-  @media (min-width: 768px) {
-    .marketing-container {
-      flex-direction: row;
-      align-items: center;
-      padding-top: 0;
-      padding-bottom: 0;
-      height: 100vh;
-      overflow: hidden;
-    }
-  }
+        /* Animações de Texto */
+        .fade-in-up { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+        .fade-in-up.visible { opacity: 1; transform: translateY(0); }
+        
+        .fade-in-right { opacity: 0; transform: translateX(-20px); transition: all 0.6s ease; }
+        .fade-in-right.visible { opacity: 1; transform: translateX(0); }
 
-  .fade-in-up { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
-  .fade-in-up.visible { opacity: 1; transform: translateY(0); }
-  .fade-in-right { opacity: 0; transform: translateX(-20px); transition: all 0.6s ease; }
-  .fade-in-right.visible { opacity: 1; transform: translateX(0); }
+        /* Botões de Vidro */
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .glass-btn:hover { background: rgba(238, 188, 90, 0.8); color: #0f172a; transform: scale(1.05); border-color: #EEBC5A; }
+        .glass-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-  .glass-btn {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-  }
-  .glass-btn:hover { background: rgba(238, 188, 90, 0.8); color: #0f172a; transform: scale(1.05); border-color: #EEBC5A; }
-  .glass-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        /* FILA DE IMAGENS (QUEUE) */
+        .product-queue-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
 
-  .product-queue-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    perspective: 1000px;
-  }
+        /* CORREÇÃO VISUAL DAS CAPAS (NO CORTES) */
+        .depth-layer {
+            position: absolute;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0 30px 40px rgba(0,0,0,0.6));
+            aspect-ratio: 4/5;
+            object-fit: contain; 
+            background: transparent;
+            border-radius: 16px;
+            z-index: 10;
+        }
+        
+        .depth-layer { height: 55vh; width: auto; max-width: 85vw; }
+        @media (min-width: 768px) { .depth-layer { height: 70vh; max-height: 750px; } }
 
-  .depth-layer {
-    position: absolute;
-    transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-    filter: drop-shadow(0 30px 40px rgba(0,0,0,0.6));
-    aspect-ratio: 4/5;
-    object-fit: contain;
-    background: transparent;
-    border-radius: 16px;
-    z-index: 10;
-  }
+        /* ESTADOS DA ANIMAÇÃO */
+        .product-main { opacity: 1; transform: translate(0, 0) scale(1); z-index: 30; filter: blur(0px) drop-shadow(0 30px 60px rgba(0,0,0,0.8)); }
+        .product-next { opacity: 0.7; transform: translate(40%, -5%) scale(0.85) rotate(4deg); z-index: 20; filter: blur(6px) brightness(0.6); }
+        .product-next-2 { opacity: 0.4; transform: translate(80%, -10%) scale(0.7) rotate(8deg); z-index: 10; filter: blur(12px) brightness(0.4); }
+        .product-hidden-left { opacity: 0; transform: translate(-120%, 20%) scale(0.6) rotate(-10deg); z-index: 0; filter: blur(20px); }
 
-  .depth-layer { height: 55vh; width: auto; max-width: 85vw; }
-  @media (min-width: 768px) { .depth-layer { height: 70vh; max-height: 750px; } }
+        @media (max-width: 768px) {
+            .product-next { transform: translate(15%, -5%) scale(0.9) rotate(3deg); }
+            .product-next-2 { transform: translate(30%, -10%) scale(0.8) rotate(6deg); }
+            .product-hidden-left { transform: translate(-50%, 20%) scale(0.5); }
+        }
 
-  .product-main { opacity: 1; transform: translate(0, 0) scale(1); z-index: 30; filter: blur(0px) drop-shadow(0 30px 60px rgba(0,0,0,0.8)); }
-  .product-next { opacity: 0.7; transform: translate(40%, -5%) scale(0.85) rotate(4deg); z-index: 20; filter: blur(6px) brightness(0.6); }
-  .product-next-2 { opacity: 0.4; transform: translate(80%, -10%) scale(0.7) rotate(8deg); z-index: 10; filter: blur(12px) brightness(0.4); }
-  .product-hidden-left { opacity: 0; transform: translate(-120%, 20%) scale(0.6) rotate(-10deg); z-index: 0; filter: blur(20px); }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 1rem; background: #000; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .prose-custom p { margin-bottom: 1rem; line-height: 1.75; color: #cbd5e1; }
 
-  @media (max-width: 768px) {
-    .product-next { transform: translate(15%, -5%) scale(0.9) rotate(3deg); }
-    .product-next-2 { transform: translate(30%, -10%) scale(0.8) rotate(6deg); }
-    .product-hidden-left { transform: translate(-50%, 20%) scale(0.5); }
-  }
+        /* ADMIN STYLES */
+        .admin-modal-bg { background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
+        .admin-field {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            outline: none;
+        }
+        .admin-field:focus { border-color: #EEBC5A; }
 
-  .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 1rem; background: #000; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
-  .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-  .prose-custom p { margin-bottom: 1rem; line-height: 1.75; color: #cbd5e1; }
-
-  .admin-modal-bg { background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
-  .admin-field {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    width: 100%;
-    outline: none;
-  }
-  .admin-field:focus { border-color: #EEBC5A; }
-  .admin-field:read-only { opacity: 0.6; cursor: not-allowed; }
-
-  .input-dark { background: #333; border: 1px solid #444; color: white; border-radius: 4px; padding: 12px 16px; }
-  .input-dark:focus { outline: none; border-color: white; background: #444; }
-
-  .upload-preview {
-    width: 100%;
-    max-height: 200px;
-    object-fit: contain;
-    background: rgba(0,0,0,0.3);
-    border-radius: 8px;
-    margin-top: 8px;
-    display: none;
-  }
-  .upload-preview.show { display: block; }
-
-  .upload-progress {
-    width: 100%;
-    height: 4px;
-    background: #333;
-    border-radius: 2px;
-    overflow: hidden;
-    margin-top: 8px;
-    display: none;
-  }
-  .upload-progress.show { display: block; }
-  .upload-progress-bar {
-    height: 100%;
-    background: #EEBC5A;
-    width: 0%;
-    transition: width 0.3s ease;
-  }
-
-  .config-preview-img {
-    max-height: 60px;
-    width: auto;
-    object-fit: contain;
-    border-radius: 4px;
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-  .config-color-picker {
-    width: 60px;
-    height: 40px;
-    padding: 2px;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  .config-upload-btn {
-    background: rgba(255,255,255,0.1);
-    border: 1px dashed rgba(255,255,255,0.3);
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 11px;
-    color: #aaa;
-    transition: all 0.3s;
-    white-space: nowrap;
-  }
-  .config-upload-btn:hover {
-    background: rgba(255,255,255,0.2);
-    border-color: #EEBC5A;
-    color: white;
-  }
-  .config-upload-btn input {
-    display: none;
-  }
-
-  img[src="#"], img[src=""] {
-    display: none !important;
-  }
-
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
-</style>
+        /* --- EBD STYLES --- */
+        .input-dark { background: #333; border: 1px solid #444; color: white; border-radius: 4px; padding: 12px 16px; }
+        .input-dark:focus { outline: none; border-color: white; background: #444; }
+    </style>
 </head>
 <body class="antialiased selection:bg-brand-yellow/30 selection:text-brand-yellow">
 
+    <!-- Background Animado (Global) -->
     <div class="animated-bg absolute inset-0 -z-10 overflow-hidden pointer-events-none">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
@@ -309,8 +215,8 @@ tailwind.config = {
         <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
             <div class="bg-[#1e293b] w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto transform scale-95 transition-all duration-300 border border-white/10" id="modal-content-box">
                 <div class="relative h-56 sm:h-72 shrink-0 bg-black group">
-                     <img id="modal-img" src="" alt="Capa do evento" class="w-full h-full object-contain bg-black/50 transition-transform duration-700 group-hover:scale-105" loading="lazy">
-                     <button onclick="window.closeEventModal()" aria-label="Fechar modal" class="absolute top-4 right-4 bg-black/40 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/20 hover:text-red-400 transition-all backdrop-blur-md border border-white/10 z-10 shadow-lg"><i class="fas fa-times text-lg"></i></button>
+                     <img id="modal-img" src="" class="w-full h-full object-contain bg-black/50 transition-transform duration-700 group-hover:scale-105">
+                     <button onclick="window.closeEventModal()" class="absolute top-4 right-4 bg-black/40 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/20 hover:text-red-400 transition-all backdrop-blur-md border border-white/10 z-10 shadow-lg"><i class="fas fa-times text-lg"></i></button>
                      <div class="absolute inset-0 bg-gradient-to-t from-[#1e293b] to-transparent opacity-80"></div>
                 </div>
                 <div class="p-6 sm:p-8 overflow-y-auto modal-scroll flex-grow relative -mt-10">
@@ -331,11 +237,11 @@ tailwind.config = {
     <!-- Modal Login EBD -->
     <div id="ebd-login-modal" class="fixed inset-0 z-[65] hidden items-center justify-center px-4 bg-black/90">
         <div class="bg-black w-full max-w-sm rounded-xl p-8 md:p-12 relative border border-[#333]">
-            <button onclick="window.ebd.toggleLoginModal()" aria-label="Fechar login" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+            <button onclick="window.ebd.toggleLoginModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
             <h2 class="text-3xl font-bold text-white mb-8">Admin EBD</h2>
             <form onsubmit="window.ebd.handleLogin(event)" class="space-y-4">
-                <input type="text" id="ebdUsername" class="w-full input-dark bg-[#333]" placeholder="Usuário" autocomplete="username">
-                <input type="password" id="ebdPassword" class="w-full input-dark bg-[#333]" placeholder="Senha" autocomplete="current-password">
+                <input type="text" id="ebdUsername" class="w-full input-dark bg-[#333]" placeholder="Usuário">
+                <input type="password" id="ebdPassword" class="w-full input-dark bg-[#333]" placeholder="Senha">
                 <button type="submit" class="w-full bg-[#EEBC5A] text-brand-dark font-bold py-3 rounded mt-4 hover:bg-white transition">Entrar</button>
             </form>
         </div>
@@ -345,12 +251,12 @@ tailwind.config = {
     <div id="admin-modal" class="fixed inset-0 z-[70] hidden opacity-0 transition-opacity duration-300" aria-modal="true" role="dialog">
         <div class="absolute inset-0 admin-modal-bg transition-opacity" onclick="window.closeAdmin()"></div>
         <div class="absolute inset-0 flex items-center justify-center p-4">
-
+            
             <!-- TELA DE LOGIN -->
             <div id="admin-login-screen" class="bg-[#1e293b] w-full max-w-md p-8 rounded-2xl shadow-2xl border border-white/10 transform scale-95 transition-all">
                 <h2 class="text-2xl font-bold text-white mb-6 text-center"><i class="fas fa-user-lock text-brand-yellow mr-2"></i> Acesso Administrativo</h2>
                 <div class="space-y-4">
-                    <input type="password" id="admin-password" placeholder="Digite a senha" class="admin-field text-center text-lg" autocomplete="current-password">
+                    <input type="password" id="admin-password" placeholder="Digite a senha" class="admin-field text-center text-lg">
                     <button onclick="window.adminLogin()" class="w-full bg-brand-yellow text-brand-dark font-bold py-3 rounded-xl hover:bg-white transition-colors">Entrar</button>
                     <button onclick="window.closeAdmin()" class="w-full text-gray-400 py-2 hover:text-white text-sm">Cancelar</button>
                 </div>
@@ -358,11 +264,13 @@ tailwind.config = {
 
             <!-- DASHBOARD DE ADMINISTRAÇÃO -->
             <div id="admin-dashboard" class="hidden bg-[#1e293b] w-full max-w-6xl h-[90vh] rounded-2xl shadow-2xl border border-white/10 flex flex-col pointer-events-auto">
+                <!-- Header Admin -->
                 <div class="p-4 border-b border-white/10 flex justify-between items-center bg-black/20">
                     <h2 class="text-xl font-bold text-white"><i class="fas fa-cog text-brand-yellow mr-2"></i> Painel de Controle</h2>
-                    <button onclick="window.closeAdmin()" aria-label="Fechar painel" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+                    <button onclick="window.closeAdmin()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
                 </div>
-
+                
+                <!-- Navegação Admin -->
                 <div class="flex overflow-x-auto p-2 bg-white/5 gap-2 border-b border-white/5">
                     <button onclick="loadAdminTab('eventos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab active" data-tab="eventos">Eventos/Agenda</button>
                     <button onclick="loadAdminTab('avisos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="avisos">Avisos Home</button>
@@ -370,15 +278,14 @@ tailwind.config = {
                     <button onclick="loadAdminTab('talentos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="talentos">Talentos</button>
                     <button onclick="loadAdminTab('albuns')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="albuns">Galeria</button>
                     <button onclick="loadAdminTab('pastor')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="pastor">Pastor/Sobre</button>
-                    <button onclick="loadAdminTab('configuracoes')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="configuracoes">
-                        <i class="fas fa-cog"></i> Configurações
-                    </button>
                 </div>
 
+                <!-- Lista de Itens -->
                 <div class="flex-grow overflow-y-auto p-4" id="admin-content-area">
                     <div class="text-center py-10 text-gray-500">Selecione uma aba acima para editar.</div>
                 </div>
 
+                <!-- Footer Admin -->
                 <div class="p-4 border-t border-white/10 bg-black/20 flex justify-between items-center">
                     <span class="text-xs text-gray-500">As alterações podem levar alguns segundos.</span>
                     <button onclick="openEditModal('add')" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 shadow-lg"><i class="fas fa-plus"></i> Novo Item</button>
@@ -393,9 +300,11 @@ tailwind.config = {
         <div class="bg-brand-surface w-full max-w-lg rounded-xl border border-white/10 relative z-10 shadow-2xl flex flex-col max-h-[90vh]">
             <div class="p-4 border-b border-white/10 flex justify-between items-center">
                 <h3 class="text-white font-bold text-lg" id="edit-modal-title">Editar Item</h3>
-                <button onclick="closeEditModal()" aria-label="Fechar edição" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
             </div>
-            <div class="p-6 overflow-y-auto flex-grow space-y-4" id="edit-form-container"></div>
+            <div class="p-6 overflow-y-auto flex-grow space-y-4" id="edit-form-container">
+                <!-- Inputs injetados via JS -->
+            </div>
             <div class="p-4 border-t border-white/10 bg-black/20 flex justify-end gap-3">
                 <button onclick="closeEditModal()" class="px-4 py-2 text-gray-400 hover:text-white text-sm">Cancelar</button>
                 <button onclick="saveAdminItem()" id="btn-save-item" class="bg-brand-yellow text-brand-dark font-bold px-6 py-2 rounded-lg hover:bg-white transition-colors">Salvar</button>
@@ -409,18 +318,18 @@ tailwind.config = {
     </div>
 
     <div id="app" class="min-h-screen flex flex-col relative z-10">
-
+        
         <!-- HEADER -->
         <header class="sticky top-0 z-50 glass-panel border-b border-white/5 transition-all duration-300" id="main-header">
             <nav class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
                 <a href="#" data-page="igreja" class="nav-link flex items-center gap-3 group active:scale-95 transition-transform">
                     <div class="relative">
-                        <img id="header-logo" src="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300" loading="lazy">
+                        <img src="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300">
                         <div class="absolute inset-0 bg-brand-yellow blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
                     </div>
                     <div class="flex flex-col">
                         <span class="text-[0.65rem] sm:text-sm text-gray-400 font-medium tracking-widest uppercase">IEAD Setor</span>
-                        <span id="header-titulo" class="text-sm sm:text-lg font-bold text-white leading-none">Nova Aliança</span>
+                        <span class="text-sm sm:text-lg font-bold text-white leading-none">Nova Aliança</span>
                     </div>
                 </a>
 
@@ -446,7 +355,8 @@ tailwind.config = {
                         </span>
                         AO VIVO
                     </a>
-                    <button id="mobile-menu-button" aria-label="Abrir menu" class="lg:hidden p-3 -mr-2 text-gray-300 hover:text-white active:bg-white/10 rounded-lg transition-colors active:scale-95">
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-button" class="lg:hidden p-3 -mr-2 text-gray-300 hover:text-white active:bg-white/10 rounded-lg transition-colors active:scale-95">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -470,13 +380,13 @@ tailwind.config = {
             </div>
         </header>
 
-        <!-- MAIN CONTENT (continua na mensagem 3/4) -->
-                <main id="main-content" class="flex-grow">
+        <!-- MAIN CONTENT -->
+        <main id="main-content" class="flex-grow">
             <!-- PÁGINA IGREJA -->
             <div id="igreja-page" class="page-content">
                 <section class="relative min-h-[85vh] sm:min-h-[80vh] flex items-center justify-center overflow-hidden">
                     <div class="absolute inset-0 z-0" style="-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);">
-                        <img id="banner-image" src="https://i.ibb.co/zhDMwkLJ/dji-fly-20241201-110126-166-1733065539755-photo-optimized.jpg" class="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105" alt="Interior da Igreja" loading="eager">
+                        <img src="https://i.ibb.co/zhDMwkLJ/dji-fly-20241201-110126-166-1733065539755-photo-optimized.jpg" class="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105" style="animation: slowZoom 20s infinite alternate;" alt="Interior da Igreja">
                         <div class="absolute inset-0 bg-[#0f172a]/50"></div>
                     </div>
                     <div class="relative z-10 text-center px-4 w-full max-w-5xl mx-auto animate-fade-in pt-10 sm:pt-0">
@@ -490,6 +400,7 @@ tailwind.config = {
                             Um lugar de adoração, comunhão e crescimento espiritual. Venha fazer parte desta família.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0">
+                            <!-- Botões usando window.switchPage -->
                             <button onclick="window.switchPage('aovivo')" class="bg-brand-yellow text-brand-dark font-bold py-3 sm:py-4 px-8 rounded-full active:scale-95 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(238,188,90,0.4)] w-full sm:w-auto flex justify-center items-center gap-2">
                                 <i class="fas fa-play text-sm"></i> Assistir Culto
                             </button>
@@ -511,40 +422,59 @@ tailwind.config = {
                     <div id="upcoming-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"></div>
                 </div>
             </div>
-
+            
             <!-- PÁGINA MARKETING (DESIGN SLIDER VITRINE) -->
             <div id="marketing-page" class="page-content hidden w-full h-full animate-fade-in">
                 <div class="marketing-container max-w-7xl mx-auto px-6 md:px-12 w-full">
+                    
+                    <!-- Lado Esquerdo: Texto -->
                     <div class="w-full md:w-5/12 min-h-[40vh] h-auto md:h-full flex flex-col justify-center z-20 relative space-y-3 md:space-y-6 order-1 md:order-1 pb-10 md:pb-0">
                         <div class="overflow-hidden">
                             <p id="marketing-category" class="text-[10px] md:text-sm font-bold tracking-[0.2em] text-brand-yellow uppercase fade-in-right">EVENTOS</p>
                         </div>
                         <div class="overflow-hidden pb-2">
-                            <h1 id="marketing-title" class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight fade-in-up uppercase break-words drop-shadow-lg"></h1>
+                            <h1 id="marketing-title" class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight fade-in-up uppercase break-words drop-shadow-lg">
+                                <!-- JS Injeta Aqui -->
+                            </h1>
                         </div>
                         <div class="overflow-hidden">
-                            <p id="marketing-desc" class="text-gray-300 max-w-md text-xs sm:text-sm md:text-base leading-relaxed fade-in-up shadow-black drop-shadow-md"></p>
+                            <p id="marketing-desc" class="text-gray-300 max-w-md text-xs sm:text-sm md:text-base leading-relaxed fade-in-up shadow-black drop-shadow-md">
+                                <!-- JS Injeta Aqui -->
+                            </p>
                         </div>
+                        
+                        <!-- BOTÕES DE AÇÃO -->
                         <div id="marketing-btns" class="pt-4 overflow-hidden fade-in-up flex flex-wrap gap-3 z-30 relative">
                             <button id="marketing-action-btn" class="glass-btn px-6 py-3 rounded-full text-white font-bold tracking-widest text-[10px] md:text-xs uppercase flex items-center gap-2 hover:bg-brand-yellow hover:text-black transition-all">
                                 Ver Detalhes <i class="fas fa-arrow-right"></i>
                             </button>
-                            <a id="whatsapp-cartaz" href="https://wa.me/5565992977124?text=Paz do Senhor! Gostaria de solicitar o cartaz do culto." target="_blank" rel="noopener" class="glass-btn px-6 py-3 rounded-full text-white font-bold tracking-widest text-[10px] md:text-xs uppercase flex items-center gap-2 hover:bg-[#25D366] hover:border-[#25D366] transition-all">
+                            
+                            <a href="https://wa.me/5565992977124?text=Paz do Senhor! Gostaria de solicitar o cartaz do culto." target="_blank" class="glass-btn px-6 py-3 rounded-full text-white font-bold tracking-widest text-[10px] md:text-xs uppercase flex items-center gap-2 hover:bg-[#25D366] hover:border-[#25D366] transition-all">
                                 <i class="fab fa-whatsapp text-lg"></i> Solicitar Cartaz
                             </a>
                         </div>
                     </div>
+
+                    <!-- Lado Direito: Fila de Imagens -->
                     <div class="w-full md:w-7/12 h-[50vh] md:h-full relative flex items-center justify-center order-2 md:order-2 p-4">
+                        <!-- Fundo Decorativo -->
                         <div id="bg-blob" class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-[300px] h-[300px] md:w-[800px] md:h-[800px] rounded-full bg-brand-blue opacity-20 blur-[80px] md:blur-[100px] transition-colors duration-700 pointer-events-none -z-10"></div>
-                        <div id="product-queue" class="product-queue-container"></div>
+                        
+                        <!-- Container da Fila -->
+                        <div id="product-queue" class="product-queue-container">
+                            <!-- Imagens injetadas via JS -->
+                        </div>
                     </div>
                 </div>
+
+                <!-- Footer/Controles do Marketing -->
                 <div class="absolute bottom-4 md:bottom-8 left-0 w-full px-6 md:px-12 z-30 pointer-events-none">
                     <div class="max-w-7xl mx-auto flex justify-center md:justify-end items-end gap-4 pointer-events-auto pb-2 md:pb-0">
-                        <button id="prev-marketing" aria-label="Anterior" class="glass-btn w-12 h-12 rounded-full flex items-center justify-center text-gray-300 hover:text-white disabled:opacity-30 active:scale-95 transition-all shadow-lg">
+                        <button id="prev-marketing" class="glass-btn w-12 h-12 rounded-full flex items-center justify-center text-gray-300 hover:text-white disabled:opacity-30 active:scale-95 transition-all shadow-lg">
                             <i class="fas fa-chevron-left text-lg"></i>
                         </button>
-                        <button id="next-marketing" aria-label="Próximo" class="glass-btn w-12 h-12 rounded-full flex items-center justify-center text-gray-300 hover:text-white disabled:opacity-30 active:scale-95 transition-all shadow-lg">
+
+                        <button id="next-marketing" class="glass-btn w-12 h-12 rounded-full flex items-center justify-center text-gray-300 hover:text-white disabled:opacity-30 active:scale-95 transition-all shadow-lg">
                             <i class="fas fa-chevron-right text-lg"></i>
                         </button>
                     </div>
@@ -559,31 +489,41 @@ tailwind.config = {
                 </div>
                 <div id="all-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
-
+            
             <!-- PÁGINA MINISTÉRIOS -->
             <div id="ministerios-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="text-center mb-10 sm:mb-12">
                     <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Ministérios</h1>
                     <p class="text-gray-400 max-w-2xl mx-auto">Cada ministério é uma oportunidade de servir e crescer. Encontre o seu lugar.</p>
                 </div>
+                <!-- Container com Fallback caso vazio -->
                 <div id="ministerios-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
 
-            <!-- PÁGINA EBD -->
+            <!-- PÁGINA EBD (ADICIONADA) -->
             <div id="ebd-page" class="page-content hidden w-full h-full animate-fade-in">
+                <!-- EBD Header dentro do conteúdo -->
                 <div class="w-full bg-gradient-to-b from-black/80 to-transparent p-4 flex justify-between items-center relative z-20">
                     <div class="flex items-center gap-4">
                         <span class="text-2xl md:text-3xl font-bold text-[#EEBC5A] tracking-tighter uppercase shadow-black drop-shadow-md">
                             EBD<span class="text-white text-lg ml-1 font-normal hidden sm:inline">2026</span>
                         </span>
                     </div>
-                    <button onclick="window.ebd.toggleLoginModal()" aria-label="Login EBD" class="w-8 h-8 rounded bg-[#333] border border-transparent hover:border-white overflow-hidden transition flex items-center justify-center">
+                    <button onclick="window.ebd.toggleLoginModal()" class="w-8 h-8 rounded bg-[#333] border border-transparent hover:border-white overflow-hidden transition flex items-center justify-center">
                         <i class="fas fa-user-circle text-xl text-gray-300"></i>
                     </button>
                 </div>
-                <div id="ebd-content-area" class="w-full relative z-0 pb-12"></div>
+
+                <!-- Conteúdo EBD Injetado -->
+                <div id="ebd-content-area" class="w-full relative z-0 pb-12">
+                    <!-- Renderizado via JS -->
+                </div>
+
+                <!-- Footer EBD -->
                 <div class="py-8 text-center text-[#808080] text-sm px-4">
-                    <div id="ebdConnectionStatus" class="inline-block border border-[#808080] px-2 py-1 text-xs mb-2 rounded">Conectando...</div>
+                    <div id="ebdConnectionStatus" class="inline-block border border-[#808080] px-2 py-1 text-xs mb-2 rounded">
+                        Conectando...
+                    </div>
                     <p class="text-xs">© 2026 EBD Streaming</p>
                 </div>
             </div>
@@ -597,7 +537,7 @@ tailwind.config = {
                 <div id="talentos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
 
-            <!-- PÁGINA SOBRE -->
+            <!-- OUTRAS PÁGINAS MANTIDAS IGUAIS -->
             <div id="sobre-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="max-w-4xl mx-auto">
                     <div class="text-center mb-10 sm:mb-12">
@@ -609,12 +549,13 @@ tailwind.config = {
                         <p>A Assembleia de Deus no setor Jardim Nova Aliança nasceu de um sonho de evangelizar e transformar vidas através da palavra de Deus. Ao longo dos anos, temos visto o agir de Deus transformando famílias e restaurando destinos.</p>
                         <h2>Nossa Liderança</h2>
                         <div class="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/5 mt-4">
+                            <!-- FOTO DO PASTOR DINÂMICA -->
                             <div id="pastor-img-container" class="w-14 h-14 sm:w-16 sm:h-16 bg-brand-yellow/20 rounded-full flex items-center justify-center text-brand-yellow shrink-0 overflow-hidden">
                                 <i class="fas fa-user-tie text-xl sm:text-2xl"></i>
                             </div>
                             <div>
-                                <h3 id="pastor-nome" class="!m-0 text-lg sm:text-xl text-white">Pr. Lourival Soares</h3>
-                                <p id="pastor-cargo" class="!m-0 text-sm text-gray-400">Pastor Setorial</p>
+                                <h3 class="!m-0 text-lg sm:text-xl text-white">Pr. Lourival Soares</h3>
+                                <p class="!m-0 text-sm text-gray-400">Pastor Setorial</p>
                             </div>
                         </div>
                         <h2>No que Cremos</h2>
@@ -626,15 +567,17 @@ tailwind.config = {
                     </div>
                 </div>
             </div>
-
-            <!-- PÁGINA AO VIVO -->
+            
             <div id="aovivo-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="max-w-5xl mx-auto">
                     <div class="text-center mb-10 sm:mb-12">
                         <span class="inline-block px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm font-bold mb-4 animate-pulse">EM TEMPO REAL</span>
                         <h1 class="text-3xl sm:text-5xl font-bold text-white">Culto Online</h1>
                     </div>
+                    
+                    <!-- Container Principal -->
                     <div id="live-container" class="glass-panel p-2 sm:p-4 rounded-2xl shadow-2xl bg-black/50 min-h-[300px] flex items-center justify-center border border-white/10">
+                        <!-- Conteúdo injetado via JS (Fallback Inicial) -->
                         <div class="text-center animate-pulse">
                             <i class="fas fa-circle-notch fa-spin text-4xl text-brand-yellow mb-4"></i>
                             <p class="text-gray-400">Verificando status da transmissão...</p>
@@ -643,7 +586,6 @@ tailwind.config = {
                 </div>
             </div>
 
-            <!-- PÁGINA GALERIA -->
             <div id="gallery-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="text-center mb-10 sm:mb-12">
                     <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Momentos</h1>
@@ -652,7 +594,6 @@ tailwind.config = {
                 <div id="albums-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
             </div>
 
-            <!-- PÁGINA RÁDIO -->
             <div id="radio-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="max-w-4xl mx-auto text-center">
                     <div class="inline-block px-4 py-1 rounded-full border border-brand-yellow/30 bg-brand-yellow/10 backdrop-blur-sm mb-6">
@@ -663,13 +604,13 @@ tailwind.config = {
                     <div class="glass-panel p-2 rounded-2xl shadow-[0_0_50px_rgba(73,73,133,0.2)] mb-8">
                         <div class="video-wrapper rounded-xl overflow-hidden bg-black relative group">
                              <div class="absolute inset-0 bg-brand-blue/20 animate-pulse pointer-events-none z-10 opacity-20"></div>
-                             <iframe id="radio-iframe" src="https://nazarenofm.com/" title="Rádio" style="border:0;" class="relative z-20" loading="lazy"></iframe>
+                             <iframe src="https://nazarenofm.com/" title="Rádio" style="border:0;" class="relative z-20"></iframe>
                         </div>
                     </div>
                     <div class="flex flex-col sm:flex-row justify-center gap-4">
                         <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-3 active:scale-95 transition-transform">
                             <i class="fas fa-globe text-brand-yellow text-2xl"></i>
-                            <div class="text-left"><span class="block text-xs text-gray-400">Acesse o site</span><a id="radio-link" href="https://nazarenofm.com/" target="_blank" rel="noopener" class="font-bold text-white hover:text-brand-yellow transition-colors">nazarenofm.com</a></div>
+                            <div class="text-left"><span class="block text-xs text-gray-400">Acesse o site</span><a href="https://nazarenofm.com/" target="_blank" class="font-bold text-white hover:text-brand-yellow transition-colors">nazarenofm.com</a></div>
                         </div>
                         <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-3 active:scale-95 transition-transform">
                             <i class="fab fa-whatsapp text-[#25D366] text-2xl"></i>
@@ -679,7 +620,6 @@ tailwind.config = {
                 </div>
             </div>
 
-            <!-- PÁGINA CONTATO -->
             <div id="contato-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="max-w-4xl mx-auto">
                     <div class="text-center mb-10 sm:mb-12">
@@ -689,17 +629,17 @@ tailwind.config = {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="glass-panel p-6 sm:p-8 rounded-2xl space-y-6 sm:space-y-8 h-full">
                             <h3 class="text-2xl font-bold text-brand-yellow mb-4 sm:mb-6">Informações</h3>
-                            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-brand-yellow"><i class="fas fa-map-marker-alt"></i></div><div><h4 class="font-bold text-white">Endereço</h4><p id="contato-endereco" class="text-gray-400 text-sm">Rua Alameda Jaime Campos, nº 1 <br> Várzea Grande - MT</p></div></div>
-                            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-brand-yellow"><i class="fas fa-envelope"></i></div><div><h4 class="font-bold text-white">Email</h4><a id="contato-email" href="mailto:contatosetornovaalianca@gmail.com" class="text-gray-400 hover:text-white transition text-sm break-all">contatosetornovaalianca@gmail.com</a></div></div>
-                            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-brand-yellow"><i class="fas fa-phone"></i></div><div><h4 class="font-bold text-white">Telefone</h4><p id="contato-telefone" class="text-gray-400 text-sm">+55 (65) 99331-0965</p></div></div>
+                            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-brand-yellow"><i class="fas fa-map-marker-alt"></i></div><div><h4 class="font-bold text-white">Endereço</h4><p class="text-gray-400 text-sm">Rua Alameda Jaime Campos, nº 1 <br> Várzea Grande - MT</p></div></div>
+                            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-brand-yellow"><i class="fas fa-envelope"></i></div><div><h4 class="font-bold text-white">Email</h4><a href="mailto:contatosetornovaalianca@gmail.com" class="text-gray-400 hover:text-white transition text-sm break-all">contatosetornovaalianca@gmail.com</a></div></div>
+                            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-brand-yellow"><i class="fas fa-phone"></i></div><div><h4 class="font-bold text-white">Telefone</h4><p class="text-gray-400 text-sm">+55 (65) 99331-0965</p></div></div>
                         </div>
                         <div class="flex flex-col gap-4">
                             <div class="glass-panel p-1 rounded-2xl overflow-hidden shadow-lg h-64 md:h-auto flex-grow">
-                                <iframe id="maps-iframe" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d340.5458688212981!2d-56.1817715216967!3d-15.609228399753025!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1spt-BR!2sbr!4v1758666312117!5m2!1spt-BR!2sbr" class="w-full h-full opacity-80 hover:opacity-100 transition-opacity" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d340.5458688212981!2d-56.1817715216967!3d-15.609228399753025!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1spt-BR!2sbr!4v1758666312117!5m2!1spt-BR!2sbr" class="w-full h-full opacity-80 hover:opacity-100 transition-opacity" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
-                                <a id="whatsapp-secretaria" href="https://wa.me/5565993043834" target="_blank" rel="noopener" class="bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-xl flex flex-col items-center justify-center gap-2 active:scale-95 transition-all shadow-lg"><i class="fab fa-whatsapp text-3xl"></i><span class="font-bold text-xs sm:text-sm">Secretaria</span></a>
-                                <a id="whatsapp-marketing" href="https://wa.me/5565992977124" target="_blank" rel="noopener" class="bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-xl flex flex-col items-center justify-center gap-2 active:scale-95 transition-all shadow-lg"><i class="fab fa-whatsapp text-3xl"></i><span class="font-bold text-xs sm:text-sm">Marketing</span></a>
+                                <a href="https://wa.me/5565993043834" target="_blank" class="bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-xl flex flex-col items-center justify-center gap-2 active:scale-95 transition-all shadow-lg"><i class="fab fa-whatsapp text-3xl"></i><span class="font-bold text-xs sm:text-sm">Secretaria</span></a>
+                                <a href="https://wa.me/5565992977124" target="_blank" class="bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-xl flex flex-col items-center justify-center gap-2 active:scale-95 transition-all shadow-lg"><i class="fab fa-whatsapp text-3xl"></i><span class="font-bold text-xs sm:text-sm">Marketing</span></a>
                             </div>
                         </div>
                     </div>
@@ -711,45 +651,43 @@ tailwind.config = {
             <div class="container mx-auto px-4 sm:px-6">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
                     <div class="text-center md:text-left">
-                        <img id="footer-logo" src="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all" loading="lazy">
-                        <h3 id="footer-titulo" class="font-bold text-white text-lg">IEAD Jardim Nova Aliança</h3>
+                        <img src="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all">
+                        <h3 class="font-bold text-white text-lg">IEAD Jardim Nova Aliança</h3>
                         <p class="text-gray-500 text-sm mt-2 max-w-xs mx-auto md:mx-0">Levando a palavra de Deus e transformando vidas através do amor de Cristo.</p>
                     </div>
                     <div class="flex gap-6">
-                        <a id="social-instagram" href="#" aria-label="Instagram" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-instagram text-xl"></i></a>
-                        <a id="social-facebook" href="#" aria-label="Facebook" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-facebook text-xl"></i></a>
-                        <a id="social-youtube" href="https://www.youtube.com/@ieadsetornovaalianca" aria-label="YouTube" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-youtube text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-facebook text-xl"></i></a>
+                        <a href="https://www.youtube.com/@ieadsetornovaalianca" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-youtube text-xl"></i></a>
                     </div>
                 </div>
                 <div class="border-t border-white/5 pt-6 text-center text-gray-600 text-xs sm:text-sm flex flex-col md:flex-row justify-between items-center gap-4">
                     <p>&copy; <span id="current-year"></span> IEAD Setor Nova Aliança. Todos os direitos reservados.</p>
-                    <button onclick="window.openAdmin()" aria-label="Acesso administrativo" class="text-gray-700 hover:text-brand-yellow transition-colors" title="Acesso Administrativo">
+                    
+                    <!-- Botão de Admin -->
+                    <button onclick="window.openAdmin()" class="text-gray-700 hover:text-brand-yellow transition-colors" title="Acesso Administrativo">
                         <i class="fas fa-lock"></i>
                     </button>
                 </div>
             </div>
         </footer>
     </div>
-
-    <!-- SCRIPT PRINCIPAL (continua na mensagem 4/4) -->
-        <script>
+    
+    <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // ═══════════════════════════════════════════════════════════════
-        // CONFIGURAÇÃO GLOBAL
-        // ═══════════════════════════════════════════════════════════════
-        // ⚠️ COLE AQUI A URL DO SEU APPS SCRIPT (termina em /exec)
+        // --- CONFIG ---
         const CONFIG = {
             scriptUrl: 'https://script.google.com/macros/s/AKfycbxfp4FgLF0s_6UNQ8MrU3EBeJvCMLvS92xpLZ-HeO7H0FPlEtkSd_DWsGw4FJxC0hJ_ag/exec',
             youtubeKey: 'AIzaSyAov1GBz0bCyGsBLUkT6qjDPzT5TZbHrf8',
             youtubeChannel: 'UCEhO2WiTY8qy_cBoQpwoJjQ',
-            cacheTime: 3600000
+            cacheTime: 3600000 // 1 Hora em milissegundos
         };
 
+        // Estado Global de Eventos para o Modal
         let globalEvents = [];
         let isMarketingAnimating = false;
-        let siteConfig = {};
-        let configCache = {};
-
+        
+        // ESTADO GLOBAL DO ADMIN
         window.adminState = {
             isAuthenticated: false,
             password: '',
@@ -757,211 +695,46 @@ tailwind.config = {
             currentData: []
         };
 
-        // ═══════════════════════════════════════════════════════════════
-        // CONVERSOR DE URL DO DRIVE
-        // ═══════════════════════════════════════════════════════════════
-        function convertToDriveImageUrl(url) {
-            if (!url) return '#';
-            if (url.indexOf('lh3.googleusercontent.com') >= 0) return url;
-            if (url.indexOf('assets/') === 0) return url;
-            if (url.indexOf('drive.google.com/uc') >= 0) {
-                const m = url.match(/id=([^&]+)/);
-                if (m && m[1]) return 'https://lh3.googleusercontent.com/d/' + m[1];
-            }
-            if (url.indexOf('drive.google.com/file/d/') >= 0) {
-                const m = url.match(/\/d\/([^\/]+)/);
-                if (m && m[1]) return 'https://lh3.googleusercontent.com/d/' + m[1];
-            }
-            if (url.indexOf('open?id=') >= 0) {
-                const m = url.match(/id=([^&]+)/);
-                if (m && m[1]) return 'https://lh3.googleusercontent.com/d/' + m[1];
-            }
-            if (url.indexOf('//lh3.googleusercontent.com') === 0) return 'https:' + url;
-            return url;
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // UPLOAD DE IMAGEM
-        // ═══════════════════════════════════════════════════════════════
-        window.uploadImageToDrive = function(file, folder) {
-            folder = folder || 'configuracoes';
-            return new Promise(function(resolve, reject) {
-                if (!file) return reject('Nenhum arquivo selecionado');
-                if (file.type.indexOf('image/') !== 0) return reject('Arquivo deve ser imagem');
-                if (file.size > 5 * 1024 * 1024) return reject('Máximo 5MB');
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const MAX_W = 1200, MAX_H = 1600, Q = 0.7;
-                        let w = img.width, h = img.height;
-                        if (w > MAX_W) { h = (h * MAX_W) / w; w = MAX_W; }
-                        if (h > MAX_H) { w = (w * MAX_H) / h; h = MAX_H; }
-                        const canvas = document.createElement('canvas');
-                        canvas.width = w; canvas.height = h;
-                        const ctx = canvas.getContext('2d');
-                        ctx.imageSmoothingQuality = 'high';
-                        ctx.drawImage(img, 0, 0, w, h);
-                        const dataUrl = canvas.toDataURL('image/jpeg', Q);
-
-                        const fd = new FormData();
-                        fd.append('fileData', dataUrl);
-                        fd.append('fileName', file.name.replace(/\.[^.]+$/, '') + '.jpg');
-                        fd.append('mimeType', 'image/jpeg');
-                        fd.append('folder', folder);
-
-                        fetch(CONFIG.scriptUrl, { method: 'POST', body: fd })
-                            .then(function(r) { return r.json(); })
-                            .then(function(data) {
-                                if (data.status === 'success') resolve(data.url);
-                                else reject(data.message || 'Erro no upload');
-                            })
-                            .catch(function(err) { reject('Erro de conexão: ' + err.message); });
-                    };
-                    img.onerror = function() { reject('Erro ao carregar imagem'); };
-                    img.src = e.target.result;
-                };
-                reader.onerror = function() { reject('Erro ao ler arquivo'); };
-                reader.readAsDataURL(file);
-            });
-        };
-
-        // ═══════════════════════════════════════════════════════════════
-        // TOAST
-        // ═══════════════════════════════════════════════════════════════
-        window.showToast = function(message, duration) {
-            duration = duration || 3000;
-            const toast = document.getElementById('toast');
-            if (!toast) return;
-            toast.textContent = message;
-            toast.classList.remove('translate-y-32', 'opacity-0');
-            clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(function() {
-                toast.classList.add('translate-y-32', 'opacity-0');
-            }, duration);
-        };
-
-        // ═══════════════════════════════════════════════════════════════
-        // CACHE COM STALE-WHILE-REVALIDATE
-        // ═══════════════════════════════════════════════════════════════
-        const fetchWithCache = async function(url, key, force) {
-            force = force || false;
+        // --- CACHE SYSTEM (LOCAL STORAGE) ---
+        // Alterado para suportar carregamento imediato
+        const fetchWithCache = async (url, key, force = false) => {
             const cached = localStorage.getItem(key);
+            
+            // Se não forçar, mas existir cache, a função LoadData cuidará do retorno imediato
+            // Esta função agora foca em buscar dados novos se necessário ou retornar o que tem
+            
             if (!force && cached) {
-                try {
-                    const data = JSON.parse(cached);
-                    if (Date.now() - data.timestamp < CONFIG.cacheTime) {
-                        return data.content;
-                    }
-                } catch (e) {}
+                const data = JSON.parse(cached);
+                // Retorna cache se for recente
+                if (Date.now() - data.timestamp < CONFIG.cacheTime) {
+                    return data.content;
+                }
             }
+            
             try {
-                const sep = url.indexOf('?') >= 0 ? '&' : '?';
-                const response = await fetch(url + sep + 'cacheBust=' + Date.now());
+                const response = await fetch(`${url}&cacheBust=${Date.now()}`); 
                 if (!response.ok) throw new Error('Network error');
-                const json = await response.json();
-                // Se o backend retorna { success, data }, extrai o data
-                const content = (json && json.success !== undefined && json.data !== undefined) ? json.data : json;
-                localStorage.setItem(key, JSON.stringify({ timestamp: Date.now(), content: content }));
+                const content = await response.json();
+                localStorage.setItem(key, JSON.stringify({
+                    timestamp: Date.now(),
+                    content: content
+                }));
                 return content;
             } catch (error) {
-                console.error('fetchWithCache error:', error);
-                return cached ? JSON.parse(cached).content : [];
+                console.error(error);
+                return cached ? JSON.parse(cached).content : []; 
             }
         };
 
-        // ═══════════════════════════════════════════════════════════════
-        // CARREGAR CONFIGURAÇÕES DO SITE
-        // ═══════════════════════════════════════════════════════════════
-        async function loadSiteConfig() {
-            try {
-                const data = await fetchWithCache(CONFIG.scriptUrl + '?sheet=configuracoes', 'cache_configuracoes_v2', true);
-                if (data && data.length > 0) {
-                    configCache = {};
-                    data.forEach(function(item) {
-                        siteConfig[item.chave] = item.valor;
-                        configCache[item.chave] = item.valor;
-                    });
-                    applySiteConfig();
-                }
-            } catch (e) {
-                console.log('Erro ao carregar configurações:', e);
-            }
-        }
-
-        function applySiteConfig() {
-            const $ = function(id) { return document.getElementById(id); };
-
-            if (siteConfig.site_titulo) {
-                document.title = siteConfig.site_titulo;
-                if ($('site-titulo')) $('site-titulo').textContent = siteConfig.site_titulo;
-                if ($('header-titulo')) $('header-titulo').textContent = siteConfig.site_titulo.replace('IEAD Setor ', '');
-                if ($('footer-titulo')) $('footer-titulo').textContent = siteConfig.site_titulo;
-                if ($('og-titulo')) $('og-titulo').content = siteConfig.site_titulo;
-            }
-            if (siteConfig.site_descricao) {
-                if ($('site-descricao')) $('site-descricao').content = siteConfig.site_descricao;
-                if ($('og-descricao')) $('og-descricao').content = siteConfig.site_descricao;
-            }
-            if (siteConfig.logo_url) {
-                const logoUrl = convertToDriveImageUrl(siteConfig.logo_url);
-                if ($('header-logo')) $('header-logo').src = logoUrl;
-                if ($('footer-logo')) $('footer-logo').src = logoUrl;
-            }
-            if (siteConfig.favicon_url) {
-                const favUrl = convertToDriveImageUrl(siteConfig.favicon_url);
-                const f1 = document.querySelector('link[rel="shortcut icon"]');
-                const f2 = document.querySelector('link[rel="icon"]');
-                if (f1) f1.href = favUrl;
-                if (f2) f2.href = favUrl;
-            }
-            if (siteConfig.banner_url && $('banner-image')) {
-                $('banner-image').src = convertToDriveImageUrl(siteConfig.banner_url);
-            }
-            if (siteConfig.og_image_url && $('og-imagem')) {
-                $('og-imagem').content = convertToDriveImageUrl(siteConfig.og_image_url);
-            }
-            if (siteConfig.pastor_nome && $('pastor-nome')) $('pastor-nome').textContent = siteConfig.pastor_nome;
-            if (siteConfig.pastor_cargo && $('pastor-cargo')) $('pastor-cargo').textContent = siteConfig.pastor_cargo;
-
-            if (siteConfig.whatsapp_secretaria && $('whatsapp-secretaria')) {
-                $('whatsapp-secretaria').href = 'https://wa.me/' + siteConfig.whatsapp_secretaria;
-            }
-            if (siteConfig.whatsapp_marketing) {
-                if ($('whatsapp-marketing')) $('whatsapp-marketing').href = 'https://wa.me/' + siteConfig.whatsapp_marketing;
-                if ($('whatsapp-cartaz')) $('whatsapp-cartaz').href = 'https://wa.me/' + siteConfig.whatsapp_marketing + '?text=Paz do Senhor! Gostaria de solicitar o cartaz do culto.';
-            }
-            if (siteConfig.email_contato && $('contato-email')) {
-                $('contato-email').href = 'mailto:' + siteConfig.email_contato;
-                $('contato-email').textContent = siteConfig.email_contato;
-            }
-            if (siteConfig.telefone_contato && $('contato-telefone')) {
-                $('contato-telefone').textContent = siteConfig.telefone_contato;
-            }
-            if (siteConfig.endereco && $('contato-endereco')) {
-                $('contato-endereco').innerHTML = siteConfig.endereco.replace(/\|/g, '<br>');
-            }
-            if (siteConfig.instagram_url && $('social-instagram')) $('social-instagram').href = siteConfig.instagram_url;
-            if (siteConfig.facebook_url && $('social-facebook')) $('social-facebook').href = siteConfig.facebook_url;
-            if (siteConfig.youtube_url && $('social-youtube')) $('social-youtube').href = siteConfig.youtube_url;
-            if (siteConfig.radio_url && $('radio-iframe')) {
-                $('radio-iframe').src = siteConfig.radio_url;
-                if ($('radio-link')) $('radio-link').href = siteConfig.radio_url;
-            }
-            if (siteConfig.maps_url && $('maps-iframe')) $('maps-iframe').src = siteConfig.maps_url;
-            if (siteConfig.youtube_channel) CONFIG.youtubeChannel = siteConfig.youtube_channel;
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // ADMIN — ABRIR/FECHAR
-        // ═══════════════════════════════════════════════════════════════
-        window.openAdmin = function() {
+        // --- ADMIN FUNCTIONS ---
+        window.openAdmin = () => {
             const modal = document.getElementById('admin-modal');
             const login = document.getElementById('admin-login-screen');
             const dashboard = document.getElementById('admin-dashboard');
+            
             modal.classList.remove('hidden');
-            setTimeout(function() { modal.classList.remove('opacity-0'); }, 10);
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            
             if (window.adminState.isAuthenticated) {
                 login.classList.add('hidden');
                 dashboard.classList.remove('hidden');
@@ -972,17 +745,19 @@ tailwind.config = {
             }
         };
 
-        window.closeAdmin = function() {
+        window.closeAdmin = () => {
             const modal = document.getElementById('admin-modal');
             modal.classList.add('opacity-0');
-            setTimeout(function() { modal.classList.add('hidden'); }, 300);
+            setTimeout(() => modal.classList.add('hidden'), 300);
         };
 
-        window.adminLogin = function() {
+        window.adminLogin = () => {
             const pass = document.getElementById('admin-password').value;
-            if (pass) {
+            // Validação simples client-side, a real acontece no doPost
+            if(pass) {
                 window.adminState.password = pass;
                 window.adminState.isAuthenticated = true;
+                
                 document.getElementById('admin-login-screen').classList.add('hidden');
                 document.getElementById('admin-dashboard').classList.remove('hidden');
                 loadAdminTab('eventos');
@@ -991,450 +766,317 @@ tailwind.config = {
             }
         };
 
-        window.loadAdminTab = async function(tab) {
+        window.loadAdminTab = async (tab) => {
             window.adminState.currentTab = tab;
-            document.querySelectorAll('.admin-tab').forEach(function(b) {
-                if (b.dataset.tab === tab) b.classList.add('active', 'bg-white/10', 'text-white');
+            
+            // UI Update Tabs
+            document.querySelectorAll('.admin-tab').forEach(b => {
+                if(b.dataset.tab === tab) b.classList.add('active', 'bg-white/10', 'text-white');
                 else b.classList.remove('active', 'bg-white/10', 'text-white');
             });
+            
             const contentArea = document.getElementById('admin-content-area');
             contentArea.innerHTML = '<div class="text-center py-10"><i class="fas fa-spinner fa-spin text-3xl text-brand-yellow"></i><p class="mt-2 text-gray-400">Carregando dados...</p></div>';
+            
+            // Força busca sem cache para admin
             try {
-                const data = await fetchWithCache(CONFIG.scriptUrl + '?sheet=' + tab, 'admin_' + tab, true);
+                const data = await fetchWithCache(`${CONFIG.scriptUrl}?sheet=${tab}`, `admin_${tab}`, true);
                 window.adminState.currentData = data;
-                if (tab === 'configuracoes') {
-                    loadConfiguracoes();
-                } else {
-                    renderAdminTable(data, tab);
-                }
+                renderAdminTable(data, tab);
             } catch (e) {
                 contentArea.innerHTML = '<p class="text-red-400 text-center">Erro ao carregar dados.</p>';
             }
         };
 
-        const renderAdminTable = function(data, tab) {
+        const renderAdminTable = (data, tab) => {
             const container = document.getElementById('admin-content-area');
-            if (!data || data.length === 0) {
+            if(!data || data.length === 0) {
                 container.innerHTML = '<p class="text-gray-400 text-center py-10">Nenhum item encontrado nesta aba.</p>';
                 return;
             }
-            let displayKey = Object.keys(data[0])[0];
-            if (data[0].name) displayKey = 'name';
-            if (data[0].nome) displayKey = 'nome';
-            if (data[0].titulo) displayKey = 'titulo';
-            if (data[0].texto) displayKey = 'texto';
+
+            // Identificar colunas principais baseada na aba
+            let displayKey = Object.keys(data[0])[0]; // Padrão: primeira coluna
+            if(data[0].name) displayKey = 'name';
+            if(data[0].nome) displayKey = 'nome';
+            if(data[0].titulo) displayKey = 'titulo';
+            if(data[0].texto) displayKey = 'texto';
 
             let html = '<div class="grid gap-2">';
-            const displayData = data.slice().reverse();
-            displayData.forEach(function(item, index) {
+            
+            // AJUSTE 2: Reverte a ordem para mostrar o último adicionado no topo
+            // [...data] cria uma cópia para não inverter a referência original
+            const displayData = [...data].reverse();
+
+            displayData.forEach((item, index) => {
+                // Como invertemos a visualização, precisamos calcular o índice original real para edição
                 const realIndex = data.length - 1 - index;
+
+                // Tenta encontrar uma imagem para a prévia
                 const imgUrl = item.coverUrl || item.capa || item.coverImageUrl;
-                const displayImgUrl = imgUrl ? convertToDriveImageUrl(imgUrl) : '';
-                const imgHtml = displayImgUrl ? '<img src="' + displayImgUrl + '" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display=\'none\'" loading="lazy">' : '';
-                html += '<div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">' +
-                    '<div class="flex items-center overflow-hidden pr-4 w-full">' + imgHtml +
-                        '<div class="truncate">' +
-                            '<span class="font-bold text-white block truncate">' + (item[displayKey] || 'Item sem título') + '</span>' +
-                            '<span class="text-xs text-gray-400">' + Object.keys(item).length + ' campos</span>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="flex gap-2 shrink-0">' +
-                        '<button onclick="openEditModal(\'edit\', ' + realIndex + ')" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded text-xs"><i class="fas fa-edit"></i></button>' +
-                        '<button onclick="deleteAdminItem(' + realIndex + ')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded text-xs"><i class="fas fa-trash"></i></button>' +
-                    '</div></div>';
+                const imgHtml = imgUrl ? `<img src="${imgUrl}" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display='none'">` : '';
+
+                html += `
+                <div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">
+                    <div class="flex items-center overflow-hidden pr-4 w-full">
+                        ${imgHtml}
+                        <div class="truncate">
+                            <span class="font-bold text-white block truncate">${item[displayKey] || 'Item sem título'}</span>
+                            <span class="text-xs text-gray-400">${Object.keys(item).length} campos</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 shrink-0">
+                        <button onclick="openEditModal('edit', ${realIndex})" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded text-xs"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteAdminItem(${realIndex})" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded text-xs"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
             });
             html += '</div>';
             container.innerHTML = html;
         };
-
-        // ═══════════════════════════════════════════════════════════════
-        // ADMIN — CONFIGURAÇÕES
-        // ═══════════════════════════════════════════════════════════════
-        function loadConfiguracoes() {
-            const container = document.getElementById('admin-content-area');
-            const data = window.adminState.currentData;
-            if (!data || data.length === 0) {
-                container.innerHTML = '<p class="text-gray-400 text-center py-10">Nenhuma configuração encontrada.</p>';
-                return;
-            }
-            data.forEach(function(item) { configCache[item.chave] = item.valor; });
-
-            let html = '<div class="mb-6"><h3 class="text-xl font-bold text-white mb-2">⚙️ Personalização do Site</h3><p class="text-gray-400 text-sm">Edite os valores abaixo ou faça upload de imagens.</p><div class="h-1 w-20 bg-brand-yellow rounded-full mt-2"></div></div><div class="grid gap-3">';
-
-            const uploadBtnHtml = function(chave, label) {
-                const currentUrl = configCache[chave] || '';
-                const hasImage = currentUrl && currentUrl !== '#' && currentUrl !== '';
-                return '<div class="flex items-center gap-2 flex-wrap">' +
-                    '<label class="config-upload-btn flex items-center gap-1"><i class="fas fa-cloud-upload-alt"></i> ' + label +
-                        '<input type="file" accept="image/*" onchange="window.handleConfigUpload(event, \'' + chave + '\')">' +
-                    '</label>' +
-                    (hasImage ? '<span class="text-[10px] text-green-400"><i class="fas fa-check-circle"></i></span>' : '') +
-                    (hasImage ? '<button onclick="window.removeConfigImage(\'' + chave + '\')" class="text-red-400 hover:text-red-300 text-xs"><i class="fas fa-times"></i></button>' : '') +
-                '</div>';
-            };
-
-            data.forEach(function(item) {
-                const chave = item.chave;
-                const valor = item.valor || '';
-                const descricao = item.descricao || '';
-                const isImageField = ['logo_url', 'favicon_url', 'banner_url', 'og_image_url'].indexOf(chave) >= 0;
-
-                let previewHtml = '';
-                if (isImageField && valor && valor !== '#' && valor !== '') {
-                    const displayUrl = convertToDriveImageUrl(valor);
-                    previewHtml = '<div class="mt-2"><img src="' + displayUrl + '" class="config-preview-img" onerror="this.style.display=\'none\'"></div>';
-                }
-
-                let uploadHtml = '';
-                if (isImageField) {
-                    const labelMap = { 'logo_url': 'Upload Logo', 'favicon_url': 'Upload Favicon', 'banner_url': 'Upload Banner', 'og_image_url': 'Upload OG Image' };
-                    uploadHtml = uploadBtnHtml(chave, labelMap[chave] || 'Upload');
-                }
-
-                let inputType = 'text';
-                let extraClass = '';
-                if (chave.indexOf('cor_') >= 0) { inputType = 'color'; extraClass = 'config-color-picker'; }
-
-                html += '<div class="bg-white/5 p-4 rounded-lg border border-white/5 hover:border-brand-yellow/30 transition-colors">' +
-                    '<div class="flex flex-col md:flex-row md:items-start gap-3">' +
-                        '<div class="md:w-1/4">' +
-                            '<label class="text-xs text-gray-400 uppercase font-bold block">' + chave + '</label>' +
-                            '<span class="text-[10px] text-gray-500">' + descricao + '</span>' +
-                        '</div>' +
-                        '<div class="md:w-3/4 flex flex-col gap-2">' +
-                            '<div class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">' +
-                                '<input type="' + inputType + '" id="config_' + chave + '" value="' + valor + '" class="admin-field ' + extraClass + ' flex-1">' +
-                                uploadHtml +
-                            '</div>' + previewHtml +
-                        '</div>' +
-                    '</div></div>';
-            });
-
-            html += '</div><div class="mt-6 flex flex-wrap gap-3">' +
-                '<button onclick="saveConfiguracoes()" class="bg-brand-yellow text-brand-dark font-bold px-6 py-2.5 rounded-lg hover:bg-white transition-colors flex items-center gap-2"><i class="fas fa-save"></i> Salvar Configurações</button>' +
-                '<button onclick="loadAdminTab(\'configuracoes\')" class="bg-white/5 text-gray-300 px-6 py-2.5 rounded-lg hover:bg-white/10 transition-colors"><i class="fas fa-undo"></i> Recarregar</button>' +
-                '</div>';
-            container.innerHTML = html;
-        }
-
-        window.handleConfigUpload = async function(event, chave) {
-            const file = event.target.files[0];
-            if (!file) return;
-            window.showToast('📤 Enviando ' + file.name + '...');
-            try {
-                const url = await window.uploadImageToDrive(file, 'configuracoes');
-                const input = document.getElementById('config_' + chave);
-                if (input) input.value = url;
-                configCache[chave] = url;
-                loadAdminTab('configuracoes');
-                window.showToast('✅ Imagem enviada!');
-            } catch (err) {
-                window.showToast('❌ ' + err);
-            }
-        };
-
-        window.removeConfigImage = function(chave) {
-            if (!confirm('Remover imagem de ' + chave + '?')) return;
-            const input = document.getElementById('config_' + chave);
-            if (input) input.value = '';
-            configCache[chave] = '';
-            window.showToast('Imagem removida. Salve para confirmar.');
-        };
-
-        window.saveConfiguracoes = async function() {
-            const btn = document.querySelector('#admin-content-area .bg-brand-yellow');
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...'; }
-            try {
-                const data = window.adminState.currentData;
-                const updates = [];
-                data.forEach(function(item) {
-                    const input = document.getElementById('config_' + item.chave);
-                    if (input && input.value !== item.valor) {
-                        updates.push({ chave: item.chave, valor: input.value });
-                    }
-                });
-                if (updates.length === 0) {
-                    window.showToast('Nenhuma alteração.');
-                    return;
-                }
-                for (const u of updates) {
-                    const payload = {
-                        sheet: 'configuracoes',
-                        action: 'edit',
-                        password: window.adminState.password,
-                        originalId: u.chave,
-                        data: { chave: u.chave, valor: u.valor }
-                    };
-                    const res = await fetch(CONFIG.scriptUrl, { method: 'POST', body: JSON.stringify(payload) });
-                    const result = await res.json();
-                    if (!result.success) throw new Error(result.message);
-                }
-                window.showToast('✅ Salvo com sucesso!');
-                await loadAdminTab('configuracoes');
-                await loadSiteConfig();
-                loadData();
-            } catch (err) {
-                window.showToast('❌ Erro: ' + err.message);
-            } finally {
-                if (btn) { btn.disabled = false; btn.innerHTML = 'Salvar Configurações'; }
-            }
-        };
-
-        // ═══════════════════════════════════════════════════════════════
-        // ADMIN — SCHEMAS
-        // ═══════════════════════════════════════════════════════════════
+        
+        // Schemas para formulários
         const SCHEMAS = {
             eventos: [
-                { key: 'name', label: 'Nome do Evento', type: 'text' },
-                { key: 'date', label: 'Data Início', type: 'datetime-local' },
-                { key: 'endDate', label: 'Data Fim (Opcional)', type: 'datetime-local' },
-                { key: 'description', label: 'Descrição', type: 'textarea' },
-                { key: 'coverUrl', label: 'URL da Capa', type: 'text', isImage: true },
-                { key: 'uploadFile', label: '📤 Upload da Capa', type: 'file', folder: 'capas' }
+                {key: 'name', label: 'Nome do Evento', type: 'text'},
+                {key: 'date', label: 'Data Início (AAAA-MM-DDTHH:MM)', type: 'datetime-local'},
+                {key: 'endDate', label: 'Data Fim (Opcional)', type: 'datetime-local'},
+                {key: 'description', label: 'Descrição', type: 'textarea'},
+                {key: 'coverUrl', label: 'URL da Capa (Imagem)', type: 'text'}
             ],
-            avisos: [{ key: 'texto', label: 'Texto do Aviso', type: 'textarea' }],
+            avisos: [
+                {key: 'texto', label: 'Texto do Aviso', type: 'textarea'}
+            ],
             ministerios: [
-                { key: 'nome', label: 'Nome', type: 'text' },
-                { key: 'lideres', label: 'Líderes', type: 'text' },
-                { key: 'regentes', label: 'Regentes', type: 'text' },
-                { key: 'telefone', label: 'WhatsApp (só números)', type: 'text' },
-                { key: 'capa', label: 'URL da Foto', type: 'text', isImage: true },
-                { key: 'uploadFile', label: '📤 Upload', type: 'file', folder: 'ministerios' }
+                {key: 'nome', label: 'Nome do Ministério', type: 'text'},
+                {key: 'lideres', label: 'Líderes', type: 'text'},
+                {key: 'regentes', label: 'Regentes', type: 'text'},
+                {key: 'telefone', label: 'Whatsapp (somente números)', type: 'text'},
+                {key: 'capa', label: 'URL da Foto', type: 'text'}
             ],
             talentos: [
-                { key: 'nome', label: 'Nome', type: 'text' },
-                { key: 'descricao', label: 'Descrição', type: 'textarea' },
-                { key: 'telefone', label: 'WhatsApp', type: 'text' },
-                { key: 'video', label: 'Link YouTube', type: 'text' },
-                { key: 'capa', label: 'URL da Foto', type: 'text', isImage: true },
-                { key: 'uploadFile', label: '📤 Upload', type: 'file', folder: 'talentos' }
+                {key: 'nome', label: 'Nome', type: 'text'},
+                {key: 'descricao', label: 'Descrição/Função', type: 'textarea'},
+                {key: 'telefone', label: 'Whatsapp', type: 'text'},
+                {key: 'video', label: 'Link YouTube', type: 'text'},
+                {key: 'capa', label: 'URL da Foto', type: 'text'}
             ],
             albuns: [
-                { key: 'albumName', label: 'Nome do Álbum', type: 'text' },
-                { key: 'coverImageUrl', label: 'URL da Capa', type: 'text', isImage: true },
-                { key: 'uploadFile', label: '📤 Upload', type: 'file', folder: 'galeria' },
-                { key: 'albumUrl', label: 'Link do Álbum', type: 'text' }
+                {key: 'albumName', label: 'Nome do Álbum', type: 'text'},
+                {key: 'coverImageUrl', label: 'URL da Capa', type: 'text'},
+                {key: 'albumUrl', label: 'Link do Álbum (Google Photos/Drive)', type: 'text'}
             ],
             pastor: [
-                { key: 'nome', label: 'Nome', type: 'text' },
-                { key: 'capa', label: 'URL da Foto', type: 'text', isImage: true },
-                { key: 'uploadFile', label: '📤 Upload', type: 'file', folder: 'pastor' }
-            ],
-            configuracoes: [
-                { key: 'chave', label: 'Chave', type: 'text' },
-                { key: 'valor', label: 'Valor', type: 'text' },
-                { key: 'descricao', label: 'Descrição', type: 'text' }
+                {key: 'nome', label: 'Nome', type: 'text'},
+                {key: 'capa', label: 'URL da Foto', type: 'text'}
             ]
         };
 
-        // ═══════════════════════════════════════════════════════════════
-        // ADMIN — MODAL EDIÇÃO
-        // ═══════════════════════════════════════════════════════════════
-        window.openEditModal = function(mode, index) {
+        window.openEditModal = (mode, index = null) => {
             const modal = document.getElementById('edit-item-modal');
             const container = document.getElementById('edit-form-container');
             const title = document.getElementById('edit-modal-title');
             const btn = document.getElementById('btn-save-item');
+            
             const tab = window.adminState.currentTab;
             const schema = SCHEMAS[tab] || [];
+            
             container.innerHTML = '';
             title.textContent = mode === 'add' ? 'Adicionar Novo Item' : 'Editar Item';
-
+            
             let itemData = {};
-            if (mode === 'edit' && index !== null && index !== undefined) {
+            if(mode === 'edit' && index !== null) {
                 itemData = window.adminState.currentData[index];
-                btn.dataset.originalId = Object.values(itemData)[0];
+                btn.dataset.originalId = Object.values(itemData)[0]; // Pega o primeiro valor como ID
             }
+            
             btn.dataset.mode = mode;
             btn.dataset.index = index;
 
-            let urlFieldKey = null;
-            schema.forEach(function(f) { if (f.isImage) urlFieldKey = f.key; });
-
-            schema.forEach(function(field) {
+            // Gerar Campos
+            schema.forEach(field => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'flex flex-col gap-1';
+                
                 const label = document.createElement('label');
                 label.className = 'text-xs text-gray-400 font-bold uppercase';
                 label.textContent = field.label;
+                
+                let input;
+                if(field.type === 'textarea') {
+                    input = document.createElement('textarea');
+                    input.rows = 3;
+                } else {
+                    input = document.createElement('input');
+                    input.type = field.type;
+                }
+                
+                input.className = 'admin-field';
+                input.id = `field-${field.key}`;
+                
+                // Preencher valor
+                let val = itemData[field.key] || '';
+                // Formatar data para input datetime-local se necessário
+                if(field.type === 'datetime-local' && val) {
+                    try {
+                        const d = new Date(val);
+                        d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                        val = d.toISOString().slice(0,16);
+                    } catch(e) {}
+                }
+                input.value = val;
+                
                 wrapper.appendChild(label);
+                wrapper.appendChild(input);
 
-                if (field.type === 'file') {
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    input.className = 'admin-field cursor-pointer';
-                    input.id = 'field-' + field.key;
-
+                // --- IMAGE PREVIEW LOGIC (ADICIONADO) ---
+                if (['coverUrl', 'capa', 'coverImageUrl'].includes(field.key)) {
                     const preview = document.createElement('img');
-                    preview.className = 'upload-preview';
-                    preview.id = 'preview-' + field.key;
-
-                    const progressContainer = document.createElement('div');
-                    progressContainer.className = 'upload-progress';
-                    progressContainer.id = 'progress-' + field.key;
-                    const progressBar = document.createElement('div');
-                    progressBar.className = 'upload-progress-bar';
-                    progressBar.id = 'progress-bar-' + field.key;
-                    progressContainer.appendChild(progressBar);
-
-                    input.onchange = async function(e) {
-                        const file = e.target.files[0];
-                        if (!file) return;
-                        const reader = new FileReader();
-                        reader.onload = function(ev) { preview.src = ev.target.result; preview.classList.add('show'); };
-                        reader.readAsDataURL(file);
-                        progressContainer.classList.add('show');
-                        progressBar.style.width = '30%';
-                        try {
-                            const url = await window.uploadImageToDrive(file, field.folder || 'capas');
-                            progressBar.style.width = '100%';
-                            window.showToast('✅ Imagem enviada!');
-                            if (urlFieldKey) {
-                                const urlField = document.getElementById('field-' + urlFieldKey);
-                                if (urlField) {
-                                    urlField.value = url;
-                                    urlField.dispatchEvent(new Event('input'));
-                                }
-                            }
-                            setTimeout(function() { progressContainer.classList.remove('show'); }, 1000);
-                        } catch (err) {
-                            window.showToast('❌ ' + err);
-                            progressContainer.classList.remove('show');
+                    preview.className = 'w-full h-40 object-contain bg-black/20 rounded mt-2 border border-white/5 hidden';
+                    preview.onerror = () => { preview.classList.add('hidden'); }; // Hide on error
+                    
+                    const updatePreview = (url) => {
+                        if(url) {
+                            preview.src = url;
+                            preview.classList.remove('hidden');
+                        } else {
+                            preview.classList.add('hidden');
                         }
                     };
-                    wrapper.appendChild(input);
+
+                    // Initial state
+                    updatePreview(input.value);
+
+                    // Listener
+                    input.addEventListener('input', (e) => updatePreview(e.target.value));
+                    
                     wrapper.appendChild(preview);
-                    wrapper.appendChild(progressContainer);
-                } else if (field.type === 'textarea') {
-                    const textarea = document.createElement('textarea');
-                    textarea.rows = 3;
-                    textarea.className = 'admin-field';
-                    textarea.id = 'field-' + field.key;
-                    textarea.value = itemData[field.key] || '';
-                    wrapper.appendChild(textarea);
-                } else {
-                    const input = document.createElement('input');
-                    input.type = field.type || 'text';
-                    input.className = 'admin-field';
-                    input.id = 'field-' + field.key;
-                    let val = itemData[field.key] || '';
-                    if (field.type === 'datetime-local' && val) {
-                        try {
-                            const d = new Date(val);
-                            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-                            val = d.toISOString().slice(0, 16);
-                        } catch (e) {}
-                    }
-                    input.value = val;
-                    wrapper.appendChild(input);
-                    if (field.isImage) {
-                        const preview = document.createElement('img');
-                        preview.className = 'upload-preview';
-                        preview.id = 'preview-' + field.key;
-                        preview.onerror = function() { preview.classList.remove('show'); };
-                        const updatePreview = function(url) {
-                            if (url) {
-                                preview.src = convertToDriveImageUrl(url);
-                                preview.classList.add('show');
-                            } else {
-                                preview.classList.remove('show');
-                            }
-                        };
-                        updatePreview(input.value);
-                        input.addEventListener('input', function(e) { updatePreview(e.target.value); });
-                        wrapper.appendChild(preview);
-                    }
                 }
+
                 container.appendChild(wrapper);
             });
+            
             modal.classList.remove('hidden');
         };
 
-        window.closeEditModal = function() {
+        window.closeEditModal = () => {
             document.getElementById('edit-item-modal').classList.add('hidden');
         };
 
-        window.saveAdminItem = async function() {
+        window.saveAdminItem = async () => {
             const btn = document.getElementById('btn-save-item');
             const mode = btn.dataset.mode;
             const tab = window.adminState.currentTab;
             const schema = SCHEMAS[tab];
             const index = btn.dataset.index;
+            
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+            
             const newData = {};
-            schema.forEach(function(field) {
-                if (field.type !== 'file') {
-                    const el = document.getElementById('field-' + field.key);
-                    if (el) newData[field.key] = el.value;
-                }
+            schema.forEach(field => {
+                const el = document.getElementById(`field-${field.key}`);
+                newData[field.key] = el.value;
             });
-            const payload = { sheet: tab, action: mode, password: window.adminState.password, data: newData };
-            if (mode === 'edit') payload.originalId = btn.dataset.originalId;
-
+            
+            const payload = {
+                sheet: tab,
+                action: mode,
+                password: window.adminState.password,
+                data: newData
+            };
+            
+            if(mode === 'edit') {
+                payload.originalId = btn.dataset.originalId;
+            }
+            
             try {
-                const res = await fetch(CONFIG.scriptUrl, { method: 'POST', body: JSON.stringify(payload) });
+                const res = await fetch(CONFIG.scriptUrl, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
                 const result = await res.json();
-                if (result.success) {
+                
+                if(result.success) {
+                    // AJUSTE 3: ATUALIZAÇÃO EM TEMPO REAL
+                    // 1. Atualiza o estado local IMEDIATAMENTE
                     if (mode === 'edit' && index) {
                         window.adminState.currentData[index] = newData;
                     } else {
+                        // Se for novo, adiciona ao final (a UI inverte depois)
                         window.adminState.currentData.push(newData);
                     }
-                    localStorage.setItem('admin_' + tab, JSON.stringify({ timestamp: Date.now(), content: window.adminState.currentData }));
-                    localStorage.setItem('cache_' + tab + '_v2', JSON.stringify({ timestamp: Date.now(), content: window.adminState.currentData }));
-                    if (tab === 'configuracoes') {
-                        loadConfiguracoes();
-                        await loadSiteConfig();
-                    } else {
-                        renderAdminTable(window.adminState.currentData, tab);
-                    }
-                    loadData();
-                    window.showToast('✅ Salvo!');
+
+                    // 2. Salva no cache LocalStorage para a próxima vez ser rápida
+                    const cacheKey = `admin_${tab}`;
+                    localStorage.setItem(cacheKey, JSON.stringify({
+                        timestamp: Date.now(),
+                        content: window.adminState.currentData
+                    }));
+                    
+                    // Também atualiza o cache público correspondente para a home atualizar
+                    const publicCacheKey = `cache_${tab}_v2`;
+                    localStorage.setItem(publicCacheKey, JSON.stringify({
+                        timestamp: Date.now(),
+                        content: window.adminState.currentData
+                    }));
+
+                    // 3. Atualiza a UI Admin e a UI Principal
+                    renderAdminTable(window.adminState.currentData, tab);
+                    loadData(); // Atualiza a página principal instantaneamente
+
+                    alert('Salvo com sucesso!');
                     closeEditModal();
                 } else {
-                    window.showToast('❌ ' + result.message);
+                    alert('Erro: ' + result.message);
                 }
-            } catch (e) {
-                window.showToast('❌ Erro: ' + e.message);
+            } catch(e) {
+                alert('Erro de conexão: ' + e.message);
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Salvar';
             }
         };
 
-        window.deleteAdminItem = async function(index) {
-            if (!confirm('Excluir este item?')) return;
+        window.deleteAdminItem = async (index) => {
+            if(!confirm('Tem certeza que deseja excluir este item?')) return;
+            
             const tab = window.adminState.currentTab;
             const item = window.adminState.currentData[index];
-            const originalId = Object.values(item)[0];
+            const originalId = Object.values(item)[0]; // Primeiro valor como ID
+            
             try {
-                const res = await fetch(CONFIG.scriptUrl, {
+                 const res = await fetch(CONFIG.scriptUrl, {
                     method: 'POST',
-                    body: JSON.stringify({ sheet: tab, action: 'delete', password: window.adminState.password, originalId: originalId, data: {} })
+                    body: JSON.stringify({
+                        sheet: tab,
+                        action: 'delete',
+                        password: window.adminState.password,
+                        originalId: originalId,
+                        data: {}
+                    })
                 });
                 const result = await res.json();
-                if (result.success) {
-                    window.showToast('✅ Excluído!');
+                 if(result.success) {
+                    alert('Excluído com sucesso!');
+                    // Remove local e atualiza
                     window.adminState.currentData.splice(index, 1);
-                    if (tab === 'configuracoes') loadConfiguracoes();
-                    else renderAdminTable(window.adminState.currentData, tab);
-                    loadAdminTab(tab);
+                    renderAdminTable(window.adminState.currentData, tab);
+                    loadAdminTab(tab); 
                 } else {
-                    window.showToast('❌ ' + result.message);
+                    alert('Erro: ' + result.message);
                 }
-            } catch (e) {
-                window.showToast('❌ Erro: ' + e.message);
+            } catch(e) {
+                alert('Erro: ' + e.message);
             }
         };
 
-        // ═══════════════════════════════════════════════════════════════
-        // MODAL DE EVENTO
-        // ═══════════════════════════════════════════════════════════════
-        window.openEventModal = function(eventId) {
-            const event = globalEvents.find(function(e) { return e._id === eventId; });
-            if (!event) return;
+
+        // --- MODAL FUNCTIONS (Global Scope for HTML access) ---
+        window.openEventModal = (eventId) => {
+            const event = globalEvents.find(e => e._id === eventId);
+            if(!event) return;
+
             const modal = document.getElementById('event-modal');
             const img = document.getElementById('modal-img');
             const dateEl = document.getElementById('modal-date').querySelector('span');
@@ -1442,86 +1084,78 @@ tailwind.config = {
             const title = document.getElementById('modal-title');
             const desc = document.getElementById('modal-desc');
 
-            const displayUrl = event.coverUrl ? convertToDriveImageUrl(event.coverUrl) : '#';
-            img.src = displayUrl;
-            img.onerror = function() { img.src = '#'; };
-
-            const dateObj = parseDate(event.date);
+            img.src = event.coverUrl || 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
+            img.onerror = () => img.src = 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
+            
+            // Tratamento robusto de data para exibição
+            let dateObj = parseDate(event.date);
+            
             dateEl.textContent = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
             timeEl.textContent = dateObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + 'h';
+            
             title.textContent = event.name;
             desc.textContent = event.description || 'Sem descrição adicional.';
 
             modal.classList.remove('hidden');
-            setTimeout(function() {
+            setTimeout(() => {
                 modal.classList.remove('opacity-0');
-                const box = document.getElementById('modal-content-box');
-                box.classList.remove('scale-95');
-                box.classList.add('scale-100');
+                document.getElementById('modal-content-box').classList.remove('scale-95');
+                document.getElementById('modal-content-box').classList.add('scale-100');
             }, 10);
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden'; 
         };
 
-        window.closeEventModal = function() {
+        window.closeEventModal = () => {
             const modal = document.getElementById('event-modal');
             modal.classList.add('opacity-0');
-            const box = document.getElementById('modal-content-box');
-            box.classList.add('scale-95');
-            box.classList.remove('scale-100');
-            setTimeout(function() {
+            document.getElementById('modal-content-box').classList.add('scale-95');
+            document.getElementById('modal-content-box').classList.remove('scale-100');
+            
+            setTimeout(() => {
                 modal.classList.add('hidden');
                 document.body.style.overflow = '';
             }, 300);
         };
 
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                const em = document.getElementById('event-modal');
-                const am = document.getElementById('admin-modal');
-                const em2 = document.getElementById('edit-item-modal');
-                const ebdm = document.getElementById('ebd-login-modal');
-                if (em && !em.classList.contains('hidden')) window.closeEventModal();
-                if (am && !am.classList.contains('hidden')) window.closeAdmin();
-                if (em2 && !em2.classList.contains('hidden')) window.closeEditModal();
-                if (ebdm && !ebdm.classList.contains('hidden')) window.ebd.toggleLoginModal();
+                 if (!document.getElementById('event-modal').classList.contains('hidden')) window.closeEventModal();
+                 if (!document.getElementById('admin-modal').classList.contains('hidden')) window.closeAdmin();
+                 if (!document.getElementById('edit-item-modal').classList.contains('hidden')) window.closeEditModal();
+                 if (document.getElementById('ebd-login-modal') && !document.getElementById('ebd-login-modal').classList.contains('hidden')) window.ebd.toggleLoginModal();
             }
         });
 
-        // ═══════════════════════════════════════════════════════════════
-        // HELPERS DE DATA
-        // ═══════════════════════════════════════════════════════════════
-        function parseDate(dateStr) {
-            if (!dateStr) return new Date();
-            if (dateStr instanceof Date) return dateStr;
-            let d = new Date(dateStr);
-            if (!isNaN(d.getTime())) return d;
-            if (typeof dateStr === 'string') {
-                const parts = dateStr.split('/');
-                if (parts.length === 3) return new Date(parts[2] + '-' + parts[1] + '-' + parts[0]);
-            }
-            return new Date();
-        }
-
-        function getEventStatusBadge(start, end) {
+        // --- COMPONENTES ---
+        // Função auxiliar para gerar o badge de status do evento
+        const getEventStatusBadge = (start, end) => {
             const now = new Date();
+            // Parser robusto aqui também
             const startDate = parseDate(start);
+            // Se não tiver data fim, assume 2 horas de duração por padrão para cálculo de "Em andamento"
             const endDate = end ? parseDate(end) : new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
-            if (now < startDate) {
-                return '<span class="bg-blue-500/20 text-blue-300 text-xs font-bold px-2 py-1 rounded border border-blue-500/30 flex items-center gap-1"><i class="far fa-clock"></i> Em Breve</span>';
-            } else if (now >= startDate && now <= endDate) {
-                return '<span class="bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded border border-green-500/30 flex items-center gap-1 animate-pulse"><i class="fas fa-circle text-[8px]"></i> Acontecendo Agora</span>';
-            }
-            return '<span class="bg-gray-500/20 text-gray-400 text-xs font-bold px-2 py-1 rounded border border-gray-500/30 flex items-center gap-1"><i class="fas fa-check"></i> Encerrado</span>';
-        }
 
-        // ═══════════════════════════════════════════════════════════════
-        // CRIADOR DE CARDS
-        // ═══════════════════════════════════════════════════════════════
-        function createCard(data, type) {
+            if (now < startDate) {
+                // Futuro
+                return `<span class="bg-blue-500/20 text-blue-300 text-xs font-bold px-2 py-1 rounded border border-blue-500/30 flex items-center gap-1"><i class="far fa-clock"></i> Em Breve</span>`;
+            } else if (now >= startDate && now <= endDate) {
+                // Em andamento
+                return `<span class="bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded border border-green-500/30 flex items-center gap-1 animate-pulse"><i class="fas fa-circle text-[8px]"></i> Acontecendo Agora</span>`;
+            } else {
+                // Passado (mas ainda visível hoje)
+                return `<span class="bg-gray-500/20 text-gray-400 text-xs font-bold px-2 py-1 rounded border border-gray-500/30 flex items-center gap-1"><i class="fas fa-check"></i> Encerrado</span>`;
+            }
+        };
+
+        const createCard = (data, type) => {
             if (type === 'aviso') {
-                return '<div class="glass-panel p-6 rounded-xl border-l-4 border-brand-yellow hover:bg-white/5 transition-all duration-300 active:scale-95">' +
-                    '<div class="flex items-start gap-4"><i class="fas fa-bullhorn text-brand-yellow text-xl mt-1"></i>' +
-                    '<p class="text-gray-200 leading-relaxed text-sm sm:text-base">' + data.texto + '</p></div></div>';
+                return `
+                <div class="glass-panel p-6 rounded-xl border-l-4 border-brand-yellow hover:bg-white/5 transition-all duration-300 active:scale-95">
+                    <div class="flex items-start gap-4">
+                        <i class="fas fa-bullhorn text-brand-yellow text-xl mt-1"></i>
+                        <p class="text-gray-200 leading-relaxed text-sm sm:text-base">${data.texto}</p>
+                    </div>
+                </div>`;
             }
 
             if (type === 'evento') {
@@ -1529,164 +1163,219 @@ tailwind.config = {
                 const day = date.getDate().toString().padStart(2, '0');
                 const month = date.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase().replace('.', '');
                 const statusBadge = getEventStatusBadge(data.date, data.endDate);
-                let timeString = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                
+                // Formatação de horário (Início - Fim se tiver)
+                let timeString = date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                 if (data.endDate) {
-                    const endTime = parseDate(data.endDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                    timeString += ' - ' + endTime;
+                    const endTime = parseDate(data.endDate).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                    timeString += ` - ${endTime}`;
                 }
-                const displayUrl = data.coverUrl ? convertToDriveImageUrl(data.coverUrl) : '#';
-                return '<div class="glass-panel group rounded-2xl overflow-hidden hover:-translate-y-2 active:scale-95 transition-all duration-300 flex flex-col h-full bg-brand-surface/50">' +
-                    '<div class="relative w-full aspect-[4/5] overflow-hidden cursor-pointer" onclick="window.openEventModal(' + data._id + ')">' +
-                        '<img src="' + displayUrl + '" onerror="this.src=\'#\'" class="w-full h-full object-cover" loading="lazy" alt="' + data.name + '">' +
-                        '<div class="absolute top-4 left-4 bg-brand-dark/90 backdrop-blur-sm rounded-lg p-2 text-center min-w-[60px] border border-white/10 shadow-lg z-10">' +
-                            '<span class="block text-xl font-bold text-white">' + day + '</span>' +
-                            '<span class="block text-xs font-bold text-brand-yellow">' + month + '</span>' +
-                        '</div>' +
-                        '<div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent opacity-60"></div>' +
-                        '<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">' +
-                            '<div class="bg-black/50 backdrop-blur-md p-3 rounded-full text-white border border-white/20"><i class="fas fa-expand-alt"></i></div>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="p-6 flex flex-col flex-grow">' +
-                        '<h3 class="text-xl font-bold text-white line-clamp-2 group-hover:text-brand-yellow transition-colors cursor-pointer leading-tight mb-2" onclick="window.openEventModal(' + data._id + ')">' + data.name + '</h3>' +
-                        '<div class="flex flex-wrap items-center gap-2 mb-3">' + statusBadge +
-                            '<div class="flex items-center gap-1 text-xs text-gray-400"><i class="far fa-clock"></i><span>' + timeString + '</span></div>' +
-                        '</div>' +
-                        '<p class="text-gray-400 text-sm line-clamp-2 mb-4 flex-grow">' + (data.description || '') + '</p>' +
-                        '<button onclick="window.openEventModal(' + data._id + ')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-brand-yellow hover:text-brand-dark text-sm font-bold transition-all border border-white/5 active:scale-95 flex items-center justify-center gap-2">' +
-                            '<i class="far fa-eye"></i> Ver Detalhes</button>' +
-                    '</div></div>';
+
+                return `
+                <div class="glass-panel group rounded-2xl overflow-hidden hover:-translate-y-2 active:scale-95 transition-all duration-300 flex flex-col h-full bg-brand-surface/50">
+                    <!-- aspect-[4/5] para cartazes verticais (1080x1350) -->
+                    <div class="relative w-full aspect-[4/5] overflow-hidden cursor-pointer" onclick="window.openEventModal(${data._id})">
+                        <img src="${data.coverUrl}" onerror="this.src='https://placehold.co/1080x1350/1e293b/FFFFFF?text=Evento'" class="w-full h-full object-cover">
+                        
+                        <!-- Data Badge -->
+                        <div class="absolute top-4 left-4 bg-brand-dark/90 backdrop-blur-sm rounded-lg p-2 text-center min-w-[60px] border border-white/10 shadow-lg z-10">
+                            <span class="block text-xl font-bold text-white">${day}</span>
+                            <span class="block text-xs font-bold text-brand-yellow">${month}</span>
+                        </div>
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent opacity-60"></div>
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                             <div class="bg-black/50 backdrop-blur-md p-3 rounded-full text-white border border-white/20"><i class="fas fa-expand-alt"></i></div>
+                        </div>
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start gap-2 mb-2">
+                            <h3 class="text-xl font-bold text-white line-clamp-2 group-hover:text-brand-yellow transition-colors cursor-pointer leading-tight" onclick="window.openEventModal(${data._id})">${data.name}</h3>
+                        </div>
+                        
+                        <div class="flex flex-wrap items-center gap-2 mb-3">
+                            ${statusBadge}
+                            <div class="flex items-center gap-1 text-xs text-gray-400">
+                                <i class="far fa-clock"></i>
+                                <span>${timeString}</span>
+                            </div>
+                        </div>
+
+                        <p class="text-gray-400 text-sm line-clamp-2 mb-4 flex-grow">${data.description}</p>
+                        <button onclick="window.openEventModal(${data._id})" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-brand-yellow hover:text-brand-dark text-sm font-bold transition-all border border-white/5 active:scale-95 flex items-center justify-center gap-2">
+                            <i class="far fa-eye"></i> Ver Detalhes
+                        </button>
+                    </div>
+                </div>`;
             }
 
             if (type === 'ministerio') {
-                const displayUrl = data.capa ? convertToDriveImageUrl(data.capa) : '#';
-                return '<div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95">' +
-                    '<div class="relative h-56">' +
-                        '<img src="' + displayUrl + '" onerror="this.src=\'#\'" class="w-full h-full object-cover" loading="lazy" alt="' + data.nome + '">' +
-                        '<div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>' +
-                        '<div class="absolute bottom-4 left-4"><h3 class="text-2xl font-bold text-white">' + data.nome + '</h3></div>' +
-                    '</div>' +
-                    '<div class="p-6">' +
-                        '<div class="space-y-4 mb-6">' +
-                            '<div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-crown text-brand-yellow"></i></div>' +
-                            '<div><p class="text-xs text-gray-500 uppercase font-bold">Liderança</p><p class="text-sm text-gray-200">' + (data.lideres || 'A definir') + '</p></div></div>' +
-                            (data.regentes ? '<div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-users text-blue-400"></i></div>' +
-                            '<div><p class="text-xs text-gray-500 uppercase font-bold">Regentes</p><p class="text-sm text-gray-200">' + data.regentes + '</p></div></div>' : '') +
-                        '</div>' +
-                        (data.telefone ? '<a href="https://wa.me/55' + String(data.telefone || '').replace(/\D/g, '') + '" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Entrar em Contato</a>' : '') +
-                    '</div></div>';
+                return `
+                <div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95">
+                    <div class="relative h-56">
+                        <img src="${data.capa}" onerror="this.src='https://placehold.co/600x400/1e293b/FFFFFF?text=${encodeURIComponent(data.nome)}'" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <h3 class="text-2xl font-bold text-white">${data.nome}</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4 mb-6">
+                            <!-- Lideres -->
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-crown text-brand-yellow"></i></div>
+                                <div><p class="text-xs text-gray-500 uppercase font-bold">Liderança</p><p class="text-sm text-gray-200">${data.lideres || 'A definir'}</p></div>
+                            </div>
+                            <!-- Regentes (Novo) -->
+                            ${data.regentes ? `
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-users text-blue-400"></i></div>
+                                <div><p class="text-xs text-gray-500 uppercase font-bold">Regentes</p><p class="text-sm text-gray-200">${data.regentes}</p></div>
+                            </div>` : ''}
+                        </div>
+                        
+                        <!-- Botão Whatsapp (Só mostra se tiver telefone) -->
+                        ${data.telefone ? `
+                        <a href="https://wa.me/55${String(data.telefone || '').replace(/\D/g,'')}" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300">
+                            <i class="fab fa-whatsapp"></i> Entrar em Contato
+                        </a>` : ''}
+                    </div>
+                </div>`;
             }
 
             if (type === 'talento') {
-                const displayUrl = data.capa ? convertToDriveImageUrl(data.capa) : '#';
-                return '<div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">' +
-                    '<div class="relative h-64 sm:h-72">' +
-                        '<img src="' + displayUrl + '" onerror="this.src=\'#\'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" alt="' + data.nome + '">' +
-                        '<div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>' +
-                        '<div class="absolute bottom-4 left-4 right-4"><h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">' + data.nome + '</h3><div class="h-1 w-12 bg-brand-yellow rounded-full"></div></div>' +
-                    '</div>' +
-                    '<div class="p-6 flex flex-col flex-grow">' +
-                        '<p class="text-gray-300 text-sm mb-6 flex-grow leading-relaxed">' + (data.descricao || 'Sem descrição.') + '</p>' +
-                        '<div class="flex flex-col gap-3">' +
-                            (data.video ? '<a href="' + data.video + '" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 w-full bg-red-600/10 text-red-500 hover:bg-red-600 hover:text-white border border-red-600/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-youtube"></i> Ver Vídeo</a>' : '') +
-                            (data.telefone ? '<a href="https://wa.me/55' + String(data.telefone || '').replace(/\D/g, '') + '" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
-                        '</div>' +
-                    '</div></div>';
-            }
+                return `
+                <div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">
+                    <div class="relative h-64 sm:h-72">
+                        <img src="${data.capa}" onerror="this.src='https://placehold.co/600x400/1e293b/FFFFFF?text=${encodeURIComponent(data.nome)}'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">${data.nome}</h3>
+                            <div class="h-1 w-12 bg-brand-yellow rounded-full"></div>
+                        </div>
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <p class="text-gray-300 text-sm mb-6 flex-grow leading-relaxed">${data.descricao || 'Sem descrição.'}</p>
+                        
+                        <div class="flex flex-col gap-3">
+                            <!-- Botão Video (Só mostra se tiver link de video - Futuro) -->
+                            ${data.video ? `
+                            <a href="${data.video}" target="_blank" class="flex items-center justify-center gap-2 w-full bg-red-600/10 text-red-500 hover:bg-red-600 hover:text-white border border-red-600/20 py-3 rounded-xl font-bold transition-all duration-300">
+                                <i class="fab fa-youtube"></i> Ver Vídeo
+                            </a>` : ''}
 
+                            <!-- Botão Whatsapp -->
+                            ${data.telefone ? `
+                            <a href="https://wa.me/55${String(data.telefone || '').replace(/\D/g,'')}" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300">
+                                <i class="fab fa-whatsapp"></i> Contato
+                            </a>` : ''}
+                        </div>
+                    </div>
+                </div>`;
+            }
+            
             if (type === 'album') {
-                const displayUrl = data.coverImageUrl ? convertToDriveImageUrl(data.coverImageUrl) : '#';
-                return '<a href="' + data.albumUrl + '" target="_blank" rel="noopener" class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform">' +
-                    '<img src="' + displayUrl + '" onerror="this.src=\'#\'" class="w-full h-full object-cover" loading="lazy" alt="' + data.albumName + '">' +
-                    '<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">' +
-                        '<div class="text-center p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">' +
-                            '<i class="fas fa-images text-3xl text-brand-yellow mb-2"></i>' +
-                            '<h3 class="font-bold text-white text-lg">' + data.albumName + '</h3>' +
-                            '<p class="text-sm text-gray-300 mt-1">Ver fotos</p>' +
-                        '</div>' +
-                    '</div></a>';
+                 return `
+                <a href="${data.albumUrl}" target="_blank" class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform">
+                    <img src="${data.coverImageUrl}" onerror="this.src='https://placehold.co/400x400/1e293b/FFFFFF?text=Galeria'" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
+                        <div class="text-center p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                            <i class="fas fa-images text-3xl text-brand-yellow mb-2"></i>
+                            <h3 class="font-bold text-white text-lg">${data.albumName}</h3>
+                            <p class="text-sm text-gray-300 mt-1">Ver fotos</p>
+                        </div>
+                    </div>
+                </a>`;
             }
+        };
 
-            return '';
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // MARKETING SLIDER
-        // ═══════════════════════════════════════════════════════════════
+        // --- MARKETING CAROUSEL LOGIC (MAGIC SLIDER) ---
         let marketingQueue = [];
-
-        const initMarketingSlider = function(events) {
+        const initMarketingSlider = (events) => {
             const queueContainer = document.getElementById('product-queue');
-            if (!queueContainer) return;
-            let sourceEvents = events.slice();
+            if(!queueContainer) return;
+
+            let sourceEvents = [...events]; 
+            
             if (sourceEvents.length === 0) return;
+            
+            // Garante pelo menos 3 itens para a animação funcionar bem
             while (sourceEvents.length < 3) {
-                sourceEvents = sourceEvents.concat(sourceEvents);
+                sourceEvents = [...sourceEvents, ...sourceEvents];
             }
-            marketingQueue = sourceEvents.map(function(e) {
-                return { id: e._id, title: e.name, desc: e.description, image: e.coverUrl };
-            });
+
+            marketingQueue = sourceEvents.map(e => ({
+                id: e._id, title: e.name, desc: e.description, image: e.coverUrl
+            }));
+            
+            // Fill queue elements (Renderiza os 3 primeiros visuais para o efeito 3D)
             queueContainer.innerHTML = '';
-            for (let i = 0; i < 3; i++) {
-                if (marketingQueue[i]) {
+            for(let i=0; i<3; i++) {
+                if(marketingQueue[i]) {
                     const img = document.createElement('img');
-                    const displayUrl = marketingQueue[i].image ? convertToDriveImageUrl(marketingQueue[i].image) : '#';
-                    img.src = displayUrl;
-                    img.className = 'depth-layer ' + (i === 0 ? 'product-main' : i === 1 ? 'product-next' : 'product-next-2');
+                    img.src = marketingQueue[i].image;
+                    img.className = `depth-layer ${i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2'}`;
                     img.dataset.index = i;
-                    img.onerror = function() { this.src = '#'; };
-                    img.loading = 'lazy';
+                    img.onerror = function() { this.src = 'https://placehold.co/1080x1350/1e293b/FFFFFF?text=Cartaz'; };
                     queueContainer.appendChild(img);
                 }
             }
             updateMarketingText(marketingQueue[0]);
+            
             const nextBtn = document.getElementById('next-marketing');
             const prevBtn = document.getElementById('prev-marketing');
-            if (nextBtn) nextBtn.onclick = function() { moveMarketing('next'); };
-            if (prevBtn) prevBtn.onclick = function() { moveMarketing('prev'); };
+            if(nextBtn) nextBtn.onclick = () => moveMarketing('next');
+            if(prevBtn) prevBtn.onclick = () => moveMarketing('prev');
         };
 
-        const updateMarketingText = function(item) {
-            if (!item) return;
+        const updateMarketingText = (item) => {
+            if(!item) return;
             const titleEl = document.getElementById('marketing-title');
             const descEl = document.getElementById('marketing-desc');
-            const btnsEl = document.getElementById('marketing-btns');
+            const btnsEl = document.getElementById('marketing-btns'); 
             const btnAction = document.getElementById('marketing-action-btn');
+            
             titleEl.classList.remove('visible');
             descEl.classList.remove('visible');
-            btnsEl.classList.remove('visible');
-            setTimeout(function() {
+            btnsEl.classList.remove('visible'); 
+            
+            setTimeout(() => {
                 titleEl.textContent = item.title;
-                descEl.textContent = (item.desc && item.desc.trim() !== '') ? item.desc : 'Venha participar conosco deste grande evento. Deus tem uma palavra para o seu coração.';
-                btnAction.onclick = function() { window.openEventModal(item.id); };
+                descEl.textContent = (item.desc && item.desc.trim() !== "") ? item.desc : "Venha participar conosco deste grande evento. Deus tem uma palavra para o seu coração.";
+                btnAction.onclick = () => window.openEventModal(item.id);
+                
                 titleEl.classList.add('visible');
                 descEl.classList.add('visible');
-                btnsEl.classList.add('visible');
-            }, 300);
+                btnsEl.classList.add('visible'); 
+            }, 300); 
         };
 
-        const moveMarketing = function(direction) {
-            if (isMarketingAnimating) return;
+        const moveMarketing = (direction) => {
+            if(isMarketingAnimating) return;
             isMarketingAnimating = true;
             const queueContainer = document.getElementById('product-queue');
             const items = Array.from(queueContainer.children);
-            if (items.length < 3) { isMarketingAnimating = false; return; }
+            
+            if(items.length < 3) {
+                 isMarketingAnimating = false;
+                 return;
+            }
 
-            if (direction === 'next') {
+            if(direction === 'next') {
                 const first = marketingQueue.shift();
                 marketingQueue.push(first);
+                
                 items[0].classList.replace('product-main', 'product-hidden-left');
-                if (items[1]) items[1].classList.replace('product-next', 'product-main');
-                if (items[2]) items[2].classList.replace('product-next-2', 'product-next');
-                setTimeout(function() {
-                    queueContainer.innerHTML = '';
-                    for (let i = 0; i < 3; i++) {
+                if(items[1]) items[1].classList.replace('product-next', 'product-main');
+                if(items[2]) items[2].classList.replace('product-next-2', 'product-next');
+                
+                setTimeout(() => {
+                    queueContainer.innerHTML = ''; 
+                    for(let i=0; i<3; i++) {
                         const img = document.createElement('img');
-                        const displayUrl = marketingQueue[i].image ? convertToDriveImageUrl(marketingQueue[i].image) : '#';
-                        img.src = displayUrl;
-                        img.className = 'depth-layer ' + (i === 0 ? 'product-main' : i === 1 ? 'product-next' : 'product-next-2');
-                        img.onerror = function() { this.src = '#'; };
-                        img.loading = 'lazy';
+                        img.src = marketingQueue[i].image;
+                        img.className = `depth-layer ${i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2'}`;
+                        img.onerror = function() { this.src = 'https://placehold.co/1080x1350/1e293b/FFFFFF?text=Cartaz'; };
                         queueContainer.appendChild(img);
                     }
                     updateMarketingText(marketingQueue[0]);
@@ -1696,28 +1385,48 @@ tailwind.config = {
                 const last = marketingQueue.pop();
                 marketingQueue.unshift(last);
                 updateMarketingText(marketingQueue[0]);
+                
                 const newMain = document.createElement('img');
-                const displayUrl = last.image ? convertToDriveImageUrl(last.image) : '#';
-                newMain.src = displayUrl;
+                newMain.src = last.image;
                 newMain.className = 'depth-layer product-hidden-left';
-                newMain.onerror = function() { this.src = '#'; };
-                newMain.loading = 'lazy';
+                newMain.onerror = function() { this.src = 'https://placehold.co/1080x1350/1e293b/FFFFFF?text=Cartaz'; };
                 queueContainer.prepend(newMain);
+                
                 void newMain.offsetWidth;
+                
                 const currentItems = Array.from(queueContainer.children);
                 currentItems[0].classList.replace('product-hidden-left', 'product-main');
                 currentItems[1].classList.replace('product-main', 'product-next');
-                if (currentItems[2]) currentItems[2].classList.replace('product-next', 'product-next-2');
-                if (currentItems[3]) currentItems[3].remove();
-                setTimeout(function() { isMarketingAnimating = false; }, 600);
+                if(currentItems[2]) currentItems[2].classList.replace('product-next', 'product-next-2');
+                if(currentItems[3]) currentItems[3].remove();
+                
+                setTimeout(() => { isMarketingAnimating = false; }, 600);
             }
         };
 
-        // ═══════════════════════════════════════════════════════════════
-        // RENDERIZAÇÃO
-        // ═══════════════════════════════════════════════════════════════
-        const renderComponents = function(events, avisos, ministerios, albums, talentos, pastor) {
-            const containers = {
+        // Helper para datas robusto
+        const parseDate = (dateStr) => {
+            if(!dateStr) return new Date();
+            if(dateStr instanceof Date) return dateStr;
+            
+            // Tenta formato ISO
+            let d = new Date(dateStr);
+            if(!isNaN(d.getTime())) return d;
+            
+            // Tenta PT-BR (dd/mm/yyyy)
+            if (typeof dateStr === 'string') {
+                const parts = dateStr.split('/');
+                if(parts.length === 3) {
+                    // Assume dd/mm/yyyy -> yyyy-mm-dd
+                    return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                }
+            }
+            return new Date(); // Fallback today
+        };
+
+        // AJUSTE 1: Separei a lógica de renderização para permitir chamada dupla (Cache instantâneo + Rede)
+        const renderComponents = (events, avisos, ministerios, albums, talentos, pastor) => {
+             const containers = {
                 avisos: document.getElementById('avisos-container'),
                 upcoming: document.getElementById('upcoming-events-container'),
                 allEvents: document.getElementById('all-events-container'),
@@ -1726,21 +1435,25 @@ tailwind.config = {
                 albums: document.getElementById('albums-container')
             };
 
-            if (pastor && pastor.length > 0 && pastor[0].capa) {
-                const pc = document.getElementById('pastor-img-container');
-                if (pc) pc.innerHTML = '<img src="' + convertToDriveImageUrl(pastor[0].capa) + '" alt="Pastor" class="w-full h-full object-cover" loading="lazy">';
+             if (pastor && pastor.length > 0 && pastor[0].capa) {
+                const pastorContainer = document.getElementById('pastor-img-container');
+                if (pastorContainer) pastorContainer.innerHTML = `<img src="${pastor[0].capa}" alt="Pastor Lourival Soares" class="w-full h-full object-cover">`;
             }
 
             if (events && events.length) {
-                const normalizedEvents = events.map(function(e, i) {
-                    const getVal = function(keys) {
-                        for (let k = 0; k < keys.length; k++) {
-                            if (e[keys[k]]) return e[keys[k]];
-                            const foundKey = Object.keys(e).find(function(oky) { return oky.toLowerCase().indexOf(keys[k].toLowerCase()) >= 0; });
-                            if (foundKey) return e[foundKey];
+                // NORMALIZAÇÃO ROBUSTA DE CHAVES
+                const normalizedEvents = events.map((e, i) => {
+                    // Helper para encontrar valor case-insensitive e variações
+                    const getVal = (keys) => {
+                        for(const k of keys) {
+                            if(e[k]) return e[k];
+                            // Tenta encontrar chave que contenha o nome (ex: datadoevento)
+                            const foundKey = Object.keys(e).find(oky => oky.toLowerCase().includes(k.toLowerCase()));
+                            if(foundKey) return e[foundKey];
                         }
                         return null;
                     };
+
                     return {
                         _id: i,
                         name: getVal(['name', 'nome', 'titulo', 'tema', 'evento']) || 'Evento sem nome',
@@ -1754,402 +1467,486 @@ tailwind.config = {
                 initMarketingSlider(globalEvents);
             }
 
-            if (avisos && avisos.length && containers.avisos) {
-                containers.avisos.innerHTML = avisos.filter(function(a) { return a.texto; }).map(function(a) { return createCard(a, 'aviso'); }).join('');
-            }
-
-            if (globalEvents && globalEvents.length) {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                const sorted = globalEvents.slice().sort(function(a, b) { return parseDate(a.date) - parseDate(b.date); });
-                const future = sorted.filter(function(e) {
-                    const d = parseDate(e.date);
-                    d.setHours(0, 0, 0, 0);
-                    return d >= today;
+            if(avisos && avisos.length) containers.avisos.innerHTML = avisos.filter(a => a.texto).map(a => createCard(a, 'aviso')).join('');
+            
+            if(globalEvents && globalEvents.length) {
+                const today = new Date(); today.setHours(0, 0, 0, 0);
+                
+                // Ordenação e Filtro com Parse Robusto
+                const sorted = globalEvents.sort((a,b) => parseDate(a.date) - parseDate(b.date));
+                const future = sorted.filter(e => {
+                    const eventDay = parseDate(e.date); 
+                    eventDay.setHours(0,0,0,0);
+                    return eventDay >= today;
                 });
-                if (containers.upcoming) containers.upcoming.innerHTML = future.slice(0, 3).map(function(e) { return createCard(e, 'evento'); }).join('');
-                if (containers.allEvents) containers.allEvents.innerHTML = future.length > 0 ? future.map(function(e) { return createCard(e, 'evento'); }).join('') : '<div class="col-span-full text-center text-gray-400 py-10">Nenhum evento agendado.</div>';
+
+                containers.upcoming.innerHTML = future.slice(0, 3).map(e => createCard(e, 'evento')).join('');
+                if(containers.allEvents) containers.allEvents.innerHTML = future.length > 0 ? future.map(e => createCard(e, 'evento')).join('') : `<div class="col-span-full text-center text-gray-400 py-10">Nenhum evento agendado.</div>`;
             }
 
-            if (ministerios && ministerios.length && containers.ministerios) {
-                containers.ministerios.innerHTML = ministerios.map(function(m) { return createCard(m, 'ministerio'); }).join('');
-            }
-            if (talentos && talentos.length && containers.talentos) {
-                containers.talentos.innerHTML = talentos.map(function(t) { return createCard(t, 'talento'); }).join('');
-            }
-            if (albums && albums.length && containers.albums) {
-                containers.albums.innerHTML = albums.map(function(a) { return createCard(a, 'album'); }).join('');
-            }
+            if(ministerios && ministerios.length && containers.ministerios) containers.ministerios.innerHTML = ministerios.map(m => createCard(m, 'ministerio')).join('');
+            if(talentos && talentos.length && containers.talentos) containers.talentos.innerHTML = talentos.map(t => createCard(t, 'talento')).join('');
+            if(albums && albums.length && containers.albums) containers.albums.innerHTML = albums.map(a => createCard(a, 'album')).join('');
         };
 
-        const loadData = async function() {
+        const loadData = async () => {
+            // 1. TENTATIVA IMEDIATA DE CARREGAR DO CACHE (Sem esperar rede)
             const cachedKeys = ['cache_eventos_v2', 'cache_avisos_v2', 'cache_ministerios_v2', 'cache_albuns_v2', 'cache_talentos_v2', 'cache_pastor_v2'];
-            const cachedData = cachedKeys.map(function(key) {
+            const cachedData = cachedKeys.map(key => {
                 const saved = localStorage.getItem(key);
                 return saved ? JSON.parse(saved).content : [];
             });
-            renderComponents(cachedData[0], cachedData[1], cachedData[2], cachedData[3], cachedData[4], cachedData[5]);
+            
+            // Renderiza o que tivermos em cache imediatamente
+            renderComponents(...cachedData);
 
+            // 2. BUSCA ATUALIZADA NA REDE (Em background)
             try {
-                const results = await Promise.all([
-                    fetchWithCache(CONFIG.scriptUrl + '?sheet=eventos', 'cache_eventos_v2'),
-                    fetchWithCache(CONFIG.scriptUrl + '?sheet=avisos', 'cache_avisos_v2'),
-                    fetchWithCache(CONFIG.scriptUrl + '?sheet=ministerios', 'cache_ministerios_v2'),
-                    fetchWithCache(CONFIG.scriptUrl + '?sheet=albuns', 'cache_albuns_v2'),
-                    fetchWithCache(CONFIG.scriptUrl + '?sheet=talentos', 'cache_talentos_v2'),
-                    fetchWithCache(CONFIG.scriptUrl + '?sheet=pastor', 'cache_pastor_v2')
+                const [events, avisos, ministerios, albums, talentos, pastor] = await Promise.all([
+                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=eventos`, 'cache_eventos_v2'),
+                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=avisos`, 'cache_avisos_v2'),
+                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=ministerios`, 'cache_ministerios_v2'),
+                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=albuns`, 'cache_albuns_v2'),
+                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=talentos`, 'cache_talentos_v2'),
+                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=pastor`, 'cache_pastor_v2')
                 ]);
-                renderComponents(results[0], results[1], results[2], results[3], results[4], results[5]);
+
+                // Re-renderiza com os dados (potencialmente) novos
+                renderComponents(events, avisos, ministerios, albums, talentos, pastor);
             } catch (e) {
-                console.log('Usando cache local.');
+                console.log("Usando versão em cache devido a erro de rede ou cache hit");
             }
         };
 
-        // ═══════════════════════════════════════════════════════════════
-        // YOUTUBE LIVE
-        // ═══════════════════════════════════════════════════════════════
-        const checkLive = async function() {
+        // --- YOUTUBE LIVE CHECK ---
+        const checkLive = async () => {
             const container = document.getElementById('live-container');
-            if (!container) return;
-            const domain = window.location.hostname;
+            const domain = window.location.hostname; 
 
-            const renderPlayer = function(videoId) {
-                let embedSrc;
-                const params = 'autoplay=1&modestbranding=1&rel=0&playsinline=1&origin=https://' + domain;
-                if (videoId) embedSrc = 'https://www.youtube.com/embed/' + videoId + '?' + params;
-                else embedSrc = 'https://www.youtube.com/embed/live_stream?channel=' + CONFIG.youtubeChannel + '&' + params;
+            // Função para renderizar o player (Reutilizável)
+            const renderPlayer = (videoId = null) => {
+                let embedSrc = '';
+                const params = `autoplay=1&modestbranding=1&rel=0&playsinline=1&origin=https://${domain}`;
+                
+                if (videoId) {
+                    embedSrc = `https://www.youtube.com/embed/${videoId}?${params}`;
+                } else {
+                    embedSrc = `https://www.youtube.com/embed/live_stream?channel=${CONFIG.youtubeChannel}&${params}`;
+                }
 
-                container.innerHTML = '<div class="w-full animate-fade-in">' +
-                    '<div class="video-wrapper w-full shadow-2xl border border-white/10 relative">' +
-                        '<iframe width="560" height="315" src="' + embedSrc + '" title="Culto Ao Vivo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>' +
-                    '</div>' +
-                    '<div class="flex justify-between items-center mt-3 px-2">' +
-                        '<div class="flex items-center gap-2">' +
-                            '<span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span></span>' +
-                            '<p class="text-xs text-gray-400">Transmissão Oficial</p>' +
-                        '</div>' +
-                        '<div class="flex gap-4">' +
-                            '<button onclick="if(navigator.share) navigator.share({title: \'Culto Ao Vivo - IEAD Nova Aliança\', url: \'https://www.youtube.com/channel/' + CONFIG.youtubeChannel + '/live\'})" class="text-xs text-gray-400 hover:text-white transition-colors flex items-center gap-1"><i class="fas fa-share-alt"></i> Compartilhar</button>' +
-                            '<a href="https://www.youtube.com/channel/' + CONFIG.youtubeChannel + '/live" target="_blank" rel="noopener" class="text-xs text-brand-yellow hover:underline transition-colors flex items-center gap-1">Assistir no YouTube <i class="fas fa-external-link-alt"></i></a>' +
-                        '</div>' +
-                    '</div></div>';
+                container.innerHTML = `
+                <div class="w-full animate-fade-in">
+                    <div class="video-wrapper w-full shadow-2xl border border-white/10 relative">
+                        <iframe width="560" height="315" 
+                            src="${embedSrc}" 
+                            title="Culto Ao Vivo" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerpolicy="strict-origin-when-cross-origin" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="flex justify-between items-center mt-3 px-2">
+                        <div class="flex items-center gap-2">
+                            <span class="relative flex h-3 w-3">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                            </span>
+                            <p class="text-xs text-gray-400">Transmissão Oficial</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <button onclick="if(navigator.share) navigator.share({title: 'Culto Ao Vivo - IEAD Nova Aliança', url: 'https://www.youtube.com/channel/${CONFIG.youtubeChannel}/live'})" class="text-xs text-gray-400 hover:text-white transition-colors flex items-center gap-1">
+                                <i class="fas fa-share-alt"></i> Compartilhar
+                            </button>
+                            <a href="https://www.youtube.com/channel/${CONFIG.youtubeChannel}/live" target="_blank" class="text-xs text-brand-yellow hover:underline transition-colors flex items-center gap-1">
+                                Assistir no YouTube <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>`;
             };
 
             try {
-                const res = await fetch('https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=' + CONFIG.youtubeChannel + '&eventType=live&type=video&key=' + CONFIG.youtubeKey);
+                // Tenta buscar o ID específico pela API (É mais rápido e preciso)
+                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CONFIG.youtubeChannel}&eventType=live&type=video&key=${CONFIG.youtubeKey}`);
+                
                 if (!res.ok) throw new Error('API Error');
+
                 const data = await res.json();
-                if (data.items && data.items.length > 0) renderPlayer(data.items[0].id.videoId);
-                else renderPlayer();
+
+                if (data.items && data.items.length > 0) {
+                    renderPlayer(data.items[0].id.videoId);
+                } else {
+                    renderPlayer(); 
+                }
             } catch (e) {
                 console.log('Live check failed', e);
                 renderPlayer();
             }
         };
 
-        // ═══════════════════════════════════════════════════════════════
-        // NAVEGAÇÃO
-        // ═══════════════════════════════════════════════════════════════
-        const setupNav = function() {
+        // --- NAVIGATION ---
+        const setupNav = () => {
             const links = document.querySelectorAll('.nav-link, .mobile-nav-link');
             const pages = document.querySelectorAll('.page-content');
             const mobileMenu = document.getElementById('mobile-menu');
 
-            window.switchPage = function(pageId) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                pages.forEach(function(p) {
+            window.switchPage = (pageId) => {
+                window.scrollTo({top: 0, behavior: 'smooth'});
+
+                pages.forEach(p => {
                     p.classList.add('hidden');
-                    p.classList.remove('animate-fade-in');
+                    p.classList.remove('animate-fade-in'); 
                 });
-                const target = document.getElementById(pageId + '-page');
-                if (target) {
+
+                const target = document.getElementById(`${pageId}-page`);
+                if(target) {
                     target.classList.remove('hidden');
-                    void target.offsetWidth;
+                    void target.offsetWidth; 
                     target.classList.add('animate-fade-in');
                 }
-                document.querySelectorAll('.nav-link').forEach(function(l) {
+
+                document.querySelectorAll('.nav-link').forEach(l => {
                     l.classList.toggle('active-nav', l.dataset.page === pageId);
-                    if (l.classList.contains('bg-white/10')) l.classList.remove('bg-white/10', 'text-white');
+                    if(l.classList.contains('bg-white/10')) l.classList.remove('bg-white/10', 'text-white');
                 });
+                
                 mobileMenu.classList.add('hidden');
-                if (pageId === 'aovivo') checkLive();
-                if (pageId === 'ebd') window.ebd.fetchInitialData();
+                
+                if(pageId === 'aovivo') {
+                    checkLive();
+                }
+                
+                if(pageId === 'ebd') {
+                    window.ebd.fetchInitialData();
+                }
             };
 
-            links.forEach(function(link) {
-                link.addEventListener('click', function(e) {
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const page = link.dataset.page;
-                    if (page) window.switchPage(page);
+                    if(page) window.switchPage(page);
                 });
             });
 
-            document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu-button').addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
             });
-
+            
             window.switchPage('igreja');
         };
 
-        // ═══════════════════════════════════════════════════════════════
-        // MÓDULO EBD
-        // ═══════════════════════════════════════════════════════════════
+        // --- EBD MODULE ---
         window.ebd = (function() {
-            const API_URL = 'https://script.google.com/macros/s/AKfycbyZQQ8hy5GuNCR-kjnqr6rDziFi3-K7U2kwy7wmCv3gRxM5wlzlvaIMpf7Geb76psQ/exec';
-            const EBD_CLASSES = ['Jardim da Infância', 'Juniores', 'Adolescentes', 'Novos Crentes', 'Jovens', 'Adultos'];
+            const API_URL = "https://script.google.com/macros/s/AKfycbyZQQ8hy5GuNCR-kjnqr6rDziFi3-K7U2kwy7wmCv3gRxM5wlzlvaIMpf7Geb76psQ/exec";
+            const EBD_CLASSES = ["Jardim da Infância", "Juniores", "Adolescentes", "Novos Crentes", "Jovens", "Adultos"];
+            
             let currentUser = null;
             let globalTeachers = [];
             let globalSchedule = [];
             let isOffline = false;
+            let heroInterval = null;
             let editingId = null;
-            const mockT = [{ id: 1, name: 'João (Demo)', photo: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix' }];
-            const mockS = [{ id: 1, date: '2026-02-05', teacherId: 1, title: 'Exemplo', class: 'Geral', cover: 'https://via.placeholder.com/800', summary: 'Resumo de exemplo.' }];
+            
+            const mockT = [{ id: 1, name: "João (Demo)", photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" }];
+            const mockS = [{ id: 1, date: "2026-02-05", teacherId: 1, title: "Exemplo", class: "Geral", cover: "https://via.placeholder.com/800", summary: "Resumo de exemplo." }];
 
-            function setLoading(s) {
+            function setLoading(s) { 
                 const el = document.getElementById('ebd-content-area');
-                if (s) el.innerHTML = '<div class="flex flex-col items-center justify-center py-20"><div class="w-10 h-10 border-4 border-[#EEBC5A] border-t-transparent rounded-full animate-spin mb-4"></div><p class="text-gray-500 text-xs">Carregando Escala...</p></div>';
+                if(s) {
+                    el.innerHTML = '<div class="flex flex-col items-center justify-center py-20"><div class="w-10 h-10 border-4 border-[#EEBC5A] border-t-transparent rounded-full animate-spin mb-4"></div><p class="text-gray-500 text-xs">Carregando Escala...</p></div>';
+                }
             }
+
             function updateStatus(online) {
                 const el = document.getElementById('ebdConnectionStatus');
-                if (el) {
-                    el.innerText = online ? 'Conectado' : 'Offline (Demo)';
-                    el.style.color = online ? '#46d369' : 'orange';
-                    el.style.borderColor = online ? '#46d369' : 'orange';
+                if(el) {
+                    el.innerText = online ? "Conectado" : "Offline (Demo)";
+                    el.style.color = online ? "#46d369" : "orange";
+                    el.style.borderColor = online ? "#46d369" : "orange";
                 }
             }
 
             async function fetchInitialData() {
-                if (globalSchedule.length > 0 && !isOffline) { renderApp(); return; }
+                // Evita recarregar se já tiver dados, a menos que seja forçado
+                if(globalSchedule.length > 0 && !isOffline) { renderApp(); return; }
+                
                 setLoading(true);
                 try {
-                    const res = await fetch(API_URL + '?action=read', { redirect: 'follow' });
-                    if (!res.ok) throw new Error('Erro na rede');
+                    const res = await fetch(`${API_URL}?action=read`, { redirect: 'follow' });
+                    if(!res.ok) throw new Error("Erro na rede");
                     const data = await res.json();
-                    if (data.error) throw new Error(data.error);
+                    if(data.error) throw new Error(data.error);
+
                     globalTeachers = data.teachers || [];
                     globalSchedule = data.schedule || [];
                     updateStatus(true);
                 } catch (e) {
-                    console.warn('EBD Offline fallback', e);
-                    globalTeachers = mockT;
-                    globalSchedule = mockS;
-                    isOffline = true;
+                    console.warn("EBD Offline fallback", e);
+                    globalTeachers = mockT; globalSchedule = mockS; isOffline = true;
                     updateStatus(false);
                 } finally {
-                    renderApp();
+                    renderApp(); 
                 }
             }
 
             async function sendToApi(payload) {
                 if (isOffline) {
-                    window.showToast('Modo Offline (Simulação)');
-                    if (payload.action.indexOf('add') >= 0) payload.id = Date.now();
-                    if (payload.action === 'addTeacher') globalTeachers.push(payload);
-                    if (payload.action === 'addSchedule') globalSchedule.push(payload);
-                    if (payload.action === 'updateSchedule') {
-                        const idx = globalSchedule.findIndex(function(s) { return s.id == payload.id; });
-                        if (idx !== -1) globalSchedule[idx] = Object.assign({}, globalSchedule[idx], payload);
+                    showToast("Modo Offline (Simulação)");
+                    if(payload.action.includes('add')) payload.id = Date.now();
+                    if(payload.action === 'addTeacher') globalTeachers.push(payload);
+                    if(payload.action === 'addSchedule') globalSchedule.push(payload);
+                    if(payload.action === 'updateSchedule') {
+                        const idx = globalSchedule.findIndex(s => s.id == payload.id);
+                        if(idx !== -1) globalSchedule[idx] = { ...globalSchedule[idx], ...payload };
                     }
-                    if (payload.action === 'deleteSchedule') globalSchedule = globalSchedule.filter(function(s) { return s.id !== payload.id; });
-                    if (payload.action === 'deleteTeacher') globalTeachers = globalTeachers.filter(function(t) { return t.id !== payload.id; });
-                    renderApp();
-                    return;
+                    if(payload.action === 'deleteSchedule') globalSchedule = globalSchedule.filter(s => s.id !== payload.id);
+                    if(payload.action === 'deleteTeacher') globalTeachers = globalTeachers.filter(t => t.id !== payload.id);
+                    renderApp(); return;
                 }
+
                 setLoading(true);
                 try {
-                    const res = await fetch(API_URL, { method: 'POST', redirect: 'follow', body: JSON.stringify(payload) });
+                    const res = await fetch(API_URL, { method: "POST", redirect: "follow", body: JSON.stringify(payload) });
                     const data = await res.json();
-                    if (data.status === 'success') {
+                    if(data.status === 'success') {
                         globalTeachers = data.data.teachers;
                         globalSchedule = data.data.schedule;
-                        renderApp();
-                        window.showToast('✅ Salvo!');
+                        renderApp(); showToast("Salvo com sucesso!");
                     } else throw new Error(data.message);
-                } catch (e) {
-                    window.showToast('❌ Erro ao salvar');
-                } finally {
-                    renderApp();
-                }
+                } catch(e) { showToast("Erro ao salvar"); } 
+                finally { setLoading(false); } // Will trigger render inside loading false logic if needed, but renderApp handles it
+                renderApp(); // Re-render to clear spinner
             }
 
             function renderApp() {
                 const el = document.getElementById('ebd-content-area');
-                if (!el) return;
-                if (currentUser === 'admin') renderAdmin(el);
-                else renderPublic(el);
+                if(!el) return;
+                // No clearing here as render functions will overwrite innerHTML
+                if(heroInterval) clearInterval(heroInterval);
+                currentUser === 'admin' ? renderAdmin(el) : renderPublic(el);
             }
 
             function renderPublic(container) {
-                const sorted = globalSchedule.slice().sort(function(a, b) {
-                    return new Date(a.date + 'T12:00:00') - new Date(b.date + 'T12:00:00');
+                const sorted = [...globalSchedule].sort((a,b) => {
+                    const dA = new Date(a.date + 'T12:00:00');
+                    const dB = new Date(b.date + 'T12:00:00');
+                    return dA - dB;
                 });
+
                 if (sorted.length === 0) {
-                    container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-10">Nenhuma escala agendada.</div>';
+                    container.innerHTML = `<div class="col-span-full text-center text-gray-500 py-10">Nenhuma escala agendada.</div>`;
                     return;
                 }
+
+                // Grouping
                 const groups = {};
-                sorted.forEach(function(item) {
+                sorted.forEach(item => {
                     const dateParts = item.date.split('-');
                     const dateObj = new Date(item.date + 'T12:00:00');
                     const month = dateObj.toLocaleDateString('pt-BR', { month: 'long' });
                     const monthCap = month.charAt(0).toUpperCase() + month.slice(1);
                     const year = dateObj.getFullYear();
+                    // Simple week calculation
                     const weekNum = Math.ceil(dateParts[2] / 7);
-                    const label = weekNum + 'ª Semana de ' + monthCap + ' / ' + year;
+                    
+                    const label = `${weekNum}ª Semana de ${monthCap} / ${year}`;
+                    
                     if (!groups[label]) groups[label] = [];
                     groups[label].push(item);
                 });
 
-                let html = '<div class="container mx-auto px-4 py-8"><h2 class="text-2xl font-bold text-white mb-8 pl-2 border-l-4 border-[#EEBC5A]">Escala de Professores</h2><div class="space-y-12">';
-                for (const label in groups) {
-                    const items = groups[label];
-                    html += '<div class="fade-in"><h3 class="text-xl font-bold text-gray-400 mb-4 border-b border-white/10 pb-2 flex items-center gap-2"><i class="far fa-calendar-check text-[#EEBC5A]"></i> ' + label + '</h3><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">';
-                    items.forEach(function(item) {
-                        const dateParts = item.date.split('-');
-                        const dateFormatted = dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0];
-                        const t = globalTeachers.find(function(x) { return x.id == item.teacherId; }) || { name: 'Professor', photo: '' };
-                        const displayPhoto = t.photo ? convertToDriveImageUrl(t.photo) : '#';
-                        html += '<div class="glass-panel rounded-xl overflow-hidden flex flex-col items-center text-center p-6 border border-white/5 hover:border-[#EEBC5A]/50 transition-all group active:scale-95 relative bg-[#1e293b]/40">' +
-                            '<div class="w-20 h-20 rounded-full overflow-hidden border-2 border-[#EEBC5A] mb-3 shadow-[0_0_15px_rgba(238,188,90,0.3)] bg-[#1e293b]">' +
-                                '<img src="' + displayPhoto + '" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src=\'#\'" loading="lazy" alt="' + t.name + '">' +
-                            '</div>' +
-                            '<h3 class="text-base font-bold text-white mb-1 leading-tight">' + t.name + '</h3>' +
-                            '<span class="text-[#EEBC5A] text-[10px] font-bold uppercase tracking-wider mb-3 block opacity-90 border border-[#EEBC5A]/30 px-2 py-0.5 rounded bg-[#EEBC5A]/10">' + (item.class || 'Geral') + '</span>' +
-                            '<div class="text-gray-400 text-xs flex items-center gap-1.5 bg-black/20 px-3 py-1 rounded-full"><i class="far fa-clock"></i><span>' + dateFormatted + '</span></div>' +
-                        '</div>';
+                let html = `<div class="container mx-auto px-4 py-8">
+                    <h2 class="text-2xl font-bold text-white mb-8 pl-2 border-l-4 border-[#EEBC5A]">Escala de Professores</h2>
+                    <div class="space-y-12">`;
+
+                for (const [label, items] of Object.entries(groups)) {
+                    html += `
+                        <div class="fade-in">
+                            <h3 class="text-xl font-bold text-gray-400 mb-4 border-b border-white/10 pb-2 flex items-center gap-2">
+                                <i class="far fa-calendar-check text-[#EEBC5A]"></i> ${label}
+                            </h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    `;
+                    
+                    items.forEach(item => {
+                         const dateParts = item.date.split('-'); // yyyy-mm-dd
+                         const dateFormatted = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                         const t = globalTeachers.find(x => x.id == item.teacherId) || {name: 'Professor', photo: ''};
+                         
+                         html += `
+                            <div class="glass-panel rounded-xl overflow-hidden flex flex-col items-center text-center p-6 border border-white/5 hover:border-[#EEBC5A]/50 transition-all group active:scale-95 relative bg-[#1e293b]/40">
+                                <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-[#EEBC5A] mb-3 shadow-[0_0_15px_rgba(238,188,90,0.3)] bg-[#1e293b]">
+                                    <img src="${t.photo || 'https://via.placeholder.com/150'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=random'">
+                                </div>
+                                <h3 class="text-base font-bold text-white mb-1 leading-tight">${t.name}</h3>
+                                <span class="text-[#EEBC5A] text-[10px] font-bold uppercase tracking-wider mb-3 block opacity-90 border border-[#EEBC5A]/30 px-2 py-0.5 rounded bg-[#EEBC5A]/10">${item.class || 'Geral'}</span>
+                                
+                                <div class="text-gray-400 text-xs flex items-center gap-1.5 bg-black/20 px-3 py-1 rounded-full">
+                                    <i class="far fa-clock"></i>
+                                    <span>${dateFormatted}</span>
+                                </div>
+                            </div>
+                         `;
                     });
-                    html += '</div></div>';
+
+                    html += `</div></div>`;
                 }
-                html += '</div></div>';
+
+                html += `</div></div>`;
                 container.innerHTML = html;
             }
 
             function renderAdmin(container) {
                 const isEditing = editingId !== null;
-                const editItem = isEditing ? globalSchedule.find(function(s) { return s.id === editingId; }) : null;
-                container.innerHTML = '<div class="pt-4 px-4 max-w-5xl mx-auto fade-in">' +
-                    '<div class="flex justify-between items-center mb-6 pb-4 border-b border-[#333]"><h2 class="text-2xl font-bold text-white">Gestão EBD</h2>' +
-                    '<button onclick="window.ebd.logout()" class="text-xs font-bold text-[#EEBC5A] border border-[#EEBC5A] px-3 py-1.5 rounded hover:bg-[#EEBC5A] hover:text-brand-dark transition">SAIR</button></div>' +
-                    '<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">' +
-                        '<div class="bg-[#181818] p-6 rounded border border-[#333] ' + (isEditing ? 'border-l-4 border-l-blue-500' : '') + '">' +
-                            '<div class="flex justify-between items-center mb-4"><h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fas ' + (isEditing ? 'fa-edit text-blue-500' : 'fa-plus-circle text-[#EEBC5A]') + '"></i> ' + (isEditing ? 'Editar Escala' : 'Nova Escala') + '</h3>' +
-                            (isEditing ? '<button onclick="window.ebd.cancelEdit()" class="text-xs text-gray-400 hover:text-white">Cancelar</button>' : '') + '</div>' +
-                            '<form onsubmit="window.ebd.handleAddSchedule(event)" class="space-y-4">' +
-                                '<div class="grid grid-cols-2 gap-4">' +
-                                    '<div><label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Data</label><input type="date" id="newSchedDate" class="w-full input-dark text-gray-300" required value="' + (editItem ? editItem.date : '') + '"></div>' +
-                                    '<div><label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Professor</label><select id="newSchedTeacher" class="w-full input-dark bg-[#333]" required><option value="">Selecione...</option>' + globalTeachers.map(function(t) { return '<option value="' + t.id + '" ' + (editItem && editItem.teacherId == t.id ? 'selected' : '') + '>' + t.name + '</option>'; }).join('') + '</select></div>' +
-                                '</div>' +
-                                '<div><label class="block text-[10px] uppercase text-[#EEBC5A] font-bold mb-1">Classe</label><select id="newSchedClass" class="w-full input-dark bg-[#333]" required><option value="">Selecione...</option>' + EBD_CLASSES.map(function(c) { return '<option value="' + c + '" ' + (editItem && editItem.class === c ? 'selected' : '') + '>' + c + '</option>'; }).join('') + '</select></div>' +
-                                '<input type="hidden" id="newSchedTitle" value="Aula EBD">' +
-                                '<button class="w-full ' + (isEditing ? 'bg-blue-600 hover:bg-blue-700' : 'bg-[#EEBC5A] hover:bg-[#d4a040]') + ' text-white font-bold py-3 rounded mt-4 transition">' + (isEditing ? 'ATUALIZAR' : 'PUBLICAR') + '</button>' +
-                            '</form>' +
-                        '</div>' +
-                        '<div class="space-y-8">' +
-                            '<div class="bg-[#181818] p-6 rounded border border-[#333]"><h3 class="text-lg font-bold text-white mb-4">Novo Professor</h3>' +
-                                '<form onsubmit="window.ebd.handleAddTeacher(event)" class="flex gap-2">' +
-                                    '<input type="text" id="newTeacherName" placeholder="Nome" class="flex-1 input-dark" required>' +
-                                    '<div class="w-12 overflow-hidden relative group cursor-pointer border border-[#444] rounded bg-[#333]"><input type="file" id="newTeacherFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10"><div class="w-full h-full flex items-center justify-center text-gray-400 group-hover:text-white"><i class="fas fa-camera"></i></div></div>' +
-                                    '<button class="bg-[#333] hover:bg-[#444] text-white px-4 rounded border border-[#555]"><i class="fas fa-plus"></i></button>' +
-                                '</form>' +
-                                '<div class="mt-4 flex flex-wrap gap-2 max-h-40 overflow-y-auto">' + globalTeachers.map(function(t) { return '<div class="bg-[#222] px-3 py-1 rounded-full border border-[#333] flex items-center gap-2 text-xs"><img src="' + t.photo + '" class="w-4 h-4 rounded-full object-cover" alt=""><span class="text-gray-300">' + t.name + '</span><button onclick="window.ebd.deleteItem(\'deleteTeacher\', ' + t.id + ')" class="text-[#EEBC5A] hover:text-white ml-1">×</button></div>'; }).join('') + '</div>' +
-                            '</div>' +
-                            '<div class="bg-[#181818] p-6 rounded border border-[#333]"><h3 class="text-lg font-bold text-white mb-4">Escala Atual</h3>' +
-                                '<div class="space-y-2 max-h-[400px] overflow-y-auto">' + globalSchedule.map(function(s) {
-                                    const t = globalTeachers.find(function(x) { return x.id == s.teacherId; });
-                                    const tName = t ? t.name : 'Desconhecido';
-                                    return '<div class="flex justify-between items-center p-3 bg-[#111] border-l-2 ' + (editingId === s.id ? 'border-blue-500 bg-blue-900/20' : 'border-[#EEBC5A]') + '">' +
-                                        '<div><div class="text-[#EEBC5A] font-bold text-xs">' + s.date.split('-').reverse().join('/') + '</div><div class="text-white text-sm font-medium">' + tName + ' <span class="text-gray-500 text-xs ml-1">(' + s.class + ')</span></div></div>' +
-                                        '<div class="flex gap-2"><button onclick="window.ebd.editItem(' + s.id + ')" class="text-gray-400 hover:text-blue-500"><i class="fas fa-pencil-alt"></i></button><button onclick="window.ebd.deleteItem(\'deleteSchedule\', ' + s.id + ')" class="text-gray-400 hover:text-red-500"><i class="fas fa-trash"></i></button></div>' +
-                                    '</div>';
-                                }).join('') + '</div>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div></div>';
+                const editItem = isEditing ? globalSchedule.find(s => s.id === editingId) : null;
+
+                container.innerHTML = `
+                    <div class="pt-4 px-4 max-w-5xl mx-auto fade-in">
+                        <div class="flex justify-between items-center mb-6 pb-4 border-b border-[#333]">
+                            <h2 class="text-2xl font-bold text-white">Gestão EBD</h2>
+                            <button onclick="window.ebd.logout()" class="text-xs font-bold text-[#EEBC5A] border border-[#EEBC5A] px-3 py-1.5 rounded hover:bg-[#EEBC5A] hover:text-brand-dark transition">SAIR</button>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div class="bg-[#181818] p-6 rounded border border-[#333] ${isEditing ? 'border-l-4 border-l-blue-500' : ''}">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                        <i class="fas ${isEditing ? 'fa-edit text-blue-500' : 'fa-plus-circle text-[#EEBC5A]'}"></i> 
+                                        ${isEditing ? 'Editar Escala' : 'Nova Escala'}
+                                    </h3>
+                                    ${isEditing ? `<button onclick="window.ebd.cancelEdit()" class="text-xs text-gray-400 hover:text-white">Cancelar</button>` : ''}
+                                </div>
+                                <form onsubmit="window.ebd.handleAddSchedule(event)" class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div><label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Data</label><input type="date" id="newSchedDate" class="w-full input-dark text-gray-300" required value="${editItem ? editItem.date : ''}"></div>
+                                        <div><label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Professor</label><select id="newSchedTeacher" class="w-full input-dark bg-[#333]" required><option value="">Selecione...</option>${globalTeachers.map(t => `<option value="${t.id}" ${editItem && editItem.teacherId == t.id ? 'selected' : ''}>${t.name}</option>`).join('')}</select></div>
+                                    </div>
+                                    <div><label class="block text-[10px] uppercase text-[#EEBC5A] font-bold mb-1">Classe</label><select id="newSchedClass" class="w-full input-dark bg-[#333]" required><option value="">Selecione...</option>${EBD_CLASSES.map(c => `<option value="${c}" ${editItem && editItem.class === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
+                                    
+                                    <!-- Campos Ocultos/Opcionais para manter compatibilidade com API mas simplificar UI -->
+                                    <input type="hidden" id="newSchedTitle" value="Aula EBD">
+                                    <input type="hidden" id="newSchedSummary" value="">
+                                    <input type="hidden" id="newSchedLink" value="">
+                                    <input type="file" id="newSchedCoverFile" accept="image/*" class="hidden">
+
+                                    <button class="w-full ${isEditing ? 'bg-blue-600 hover:bg-blue-700' : 'bg-[#EEBC5A] hover:bg-[#d4a040]'} text-white font-bold py-3 rounded mt-4 transition">${isEditing ? 'ATUALIZAR' : 'PUBLICAR'}</button>
+                                </form>
+                            </div>
+                            <div class="space-y-8">
+                                <div class="bg-[#181818] p-6 rounded border border-[#333]">
+                                    <h3 class="text-lg font-bold text-white mb-4">Novo Professor</h3>
+                                    <form onsubmit="window.ebd.handleAddTeacher(event)" class="flex gap-2">
+                                        <input type="text" id="newTeacherName" placeholder="Nome" class="flex-1 input-dark" required>
+                                        <div class="w-12 overflow-hidden relative group cursor-pointer border border-[#444] rounded bg-[#333]">
+                                            <input type="file" id="newTeacherFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10">
+                                            <div class="w-full h-full flex items-center justify-center text-gray-400 group-hover:text-white"><i class="fas fa-camera"></i></div>
+                                        </div>
+                                        <button class="bg-[#333] hover:bg-[#444] text-white px-4 rounded border border-[#555]"><i class="fas fa-plus"></i></button>
+                                    </form>
+                                    <div class="mt-4 flex flex-wrap gap-2 max-h-40 overflow-y-auto">${globalTeachers.map(t => `<div class="bg-[#222] px-3 py-1 rounded-full border border-[#333] flex items-center gap-2 text-xs"><img src="${t.photo}" class="w-4 h-4 rounded-full object-cover"><span class="text-gray-300">${t.name}</span><button onclick="window.ebd.deleteItem('deleteTeacher', ${t.id})" class="text-[#EEBC5A] hover:text-white ml-1">×</button></div>`).join('')}</div>
+                                </div>
+                                <div class="bg-[#181818] p-6 rounded border border-[#333]">
+                                    <h3 class="text-lg font-bold text-white mb-4">Escala Atual</h3>
+                                    <div class="space-y-2 max-h-[400px] overflow-y-auto">
+                                        ${globalSchedule.map(s => {
+                                            const tName = globalTeachers.find(t => t.id == s.teacherId)?.name || 'Desconhecido';
+                                            return `<div class="flex justify-between items-center p-3 bg-[#111] border-l-2 ${editingId === s.id ? 'border-blue-500 bg-blue-900/20' : 'border-[#EEBC5A]'}">
+                                                <div>
+                                                    <div class="text-[#EEBC5A] font-bold text-xs">${s.date.split('-').reverse().join('/')}</div>
+                                                    <div class="text-white text-sm font-medium">${tName} <span class="text-gray-500 text-xs ml-1">(${s.class})</span></div>
+                                                </div>
+                                                <div class="flex gap-2">
+                                                    <button onclick="window.ebd.editItem(${s.id})" class="text-gray-400 hover:text-blue-500"><i class="fas fa-pencil-alt"></i></button>
+                                                    <button onclick="window.ebd.deleteItem('deleteSchedule', ${s.id})" class="text-gray-400 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                                                </div>
+                                            </div>`
+                                        }).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
             }
 
-            function editItem(id) { editingId = id; renderApp(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+            function editItem(id) {
+                editingId = id;
+                renderApp();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
             function cancelEdit() { editingId = null; renderApp(); }
 
             async function handleAddSchedule(e) {
                 e.preventDefault();
+                // Simplificado para escala simples (sem capa de evento, usa foto do professor no display)
                 const payload = {
                     action: editingId ? 'updateSchedule' : 'addSchedule',
                     id: editingId,
                     date: document.getElementById('newSchedDate').value,
                     teacherId: document.getElementById('newSchedTeacher').value,
-                    title: 'Aula EBD',
-                    summary: '',
-                    link: '',
+                    title: "Aula EBD", // Default
+                    summary: "", // Default
+                    link: "", // Default
                     class: document.getElementById('newSchedClass').value,
                     isUpload: false,
-                    cover: ''
+                    cover: ""
                 };
                 await sendToApi(payload);
-                if (editingId) cancelEdit();
+                if(editingId) cancelEdit();
             }
 
             async function handleAddTeacher(e) {
                 e.preventDefault();
                 const file = document.getElementById('newTeacherFile').files[0];
                 const payload = { action: 'addTeacher', name: document.getElementById('newTeacherName').value, isUpload: !!file };
-                if (file) {
-                    payload.fileName = file.name;
-                    payload.mimeType = file.type;
+                if(file) {
+                    payload.fileName = file.name; payload.mimeType = file.type;
                     payload.fileData = await toBase64(file);
-                } else payload.photo = '#';
+                } else payload.photo = "https://via.placeholder.com/150";
                 sendToApi(payload);
             }
 
-            function deleteItem(act, id) {
-                if (confirm('Apagar?')) sendToApi({ action: act, id: id });
+            function deleteItem(act, id) { if(confirm("Apagar?")) sendToApi({action: act, id}); }
+            function toBase64(file) { return new Promise((r, j) => { const fr = new FileReader(); fr.readAsDataURL(file); fr.onload = () => r(fr.result.split(',')[1]); fr.onerror = j; }); }
+            
+            function showToast(msg) {
+                const t = document.getElementById('toast');
+                if(t) {
+                    t.innerText = msg;
+                    t.classList.remove('translate-y-32', 'opacity-0');
+                    setTimeout(() => t.classList.add('translate-y-32', 'opacity-0'), 3000);
+                }
             }
-
-            function toBase64(file) {
-                return new Promise(function(r, j) {
-                    const fr = new FileReader();
-                    fr.readAsDataURL(file);
-                    fr.onload = function() { r(fr.result.split(',')[1]); };
-                    fr.onerror = j;
-                });
+            function toggleLoginModal() { 
+                const m = document.getElementById('ebd-login-modal'); 
+                m.classList.toggle('hidden'); m.classList.toggle('flex');
             }
-
-            function toggleLoginModal() {
-                const m = document.getElementById('ebd-login-modal');
-                m.classList.toggle('hidden');
-                m.classList.toggle('flex');
-            }
-
             function handleLogin(e) {
                 e.preventDefault();
-                if (document.getElementById('ebdUsername').value === 'ebd2026' && document.getElementById('ebdPassword').value === '2026') {
-                    currentUser = 'admin';
-                    toggleLoginModal();
-                    renderApp();
-                } else window.showToast('❌ Senha inválida');
+                if(document.getElementById('ebdUsername').value === 'ebd2026' && document.getElementById('ebdPassword').value === '2026') {
+                    currentUser = 'admin'; toggleLoginModal(); renderApp();
+                } else showToast("Senha inválida");
             }
-
             function logout() { currentUser = null; renderApp(); }
 
+            // Expose public methods
             return {
-                fetchInitialData: fetchInitialData,
-                toggleLoginModal: toggleLoginModal,
-                handleLogin: handleLogin,
-                logout: logout,
-                handleAddSchedule: handleAddSchedule,
-                handleAddTeacher: handleAddTeacher,
-                deleteItem: deleteItem,
-                editItem: editItem,
-                cancelEdit: cancelEdit
+                fetchInitialData,
+                toggleLoginModal,
+                handleLogin,
+                logout,
+                handleAddSchedule,
+                handleAddTeacher,
+                deleteItem,
+                editItem,
+                cancelEdit
             };
         })();
 
-        // ═══════════════════════════════════════════════════════════════
-        // INICIALIZAÇÃO
-        // ═══════════════════════════════════════════════════════════════
-        const init = async function() {
+        // --- INIT ---
+        const init = () => {
             document.getElementById('current-year').textContent = new Date().getFullYear();
             setupNav();
-            await loadSiteConfig();
             loadData();
         };
 
