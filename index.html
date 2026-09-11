@@ -30,6 +30,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
+    <!-- Preconnect para o otimizador de imagens -->
+    <link rel="preconnect" href="https://wsrv.nl">
+
     <script>
         tailwind.config = {
             theme: {
@@ -683,17 +686,23 @@
             cacheTime: 3600000 // 1 Hora em milissegundos
         };
 
-        // --- OTIMIZAÇÃO DE IMAGENS (ImgBB) ---
-        // Converte URLs PNG do ImgBB para JPG e reduz tamanho sem perder qualidade visual
+        // --- OTIMIZAÇÃO DE IMAGENS (Proxy wsrv.nl) ---
+        // Redimensiona e converte para WebP automaticamente, sem alterar a URL original
+        // Cache global do Cloudflare = carregamento instantâneo após 1ª visita
         const optimizeImage = (url, width = 800) => {
             if (!url || typeof url !== 'string') return url;
             
-            // Detecta URLs do ImgBB
-            if (url.includes('i.ibb.co')) {
-                // Troca .png por .jpg (mesma imagem, formato mais leve)
-                let optimized = url.replace(/\.png$/i, '.jpg');
-                return optimized;
+            // Se já for uma URL do proxy, retorna como está
+            if (url.includes('wsrv.nl')) return url;
+            
+            // Detecta URLs http/https (ImgBB, Google Drive, etc)
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+                // wsrv.nl: proxy gratuito que redimensiona, converte para WebP e faz cache global
+                // w=largura, q=qualidade, output=webp, we=1 (sem upscale), il (inline)
+                const encodedUrl = encodeURIComponent(url.replace(/^https?:\/\//, ''));
+                return `https://wsrv.nl/?url=${encodedUrl}&w=${width}&q=75&output=webp&we=1&il`;
             }
+            
             return url;
         };
 
@@ -815,7 +824,7 @@
                 const realIndex = data.length - 1 - index;
 
                 const imgUrl = item.coverUrl || item.capa || item.coverImageUrl;
-                const imgHtml = imgUrl ? `<img src="${optimizeImage(imgUrl)}" loading="lazy" decoding="async" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display='none'">` : '';
+                const imgHtml = imgUrl ? `<img src="${optimizeImage(imgUrl, 100)}" loading="lazy" decoding="async" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display='none'">` : '';
 
                 html += `
                 <div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">
@@ -933,7 +942,7 @@
                     
                     const updatePreview = (url) => {
                         if(url) {
-                            preview.src = optimizeImage(url);
+                            preview.src = optimizeImage(url, 600);
                             preview.classList.remove('hidden');
                         } else {
                             preview.classList.add('hidden');
@@ -1070,7 +1079,8 @@
             const title = document.getElementById('modal-title');
             const desc = document.getElementById('modal-desc');
 
-            img.src = optimizeImage(event.coverUrl) || 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
+            // Imagem em tamanho maior para o modal (1000px de largura, qualidade 80)
+            img.src = optimizeImage(event.coverUrl, 1000) || 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
             img.onerror = () => img.src = 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
             
             let dateObj = parseDate(event.date);
@@ -1142,7 +1152,8 @@
                 const day = date.getDate().toString().padStart(2, '0');
                 const month = date.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase().replace('.', '');
                 const statusBadge = getEventStatusBadge(data.date, data.endDate);
-                const optimizedCover = optimizeImage(data.coverUrl);
+                // Cards de evento: 600px de largura em WebP = ~40-60KB
+                const optimizedCover = optimizeImage(data.coverUrl, 600);
                 
                 let timeString = date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                 if (data.endDate) {
@@ -1191,7 +1202,7 @@
             }
 
             if (type === 'ministerio') {
-                const optimizedCapa = optimizeImage(data.capa);
+                const optimizedCapa = optimizeImage(data.capa, 600);
                 return `
                 <div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95">
                     <div class="relative h-56 bg-brand-dark/50">
@@ -1227,7 +1238,7 @@
             }
 
             if (type === 'talento') {
-                const optimizedCapa = optimizeImage(data.capa);
+                const optimizedCapa = optimizeImage(data.capa, 600);
                 return `
                 <div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">
                     <div class="relative h-64 sm:h-72 bg-brand-dark/50">
@@ -1261,7 +1272,7 @@
             }
             
             if (type === 'album') {
-                const optimizedCover = optimizeImage(data.coverImageUrl);
+                const optimizedCover = optimizeImage(data.coverImageUrl, 500);
                 return `
                 <a href="${data.albumUrl}" target="_blank" class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform bg-brand-dark/50">
                     <img src="${optimizedCover}" 
@@ -1302,7 +1313,8 @@
             for(let i=0; i<3; i++) {
                 if(marketingQueue[i]) {
                     const img = document.createElement('img');
-                    img.src = optimizeImage(marketingQueue[i].image);
+                    // Slider: imagens grandes (900px) em WebP para exibição em destaque
+                    img.src = optimizeImage(marketingQueue[i].image, 900);
                     img.className = `depth-layer ${i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2'}`;
                     img.dataset.index = i;
                     img.loading = 'lazy';
@@ -1364,7 +1376,7 @@
                     queueContainer.innerHTML = ''; 
                     for(let i=0; i<3; i++) {
                         const img = document.createElement('img');
-                        img.src = optimizeImage(marketingQueue[i].image);
+                        img.src = optimizeImage(marketingQueue[i].image, 900);
                         img.className = `depth-layer ${i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2'}`;
                         img.loading = 'lazy';
                         img.decoding = 'async';
@@ -1380,7 +1392,7 @@
                 updateMarketingText(marketingQueue[0]);
                 
                 const newMain = document.createElement('img');
-                newMain.src = optimizeImage(last.image);
+                newMain.src = optimizeImage(last.image, 900);
                 newMain.className = 'depth-layer product-hidden-left';
                 newMain.loading = 'lazy';
                 newMain.decoding = 'async';
@@ -1427,7 +1439,7 @@
 
              if (pastor && pastor.length > 0 && pastor[0].capa) {
                 const pastorContainer = document.getElementById('pastor-img-container');
-                if (pastorContainer) pastorContainer.innerHTML = `<img src="${optimizeImage(pastor[0].capa)}" loading="lazy" decoding="async" alt="Pastor Lourival Soares" class="w-full h-full object-cover">`;
+                if (pastorContainer) pastorContainer.innerHTML = `<img src="${optimizeImage(pastor[0].capa, 200)}" loading="lazy" decoding="async" alt="Pastor Lourival Soares" class="w-full h-full object-cover">`;
             }
 
             if (events && events.length) {
@@ -1754,7 +1766,7 @@
                          html += `
                             <div class="glass-panel rounded-xl overflow-hidden flex flex-col items-center text-center p-6 border border-white/5 hover:border-[#EEBC5A]/50 transition-all group active:scale-95 relative bg-[#1e293b]/40">
                                 <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-[#EEBC5A] mb-3 shadow-[0_0_15px_rgba(238,188,90,0.3)] bg-[#1e293b]">
-                                    <img src="${optimizeImage(t.photo) || 'https://via.placeholder.com/150'}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=random'">
+                                    <img src="${optimizeImage(t.photo, 200) || 'https://via.placeholder.com/150'}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=random'">
                                 </div>
                                 <h3 class="text-base font-bold text-white mb-1 leading-tight">${t.name}</h3>
                                 <span class="text-[#EEBC5A] text-[10px] font-bold uppercase tracking-wider mb-3 block opacity-90 border border-[#EEBC5A]/30 px-2 py-0.5 rounded bg-[#EEBC5A]/10">${item.class || 'Geral'}</span>
@@ -1819,7 +1831,7 @@
                                         </div>
                                         <button class="bg-[#333] hover:bg-[#444] text-white px-4 rounded border border-[#555]"><i class="fas fa-plus"></i></button>
                                     </form>
-                                    <div class="mt-4 flex flex-wrap gap-2 max-h-40 overflow-y-auto">${globalTeachers.map(t => `<div class="bg-[#222] px-3 py-1 rounded-full border border-[#333] flex items-center gap-2 text-xs"><img src="${optimizeImage(t.photo)}" loading="lazy" decoding="async" class="w-4 h-4 rounded-full object-cover"><span class="text-gray-300">${t.name}</span><button onclick="window.ebd.deleteItem('deleteTeacher', ${t.id})" class="text-[#EEBC5A] hover:text-white ml-1">×</button></div>`).join('')}</div>
+                                    <div class="mt-4 flex flex-wrap gap-2 max-h-40 overflow-y-auto">${globalTeachers.map(t => `<div class="bg-[#222] px-3 py-1 rounded-full border border-[#333] flex items-center gap-2 text-xs"><img src="${optimizeImage(t.photo, 80)}" loading="lazy" decoding="async" class="w-4 h-4 rounded-full object-cover"><span class="text-gray-300">${t.name}</span><button onclick="window.ebd.deleteItem('deleteTeacher', ${t.id})" class="text-[#EEBC5A] hover:text-white ml-1">×</button></div>`).join('')}</div>
                                 </div>
                                 <div class="bg-[#181818] p-6 rounded border border-[#333]">
                                     <h3 class="text-lg font-bold text-white mb-4">Escala Atual</h3>
