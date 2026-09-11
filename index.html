@@ -683,6 +683,20 @@
             cacheTime: 3600000 // 1 Hora em milissegundos
         };
 
+        // --- OTIMIZAÇÃO DE IMAGENS (ImgBB) ---
+        // Converte URLs PNG do ImgBB para JPG e reduz tamanho sem perder qualidade visual
+        const optimizeImage = (url, width = 800) => {
+            if (!url || typeof url !== 'string') return url;
+            
+            // Detecta URLs do ImgBB
+            if (url.includes('i.ibb.co')) {
+                // Troca .png por .jpg (mesma imagem, formato mais leve)
+                let optimized = url.replace(/\.png$/i, '.jpg');
+                return optimized;
+            }
+            return url;
+        };
+
         // Estado Global de Eventos para o Modal
         let globalEvents = [];
         let isMarketingAnimating = false;
@@ -696,16 +710,11 @@
         };
 
         // --- CACHE SYSTEM (LOCAL STORAGE) ---
-        // Alterado para suportar carregamento imediato
         const fetchWithCache = async (url, key, force = false) => {
             const cached = localStorage.getItem(key);
             
-            // Se não forçar, mas existir cache, a função LoadData cuidará do retorno imediato
-            // Esta função agora foca em buscar dados novos se necessário ou retornar o que tem
-            
             if (!force && cached) {
                 const data = JSON.parse(cached);
-                // Retorna cache se for recente
                 if (Date.now() - data.timestamp < CONFIG.cacheTime) {
                     return data.content;
                 }
@@ -753,7 +762,6 @@
 
         window.adminLogin = () => {
             const pass = document.getElementById('admin-password').value;
-            // Validação simples client-side, a real acontece no doPost
             if(pass) {
                 window.adminState.password = pass;
                 window.adminState.isAuthenticated = true;
@@ -769,7 +777,6 @@
         window.loadAdminTab = async (tab) => {
             window.adminState.currentTab = tab;
             
-            // UI Update Tabs
             document.querySelectorAll('.admin-tab').forEach(b => {
                 if(b.dataset.tab === tab) b.classList.add('active', 'bg-white/10', 'text-white');
                 else b.classList.remove('active', 'bg-white/10', 'text-white');
@@ -778,7 +785,6 @@
             const contentArea = document.getElementById('admin-content-area');
             contentArea.innerHTML = '<div class="text-center py-10"><i class="fas fa-spinner fa-spin text-3xl text-brand-yellow"></i><p class="mt-2 text-gray-400">Carregando dados...</p></div>';
             
-            // Força busca sem cache para admin
             try {
                 const data = await fetchWithCache(`${CONFIG.scriptUrl}?sheet=${tab}`, `admin_${tab}`, true);
                 window.adminState.currentData = data;
@@ -795,8 +801,7 @@
                 return;
             }
 
-            // Identificar colunas principais baseada na aba
-            let displayKey = Object.keys(data[0])[0]; // Padrão: primeira coluna
+            let displayKey = Object.keys(data[0])[0];
             if(data[0].name) displayKey = 'name';
             if(data[0].nome) displayKey = 'nome';
             if(data[0].titulo) displayKey = 'titulo';
@@ -804,17 +809,13 @@
 
             let html = '<div class="grid gap-2">';
             
-            // AJUSTE 2: Reverte a ordem para mostrar o último adicionado no topo
-            // [...data] cria uma cópia para não inverter a referência original
             const displayData = [...data].reverse();
 
             displayData.forEach((item, index) => {
-                // Como invertemos a visualização, precisamos calcular o índice original real para edição
                 const realIndex = data.length - 1 - index;
 
-                // Tenta encontrar uma imagem para a prévia
                 const imgUrl = item.coverUrl || item.capa || item.coverImageUrl;
-                const imgHtml = imgUrl ? `<img src="${imgUrl}" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display='none'">` : '';
+                const imgHtml = imgUrl ? `<img src="${optimizeImage(imgUrl)}" loading="lazy" decoding="async" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display='none'">` : '';
 
                 html += `
                 <div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">
@@ -835,7 +836,6 @@
             container.innerHTML = html;
         };
         
-        // Schemas para formulários
         const SCHEMAS = {
             eventos: [
                 {key: 'name', label: 'Nome do Evento', type: 'text'},
@@ -887,13 +887,12 @@
             let itemData = {};
             if(mode === 'edit' && index !== null) {
                 itemData = window.adminState.currentData[index];
-                btn.dataset.originalId = Object.values(itemData)[0]; // Pega o primeiro valor como ID
+                btn.dataset.originalId = Object.values(itemData)[0];
             }
             
             btn.dataset.mode = mode;
             btn.dataset.index = index;
 
-            // Gerar Campos
             schema.forEach(field => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'flex flex-col gap-1';
@@ -914,9 +913,7 @@
                 input.className = 'admin-field';
                 input.id = `field-${field.key}`;
                 
-                // Preencher valor
                 let val = itemData[field.key] || '';
-                // Formatar data para input datetime-local se necessário
                 if(field.type === 'datetime-local' && val) {
                     try {
                         const d = new Date(val);
@@ -929,25 +926,21 @@
                 wrapper.appendChild(label);
                 wrapper.appendChild(input);
 
-                // --- IMAGE PREVIEW LOGIC (ADICIONADO) ---
                 if (['coverUrl', 'capa', 'coverImageUrl'].includes(field.key)) {
                     const preview = document.createElement('img');
                     preview.className = 'w-full h-40 object-contain bg-black/20 rounded mt-2 border border-white/5 hidden';
-                    preview.onerror = () => { preview.classList.add('hidden'); }; // Hide on error
+                    preview.onerror = () => { preview.classList.add('hidden'); };
                     
                     const updatePreview = (url) => {
                         if(url) {
-                            preview.src = url;
+                            preview.src = optimizeImage(url);
                             preview.classList.remove('hidden');
                         } else {
                             preview.classList.add('hidden');
                         }
                     };
 
-                    // Initial state
                     updatePreview(input.value);
-
-                    // Listener
                     input.addEventListener('input', (e) => updatePreview(e.target.value));
                     
                     wrapper.appendChild(preview);
@@ -998,32 +991,26 @@
                 const result = await res.json();
                 
                 if(result.success) {
-                    // AJUSTE 3: ATUALIZAÇÃO EM TEMPO REAL
-                    // 1. Atualiza o estado local IMEDIATAMENTE
                     if (mode === 'edit' && index) {
                         window.adminState.currentData[index] = newData;
                     } else {
-                        // Se for novo, adiciona ao final (a UI inverte depois)
                         window.adminState.currentData.push(newData);
                     }
 
-                    // 2. Salva no cache LocalStorage para a próxima vez ser rápida
                     const cacheKey = `admin_${tab}`;
                     localStorage.setItem(cacheKey, JSON.stringify({
                         timestamp: Date.now(),
                         content: window.adminState.currentData
                     }));
                     
-                    // Também atualiza o cache público correspondente para a home atualizar
                     const publicCacheKey = `cache_${tab}_v2`;
                     localStorage.setItem(publicCacheKey, JSON.stringify({
                         timestamp: Date.now(),
                         content: window.adminState.currentData
                     }));
 
-                    // 3. Atualiza a UI Admin e a UI Principal
                     renderAdminTable(window.adminState.currentData, tab);
-                    loadData(); // Atualiza a página principal instantaneamente
+                    loadData();
 
                     alert('Salvo com sucesso!');
                     closeEditModal();
@@ -1043,7 +1030,7 @@
             
             const tab = window.adminState.currentTab;
             const item = window.adminState.currentData[index];
-            const originalId = Object.values(item)[0]; // Primeiro valor como ID
+            const originalId = Object.values(item)[0];
             
             try {
                  const res = await fetch(CONFIG.scriptUrl, {
@@ -1059,7 +1046,6 @@
                 const result = await res.json();
                  if(result.success) {
                     alert('Excluído com sucesso!');
-                    // Remove local e atualiza
                     window.adminState.currentData.splice(index, 1);
                     renderAdminTable(window.adminState.currentData, tab);
                     loadAdminTab(tab); 
@@ -1084,10 +1070,9 @@
             const title = document.getElementById('modal-title');
             const desc = document.getElementById('modal-desc');
 
-            img.src = event.coverUrl || 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
+            img.src = optimizeImage(event.coverUrl) || 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
             img.onerror = () => img.src = 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
             
-            // Tratamento robusto de data para exibição
             let dateObj = parseDate(event.date);
             
             dateEl.textContent = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
@@ -1127,22 +1112,16 @@
         });
 
         // --- COMPONENTES ---
-        // Função auxiliar para gerar o badge de status do evento
         const getEventStatusBadge = (start, end) => {
             const now = new Date();
-            // Parser robusto aqui também
             const startDate = parseDate(start);
-            // Se não tiver data fim, assume 2 horas de duração por padrão para cálculo de "Em andamento"
             const endDate = end ? parseDate(end) : new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
 
             if (now < startDate) {
-                // Futuro
                 return `<span class="bg-blue-500/20 text-blue-300 text-xs font-bold px-2 py-1 rounded border border-blue-500/30 flex items-center gap-1"><i class="far fa-clock"></i> Em Breve</span>`;
             } else if (now >= startDate && now <= endDate) {
-                // Em andamento
                 return `<span class="bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded border border-green-500/30 flex items-center gap-1 animate-pulse"><i class="fas fa-circle text-[8px]"></i> Acontecendo Agora</span>`;
             } else {
-                // Passado (mas ainda visível hoje)
                 return `<span class="bg-gray-500/20 text-gray-400 text-xs font-bold px-2 py-1 rounded border border-gray-500/30 flex items-center gap-1"><i class="fas fa-check"></i> Encerrado</span>`;
             }
         };
@@ -1163,8 +1142,8 @@
                 const day = date.getDate().toString().padStart(2, '0');
                 const month = date.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase().replace('.', '');
                 const statusBadge = getEventStatusBadge(data.date, data.endDate);
+                const optimizedCover = optimizeImage(data.coverUrl);
                 
-                // Formatação de horário (Início - Fim se tiver)
                 let timeString = date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                 if (data.endDate) {
                     const endTime = parseDate(data.endDate).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
@@ -1173,11 +1152,13 @@
 
                 return `
                 <div class="glass-panel group rounded-2xl overflow-hidden hover:-translate-y-2 active:scale-95 transition-all duration-300 flex flex-col h-full bg-brand-surface/50">
-                    <!-- aspect-[4/5] para cartazes verticais (1080x1350) -->
-                    <div class="relative w-full aspect-[4/5] overflow-hidden cursor-pointer" onclick="window.openEventModal(${data._id})">
-                        <img src="${data.coverUrl}" onerror="this.src='https://placehold.co/1080x1350/1e293b/FFFFFF?text=Evento'" class="w-full h-full object-cover">
+                    <div class="relative w-full aspect-[4/5] overflow-hidden cursor-pointer bg-brand-dark/50" onclick="window.openEventModal(${data._id})">
+                        <img src="${optimizedCover}" 
+                             loading="lazy" 
+                             decoding="async"
+                             onerror="this.src='https://placehold.co/1080x1350/1e293b/FFFFFF?text=Evento'" 
+                             class="w-full h-full object-cover">
                         
-                        <!-- Data Badge -->
                         <div class="absolute top-4 left-4 bg-brand-dark/90 backdrop-blur-sm rounded-lg p-2 text-center min-w-[60px] border border-white/10 shadow-lg z-10">
                             <span class="block text-xl font-bold text-white">${day}</span>
                             <span class="block text-xs font-bold text-brand-yellow">${month}</span>
@@ -1210,10 +1191,15 @@
             }
 
             if (type === 'ministerio') {
+                const optimizedCapa = optimizeImage(data.capa);
                 return `
                 <div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95">
-                    <div class="relative h-56">
-                        <img src="${data.capa}" onerror="this.src='https://placehold.co/600x400/1e293b/FFFFFF?text=${encodeURIComponent(data.nome)}'" class="w-full h-full object-cover">
+                    <div class="relative h-56 bg-brand-dark/50">
+                        <img src="${optimizedCapa}" 
+                             loading="lazy" 
+                             decoding="async"
+                             onerror="this.src='https://placehold.co/600x400/1e293b/FFFFFF?text=${encodeURIComponent(data.nome)}'" 
+                             class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>
                         <div class="absolute bottom-4 left-4">
                             <h3 class="text-2xl font-bold text-white">${data.nome}</h3>
@@ -1221,12 +1207,10 @@
                     </div>
                     <div class="p-6">
                         <div class="space-y-4 mb-6">
-                            <!-- Lideres -->
                             <div class="flex items-start gap-3">
                                 <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-crown text-brand-yellow"></i></div>
                                 <div><p class="text-xs text-gray-500 uppercase font-bold">Liderança</p><p class="text-sm text-gray-200">${data.lideres || 'A definir'}</p></div>
                             </div>
-                            <!-- Regentes (Novo) -->
                             ${data.regentes ? `
                             <div class="flex items-start gap-3">
                                 <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-users text-blue-400"></i></div>
@@ -1234,7 +1218,6 @@
                             </div>` : ''}
                         </div>
                         
-                        <!-- Botão Whatsapp (Só mostra se tiver telefone) -->
                         ${data.telefone ? `
                         <a href="https://wa.me/55${String(data.telefone || '').replace(/\D/g,'')}" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300">
                             <i class="fab fa-whatsapp"></i> Entrar em Contato
@@ -1244,10 +1227,15 @@
             }
 
             if (type === 'talento') {
+                const optimizedCapa = optimizeImage(data.capa);
                 return `
                 <div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">
-                    <div class="relative h-64 sm:h-72">
-                        <img src="${data.capa}" onerror="this.src='https://placehold.co/600x400/1e293b/FFFFFF?text=${encodeURIComponent(data.nome)}'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="relative h-64 sm:h-72 bg-brand-dark/50">
+                        <img src="${optimizedCapa}" 
+                             loading="lazy" 
+                             decoding="async"
+                             onerror="this.src='https://placehold.co/600x400/1e293b/FFFFFF?text=${encodeURIComponent(data.nome)}'" 
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                         <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>
                         <div class="absolute bottom-4 left-4 right-4">
                             <h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">${data.nome}</h3>
@@ -1258,13 +1246,11 @@
                         <p class="text-gray-300 text-sm mb-6 flex-grow leading-relaxed">${data.descricao || 'Sem descrição.'}</p>
                         
                         <div class="flex flex-col gap-3">
-                            <!-- Botão Video (Só mostra se tiver link de video - Futuro) -->
                             ${data.video ? `
                             <a href="${data.video}" target="_blank" class="flex items-center justify-center gap-2 w-full bg-red-600/10 text-red-500 hover:bg-red-600 hover:text-white border border-red-600/20 py-3 rounded-xl font-bold transition-all duration-300">
                                 <i class="fab fa-youtube"></i> Ver Vídeo
                             </a>` : ''}
 
-                            <!-- Botão Whatsapp -->
                             ${data.telefone ? `
                             <a href="https://wa.me/55${String(data.telefone || '').replace(/\D/g,'')}" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300">
                                 <i class="fab fa-whatsapp"></i> Contato
@@ -1275,9 +1261,14 @@
             }
             
             if (type === 'album') {
-                 return `
-                <a href="${data.albumUrl}" target="_blank" class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform">
-                    <img src="${data.coverImageUrl}" onerror="this.src='https://placehold.co/400x400/1e293b/FFFFFF?text=Galeria'" class="w-full h-full object-cover">
+                const optimizedCover = optimizeImage(data.coverImageUrl);
+                return `
+                <a href="${data.albumUrl}" target="_blank" class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform bg-brand-dark/50">
+                    <img src="${optimizedCover}" 
+                         loading="lazy" 
+                         decoding="async"
+                         onerror="this.src='https://placehold.co/400x400/1e293b/FFFFFF?text=Galeria'" 
+                         class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
                         <div class="text-center p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                             <i class="fas fa-images text-3xl text-brand-yellow mb-2"></i>
@@ -1299,7 +1290,6 @@
             
             if (sourceEvents.length === 0) return;
             
-            // Garante pelo menos 3 itens para a animação funcionar bem
             while (sourceEvents.length < 3) {
                 sourceEvents = [...sourceEvents, ...sourceEvents];
             }
@@ -1308,14 +1298,15 @@
                 id: e._id, title: e.name, desc: e.description, image: e.coverUrl
             }));
             
-            // Fill queue elements (Renderiza os 3 primeiros visuais para o efeito 3D)
             queueContainer.innerHTML = '';
             for(let i=0; i<3; i++) {
                 if(marketingQueue[i]) {
                     const img = document.createElement('img');
-                    img.src = marketingQueue[i].image;
+                    img.src = optimizeImage(marketingQueue[i].image);
                     img.className = `depth-layer ${i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2'}`;
                     img.dataset.index = i;
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
                     img.onerror = function() { this.src = 'https://placehold.co/1080x1350/1e293b/FFFFFF?text=Cartaz'; };
                     queueContainer.appendChild(img);
                 }
@@ -1373,8 +1364,10 @@
                     queueContainer.innerHTML = ''; 
                     for(let i=0; i<3; i++) {
                         const img = document.createElement('img');
-                        img.src = marketingQueue[i].image;
+                        img.src = optimizeImage(marketingQueue[i].image);
                         img.className = `depth-layer ${i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2'}`;
+                        img.loading = 'lazy';
+                        img.decoding = 'async';
                         img.onerror = function() { this.src = 'https://placehold.co/1080x1350/1e293b/FFFFFF?text=Cartaz'; };
                         queueContainer.appendChild(img);
                     }
@@ -1387,8 +1380,10 @@
                 updateMarketingText(marketingQueue[0]);
                 
                 const newMain = document.createElement('img');
-                newMain.src = last.image;
+                newMain.src = optimizeImage(last.image);
                 newMain.className = 'depth-layer product-hidden-left';
+                newMain.loading = 'lazy';
+                newMain.decoding = 'async';
                 newMain.onerror = function() { this.src = 'https://placehold.co/1080x1350/1e293b/FFFFFF?text=Cartaz'; };
                 queueContainer.prepend(newMain);
                 
@@ -1404,27 +1399,22 @@
             }
         };
 
-        // Helper para datas robusto
         const parseDate = (dateStr) => {
             if(!dateStr) return new Date();
             if(dateStr instanceof Date) return dateStr;
             
-            // Tenta formato ISO
             let d = new Date(dateStr);
             if(!isNaN(d.getTime())) return d;
             
-            // Tenta PT-BR (dd/mm/yyyy)
             if (typeof dateStr === 'string') {
                 const parts = dateStr.split('/');
                 if(parts.length === 3) {
-                    // Assume dd/mm/yyyy -> yyyy-mm-dd
                     return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
                 }
             }
-            return new Date(); // Fallback today
+            return new Date();
         };
 
-        // AJUSTE 1: Separei a lógica de renderização para permitir chamada dupla (Cache instantâneo + Rede)
         const renderComponents = (events, avisos, ministerios, albums, talentos, pastor) => {
              const containers = {
                 avisos: document.getElementById('avisos-container'),
@@ -1437,17 +1427,14 @@
 
              if (pastor && pastor.length > 0 && pastor[0].capa) {
                 const pastorContainer = document.getElementById('pastor-img-container');
-                if (pastorContainer) pastorContainer.innerHTML = `<img src="${pastor[0].capa}" alt="Pastor Lourival Soares" class="w-full h-full object-cover">`;
+                if (pastorContainer) pastorContainer.innerHTML = `<img src="${optimizeImage(pastor[0].capa)}" loading="lazy" decoding="async" alt="Pastor Lourival Soares" class="w-full h-full object-cover">`;
             }
 
             if (events && events.length) {
-                // NORMALIZAÇÃO ROBUSTA DE CHAVES
                 const normalizedEvents = events.map((e, i) => {
-                    // Helper para encontrar valor case-insensitive e variações
                     const getVal = (keys) => {
                         for(const k of keys) {
                             if(e[k]) return e[k];
-                            // Tenta encontrar chave que contenha o nome (ex: datadoevento)
                             const foundKey = Object.keys(e).find(oky => oky.toLowerCase().includes(k.toLowerCase()));
                             if(foundKey) return e[foundKey];
                         }
@@ -1472,7 +1459,6 @@
             if(globalEvents && globalEvents.length) {
                 const today = new Date(); today.setHours(0, 0, 0, 0);
                 
-                // Ordenação e Filtro com Parse Robusto
                 const sorted = globalEvents.sort((a,b) => parseDate(a.date) - parseDate(b.date));
                 const future = sorted.filter(e => {
                     const eventDay = parseDate(e.date); 
@@ -1490,17 +1476,14 @@
         };
 
         const loadData = async () => {
-            // 1. TENTATIVA IMEDIATA DE CARREGAR DO CACHE (Sem esperar rede)
             const cachedKeys = ['cache_eventos_v2', 'cache_avisos_v2', 'cache_ministerios_v2', 'cache_albuns_v2', 'cache_talentos_v2', 'cache_pastor_v2'];
             const cachedData = cachedKeys.map(key => {
                 const saved = localStorage.getItem(key);
                 return saved ? JSON.parse(saved).content : [];
             });
             
-            // Renderiza o que tivermos em cache imediatamente
             renderComponents(...cachedData);
 
-            // 2. BUSCA ATUALIZADA NA REDE (Em background)
             try {
                 const [events, avisos, ministerios, albums, talentos, pastor] = await Promise.all([
                     fetchWithCache(`${CONFIG.scriptUrl}?sheet=eventos`, 'cache_eventos_v2'),
@@ -1511,7 +1494,6 @@
                     fetchWithCache(`${CONFIG.scriptUrl}?sheet=pastor`, 'cache_pastor_v2')
                 ]);
 
-                // Re-renderiza com os dados (potencialmente) novos
                 renderComponents(events, avisos, ministerios, albums, talentos, pastor);
             } catch (e) {
                 console.log("Usando versão em cache devido a erro de rede ou cache hit");
@@ -1523,7 +1505,6 @@
             const container = document.getElementById('live-container');
             const domain = window.location.hostname; 
 
-            // Função para renderizar o player (Reutilizável)
             const renderPlayer = (videoId = null) => {
                 let embedSrc = '';
                 const params = `autoplay=1&modestbranding=1&rel=0&playsinline=1&origin=https://${domain}`;
@@ -1567,7 +1548,6 @@
             };
 
             try {
-                // Tenta buscar o ID específico pela API (É mais rápido e preciso)
                 const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CONFIG.youtubeChannel}&eventType=live&type=video&key=${CONFIG.youtubeKey}`);
                 
                 if (!res.ok) throw new Error('API Error');
@@ -1669,7 +1649,6 @@
             }
 
             async function fetchInitialData() {
-                // Evita recarregar se já tiver dados, a menos que seja forçado
                 if(globalSchedule.length > 0 && !isOffline) { renderApp(); return; }
                 
                 setLoading(true);
@@ -1716,14 +1695,13 @@
                         renderApp(); showToast("Salvo com sucesso!");
                     } else throw new Error(data.message);
                 } catch(e) { showToast("Erro ao salvar"); } 
-                finally { setLoading(false); } // Will trigger render inside loading false logic if needed, but renderApp handles it
-                renderApp(); // Re-render to clear spinner
+                finally { setLoading(false); }
+                renderApp();
             }
 
             function renderApp() {
                 const el = document.getElementById('ebd-content-area');
                 if(!el) return;
-                // No clearing here as render functions will overwrite innerHTML
                 if(heroInterval) clearInterval(heroInterval);
                 currentUser === 'admin' ? renderAdmin(el) : renderPublic(el);
             }
@@ -1740,7 +1718,6 @@
                     return;
                 }
 
-                // Grouping
                 const groups = {};
                 sorted.forEach(item => {
                     const dateParts = item.date.split('-');
@@ -1748,7 +1725,6 @@
                     const month = dateObj.toLocaleDateString('pt-BR', { month: 'long' });
                     const monthCap = month.charAt(0).toUpperCase() + month.slice(1);
                     const year = dateObj.getFullYear();
-                    // Simple week calculation
                     const weekNum = Math.ceil(dateParts[2] / 7);
                     
                     const label = `${weekNum}ª Semana de ${monthCap} / ${year}`;
@@ -1771,14 +1747,14 @@
                     `;
                     
                     items.forEach(item => {
-                         const dateParts = item.date.split('-'); // yyyy-mm-dd
+                         const dateParts = item.date.split('-');
                          const dateFormatted = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
                          const t = globalTeachers.find(x => x.id == item.teacherId) || {name: 'Professor', photo: ''};
                         
                          html += `
                             <div class="glass-panel rounded-xl overflow-hidden flex flex-col items-center text-center p-6 border border-white/5 hover:border-[#EEBC5A]/50 transition-all group active:scale-95 relative bg-[#1e293b]/40">
                                 <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-[#EEBC5A] mb-3 shadow-[0_0_15px_rgba(238,188,90,0.3)] bg-[#1e293b]">
-                                    <img src="${t.photo || 'https://via.placeholder.com/150'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=random'">
+                                    <img src="${optimizeImage(t.photo) || 'https://via.placeholder.com/150'}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=random'">
                                 </div>
                                 <h3 class="text-base font-bold text-white mb-1 leading-tight">${t.name}</h3>
                                 <span class="text-[#EEBC5A] text-[10px] font-bold uppercase tracking-wider mb-3 block opacity-90 border border-[#EEBC5A]/30 px-2 py-0.5 rounded bg-[#EEBC5A]/10">${item.class || 'Geral'}</span>
@@ -1824,7 +1800,6 @@
                                     </div>
                                     <div><label class="block text-[10px] uppercase text-[#EEBC5A] font-bold mb-1">Classe</label><select id="newSchedClass" class="w-full input-dark bg-[#333]" required><option value="">Selecione...</option>${EBD_CLASSES.map(c => `<option value="${c}" ${editItem && editItem.class === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
                                     
-                                    <!-- Campos Ocultos/Opcionais para manter compatibilidade com API mas simplificar UI -->
                                     <input type="hidden" id="newSchedTitle" value="Aula EBD">
                                     <input type="hidden" id="newSchedSummary" value="">
                                     <input type="hidden" id="newSchedLink" value="">
@@ -1844,7 +1819,7 @@
                                         </div>
                                         <button class="bg-[#333] hover:bg-[#444] text-white px-4 rounded border border-[#555]"><i class="fas fa-plus"></i></button>
                                     </form>
-                                    <div class="mt-4 flex flex-wrap gap-2 max-h-40 overflow-y-auto">${globalTeachers.map(t => `<div class="bg-[#222] px-3 py-1 rounded-full border border-[#333] flex items-center gap-2 text-xs"><img src="${t.photo}" class="w-4 h-4 rounded-full object-cover"><span class="text-gray-300">${t.name}</span><button onclick="window.ebd.deleteItem('deleteTeacher', ${t.id})" class="text-[#EEBC5A] hover:text-white ml-1">×</button></div>`).join('')}</div>
+                                    <div class="mt-4 flex flex-wrap gap-2 max-h-40 overflow-y-auto">${globalTeachers.map(t => `<div class="bg-[#222] px-3 py-1 rounded-full border border-[#333] flex items-center gap-2 text-xs"><img src="${optimizeImage(t.photo)}" loading="lazy" decoding="async" class="w-4 h-4 rounded-full object-cover"><span class="text-gray-300">${t.name}</span><button onclick="window.ebd.deleteItem('deleteTeacher', ${t.id})" class="text-[#EEBC5A] hover:text-white ml-1">×</button></div>`).join('')}</div>
                                 </div>
                                 <div class="bg-[#181818] p-6 rounded border border-[#333]">
                                     <h3 class="text-lg font-bold text-white mb-4">Escala Atual</h3>
@@ -1878,15 +1853,14 @@
 
             async function handleAddSchedule(e) {
                 e.preventDefault();
-                // Simplificado para escala simples (sem capa de evento, usa foto do professor no display)
                 const payload = {
                     action: editingId ? 'updateSchedule' : 'addSchedule',
                     id: editingId,
                     date: document.getElementById('newSchedDate').value,
                     teacherId: document.getElementById('newSchedTeacher').value,
-                    title: "Aula EBD", // Default
-                    summary: "", // Default
-                    link: "", // Default
+                    title: "Aula EBD",
+                    summary: "",
+                    link: "",
                     class: document.getElementById('newSchedClass').value,
                     isUpload: false,
                     cover: ""
@@ -1929,7 +1903,6 @@
             }
             function logout() { currentUser = null; renderApp(); }
 
-            // Expose public methods
             return {
                 fetchInitialData,
                 toggleLoginModal,
