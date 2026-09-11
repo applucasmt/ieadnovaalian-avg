@@ -1358,7 +1358,7 @@
             
             if(items.length < 3) {
                  isMarketingAnimating = false;
-                 return;
+                return;
             }
 
             if(direction === 'next') {
@@ -1774,7 +1774,7 @@
                          const dateParts = item.date.split('-'); // yyyy-mm-dd
                          const dateFormatted = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
                          const t = globalTeachers.find(x => x.id == item.teacherId) || {name: 'Professor', photo: ''};
-                         
+                        
                          html += `
                             <div class="glass-panel rounded-xl overflow-hidden flex flex-col items-center text-center p-6 border border-white/5 hover:border-[#EEBC5A]/50 transition-all group active:scale-95 relative bg-[#1e293b]/40">
                                 <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-[#EEBC5A] mb-3 shadow-[0_0_15px_rgba(238,188,90,0.3)] bg-[#1e293b]">
