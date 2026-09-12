@@ -32,6 +32,7 @@
     
     <!-- Preconnect para o otimizador de imagens -->
     <link rel="preconnect" href="https://wsrv.nl">
+    <link rel="preconnect" href="https://w.behold.so">
 
     <script>
         tailwind.config = {
@@ -194,14 +195,14 @@
         .input-dark { background: #333; border: 1px solid #444; color: white; border-radius: 4px; padding: 12px 16px; }
         .input-dark:focus { outline: none; border-color: white; background: #444; }
 
-        /* --- ESTILOS DO WIDGET INSTAGRAM (SnapWidget) --- */
-        .snapwidget-widget {
+        /* --- ESTILOS DO WIDGET INSTAGRAM (Behold.so) --- */
+        behold-widget {
             display: block;
             width: 100%;
-            border: 0;
-            overflow: hidden;
-            border-radius: 12px;
-            background: rgba(0, 0, 0, 0.2);
+        }
+        /* Força os links do Behold a abrirem em nova aba */
+        behold-widget a {
+            text-decoration: none;
         }
     </style>
 </head>
@@ -426,7 +427,7 @@
                     <div id="upcoming-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-16 sm:mb-24"></div>
 
                     <!-- ============================================================ -->
-                    <!-- SEÇÃO INSTAGRAM - NOVA SEÇÃO DE DESTAQUE                     -->
+                    <!-- SEÇÃO INSTAGRAM (Behold.so)                                  -->
                     <!-- ============================================================ -->
                     <section id="instagram-section" class="mt-12 sm:mt-16">
                         <!-- Cabeçalho da Seção -->
@@ -450,17 +451,9 @@
                             </a>
                         </div>
 
-                        <!-- Widget do Instagram (SnapWidget) -->
+                        <!-- Widget do Instagram (Behold.so) -->
                         <div class="glass-panel rounded-2xl overflow-hidden p-2 sm:p-4 border border-white/10">
-                            <iframe 
-                                src="https://snapwidget.com/embed/1130560" 
-                                class="snapwidget-widget" 
-                                allowtransparency="true" 
-                                frameborder="0" 
-                                scrolling="no" 
-                                style="border:none; overflow:hidden; width:100%; height:700px;" 
-                                title="Posts from Instagram">
-                            </iframe>
+                            <behold-widget feed-id="zcCyMT0oOBECwGlrRGba"></behold-widget>
                         </div>
                     </section>
                     <!-- ============================================================ -->
@@ -687,100 +680,79 @@
         </footer>
     </div>
 
-        <!-- ============================================================ -->
-    <!-- SCRIPT DE AJUSTE RESPONSIVO DO SNAPWIDGET                     -->
-    <!-- - Ajusta a altura conforme largura                            -->
-    <!-- - Força abertura direta dos posts no Instagram                -->
     <!-- ============================================================ -->
+    <!-- SCRIPT DO WIDGET INSTAGRAM (Behold.so)                       -->
+    <!-- ============================================================ -->
+    <script>
+      (() => {
+        if(window.__bhldScript)return;window.__bhldScript=true;
+        const d=document,s=d.createElement("script");s.type="module";
+        s.src="https://w.behold.so/widget.js";setTimeout(()=>{d.head.append(s);},0);
+      })();
+    </script>
+
     <script>
         (function() {
             // ============================================================
-            // 1. AJUSTE RESPONSIVO DA ALTURA DO IFRAME
+            // AJUSTE DE COMPORTAMENTO DOS LINKS DO BEHOLD
+            // Força os links dos posts a abrirem em nova aba no Instagram
             // ============================================================
-            const adjustSnapWidget = () => {
-                const iframe = document.querySelector('.snapwidget-widget');
-                if (!iframe) return;
+            const setupBeholdLinks = () => {
+                const widget = document.querySelector('behold-widget');
+                if (!widget) return;
+
+                // O Behold renderiza os posts dentro de Shadow DOM
+                // Precisamos acessar o shadowRoot para manipular os links
+                const processLinks = () => {
+                    try {
+                        const shadowRoot = widget.shadowRoot;
+                        if (!shadowRoot) return;
+                        
+                        const links = shadowRoot.querySelectorAll('a');
+                        links.forEach(link => {
+                            // Força abrir em nova aba
+                            link.setAttribute('target', '_blank');
+                            link.setAttribute('rel', 'noopener noreferrer');
+                            
+                            // Garante que o link vá direto pro Instagram (não ao beholds.so)
+                            const href = link.getAttribute('href') || '';
+                            if (!href.includes('instagram.com') && href.includes('behold')) {
+                                // Extrai o shortcode do post da URL do Behold, se possível
+                                // e redireciona para o Instagram
+                                const match = href.match(/\/p\/([^\/\?]+)/) || href.match(/\/reel\/([^\/\?]+)/);
+                                if (match) {
+                                    const type = href.includes('/reel/') ? 'reel' : 'p';
+                                    link.setAttribute('href', `https://www.instagram.com/${type}/${match[1]}/`);
+                                }
+                            }
+                        });
+                    } catch (e) {
+                        // Shadow DOM pode não estar acessível ainda
+                    }
+                };
+
+                // Tenta processar várias vezes, pois o Behold renderiza assincronamente
+                processLinks();
+                setTimeout(processLinks, 1000);
+                setTimeout(processLinks, 3000);
+                setTimeout(processLinks, 6000);
                 
-                const container = iframe.parentElement;
-                const containerWidth = container.clientWidth;
-                
-                // Proporção original do SnapWidget: 765x690 (aprox. 90%)
-                const ratio = 690 / 765;
-                let newHeight = containerWidth * ratio;
-                
-                // Ajustes para mobile (quadrado fica melhor)
-                if (containerWidth < 640) {
-                    newHeight = containerWidth * 1.2;
+                // Observer para pegar quando os links forem renderizados
+                if (widget.shadowRoot) {
+                    const observer = new MutationObserver(processLinks);
+                    observer.observe(widget.shadowRoot, { childList: true, subtree: true });
                 }
-                
-                iframe.style.width = '100%';
-                iframe.style.height = newHeight + 'px';
-            };
-            
-            if (document.readyState === 'complete') {
-                adjustSnapWidget();
-            } else {
-                window.addEventListener('load', adjustSnapWidget);
-            }
-            window.addEventListener('resize', adjustSnapWidget);
-            setTimeout(adjustSnapWidget, 2000);
-            setTimeout(adjustSnapWidget, 5000);
-
-            // ============================================================
-            // 2. FORÇAR ABERTURA DOS POSTS DIRETO NO INSTAGRAM
-            // ============================================================
-            // O SnapWidget (plano grátis) redireciona os cliques para o 
-            // próprio site deles antes de ir ao Instagram. Isso intercepta
-            // o clique no iframe e abre o perfil do Instagram diretamente
-            // em uma nova aba.
-            // ============================================================
-            const setupInstagramRedirect = () => {
-                const iframe = document.querySelector('.snapwidget-widget');
-                if (!iframe) return;
-
-                const INSTAGRAM_URL = 'https://www.instagram.com/ieadnovaaliancavg/';
-
-                // Cria uma camada transparente sobre o iframe para capturar cliques
-                // Isso funciona porque não podemos acessar o interior do iframe (CORS)
-                const wrapper = iframe.parentElement;
-                
-                // Cria overlay apenas se ainda não existir
-                if (wrapper.querySelector('.insta-click-overlay')) return;
-
-                const overlay = document.createElement('div');
-                overlay.className = 'insta-click-overlay';
-                overlay.style.cssText = `
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    z-index: 10;
-                    cursor: pointer;
-                    background: transparent;
-                `;
-                
-                // Torna o wrapper relativo para posicionar o overlay
-                wrapper.style.position = 'relative';
-                wrapper.appendChild(overlay);
-
-                // Ao clicar no overlay, abre o Instagram em nova aba
-                overlay.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.open(INSTAGRAM_URL, '_blank', 'noopener,noreferrer');
-                });
             };
 
-            // Aplica o overlay após o iframe carregar
             if (document.readyState === 'complete') {
-                setupInstagramRedirect();
+                setupBeholdLinks();
             } else {
-                window.addEventListener('load', setupInstagramRedirect);
+                window.addEventListener('load', setupBeholdLinks);
             }
-            setTimeout(setupInstagramRedirect, 2000);
-
+            setTimeout(setupBeholdLinks, 2000);
         })();
     </script>
+
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // --- CONFIG ---
