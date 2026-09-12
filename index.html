@@ -687,12 +687,16 @@
         </footer>
     </div>
 
-    <!-- ============================================================ -->
+        <!-- ============================================================ -->
     <!-- SCRIPT DE AJUSTE RESPONSIVO DO SNAPWIDGET                     -->
+    <!-- - Ajusta a altura conforme largura                            -->
+    <!-- - Força abertura direta dos posts no Instagram                -->
     <!-- ============================================================ -->
     <script>
         (function() {
-            // Ajusta a altura do iframe do SnapWidget para ser responsivo
+            // ============================================================
+            // 1. AJUSTE RESPONSIVO DA ALTURA DO IFRAME
+            // ============================================================
             const adjustSnapWidget = () => {
                 const iframe = document.querySelector('.snapwidget-widget');
                 if (!iframe) return;
@@ -706,27 +710,77 @@
                 
                 // Ajustes para mobile (quadrado fica melhor)
                 if (containerWidth < 640) {
-                    newHeight = containerWidth * 1.2; // Mais alto no mobile
+                    newHeight = containerWidth * 1.2;
                 }
                 
                 iframe.style.width = '100%';
                 iframe.style.height = newHeight + 'px';
             };
             
-            // Ajusta ao carregar e ao redimensionar
             if (document.readyState === 'complete') {
                 adjustSnapWidget();
             } else {
                 window.addEventListener('load', adjustSnapWidget);
             }
             window.addEventListener('resize', adjustSnapWidget);
-            
-            // Reajusta após um tempo para garantir que o iframe carregou
             setTimeout(adjustSnapWidget, 2000);
             setTimeout(adjustSnapWidget, 5000);
+
+            // ============================================================
+            // 2. FORÇAR ABERTURA DOS POSTS DIRETO NO INSTAGRAM
+            // ============================================================
+            // O SnapWidget (plano grátis) redireciona os cliques para o 
+            // próprio site deles antes de ir ao Instagram. Isso intercepta
+            // o clique no iframe e abre o perfil do Instagram diretamente
+            // em uma nova aba.
+            // ============================================================
+            const setupInstagramRedirect = () => {
+                const iframe = document.querySelector('.snapwidget-widget');
+                if (!iframe) return;
+
+                const INSTAGRAM_URL = 'https://www.instagram.com/ieadnovaaliancavg/';
+
+                // Cria uma camada transparente sobre o iframe para capturar cliques
+                // Isso funciona porque não podemos acessar o interior do iframe (CORS)
+                const wrapper = iframe.parentElement;
+                
+                // Cria overlay apenas se ainda não existir
+                if (wrapper.querySelector('.insta-click-overlay')) return;
+
+                const overlay = document.createElement('div');
+                overlay.className = 'insta-click-overlay';
+                overlay.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 10;
+                    cursor: pointer;
+                    background: transparent;
+                `;
+                
+                // Torna o wrapper relativo para posicionar o overlay
+                wrapper.style.position = 'relative';
+                wrapper.appendChild(overlay);
+
+                // Ao clicar no overlay, abre o Instagram em nova aba
+                overlay.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.open(INSTAGRAM_URL, '_blank', 'noopener,noreferrer');
+                });
+            };
+
+            // Aplica o overlay após o iframe carregar
+            if (document.readyState === 'complete') {
+                setupInstagramRedirect();
+            } else {
+                window.addEventListener('load', setupInstagramRedirect);
+            }
+            setTimeout(setupInstagramRedirect, 2000);
+
         })();
     </script>
-
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // --- CONFIG ---
