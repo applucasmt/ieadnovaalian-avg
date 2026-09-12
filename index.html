@@ -193,6 +193,20 @@
 
         .input-dark { background: #333; border: 1px solid #444; color: white; border-radius: 4px; padding: 12px 16px; }
         .input-dark:focus { outline: none; border-color: white; background: #444; }
+
+        /* --- ESTILOS DO WIDGET INSTAGRAM (Fouita) --- */
+        #ft-insta-app {
+            width: 100%;
+            min-height: 400px;
+        }
+        /* Esconde o link de "Embed Instagram Feed" do rodapé do widget */
+        #ft-insta-brd {
+            display: none !important;
+        }
+        /* Ajustes visuais para integrar o widget ao tema escuro */
+        #ft-insta-app * {
+            font-family: 'Inter', sans-serif !important;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-yellow/30 selection:text-brand-yellow">
@@ -319,7 +333,6 @@
             <nav class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
                 <a href="#" data-page="igreja" class="nav-link flex items-center gap-3 group active:scale-95 transition-transform">
                     <div class="relative">
-                        <!-- LOGO DINÂMICA -->
                         <img id="site-logo" src="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300">
                         <div class="absolute inset-0 bg-brand-yellow blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
                     </div>
@@ -382,7 +395,6 @@
             <div id="igreja-page" class="page-content">
                 <section class="relative min-h-[85vh] sm:min-h-[80vh] flex items-center justify-center overflow-hidden">
                     <div class="absolute inset-0 z-0" style="-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);">
-                        <!-- HERO IMAGE DINÂMICA -->
                         <img id="site-hero" src="https://i.ibb.co/zhDMwkLJ/dji-fly-20241201-110126-166-1733065539755-photo-optimized.jpg" class="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105" style="animation: slowZoom 20s infinite alternate;" alt="Interior da Igreja">
                         <div class="absolute inset-0 bg-[#0f172a]/50"></div>
                     </div>
@@ -415,7 +427,40 @@
                         </div>
                         <a href="#" onclick="document.querySelector('[data-page=agendas]').click()" class="text-brand-yellow hover:text-white transition-colors flex items-center gap-2 text-sm sm:text-base p-2 -ml-2 sm:ml-0 active:scale-95">Ver agenda completa <i class="fas fa-arrow-right"></i></a>
                     </div>
-                    <div id="upcoming-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"></div>
+                    <div id="upcoming-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-16 sm:mb-24"></div>
+
+                    <!-- ============================================================ -->
+                    <!-- SEÇÃO INSTAGRAM - NOVA SEÇÃO DE DESTAQUE                     -->
+                    <!-- ============================================================ -->
+                    <section id="instagram-section" class="mt-12 sm:mt-16">
+                        <!-- Cabeçalho da Seção -->
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
+                            <div>
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 flex items-center justify-center shadow-lg">
+                                        <i class="fab fa-instagram text-white text-xl sm:text-2xl"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-2xl sm:text-3xl font-bold text-white leading-tight">Siga-nos no Instagram</h2>
+                                        <a href="https://www.instagram.com/ieadnovaaliancavg/" target="_blank" class="text-brand-yellow hover:text-white transition-colors text-sm font-medium flex items-center gap-1">
+                                            @ieadnovaaliancavg <i class="fas fa-external-link-alt text-xs"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="h-1 w-20 bg-brand-yellow rounded-full mt-2"></div>
+                            </div>
+                            <a href="https://www.instagram.com/ieadnovaaliancavg/" target="_blank" class="flex items-center gap-2 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-bold px-5 py-2.5 rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg text-sm">
+                                <i class="fab fa-instagram text-lg"></i> Seguir Perfil
+                            </a>
+                        </div>
+
+                        <!-- Widget do Instagram (Fouita) -->
+                        <div class="glass-panel rounded-2xl overflow-hidden p-2 sm:p-4 border border-white/10">
+                            <div id="ft-insta-app"></div>
+                        </div>
+                    </section>
+                    <!-- ============================================================ -->
+
                 </div>
             </div>
             
@@ -623,7 +668,7 @@
                         <p class="text-gray-500 text-sm mt-2 max-w-xs mx-auto md:mx-0">Levando a palavra de Deus e transformando vidas através do amor de Cristo.</p>
                     </div>
                     <div class="flex gap-6">
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="https://www.instagram.com/ieadnovaaliancavg/" target="_blank" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-instagram text-xl"></i></a>
                         <a href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-facebook text-xl"></i></a>
                         <a href="https://www.youtube.com/@ieadsetornovaalianca" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-youtube text-xl"></i></a>
                     </div>
@@ -637,7 +682,66 @@
             </div>
         </footer>
     </div>
-    
+
+    <!-- ============================================================ -->
+    <!-- SCRIPT DO WIDGET INSTAGRAM (Fouita) - CARREGAMENTO ASSÍNCRONO -->
+    <!-- ============================================================ -->
+    <script type="module">
+        // Carrega o widget do Fouita de forma assíncrona após o carregamento da página
+        // para não bloquear a renderização inicial do site
+        (function() {
+            const loadFouitaWidget = () => {
+                import("https://cdn.fouita.com/public/instagram-feed.js?11")
+                    .then(module => {
+                        const App = module.default;
+                        new App({
+                            target: document.getElementById("ft-insta-app"),
+                            props: {
+                                settings: {
+                                    layout: "carousel",
+                                    source: "insta",
+                                    selected: "uname",
+                                    header: true,
+                                    autoplay: true,
+                                    zigzag: false,
+                                    cols: 4,
+                                    cardHeight: 300,
+                                    gap: 0,
+                                    direction: "down",
+                                    height: 700,
+                                    bgColor: "",
+                                    txtColor: ""
+                                }
+                            }
+                        });
+                    })
+                    .catch(err => {
+                        console.warn("Fouita Instagram Widget: erro ao carregar", err);
+                        // Fallback visual caso o widget não carregue
+                        const container = document.getElementById("ft-insta-app");
+                        if (container) {
+                            container.innerHTML = `
+                                <div class="text-center py-12">
+                                    <i class="fab fa-instagram text-5xl text-brand-yellow mb-4"></i>
+                                    <p class="text-gray-400 mb-4">Não foi possível carregar o feed do Instagram agora.</p>
+                                    <a href="https://www.instagram.com/ieadnovaaliancavg/" target="_blank" class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-bold px-6 py-3 rounded-full hover:scale-105 transition-all shadow-lg">
+                                        <i class="fab fa-instagram"></i> Ver no Instagram
+                                    </a>
+                                </div>
+                            `;
+                        }
+                    });
+            };
+
+            // Carrega o widget após a página estar pronta (evita bloquear renderização)
+            if (document.readyState === 'complete') {
+                loadFouitaWidget();
+            } else {
+                window.addEventListener('load', loadFouitaWidget);
+            }
+        })();
+    </script>
+
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // --- CONFIG ---
@@ -742,7 +846,6 @@
                 else b.classList.remove('active', 'bg-white/10', 'text-white');
             });
 
-            // Esconde o botão "Novo Item" para a aba config
             const btnNewItem = document.getElementById('btn-new-item');
             if (tab === 'config') {
                 btnNewItem.style.display = 'none';
@@ -756,7 +859,6 @@
             try {
                 const data = await fetchWithCache(`${CONFIG.scriptUrl}?sheet=${tab}`, `admin_${tab}`, true);
                 
-                // Para a aba config, garantimos que seja um array com pelo menos 1 item
                 if (tab === 'config') {
                     const configData = Array.isArray(data) && data.length > 0 ? data : [{ logoUrl: '', heroUrl: '' }];
                     window.adminState.currentData = configData;
@@ -770,7 +872,6 @@
             }
         };
 
-        // --- FORMULÁRIO ESPECIAL PARA CONFIG ---
         const renderConfigForm = (config) => {
             const container = document.getElementById('admin-content-area');
             
@@ -787,7 +888,6 @@
                     </div>
 
                     <div class="space-y-8">
-                        <!-- LOGO -->
                         <div class="bg-white/5 p-5 rounded-xl border border-white/10">
                             <label class="block text-xs uppercase text-brand-yellow font-bold mb-2">
                                 <i class="fas fa-image mr-2"></i> URL da Logomarca
@@ -802,7 +902,6 @@
                             </div>
                         </div>
 
-                        <!-- HERO -->
                         <div class="bg-white/5 p-5 rounded-xl border border-white/10">
                             <label class="block text-xs uppercase text-brand-yellow font-bold mb-2">
                                 <i class="fas fa-panorama mr-2"></i> URL da Foto de Fundo (Hero)
@@ -818,7 +917,6 @@
                         </div>
                     </div>
 
-                    <!-- BOTÃO SALVAR -->
                     <div class="mt-8 pt-4 border-t border-white/10 flex justify-end">
                         <button onclick="saveConfig()" class="bg-brand-yellow text-brand-dark font-bold px-8 py-3 rounded-lg hover:bg-white transition-colors flex items-center gap-2 shadow-lg">
                             <i class="fas fa-save"></i> Salvar Configurações
@@ -827,7 +925,6 @@
                 </div>
             `;
 
-            // Listeners de preview em tempo real
             const inputLogo = document.getElementById('config-logoUrl');
             const inputHero = document.getElementById('config-heroUrl');
             const previewLogo = document.getElementById('preview-logo');
@@ -854,7 +951,6 @@
             });
         };
 
-        // --- SALVAR CONFIG ---
         window.saveConfig = async () => {
             const logoUrl = document.getElementById('config-logoUrl').value.trim();
             const heroUrl = document.getElementById('config-heroUrl').value.trim();
@@ -863,7 +959,7 @@
                 sheet: 'config',
                 action: 'edit',
                 password: window.adminState.password,
-                originalId: '', // Não usado para config
+                originalId: '',
                 data: { logoUrl, heroUrl }
             };
             
@@ -875,13 +971,11 @@
                 const result = await res.json();
                 
                 if (result.success) {
-                    // Atualiza o cache local
                     localStorage.setItem('cache_config_v2', JSON.stringify({
                         timestamp: Date.now(),
                         content: [{ logoUrl, heroUrl }]
                     }));
                     
-                    // Aplica imediatamente no site
                     applyConfigImages({ logoUrl, heroUrl });
                     
                     alert('Configurações salvas com sucesso!');
@@ -893,11 +987,9 @@
             }
         };
 
-        // --- APLICAR CONFIG NO SITE ---
         const applyConfigImages = (config) => {
             if (!config) return;
             
-            // Logo (header + footer)
             if (config.logoUrl) {
                 const logoHeader = document.getElementById('site-logo');
                 const logoFooter = document.getElementById('footer-logo');
@@ -905,14 +997,12 @@
                 if (logoFooter) logoFooter.src = optimizeImage(config.logoUrl, 200);
             }
             
-            // Hero (foto de fundo)
             if (config.heroUrl) {
                 const hero = document.getElementById('site-hero');
                 if (hero) hero.src = optimizeImage(config.heroUrl, 1920);
             }
         };
 
-        // --- ADMIN TABLE (para abas normais) ---
         const renderAdminTable = (data, tab) => {
             const container = document.getElementById('admin-content-area');
             if(!data || data.length === 0) {
@@ -953,7 +1043,6 @@
             container.innerHTML = html;
         };
         
-        // --- SCHEMAS ---
         const SCHEMAS = {
             eventos: [
                 {key: 'name', label: 'Nome do Evento', type: 'text'},
@@ -1171,7 +1260,6 @@
                 alert('Erro: ' + e.message);
             }
         };
-
 
         // --- MODAL EVENTOS ---
         window.openEventModal = (eventId) => {
@@ -1540,7 +1628,6 @@
                 albums: document.getElementById('albums-container')
             };
 
-            // APLICA CONFIG (LOGO + HERO)
             if (config && config.length > 0) {
                 applyConfigImages(config[0]);
             }
