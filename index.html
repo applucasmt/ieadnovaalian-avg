@@ -683,24 +683,56 @@
         </footer>
     </div>
 
-    <!-- ============================================================ -->
+        <!-- ============================================================ -->
     <!-- SCRIPT DO WIDGET INSTAGRAM (Fouita) - CARREGAMENTO ASSÍNCRONO -->
     <!-- ============================================================ -->
     <script type="module">
-        // Carrega o widget do Fouita de forma assíncrona após o carregamento da página
-        // para não bloquear a renderização inicial do site
         (function() {
+            // Timeout para garantir que o widget carregue (senão mostra fallback)
+            let widgetLoaded = false;
+            const loadTimeout = setTimeout(() => {
+                if (!widgetLoaded) {
+                    console.warn("Fouita: timeout - mostrando fallback");
+                    showInstagramFallback();
+                }
+            }, 8000); // 8 segundos de timeout
+
+            const showInstagramFallback = () => {
+                const container = document.getElementById("ft-insta-app");
+                if (container && !widgetLoaded) {
+                    container.innerHTML = `
+                        <div class="text-center py-16 px-4">
+                            <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 flex items-center justify-center shadow-2xl">
+                                <i class="fab fa-instagram text-white text-4xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">Acompanhe nosso Instagram</h3>
+                            <p class="text-gray-400 mb-6 max-w-md mx-auto">Veja as publicações mais recentes, cultos, eventos e momentos especiais da nossa igreja.</p>
+                            <a href="https://www.instagram.com/ieadnovaaliancavg/" target="_blank" class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-bold px-8 py-3 rounded-full hover:scale-105 transition-all shadow-lg">
+                                <i class="fab fa-instagram text-lg"></i> Ver Perfil no Instagram
+                            </a>
+                        </div>
+                    `;
+                }
+            };
+
             const loadFouitaWidget = () => {
                 import("https://cdn.fouita.com/public/instagram-feed.js?11")
                     .then(module => {
                         const App = module.default;
+                        const target = document.getElementById("ft-insta-app");
+                        
+                        if (!target) return;
+                        
                         new App({
-                            target: document.getElementById("ft-insta-app"),
+                            target: target,
                             props: {
+                                // PARÂMETRO CRÍTICO: username do perfil
+                                username: "ieadnovaaliancavg",
                                 settings: {
                                     layout: "carousel",
                                     source: "insta",
                                     selected: "uname",
+                                    username: "ieadnovaaliancavg",  // Reforçado aqui também
                                     header: true,
                                     autoplay: true,
                                     zigzag: false,
@@ -714,26 +746,25 @@
                                 }
                             }
                         });
+
+                        // Marca como carregado após um tempo
+                        setTimeout(() => {
+                            const container = document.getElementById("ft-insta-app");
+                            // Se o container ainda estiver vazio, mostra fallback
+                            if (container && container.children.length === 0) {
+                                showInstagramFallback();
+                            } else {
+                                widgetLoaded = true;
+                                clearTimeout(loadTimeout);
+                            }
+                        }, 4000);
                     })
                     .catch(err => {
                         console.warn("Fouita Instagram Widget: erro ao carregar", err);
-                        // Fallback visual caso o widget não carregue
-                        const container = document.getElementById("ft-insta-app");
-                        if (container) {
-                            container.innerHTML = `
-                                <div class="text-center py-12">
-                                    <i class="fab fa-instagram text-5xl text-brand-yellow mb-4"></i>
-                                    <p class="text-gray-400 mb-4">Não foi possível carregar o feed do Instagram agora.</p>
-                                    <a href="https://www.instagram.com/ieadnovaaliancavg/" target="_blank" class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-bold px-6 py-3 rounded-full hover:scale-105 transition-all shadow-lg">
-                                        <i class="fab fa-instagram"></i> Ver no Instagram
-                                    </a>
-                                </div>
-                            `;
-                        }
+                        showInstagramFallback();
                     });
             };
 
-            // Carrega o widget após a página estar pronta (evita bloquear renderização)
             if (document.readyState === 'complete') {
                 loadFouitaWidget();
             } else {
