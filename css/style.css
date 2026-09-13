@@ -428,16 +428,17 @@ body {
     width: 100%;
 }
 
+/* Desktop - controles SEMPRE na mesma posição, alinhados com os botões de ação */
 @media (min-width: 1024px) {
     .marketing-controls {
         position: absolute;
-        bottom: 2.5rem;
-        right: 3rem;
-        left: auto;
+        bottom: 2rem;
+        left: 3rem;
+        right: auto;
         top: auto;
         margin: 0;
         width: auto;
-        justify-content: flex-end;
+        justify-content: flex-start;
     }
 }
 
