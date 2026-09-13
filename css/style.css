@@ -40,8 +40,7 @@ body {
 
 /* ============================================================
    HERO - Imagem
-   Desktop: cover (preenche)
-   Mobile:  contain (imagem inteira, com tarjas em cima/baixo)
+   Desktop: cover | Mobile: contain (imagem inteira)
    ============================================================ */
 #site-hero {
     width: 100%;
@@ -51,7 +50,6 @@ body {
     background: #0f172a;
 }
 
-/* Mobile - contain (imagem inteira) */
 @media (max-width: 768px) {
     #site-hero {
         object-fit: contain;
@@ -62,7 +60,6 @@ body {
 
 /* ============================================================
    HERO SECTION
-   Desktop: 85vh | Mobile: 70vh
    ============================================================ */
 .hero-section {
     min-height: 85vh;
@@ -100,7 +97,7 @@ body {
 }
 
 /* ============================================================
-   DESKTOP (>= 769px) - Mantém as configs do admin
+   DESKTOP (>= 769px)
    ============================================================ */
 @media (min-width: 769px) {
     .hero-content.pos-left {
@@ -153,10 +150,9 @@ body {
 }
 
 /* ============================================================
-   MOBILE (<= 768px) - Texto SUBIDO para a parte de cima da imagem
+   MOBILE (<= 768px) - Texto subido para o topo da imagem
    ============================================================ */
 @media (max-width: 768px) {
-    /* Esquerda - texto no topo */
     .hero-content.pos-left {
         left: 0;
         right: auto;
@@ -171,7 +167,6 @@ body {
         width: 100%;
     }
 
-    /* Centro - texto no topo */
     .hero-content.pos-center {
         left: 50%;
         transform: translate(-50%, 15%);
@@ -185,7 +180,6 @@ body {
         width: 100%;
     }
 
-    /* Direita - texto no topo */
     .hero-content.pos-right {
         right: 0;
         left: auto;
@@ -200,7 +194,6 @@ body {
         width: 100%;
     }
 
-    /* Personalizado - mantém X e Y do PC, mas com mínimo em 15% */
     .hero-content.pos-custom {
         left: var(--hero-x, 50%);
         top: max(15%, var(--hero-y, 15%));
@@ -211,7 +204,6 @@ body {
         align-items: var(--hero-align, center);
     }
 
-    /* Badge */
     .hero-content .preview-badge,
     .hero-content > div:first-child {
         font-size: clamp(0.55rem, 2.5vw, 0.7rem);
@@ -220,7 +212,6 @@ body {
         letter-spacing: 0.12em;
     }
 
-    /* Título */
     .hero-content h1 {
         font-size: clamp(1.5rem, 8vw, 2.5rem);
         line-height: 1.1;
@@ -228,23 +219,18 @@ body {
         letter-spacing: -0.02em;
     }
 
-    /* Descrição */
     .hero-content p {
         font-size: clamp(0.75rem, 3.3vw, 0.95rem);
         line-height: 1.4;
         margin-bottom: 1rem;
     }
 
-    /* Botões */
     .hero-content button {
         padding: 0.7rem 1.15rem;
         font-size: clamp(0.75rem, 2.9vw, 0.9rem);
     }
 }
 
-/* ============================================================
-   MOBILE PEQUENO (iPhone SE)
-   ============================================================ */
 @media (max-width: 400px) {
     .hero-content h1 {
         font-size: clamp(1.35rem, 7.5vw, 1.85rem);
@@ -257,6 +243,62 @@ body {
     .hero-content button {
         padding: 0.65rem 1rem;
         font-size: 0.78rem;
+    }
+}
+
+/* ============================================================
+   CONTEÚDO PRINCIPAL (após o hero)
+   Sobe o conteúdo para ficar mais próximo do hero
+   ============================================================ */
+#main-content-wrapper {
+    margin-top: -80px;
+    position: relative;
+    z-index: 20;
+}
+
+@media (max-width: 768px) {
+    #main-content-wrapper {
+        margin-top: -40px;
+    }
+}
+
+@media (max-width: 400px) {
+    #main-content-wrapper {
+        margin-top: -30px;
+    }
+}
+
+/* ============================================================
+   SCROLLTELLING - Animações ao rolar a página
+   ============================================================ */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    will-change: opacity, transform;
+}
+
+.reveal.reveal-left { transform: translateX(-40px); }
+.reveal.reveal-right { transform: translateX(40px); }
+.reveal.reveal-scale { transform: scale(0.95); }
+.reveal.reveal-fade { transform: none; }
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+}
+
+.reveal.delay-1 { transition-delay: 0.08s; }
+.reveal.delay-2 { transition-delay: 0.16s; }
+.reveal.delay-3 { transition-delay: 0.24s; }
+.reveal.delay-4 { transition-delay: 0.32s; }
+.reveal.delay-5 { transition-delay: 0.40s; }
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
     }
 }
 
