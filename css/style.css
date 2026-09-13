@@ -424,8 +424,7 @@ body {
     z-index: 30;
     justify-content: center;
     align-items: center;
-    margin: 1.5rem auto;
-    order: 1.5;
+    margin: 0 auto 1.5rem auto;
     width: 100%;
 }
 
@@ -435,9 +434,8 @@ body {
         bottom: 2.5rem;
         right: 3rem;
         left: auto;
-        transform: none;
+        top: auto;
         margin: 0;
-        order: initial;
         width: auto;
         justify-content: flex-end;
     }
