@@ -39,7 +39,9 @@ body {
 }
 
 /* ============================================================
-   HERO - Cover sempre (usa imagens diferentes por dispositivo)
+   HERO - Imagem
+   Desktop: usa imagem horizontal, cover
+   Mobile:  usa imagem vertical, cover (preenche naturalmente)
    ============================================================ */
 #site-hero {
     width: 100%;
@@ -49,9 +51,17 @@ body {
     background: #0f172a;
 }
 
+/* Mobile - imagem vertical, foco no topo */
+@media (max-width: 768px) {
+    #site-hero {
+        object-position: center top;
+    }
+}
+
 /* ============================================================
    HERO SECTION
-   Desktop: 85vh | Mobile: 62vh
+   Desktop: 85vh (fixo, como está)
+   Mobile:  auto para caber a imagem vertical inteira + conteúdo
    ============================================================ */
 .hero-section {
     min-height: 85vh;
@@ -61,13 +71,17 @@ body {
 
 @media (max-width: 768px) {
     .hero-section {
-        min-height: 62vh;
+        min-height: auto;
+        height: 85vh;
+        max-height: 85vh;
     }
 }
 
 @media (max-width: 400px) {
     .hero-section {
-        min-height: 58vh;
+        min-height: auto;
+        height: 80vh;
+        max-height: 80vh;
     }
 }
 
@@ -142,7 +156,7 @@ body {
 }
 
 /* ============================================================
-   MOBILE (<= 768px) - Mesmo visual do PC
+   MOBILE (<= 768px) - Mesmo visual do PC, ajustado ao tamanho
    ============================================================ */
 @media (max-width: 768px) {
     .hero-content.pos-left {
