@@ -40,28 +40,29 @@ body {
 
 /* ============================================================
    HERO - Imagem
-   Desktop: usa imagem horizontal, cover
-   Mobile:  usa imagem vertical, cover (preenche naturalmente)
+   Desktop: cover (preenche)
+   Mobile:  contain (imagem inteira, com tarjas em cima/baixo)
    ============================================================ */
 #site-hero {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center center;
     background: #0f172a;
 }
 
-/* Mobile - imagem vertical, foco no topo */
+/* Mobile - contain (imagem inteira) */
 @media (max-width: 768px) {
     #site-hero {
-        object-position: center top;
+        object-fit: contain;
+        object-position: center center;
+        background: #0f172a;
     }
 }
 
 /* ============================================================
    HERO SECTION
-   Desktop: 85vh (fixo, como está)
-   Mobile:  auto para caber a imagem vertical inteira + conteúdo
+   Desktop: 85vh | Mobile: 70vh
    ============================================================ */
 .hero-section {
     min-height: 85vh;
@@ -71,17 +72,13 @@ body {
 
 @media (max-width: 768px) {
     .hero-section {
-        min-height: auto;
-        height: 85vh;
-        max-height: 85vh;
+        min-height: 70vh;
     }
 }
 
 @media (max-width: 400px) {
     .hero-section {
-        min-height: auto;
-        height: 80vh;
-        max-height: 80vh;
+        min-height: 65vh;
     }
 }
 
@@ -156,14 +153,15 @@ body {
 }
 
 /* ============================================================
-   MOBILE (<= 768px) - Mesmo visual do PC, ajustado ao tamanho
+   MOBILE (<= 768px) - Texto SUBIDO para a parte de cima da imagem
    ============================================================ */
 @media (max-width: 768px) {
+    /* Esquerda - texto no topo */
     .hero-content.pos-left {
         left: 0;
         right: auto;
-        top: 50%;
-        transform: translateY(-50%);
+        top: 0;
+        transform: translateY(15%);
         text-align: left;
         padding-left: 6%;
         padding-right: 12%;
@@ -173,10 +171,11 @@ body {
         width: 100%;
     }
 
+    /* Centro - texto no topo */
     .hero-content.pos-center {
         left: 50%;
-        transform: translate(-50%, -50%);
-        top: 50%;
+        transform: translate(-50%, 15%);
+        top: 0;
         text-align: center;
         padding-left: 6%;
         padding-right: 6%;
@@ -186,11 +185,12 @@ body {
         width: 100%;
     }
 
+    /* Direita - texto no topo */
     .hero-content.pos-right {
         right: 0;
         left: auto;
-        top: 50%;
-        transform: translateY(-50%);
+        top: 0;
+        transform: translateY(15%);
         text-align: right;
         padding-right: 6%;
         padding-left: 12%;
@@ -200,55 +200,63 @@ body {
         width: 100%;
     }
 
+    /* Personalizado - mantém X e Y do PC, mas com mínimo em 15% */
     .hero-content.pos-custom {
         left: var(--hero-x, 50%);
-        top: var(--hero-y, 50%);
-        transform: translate(-50%, -50%);
+        top: max(15%, var(--hero-y, 15%));
+        transform: translate(-50%, 0);
         text-align: var(--hero-align, center);
         width: 90%;
         max-width: 90%;
         align-items: var(--hero-align, center);
     }
 
+    /* Badge */
     .hero-content .preview-badge,
     .hero-content > div:first-child {
         font-size: clamp(0.55rem, 2.5vw, 0.7rem);
         padding: 0.25rem 0.7rem;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.5rem;
         letter-spacing: 0.12em;
     }
 
+    /* Título */
     .hero-content h1 {
-        font-size: clamp(1.6rem, 8.5vw, 2.8rem);
+        font-size: clamp(1.5rem, 8vw, 2.5rem);
         line-height: 1.1;
-        margin-bottom: 0.6rem;
+        margin-bottom: 0.5rem;
         letter-spacing: -0.02em;
     }
 
+    /* Descrição */
     .hero-content p {
-        font-size: clamp(0.8rem, 3.5vw, 1rem);
-        line-height: 1.45;
-        margin-bottom: 1.1rem;
+        font-size: clamp(0.75rem, 3.3vw, 0.95rem);
+        line-height: 1.4;
+        margin-bottom: 1rem;
     }
 
+    /* Botões */
     .hero-content button {
-        padding: 0.75rem 1.25rem;
-        font-size: clamp(0.8rem, 3vw, 0.95rem);
+        padding: 0.7rem 1.15rem;
+        font-size: clamp(0.75rem, 2.9vw, 0.9rem);
     }
 }
 
+/* ============================================================
+   MOBILE PEQUENO (iPhone SE)
+   ============================================================ */
 @media (max-width: 400px) {
     .hero-content h1 {
-        font-size: clamp(1.4rem, 8vw, 2rem);
+        font-size: clamp(1.35rem, 7.5vw, 1.85rem);
     }
 
     .hero-content p {
-        font-size: clamp(0.75rem, 3.2vw, 0.9rem);
+        font-size: clamp(0.7rem, 3vw, 0.85rem);
     }
 
     .hero-content button {
-        padding: 0.7rem 1rem;
-        font-size: 0.8rem;
+        padding: 0.65rem 1rem;
+        font-size: 0.78rem;
     }
 }
 
