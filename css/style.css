@@ -1,1 +1,339 @@
+/* ============================================================
+   IEAD NOVA ALIANÇA - ESTILOS GLOBAIS
+   ============================================================ */
 
+body {
+    background-color: #0f172a;
+    color: #e2e8f0;
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background-color: #EEBC5A; }
+
+.glass-panel {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.nav-link.active-nav { color: #EEBC5A; position: relative; }
+@media (min-width: 1024px) {
+    .nav-link.active-nav::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #EEBC5A;
+        box-shadow: 0 0 8px #EEBC5A;
+    }
+}
+
+/* ============================================================
+   HERO (foto de fundo da home) - ESTÁTICA SEM ANIMAÇÃO
+   ============================================================ */
+#site-hero {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Sem animação! */
+}
+
+/* ============================================================
+   POSICIONAMENTO DO TEXTO DO HERO (configurável)
+   ============================================================ */
+.hero-content {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    max-width: 100%;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.hero-content > * {
+    pointer-events: auto;
+}
+
+/* Posição: Esquerda */
+.hero-content.pos-left {
+    left: 0;
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: left;
+    padding-left: 8%;
+    padding-right: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Posição: Centro */
+.hero-content.pos-center {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    text-align: center;
+    padding-left: 10%;
+    padding-right: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Posição: Direita */
+.hero-content.pos-right {
+    right: 0;
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: right;
+    padding-right: 8%;
+    padding-left: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* Modo Personalizado (usa CSS vars do JS) */
+.hero-content.pos-custom {
+    left: var(--hero-x, 50%);
+    top: var(--hero-y, 50%);
+    transform: translate(-50%, -50%);
+    text-align: var(--hero-align, center);
+    width: auto;
+    max-width: 90%;
+}
+
+@media (max-width: 768px) {
+    .hero-content.pos-left,
+    .hero-content.pos-center,
+    .hero-content.pos-right {
+        padding-left: 5%;
+        padding-right: 5%;
+        text-align: center;
+        align-items: center;
+    }
+    .hero-content.pos-left {
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .hero-content.pos-right {
+        left: 50%;
+        right: auto;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* ============================================================
+   MARKETING PAGE
+   ============================================================ */
+.marketing-container {
+    min-height: 100vh;
+    width: 100vw;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 80px;
+    padding-bottom: 100px;
+}
+@media (min-width: 768px) {
+    .marketing-container {
+        flex-direction: row;
+        align-items: center;
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 100vh;
+        overflow: hidden;
+    }
+}
+
+.fade-in-up { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+.fade-in-up.visible { opacity: 1; transform: translateY(0); }
+.fade-in-right { opacity: 0; transform: translateX(-20px); transition: all 0.6s ease; }
+.fade-in-right.visible { opacity: 1; transform: translateX(0); }
+
+.glass-btn {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+.glass-btn:hover { background: rgba(238, 188, 90, 0.8); color: #0f172a; transform: scale(1.05); border-color: #EEBC5A; }
+.glass-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.product-queue-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+}
+
+.depth-layer {
+    position: absolute;
+    transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    filter: drop-shadow(0 30px 40px rgba(0,0,0,0.6));
+    aspect-ratio: 4/5;
+    object-fit: contain;
+    background: transparent;
+    border-radius: 16px;
+    z-index: 10;
+}
+.depth-layer { height: 55vh; width: auto; max-width: 85vw; }
+@media (min-width: 768px) { .depth-layer { height: 70vh; max-height: 750px; } }
+
+.product-main { opacity: 1; transform: translate(0, 0) scale(1); z-index: 30; filter: blur(0px) drop-shadow(0 30px 60px rgba(0,0,0,0.8)); }
+.product-next { opacity: 0.7; transform: translate(40%, -5%) scale(0.85) rotate(4deg); z-index: 20; filter: blur(6px) brightness(0.6); }
+.product-next-2 { opacity: 0.4; transform: translate(80%, -10%) scale(0.7) rotate(8deg); z-index: 10; filter: blur(12px) brightness(0.4); }
+.product-hidden-left { opacity: 0; transform: translate(-120%, 20%) scale(0.6) rotate(-10deg); z-index: 0; filter: blur(20px); }
+
+@media (max-width: 768px) {
+    .product-next { transform: translate(15%, -5%) scale(0.9) rotate(3deg); }
+    .product-next-2 { transform: translate(30%, -10%) scale(0.8) rotate(6deg); }
+    .product-hidden-left { transform: translate(-50%, 20%) scale(0.5); }
+}
+
+.video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 1rem; background: #000; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
+.video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.prose-custom p { margin-bottom: 1rem; line-height: 1.75; color: #cbd5e1; }
+
+/* ============================================================
+   ADMIN
+   ============================================================ */
+.admin-modal-bg { background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
+.admin-field {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    width: 100%;
+    outline: none;
+}
+.admin-field:focus { border-color: #EEBC5A; }
+
+.input-dark { background: #333; border: 1px solid #444; color: white; border-radius: 4px; padding: 12px 16px; }
+.input-dark:focus { outline: none; border-color: white; background: #444; }
+
+/* ============================================================
+   INSTAGRAM (Behold)
+   ============================================================ */
+behold-widget { display: block; width: 100%; }
+behold-widget a { text-decoration: none; }
+
+/* ============================================================
+   ANIMAÇÕES DE UI
+   ============================================================ */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+.shake { animation: shake 0.4s ease-in-out; }
+
+/* ============================================================
+   PREVIEW DO HERO NO ADMIN (simulação)
+   ============================================================ */
+.hero-preview-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #0f172a;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.1);
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-preview-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+}
+
+.hero-preview-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.hero-preview-content.preview-left {
+    left: 0;
+    right: 0;
+    padding: 0 8% 0 8%;
+    text-align: left;
+    align-items: flex-start;
+}
+
+.hero-preview-content.preview-center {
+    text-align: center;
+    align-items: center;
+    padding: 0 10%;
+}
+
+.hero-preview-content.preview-right {
+    text-align: right;
+    align-items: flex-end;
+    padding: 0 8% 0 8%;
+}
+
+.hero-preview-content.preview-custom {
+    left: var(--hero-x, 50%);
+    top: var(--hero-y, 50%);
+    transform: translate(-50%, -50%);
+    text-align: var(--hero-align, center);
+    width: auto;
+    max-width: 90%;
+}
+
+.preview-title {
+    font-size: clamp(1rem, 4vw, 2.5rem);
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.preview-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(238, 188, 90, 0.15);
+    border: 1px solid rgba(238, 188, 90, 0.4);
+    color: #EEBC5A;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.preview-desc {
+    font-size: clamp(0.6rem, 1.2vw, 0.9rem);
+    color: rgba(226, 232, 240, 0.9);
+    max-width: 90%;
+    line-height: 1.4;
+    margin-bottom: 0.75rem;
+}
