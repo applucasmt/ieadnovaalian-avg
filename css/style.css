@@ -45,11 +45,23 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Sem animação! */
+    object-position: center center;
+}
+
+/* Em celular, muda a proporção para evitar zoom excessivo */
+@media (max-width: 768px) {
+    #site-hero {
+        object-position: center 30%; /* Foca mais no topo */
+    }
+    
+    /* Reduz a altura mínima do hero em mobile */
+    .hero-section {
+        min-height: 70vh !important;
+    }
 }
 
 /* ============================================================
-   POSICIONAMENTO DO TEXTO DO HERO (configurável pelo admin)
+   POSICIONAMENTO DO TEXTO DO HERO
    ============================================================ */
 .hero-content {
     position: absolute;
@@ -58,62 +70,104 @@ body {
     max-width: 100%;
     transition: all 0.3s ease;
     pointer-events: none;
+    padding: 0 1rem;
 }
 
 .hero-content > * {
     pointer-events: auto;
 }
 
-/* Posição: Esquerda */
-.hero-content.pos-left {
-    left: 0;
-    right: auto;
-    top: 50%;
-    transform: translateY(-50%);
-    text-align: left;
-    padding-left: 8%;
-    padding-right: 40%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+/* Em mobile, TODOS os posicionamentos viram "centro" para melhor leitura */
+@media (max-width: 768px) {
+    .hero-content.pos-left,
+    .hero-content.pos-center,
+    .hero-content.pos-right,
+    .hero-content.pos-custom {
+        left: 50% !important;
+        top: 50% !important;
+        right: auto !important;
+        transform: translate(-50%, -50%) !important;
+        text-align: center !important;
+        align-items: center !important;
+        padding-left: 5% !important;
+        padding-right: 5% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    /* Ajusta o tamanho da fonte do título no mobile */
+    .hero-content h1 {
+        font-size: clamp(2rem, 10vw, 3.5rem) !important;
+        line-height: 1.1 !important;
+    }
+    
+    .hero-content p {
+        font-size: clamp(0.9rem, 4vw, 1.1rem) !important;
+        padding: 0 0.5rem;
+    }
+    
+    /* Ajusta botões no mobile */
+    .hero-content .flex.gap-4 {
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+        width: 100%;
+        padding: 0 1rem;
+    }
+    
+    .hero-content .flex.gap-4 button {
+        width: 100% !important;
+    }
 }
 
-/* Posição: Centro (padrão) */
-.hero-content.pos-center {
-    left: 50%;
-    transform: translate(-50%, -50%);
-    top: 50%;
-    text-align: center;
-    padding-left: 10%;
-    padding-right: 10%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+/* Desktop - mantém os posicionamentos originais */
+@media (min-width: 769px) {
+    .hero-content.pos-left {
+        left: 0;
+        right: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: left;
+        padding-left: 8%;
+        padding-right: 40%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
 
-/* Posição: Direita */
-.hero-content.pos-right {
-    right: 0;
-    left: auto;
-    top: 50%;
-    transform: translateY(-50%);
-    text-align: right;
-    padding-right: 8%;
-    padding-left: 40%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-}
+    .hero-content.pos-center {
+        left: 50%;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        text-align: center;
+        padding-left: 10%;
+        padding-right: 10%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-/* Posição: Personalizada (controlada via CSS vars pelo JS) */
-.hero-content.pos-custom {
-    left: var(--hero-x, 50%);
-    top: var(--hero-y, 50%);
-    transform: translate(-50%, -50%);
-    text-align: var(--hero-align, center);
-    width: auto;
-    max-width: 90%;
-    align-items: var(--hero-align, center);
+    .hero-content.pos-right {
+        right: 0;
+        left: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: right;
+        padding-right: 8%;
+        padding-left: 40%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .hero-content.pos-custom {
+        left: var(--hero-x, 50%);
+        top: var(--hero-y, 50%);
+        transform: translate(-50%, -50%);
+        text-align: var(--hero-align, center);
+        width: auto;
+        max-width: 90%;
+        align-items: var(--hero-align, center);
+    }
 }
 
 @media (max-width: 768px) {
