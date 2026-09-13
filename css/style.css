@@ -40,12 +40,23 @@ body {
 
 /* ============================================================
    HERO - ESTÁTICA (SEM ZOOM/ANIMAÇÃO)
+   Desktop: preenche a tela (cover)
+   Mobile:  mostra a imagem inteira (contain) para não cortar
    ============================================================ */
 #site-hero {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center center;
+    background: #0f172a;
+}
+
+@media (max-width: 768px) {
+    #site-hero {
+        object-fit: contain;
+        object-position: center center;
+        background: #0f172a;
+    }
 }
 
 /* ============================================================
@@ -127,11 +138,6 @@ body {
    Respeita as configurações de posição feitas no admin
    ============================================================ */
 @media (max-width: 768px) {
-    /* Hero foca um pouco mais no topo em telas verticais */
-    #site-hero {
-        object-position: center 25%;
-    }
-
     /* Posição: Esquerda (mesmo visual do PC) */
     .hero-content.pos-left {
         left: 0;
@@ -208,7 +214,7 @@ body {
         margin-bottom: 0.75rem;
     }
 
-    /* Botões - mantém em linha se couber, senão empilha */
+    /* Botões */
     .hero-content button {
         padding: 0.85rem 1.5rem;
         font-size: 0.9rem;
