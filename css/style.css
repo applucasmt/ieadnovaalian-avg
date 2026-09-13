@@ -43,25 +43,13 @@ body {
    ============================================================ */
 #site-hero {
     width: 100%;
-    height: auto;
-    object-fit: contain;
-    display: block;
-}
-
-/* Em celular, muda a proporção para evitar zoom excessivo */
-@media (max-width: 768px) {
-    #site-hero {
-        object-position: center 30%; /* Foca mais no topo */
-    }
-    
-    /* Reduz a altura mínima do hero em mobile */
-    .hero-section {
-        min-height: 70vh !important;
-    }
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
 }
 
 /* ============================================================
-   POSICIONAMENTO DO TEXTO DO HERO
+   HERO CONTENT - BASE
    ============================================================ */
 .hero-content {
     position: absolute;
@@ -77,58 +65,74 @@ body {
     pointer-events: auto;
 }
 
-/* Em mobile, TODOS os posicionamentos viram "centro" para melhor leitura */
-@media (max-width: 768px) {
-    .hero-content.pos-left,
-    .hero-content.pos-center,
-    .hero-content.pos-right,
+/* ============================================================
+   DESKTOP (>= 769px) - Mantém exatamente as configs do admin
+   ============================================================ */
+@media (min-width: 769px) {
+    /* Posição: Esquerda */
+    .hero-content.pos-left {
+        left: 0;
+        right: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: left;
+        padding-left: 8%;
+        padding-right: 40%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* Posição: Centro */
+    .hero-content.pos-center {
+        left: 50%;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        text-align: center;
+        padding-left: 10%;
+        padding-right: 10%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Posição: Direita */
+    .hero-content.pos-right {
+        right: 0;
+        left: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: right;
+        padding-right: 8%;
+        padding-left: 40%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    /* Posição: Personalizada */
     .hero-content.pos-custom {
-        left: 50% !important;
-        top: 50% !important;
-        right: auto !important;
-        transform: translate(-50%, -50%) !important;
-        text-align: center !important;
-        align-items: center !important;
-        padding-left: 5% !important;
-        padding-right: 5% !important;
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-    
-    /* Ajusta o tamanho da fonte do título no mobile */
-    .hero-content h1 {
-        font-size: clamp(2rem, 10vw, 3.5rem) !important;
-        line-height: 1.1 !important;
-    }
-    
-    .hero-content p {
-        font-size: clamp(0.9rem, 4vw, 1.1rem) !important;
-        padding: 0 0.5rem;
-    }
-    
-    /* Ajusta botões no mobile */
-    .hero-content .flex.gap-4 {
-        flex-direction: column !important;
-        gap: 0.75rem !important;
-        width: 100%;
-        padding: 0 1rem;
-    }
-    
-    .hero-content .flex.gap-4 button {
-        width: 100% !important;
+        left: var(--hero-x, 50%);
+        top: var(--hero-y, 50%);
+        transform: translate(-50%, -50%);
+        text-align: var(--hero-align, center);
+        width: auto;
+        max-width: 90%;
+        align-items: var(--hero-align, center);
     }
 }
 
 /* ============================================================
-   MOBILE - Respeita as configurações do admin
+   MOBILE (<= 768px) - Mesmo visual do PC, adaptado ao tamanho
+   Respeita as configurações de posição feitas no admin
    ============================================================ */
 @media (max-width: 768px) {
-    /* Hero foca no topo da imagem */
+    /* Hero foca um pouco mais no topo em telas verticais */
     #site-hero {
         object-position: center 25%;
     }
 
-    /* Mantém a posição configurada, apenas ajusta tamanhos */
+    /* Posição: Esquerda (mesmo visual do PC) */
     .hero-content.pos-left {
         left: 0;
         right: auto;
@@ -136,10 +140,14 @@ body {
         transform: translateY(-50%);
         text-align: left;
         padding-left: 6%;
-        padding-right: 30%;
+        padding-right: 8%;
+        display: flex;
+        flex-direction: column;
         align-items: flex-start;
+        width: 100%;
     }
 
+    /* Posição: Centro (mesmo visual do PC) */
     .hero-content.pos-center {
         left: 50%;
         transform: translate(-50%, -50%);
@@ -147,9 +155,13 @@ body {
         text-align: center;
         padding-left: 6%;
         padding-right: 6%;
+        display: flex;
+        flex-direction: column;
         align-items: center;
+        width: 100%;
     }
 
+    /* Posição: Direita (mesmo visual do PC) */
     .hero-content.pos-right {
         right: 0;
         left: auto;
@@ -157,10 +169,14 @@ body {
         transform: translateY(-50%);
         text-align: right;
         padding-right: 6%;
-        padding-left: 30%;
+        padding-left: 8%;
+        display: flex;
+        flex-direction: column;
         align-items: flex-end;
+        width: 100%;
     }
 
+    /* Posição: Personalizada (mesmo X e Y do PC) */
     .hero-content.pos-custom {
         left: var(--hero-x, 50%);
         top: var(--hero-y, 50%);
@@ -171,7 +187,7 @@ body {
         align-items: var(--hero-align, center);
     }
 
-    /* Ajusta tamanhos de fonte no mobile para caber bem */
+    /* Ajustes de tamanho de fonte para caber sem quebrar o layout */
     .hero-content h1 {
         font-size: clamp(1.75rem, 8vw, 3rem);
         line-height: 1.1;
@@ -184,7 +200,15 @@ body {
         margin-bottom: 1.25rem;
     }
 
-    /* Botões empilhados no mobile (melhor pra toque) */
+    /* Badge */
+    .hero-content .preview-badge,
+    .hero-content > div:first-child {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.9rem;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Botões - mantém em linha se couber, senão empilha */
     .hero-content button {
         padding: 0.85rem 1.5rem;
         font-size: 0.9rem;
@@ -192,7 +216,7 @@ body {
 }
 
 /* ============================================================
-   MOBILE PEQUENO (iPhone SE, etc)
+   MOBILE PEQUENO (iPhone SE, Galaxy A, etc)
    ============================================================ */
 @media (max-width: 400px) {
     .hero-content h1 {
@@ -201,6 +225,11 @@ body {
 
     .hero-content p {
         font-size: 0.8rem;
+    }
+
+    .hero-content button {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.85rem;
     }
 }
 
@@ -321,7 +350,7 @@ behold-widget a { text-decoration: none; }
 .shake { animation: shake 0.4s ease-in-out; }
 
 /* ============================================================
-   PREVIEW DO HERO NO ADMIN (simulação visual)
+   PREVIEW DO HERO NO ADMIN
    ============================================================ */
 .hero-preview-box {
     position: relative;
@@ -444,7 +473,7 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   SLIDERS DO ADMIN (personalizáveis)
+   SLIDERS DO ADMIN
    ============================================================ */
 .admin-slider {
     -webkit-appearance: none;
@@ -476,7 +505,7 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   POSITION BUTTONS (admin - escolha rápida)
+   BOTÕES DE POSIÇÃO DO ADMIN
    ============================================================ */
 .pos-btn {
     flex: 1;
