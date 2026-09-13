@@ -39,9 +39,7 @@ body {
 }
 
 /* ============================================================
-   HERO - ESTÁTICA (SEM ZOOM/ANIMAÇÃO)
-   Desktop: preenche a tela (cover)
-   Mobile:  mostra a imagem inteira (contain) para não cortar
+   HERO - SEMPRE COVER (preenche a tela em todos os dispositivos)
    ============================================================ */
 #site-hero {
     width: 100%;
@@ -51,11 +49,22 @@ body {
     background: #0f172a;
 }
 
+/* ============================================================
+   HERO SECTION - Altura adaptativa
+   ============================================================ */
+.hero-section {
+    min-height: 85vh;
+}
+
 @media (max-width: 768px) {
-    #site-hero {
-        object-fit: contain;
-        object-position: center center;
-        background: #0f172a;
+    .hero-section {
+        min-height: 65vh;
+    }
+}
+
+@media (max-width: 400px) {
+    .hero-section {
+        min-height: 60vh;
     }
 }
 
@@ -77,10 +86,9 @@ body {
 }
 
 /* ============================================================
-   DESKTOP (>= 769px) - Mantém exatamente as configs do admin
+   DESKTOP (>= 769px) - Mantém as configs do admin
    ============================================================ */
 @media (min-width: 769px) {
-    /* Posição: Esquerda */
     .hero-content.pos-left {
         left: 0;
         right: auto;
@@ -94,7 +102,6 @@ body {
         align-items: flex-start;
     }
 
-    /* Posição: Centro */
     .hero-content.pos-center {
         left: 50%;
         transform: translate(-50%, -50%);
@@ -107,7 +114,6 @@ body {
         align-items: center;
     }
 
-    /* Posição: Direita */
     .hero-content.pos-right {
         right: 0;
         left: auto;
@@ -121,7 +127,6 @@ body {
         align-items: flex-end;
     }
 
-    /* Posição: Personalizada */
     .hero-content.pos-custom {
         left: var(--hero-x, 50%);
         top: var(--hero-y, 50%);
@@ -134,11 +139,10 @@ body {
 }
 
 /* ============================================================
-   MOBILE (<= 768px) - Mesmo visual do PC, adaptado ao tamanho
-   Respeita as configurações de posição feitas no admin
+   MOBILE (<= 768px) - Mesmo visual do PC, com textos proporcionais
    ============================================================ */
 @media (max-width: 768px) {
-    /* Posição: Esquerda (mesmo visual do PC) */
+    /* Esquerda - mesma posição do PC */
     .hero-content.pos-left {
         left: 0;
         right: auto;
@@ -146,14 +150,15 @@ body {
         transform: translateY(-50%);
         text-align: left;
         padding-left: 6%;
-        padding-right: 8%;
+        padding-right: 12%;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         width: 100%;
+        max-width: 100%;
     }
 
-    /* Posição: Centro (mesmo visual do PC) */
+    /* Centro */
     .hero-content.pos-center {
         left: 50%;
         transform: translate(-50%, -50%);
@@ -167,7 +172,7 @@ body {
         width: 100%;
     }
 
-    /* Posição: Direita (mesmo visual do PC) */
+    /* Direita */
     .hero-content.pos-right {
         right: 0;
         left: auto;
@@ -175,14 +180,15 @@ body {
         transform: translateY(-50%);
         text-align: right;
         padding-right: 6%;
-        padding-left: 8%;
+        padding-left: 12%;
         display: flex;
         flex-direction: column;
         align-items: flex-end;
         width: 100%;
+        max-width: 100%;
     }
 
-    /* Posição: Personalizada (mesmo X e Y do PC) */
+    /* Personalizado - mantém X e Y do PC */
     .hero-content.pos-custom {
         left: var(--hero-x, 50%);
         top: var(--hero-y, 50%);
@@ -193,49 +199,67 @@ body {
         align-items: var(--hero-align, center);
     }
 
-    /* Ajustes de tamanho de fonte para caber sem quebrar o layout */
-    .hero-content h1 {
-        font-size: clamp(1.75rem, 8vw, 3rem);
-        line-height: 1.1;
-        margin-bottom: 0.75rem;
-    }
-
-    .hero-content p {
-        font-size: clamp(0.85rem, 3.5vw, 1rem);
-        line-height: 1.4;
-        margin-bottom: 1.25rem;
-    }
+    /* ============================================================
+       TEXTOS - Proporcionais ao espaço (usa clamp para escalar)
+       ============================================================ */
 
     /* Badge */
     .hero-content .preview-badge,
     .hero-content > div:first-child {
-        font-size: 0.65rem;
-        padding: 0.3rem 0.9rem;
-        margin-bottom: 0.75rem;
+        font-size: clamp(0.55rem, 2.5vw, 0.7rem);
+        padding: 0.25rem 0.7rem;
+        margin-bottom: 0.6rem;
+        letter-spacing: 0.12em;
+    }
+
+    /* Título principal */
+    .hero-content h1 {
+        font-size: clamp(1.6rem, 8.5vw, 2.8rem);
+        line-height: 1.1;
+        margin-bottom: 0.6rem;
+        letter-spacing: -0.02em;
+    }
+
+    /* Descrição */
+    .hero-content p {
+        font-size: clamp(0.8rem, 3.5vw, 1rem);
+        line-height: 1.45;
+        margin-bottom: 1.1rem;
+        max-width: 100%;
     }
 
     /* Botões */
     .hero-content button {
-        padding: 0.85rem 1.5rem;
-        font-size: 0.9rem;
+        padding: 0.75rem 1.25rem;
+        font-size: clamp(0.8rem, 3vw, 0.95rem);
+        width: auto;
+        min-width: 140px;
+    }
+
+    /* Container dos botões - mantém lado a lado */
+    .hero-content .flex.flex-col.sm\:flex-row,
+    .hero-content > div:last-child {
+        gap: 0.5rem;
+        flex-wrap: wrap;
     }
 }
 
 /* ============================================================
-   MOBILE PEQUENO (iPhone SE, Galaxy A, etc)
+   MOBILE PEQUENO (iPhone SE, Galaxy A)
    ============================================================ */
 @media (max-width: 400px) {
     .hero-content h1 {
-        font-size: 1.5rem;
+        font-size: clamp(1.4rem, 8vw, 2rem);
     }
 
     .hero-content p {
-        font-size: 0.8rem;
+        font-size: clamp(0.75rem, 3.2vw, 0.9rem);
     }
 
     .hero-content button {
-        padding: 0.75rem 1.25rem;
-        font-size: 0.85rem;
+        padding: 0.7rem 1rem;
+        font-size: 0.8rem;
+        min-width: 120px;
     }
 }
 
