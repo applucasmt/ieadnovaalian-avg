@@ -63,13 +63,8 @@ body {
     overflow: hidden;
 }
 
-@media (max-width: 768px) {
-    .hero-section { min-height: 70vh; }
-}
-
-@media (max-width: 400px) {
-    .hero-section { min-height: 65vh; }
-}
+@media (max-width: 768px) { .hero-section { min-height: 70vh; } }
+@media (max-width: 400px) { .hero-section { min-height: 65vh; } }
 
 .hero-content {
     position: absolute;
@@ -91,14 +86,12 @@ body {
         padding-left: 8%; padding-right: 40%;
         display: flex; flex-direction: column; align-items: flex-start;
     }
-
     .hero-content.pos-center {
         left: 50%; transform: translate(-50%, -50%); top: 50%;
         text-align: center;
         padding-left: 10%; padding-right: 10%;
         display: flex; flex-direction: column; align-items: center;
     }
-
     .hero-content.pos-right {
         right: 0; left: auto; top: 50%;
         transform: translateY(-50%);
@@ -106,7 +99,6 @@ body {
         padding-right: 8%; padding-left: 40%;
         display: flex; flex-direction: column; align-items: flex-end;
     }
-
     .hero-content.pos-custom {
         left: var(--hero-x, 50%);
         top: var(--hero-y, 50%);
@@ -126,7 +118,6 @@ body {
         display: flex; flex-direction: column; align-items: flex-start;
         width: 100%;
     }
-
     .hero-content.pos-center {
         left: 50%; transform: translate(-50%, 15%); top: 0;
         text-align: center;
@@ -134,7 +125,6 @@ body {
         display: flex; flex-direction: column; align-items: center;
         width: 100%;
     }
-
     .hero-content.pos-right {
         right: 0; left: auto; top: 0;
         transform: translateY(15%);
@@ -143,7 +133,6 @@ body {
         display: flex; flex-direction: column; align-items: flex-end;
         width: 100%;
     }
-
     .hero-content.pos-custom {
         left: var(--hero-x, 50%);
         top: max(15%, var(--hero-y, 15%));
@@ -152,7 +141,6 @@ body {
         width: 90%; max-width: 90%;
         align-items: var(--hero-align, center);
     }
-
     .hero-content .preview-badge,
     .hero-content > div:first-child {
         font-size: clamp(0.55rem, 2.5vw, 0.7rem);
@@ -160,20 +148,17 @@ body {
         margin-bottom: 0.5rem;
         letter-spacing: 0.12em;
     }
-
     .hero-content h1 {
         font-size: clamp(1.5rem, 8vw, 2.5rem);
         line-height: 1.1;
         margin-bottom: 0.5rem;
         letter-spacing: -0.02em;
     }
-
     .hero-content p {
         font-size: clamp(0.75rem, 3.3vw, 0.95rem);
         line-height: 1.4;
         margin-bottom: 1rem;
     }
-
     .hero-content button {
         padding: 0.7rem 1.15rem;
         font-size: clamp(0.75rem, 2.9vw, 0.9rem);
@@ -194,7 +179,6 @@ body {
     position: relative;
     z-index: 20;
 }
-
 @media (max-width: 768px) { #main-content-wrapper { margin-top: -40px; } }
 @media (max-width: 400px) { #main-content-wrapper { margin-top: -30px; } }
 
@@ -222,7 +206,7 @@ body {
 }
 
 /* ============================================================
-   MARKETING PAGE V2
+   MARKETING PAGE V2 - LAYOUT DEFINITIVO
    ============================================================ */
 .marketing-container-v2 {
     position: relative;
@@ -230,10 +214,10 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding: 100px 1.5rem 140px;
-    overflow: hidden;
+    justify-content: flex-start;
+    padding: 90px 1.5rem 60px;
+    overflow-x: hidden;
 }
 
 @media (min-width: 1024px) {
@@ -241,23 +225,24 @@ body {
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        padding: 90px 3rem 100px;
+        padding: 100px 3rem 60px;
+        height: 100vh;
         min-height: 100vh;
-        height: auto;
+        max-height: 100vh;
+        gap: 3rem;
     }
 }
 
+/* COLUNA ESQUERDA - Texto */
 .marketing-left {
     width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 1rem 0;
-    z-index: 10;
-    position: relative;
     order: 2;
+    padding: 0;
+    margin-top: 1.5rem;
 }
 
 @media (min-width: 1024px) {
@@ -265,8 +250,9 @@ body {
         width: 45%;
         align-items: flex-start;
         text-align: left;
-        padding: 0 2rem 0 0;
         order: 1;
+        margin-top: 0;
+        padding-right: 2rem;
     }
 }
 
@@ -286,13 +272,13 @@ body {
 }
 
 .marketing-title-v2 {
-    font-size: clamp(2rem, 8vw, 4.5rem);
+    font-size: clamp(1.75rem, 8vw, 3.5rem);
     font-weight: 900;
     color: #fff;
     line-height: 1.05;
     letter-spacing: -0.03em;
     text-transform: uppercase;
-    margin: 0 0 2rem 0;
+    margin: 0 0 1.75rem 0;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     word-break: break-word;
     transition: opacity 0.4s ease, transform 0.4s ease;
@@ -300,8 +286,8 @@ body {
 
 @media (min-width: 1024px) {
     .marketing-title-v2 {
-        font-size: clamp(3rem, 6vw, 5.5rem);
-        margin-bottom: 2.5rem;
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        margin-bottom: 2rem;
     }
 }
 
@@ -336,7 +322,6 @@ body {
     box-shadow: 0 0 20px rgba(238, 188, 90, 0.3);
     white-space: nowrap;
 }
-
 .btn-primary-v2:hover {
     background: #fff;
     transform: scale(1.05);
@@ -362,7 +347,6 @@ body {
     backdrop-filter: blur(10px);
     white-space: nowrap;
 }
-
 .btn-whatsapp-v2:hover {
     background: #25D366;
     border-color: #25D366;
@@ -370,21 +354,25 @@ body {
     color: #fff;
 }
 
+/* COLUNA DIREITA - Slider + Controles */
 .marketing-right {
     width: 100%;
-    height: 55vh;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     order: 1;
+    height: 55vh;
+    margin-bottom: 2rem;
 }
 
 @media (min-width: 1024px) {
     .marketing-right {
         width: 55%;
-        height: 100%;
         order: 2;
+        height: 100%;
+        max-height: 80vh;
+        margin-bottom: 0;
     }
 }
 
@@ -413,32 +401,23 @@ body {
 
 /* ============================================================
    CONTROLES DE NAVEGAÇÃO
-   Mobile: entre a imagem e o título (centralizado)
-   Desktop: canto inferior direito
+   Sempre DENTRO da coluna direita, na base da imagem
    ============================================================ */
-
 .marketing-controls {
-    position: relative;
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     gap: 1rem;
     z-index: 30;
     justify-content: center;
     align-items: center;
-    margin: 0 auto 1.5rem auto;
-    width: 100%;
 }
 
-/* Desktop - controles SEMPRE na mesma posição, alinhados com os botões de ação */
 @media (min-width: 1024px) {
     .marketing-controls {
-        position: absolute;
-        bottom: 2rem;
-        left: 3rem;
-        right: auto;
-        top: auto;
-        margin: 0;
-        width: auto;
-        justify-content: flex-start;
+        bottom: 1.5rem;
     }
 }
 
@@ -446,7 +425,7 @@ body {
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(15, 23, 42, 0.75);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -458,16 +437,20 @@ body {
     justify-content: center;
     font-size: 1.1rem;
 }
-
 .marketing-nav-btn:hover {
     background: #EEBC5A;
     color: #0f172a;
     border-color: #EEBC5A;
     transform: scale(1.1);
 }
+.marketing-nav-btn:active { transform: scale(0.95); }
 
-.marketing-nav-btn:active {
-    transform: scale(0.95);
+@media (max-width: 640px) {
+    .marketing-nav-btn {
+        width: 46px;
+        height: 46px;
+        font-size: 1rem;
+    }
 }
 
 /* ============================================================
@@ -513,7 +496,6 @@ body {
     justify-content: center;
     transition: all 0.3s ease;
 }
-
 .marketing-modal-close:hover {
     background: rgba(220, 38, 38, 0.9);
     transform: rotate(90deg);
@@ -524,7 +506,6 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
 }
-
 .marketing-modal-scroll::-webkit-scrollbar { width: 6px; }
 .marketing-modal-scroll::-webkit-scrollbar-track { background: transparent; }
 .marketing-modal-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
@@ -539,7 +520,6 @@ body {
     max-height: 60vh;
     overflow: hidden;
 }
-
 .marketing-modal-image img {
     width: 100%;
     height: auto;
@@ -548,13 +528,8 @@ body {
     display: block;
 }
 
-.marketing-modal-info {
-    padding: 1.75rem;
-}
-
-@media (min-width: 640px) {
-    .marketing-modal-info { padding: 2rem; }
-}
+.marketing-modal-info { padding: 1.75rem; }
+@media (min-width: 640px) { .marketing-modal-info { padding: 2rem; } }
 
 .marketing-modal-category {
     display: inline-block;
@@ -604,7 +579,6 @@ body {
     transition: all 0.3s ease;
     box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
 }
-
 .marketing-modal-whatsapp-btn:hover {
     background: #20bd5a;
     transform: translateY(-2px);
@@ -634,8 +608,8 @@ body {
     border-radius: 16px;
     z-index: 10;
 }
-.depth-layer { height: 55vh; width: auto; max-width: 85vw; }
-@media (min-width: 768px) { .depth-layer { height: 70vh; max-height: 750px; } }
+.depth-layer { height: 50vh; width: auto; max-width: 85vw; }
+@media (min-width: 768px) { .depth-layer { height: 65vh; max-height: 700px; } }
 
 .product-main { opacity: 1; transform: translate(0, 0) scale(1); z-index: 30; filter: blur(0px) drop-shadow(0 30px 60px rgba(0,0,0,0.8)); cursor: pointer; }
 .product-next { opacity: 0.7; transform: translate(40%, -5%) scale(0.85) rotate(4deg); z-index: 20; filter: blur(6px) brightness(0.6); }
@@ -704,14 +678,7 @@ behold-widget a { text-decoration: none; }
     background-size: cover;
     background-position: center;
 }
-
-.hero-preview-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.5);
-    pointer-events: none;
-}
-
+.hero-preview-overlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.5); pointer-events: none; }
 .hero-preview-content {
     position: absolute;
     inset: 0;
@@ -721,7 +688,6 @@ behold-widget a { text-decoration: none; }
     transition: all 0.15s ease;
     pointer-events: none;
 }
-
 .hero-preview-content.preview-left { left: 0; right: 0; padding: 0 8%; text-align: left; align-items: flex-start; }
 .hero-preview-content.preview-center { text-align: center; align-items: center; padding: 0 10%; }
 .hero-preview-content.preview-right { text-align: right; align-items: flex-end; padding: 0 8%; }
@@ -734,7 +700,6 @@ behold-widget a { text-decoration: none; }
     align-items: var(--hero-align, center);
     inset: auto;
 }
-
 .preview-title {
     font-size: clamp(0.9rem, 3.5vw, 2.2rem);
     font-weight: 800;
@@ -744,7 +709,6 @@ behold-widget a { text-decoration: none; }
     text-transform: uppercase;
     text-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
-
 .preview-badge {
     display: inline-block;
     padding: 0.2rem 0.7rem;
@@ -758,7 +722,6 @@ behold-widget a { text-decoration: none; }
     text-transform: uppercase;
     margin-bottom: 0.4rem;
 }
-
 .preview-desc {
     font-size: clamp(0.55rem, 1.1vw, 0.85rem);
     color: rgba(226, 232, 240, 0.9);
@@ -766,9 +729,7 @@ behold-widget a { text-decoration: none; }
     line-height: 1.4;
     margin-bottom: 0.6rem;
 }
-
 .preview-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-
 .preview-btn-1 {
     padding: 0.4rem 1rem;
     border-radius: 999px;
@@ -780,7 +741,6 @@ behold-widget a { text-decoration: none; }
     align-items: center;
     gap: 0.3rem;
 }
-
 .preview-btn-2 {
     padding: 0.4rem 1rem;
     border-radius: 999px;
@@ -848,81 +808,30 @@ behold-widget a { text-decoration: none; }
 /* ============================================================
    ORBS DE FUNDO
    ============================================================ */
-.animated-bg {
-    position: fixed;
-    inset: 0;
-    z-index: -10;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.15;
-    animation: float 20s ease-in-out infinite;
-}
-
+.animated-bg { position: fixed; inset: 0; z-index: -10; pointer-events: none; overflow: hidden; }
+.orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.15; animation: float 20s ease-in-out infinite; }
 .orb-1 { width: 500px; height: 500px; background: #494985; top: -200px; left: -100px; }
 .orb-2 { width: 400px; height: 400px; background: #EEBC5A; bottom: -150px; right: -100px; animation-delay: -10s; }
-
 @keyframes float {
     0%, 100% { transform: translate(0, 0) scale(1); }
     50% { transform: translate(30px, -30px) scale(1.1); }
 }
 
 /* ============================================================
-   RESPONSIVO MARKETING (MOBILE PEQUENO)
+   RESPONSIVO MARKETING
    ============================================================ */
 @media (max-width: 640px) {
-    .marketing-container-v2 {
-        padding: 70px 1rem 140px;
-    }
-    
-    .marketing-title-v2 {
-        font-size: clamp(1.75rem, 9vw, 2.5rem);
-        margin-bottom: 1.5rem;
-    }
-    
-    .marketing-buttons-v2 {
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    .btn-primary-v2,
-    .btn-whatsapp-v2 {
+    .marketing-container-v2 { padding: 80px 1rem 40px; }
+    .marketing-title-v2 { font-size: clamp(1.75rem, 9vw, 2.5rem); margin-bottom: 1.5rem; }
+    .marketing-buttons-v2 { flex-direction: column; width: 100%; }
+    .btn-primary-v2, .btn-whatsapp-v2 {
         width: 100%;
         justify-content: center;
         padding: 0.85rem 1rem;
         font-size: 0.8rem;
     }
-    
-    .marketing-right {
-        height: 50vh;
-        margin-bottom: 1rem;
-    }
-    
-    /* Botões entre imagem e texto no mobile */
-    .marketing-controls {
-        margin: 1.25rem auto;
-        gap: 0.85rem;
-    }
-    
-    .marketing-nav-btn {
-        width: 48px;
-        height: 48px;
-        font-size: 1rem;
-    }
-}
-
-@media (max-width: 640px) {
-    .marketing-modal-content {
-        max-width: 100%;
-        border-radius: 16px;
-        max-height: 95vh;
-    }
-    
+    .marketing-right { height: 45vh; margin-bottom: 1.5rem; }
+    .marketing-modal-content { max-width: 100%; border-radius: 16px; max-height: 95vh; }
     .marketing-modal-image { max-height: 50vh; }
     .marketing-modal-image img { max-height: 50vh; }
     .marketing-modal-info { padding: 1.25rem; }
