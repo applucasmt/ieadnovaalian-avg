@@ -119,18 +119,24 @@ body {
     }
 }
 
-/* Desktop - mantém os posicionamentos originais */
-@media (min-width: 769px) {
+/* ============================================================
+   MOBILE - Respeita as configurações do admin
+   ============================================================ */
+@media (max-width: 768px) {
+    /* Hero foca no topo da imagem */
+    #site-hero {
+        object-position: center 25%;
+    }
+
+    /* Mantém a posição configurada, apenas ajusta tamanhos */
     .hero-content.pos-left {
         left: 0;
         right: auto;
         top: 50%;
         transform: translateY(-50%);
         text-align: left;
-        padding-left: 8%;
-        padding-right: 40%;
-        display: flex;
-        flex-direction: column;
+        padding-left: 6%;
+        padding-right: 30%;
         align-items: flex-start;
     }
 
@@ -139,10 +145,8 @@ body {
         transform: translate(-50%, -50%);
         top: 50%;
         text-align: center;
-        padding-left: 10%;
-        padding-right: 10%;
-        display: flex;
-        flex-direction: column;
+        padding-left: 6%;
+        padding-right: 6%;
         align-items: center;
     }
 
@@ -152,10 +156,8 @@ body {
         top: 50%;
         transform: translateY(-50%);
         text-align: right;
-        padding-right: 8%;
-        padding-left: 40%;
-        display: flex;
-        flex-direction: column;
+        padding-right: 6%;
+        padding-left: 30%;
         align-items: flex-end;
     }
 
@@ -164,23 +166,41 @@ body {
         top: var(--hero-y, 50%);
         transform: translate(-50%, -50%);
         text-align: var(--hero-align, center);
-        width: auto;
+        width: 90%;
         max-width: 90%;
         align-items: var(--hero-align, center);
     }
+
+    /* Ajusta tamanhos de fonte no mobile para caber bem */
+    .hero-content h1 {
+        font-size: clamp(1.75rem, 8vw, 3rem);
+        line-height: 1.1;
+        margin-bottom: 0.75rem;
+    }
+
+    .hero-content p {
+        font-size: clamp(0.85rem, 3.5vw, 1rem);
+        line-height: 1.4;
+        margin-bottom: 1.25rem;
+    }
+
+    /* Botões empilhados no mobile (melhor pra toque) */
+    .hero-content button {
+        padding: 0.85rem 1.5rem;
+        font-size: 0.9rem;
+    }
 }
 
-@media (max-width: 768px) {
-    .hero-content.pos-left,
-    .hero-content.pos-center,
-    .hero-content.pos-right {
-        padding-left: 5%;
-        padding-right: 5%;
-        text-align: center;
-        align-items: center;
-        left: 50%;
-        right: auto;
-        transform: translate(-50%, -50%);
+/* ============================================================
+   MOBILE PEQUENO (iPhone SE, etc)
+   ============================================================ */
+@media (max-width: 400px) {
+    .hero-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .hero-content p {
+        font-size: 0.8rem;
     }
 }
 
