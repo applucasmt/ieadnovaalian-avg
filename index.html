@@ -24,7 +24,6 @@
     <link rel="preconnect" href="https://wsrv.nl">
     <link rel="preconnect" href="https://w.behold.so">
 
-    <!-- CSS PRÓPRIO -->
     <link rel="stylesheet" href="css/style.css">
 
     <script>
@@ -116,34 +115,30 @@
             </div>
 
             <div id="admin-dashboard" class="hidden bg-[#1e293b] w-full max-w-6xl rounded-2xl shadow-2xl border border-white/10 flex flex-col pointer-events-auto" style="height: 90vh; max-height: 90vh;">
-    <!-- Cabeçalho (não rola) -->
-    <div class="p-4 border-b border-white/10 flex justify-between items-center bg-black/20 shrink-0">
-        <h2 class="text-xl font-bold text-white"><i class="fas fa-cog text-brand-yellow mr-2"></i> Painel de Controle</h2>
-        <button onclick="window.closeAdmin()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
-    </div>
-    
-    <!-- Abas (não rola) -->
-    <div class="flex overflow-x-auto p-2 bg-white/5 gap-2 border-b border-white/5 shrink-0">
-        <button onclick="loadAdminTab('eventos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab active whitespace-nowrap" data-tab="eventos">Eventos/Agenda</button>
-        <button onclick="loadAdminTab('avisos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="avisos">Avisos Home</button>
-        <button onclick="loadAdminTab('ministerios')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="ministerios">Ministérios</button>
-        <button onclick="loadAdminTab('talentos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="talentos">Talentos</button>
-        <button onclick="loadAdminTab('albuns')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="albuns">Galeria</button>
-        <button onclick="loadAdminTab('pastor')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="pastor">Pastor/Sobre</button>
-        <button onclick="loadAdminTab('config')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="config"><i class="fas fa-palette mr-1"></i> Site/Config</button>
-    </div>
+                <div class="p-4 border-b border-white/10 flex justify-between items-center bg-black/20 shrink-0">
+                    <h2 class="text-xl font-bold text-white"><i class="fas fa-cog text-brand-yellow mr-2"></i> Painel de Controle</h2>
+                    <button onclick="window.closeAdmin()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+                </div>
+                
+                <div class="flex overflow-x-auto p-2 bg-white/5 gap-2 border-b border-white/5 shrink-0">
+                    <button onclick="loadAdminTab('eventos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab active whitespace-nowrap" data-tab="eventos">Eventos/Agenda</button>
+                    <button onclick="loadAdminTab('avisos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="avisos">Avisos Home</button>
+                    <button onclick="loadAdminTab('ministerios')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="ministerios">Ministérios</button>
+                    <button onclick="loadAdminTab('talentos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="talentos">Talentos</button>
+                    <button onclick="loadAdminTab('albuns')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="albuns">Galeria</button>
+                    <button onclick="loadAdminTab('pastor')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="pastor">Pastor/Sobre</button>
+                    <button onclick="loadAdminTab('config')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="config"><i class="fas fa-palette mr-1"></i> Site/Config</button>
+                </div>
 
-    <!-- Conteúdo (ROLA) - ESSA É A CORREÇÃO PRINCIPAL -->
-    <div class="flex-1 overflow-y-auto overflow-x-hidden p-4" id="admin-content-area" style="min-height: 0;">
-        <div class="text-center py-10 text-gray-500">Selecione uma aba acima para editar.</div>
-    </div>
+                <div class="flex-1 overflow-y-auto overflow-x-hidden p-4" id="admin-content-area" style="min-height: 0;">
+                    <div class="text-center py-10 text-gray-500">Selecione uma aba acima para editar.</div>
+                </div>
 
-    <!-- Footer (não rola) -->
-    <div class="p-4 border-t border-white/10 bg-black/20 flex justify-between items-center shrink-0">
-        <span class="text-xs text-gray-500">As alterações podem levar alguns segundos.</span>
-        <button onclick="window.openEditModal('add')" id="btn-new-item" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 shadow-lg"><i class="fas fa-plus"></i> Novo Item</button>
-    </div>
-</div>
+                <div class="p-4 border-t border-white/10 bg-black/20 flex justify-between items-center shrink-0">
+                    <span class="text-xs text-gray-500">As alterações podem levar alguns segundos.</span>
+                    <button onclick="window.openEditModal('add')" id="btn-new-item" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 shadow-lg"><i class="fas fa-plus"></i> Novo Item</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -227,33 +222,35 @@
 
         <main id="main-content" class="flex-grow">
             <div id="igreja-page" class="page-content">
-                <section class="relative min-h-[85vh] sm:min-h-[80vh] flex items-center justify-center overflow-hidden">
+                <section class="hero-section relative flex items-center justify-center overflow-hidden">
                     <div class="absolute inset-0 z-0">
                         <img id="site-hero" src="https://i.ibb.co/4nx19qbR/imgi-22-dji-fly-20241201-110126-166-1733065539755-photo-optimized.webp" alt="Interior da Igreja">
                         <div class="absolute inset-0 bg-[#0f172a]/50"></div>
                     </div>
                     <div id="hero-content" class="hero-content pos-center">
-    <div class="preview-badge" id="hero-badge" style="background: rgba(238,188,90,0.15); border: 1px solid rgba(238,188,90,0.3); color: #EEBC5A; padding: 0.25rem 1rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; backdrop-filter: blur(8px);">
-        Bem-vindo à casa do pai
-    </div>
-    <h1 class="text-4xl xs:text-5xl sm:text-7xl md:text-8xl font-bold text-white tracking-tight mb-4 sm:mb-6 leading-tight drop-shadow-lg" id="hero-title">
-        JARDIM <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">NOVA ALIANÇA</span>
-    </h1>
-    <p class="text-base sm:text-xl text-gray-300 font-light max-w-2xl mb-8 sm:mb-10 leading-relaxed" id="hero-description">
-        Um lugar de adoração, comunhão e crescimento espiritual. Venha fazer parte desta família.
-    </p>
-    <div class="flex flex-col sm:flex-row gap-4">
-        <button onclick="window.switchPage('aovivo')" class="bg-brand-yellow text-brand-dark font-bold py-3 sm:py-4 px-8 rounded-full active:scale-95 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(238,188,90,0.4)] flex justify-center items-center gap-2">
-            <i class="fas fa-play text-sm"></i> Assistir Culto
-        </button>
-        <button onclick="window.switchPage('contato')" class="bg-white/10 text-white backdrop-blur-md border border-white/20 font-bold py-3 sm:py-4 px-8 rounded-full active:scale-95 hover:bg-white/20 transition-all duration-300">
-            Fale Conosco
-        </button>
-    </div>
-</div>
+                        <div class="preview-badge" id="hero-badge" style="background: rgba(238,188,90,0.15); border: 1px solid rgba(238,188,90,0.3); color: #EEBC5A; padding: 0.25rem 1rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; backdrop-filter: blur(8px);">
+                            Bem-vindo à casa do pai
+                        </div>
+                        <h1 class="text-4xl xs:text-5xl sm:text-7xl md:text-8xl font-bold text-white tracking-tight mb-4 sm:mb-6 leading-tight drop-shadow-lg" id="hero-title">
+                            JARDIM <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">NOVA ALIANÇA</span>
+                        </h1>
+                        <p class="text-base sm:text-xl text-gray-300 font-light max-w-2xl mb-8 sm:mb-10 leading-relaxed" id="hero-description">
+                            Um lugar de adoração, comunhão e crescimento espiritual. Venha fazer parte desta família.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button onclick="window.switchPage('aovivo')" class="bg-brand-yellow text-brand-dark font-bold py-3 sm:py-4 px-8 rounded-full active:scale-95 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(238,188,90,0.4)] flex justify-center items-center gap-2">
+                                <i class="fas fa-play text-sm"></i> Assistir Culto
+                            </button>
+                            <button onclick="window.switchPage('contato')" class="bg-white/10 text-white backdrop-blur-md border border-white/20 font-bold py-3 sm:py-4 px-8 rounded-full active:scale-95 hover:bg-white/20 transition-all duration-300">
+                                Fale Conosco
+                            </button>
+                        </div>
+                    </div>
                 </section>
-                <div class="container mx-auto px-4 sm:px-6 py-10 sm:py-16 -mt-20 relative z-20">
+                
+                <div id="main-content-wrapper" class="container mx-auto px-4 sm:px-6 pt-6 pb-10 sm:py-16">
                     <div id="avisos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-16 sm:mb-20"></div>
+                    
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
                         <div>
                             <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">Próximos Eventos</h2>
@@ -502,7 +499,6 @@
         </footer>
     </div>
 
-    <!-- SCRIPTS - ORDEM IMPORTA! -->
     <script src="js/config.js"></script>
     <script src="js/data.js"></script>
     <script src="js/events.js"></script>
@@ -512,5 +508,6 @@
     <script src="js/ebd.js"></script>
     <script src="js/admin.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/scroll-reveal.js"></script>
 </body>
 </html>
