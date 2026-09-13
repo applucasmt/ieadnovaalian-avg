@@ -115,31 +115,35 @@
                 </div>
             </div>
 
-            <div id="admin-dashboard" class="hidden bg-[#1e293b] w-full max-w-6xl h-[90vh] rounded-2xl shadow-2xl border border-white/10 flex flex-col pointer-events-auto">
-                <div class="p-4 border-b border-white/10 flex justify-between items-center bg-black/20">
-                    <h2 class="text-xl font-bold text-white"><i class="fas fa-cog text-brand-yellow mr-2"></i> Painel de Controle</h2>
-                    <button onclick="window.closeAdmin()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
-                </div>
-                
-                <div class="flex overflow-x-auto p-2 bg-white/5 gap-2 border-b border-white/5">
-                    <button onclick="loadAdminTab('eventos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab active" data-tab="eventos">Eventos/Agenda</button>
-                    <button onclick="loadAdminTab('avisos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="avisos">Avisos Home</button>
-                    <button onclick="loadAdminTab('ministerios')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="ministerios">Ministérios</button>
-                    <button onclick="loadAdminTab('talentos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="talentos">Talentos</button>
-                    <button onclick="loadAdminTab('albuns')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="albuns">Galeria</button>
-                    <button onclick="loadAdminTab('pastor')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="pastor">Pastor/Sobre</button>
-                    <button onclick="loadAdminTab('config')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="config"><i class="fas fa-palette mr-1"></i> Site/Config</button>
-                </div>
+            <div id="admin-dashboard" class="hidden bg-[#1e293b] w-full max-w-6xl rounded-2xl shadow-2xl border border-white/10 flex flex-col pointer-events-auto" style="height: 90vh; max-height: 90vh;">
+    <!-- Cabeçalho (não rola) -->
+    <div class="p-4 border-b border-white/10 flex justify-between items-center bg-black/20 shrink-0">
+        <h2 class="text-xl font-bold text-white"><i class="fas fa-cog text-brand-yellow mr-2"></i> Painel de Controle</h2>
+        <button onclick="window.closeAdmin()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+    </div>
+    
+    <!-- Abas (não rola) -->
+    <div class="flex overflow-x-auto p-2 bg-white/5 gap-2 border-b border-white/5 shrink-0">
+        <button onclick="loadAdminTab('eventos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab active whitespace-nowrap" data-tab="eventos">Eventos/Agenda</button>
+        <button onclick="loadAdminTab('avisos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="avisos">Avisos Home</button>
+        <button onclick="loadAdminTab('ministerios')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="ministerios">Ministérios</button>
+        <button onclick="loadAdminTab('talentos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="talentos">Talentos</button>
+        <button onclick="loadAdminTab('albuns')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="albuns">Galeria</button>
+        <button onclick="loadAdminTab('pastor')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="pastor">Pastor/Sobre</button>
+        <button onclick="loadAdminTab('config')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="config"><i class="fas fa-palette mr-1"></i> Site/Config</button>
+    </div>
 
-                <div class="flex-grow overflow-y-auto p-4" id="admin-content-area">
-                    <div class="text-center py-10 text-gray-500">Selecione uma aba acima para editar.</div>
-                </div>
+    <!-- Conteúdo (ROLA) - ESSA É A CORREÇÃO PRINCIPAL -->
+    <div class="flex-1 overflow-y-auto overflow-x-hidden p-4" id="admin-content-area" style="min-height: 0;">
+        <div class="text-center py-10 text-gray-500">Selecione uma aba acima para editar.</div>
+    </div>
 
-                <div class="p-4 border-t border-white/10 bg-black/20 flex justify-between items-center">
-                    <span class="text-xs text-gray-500">As alterações podem levar alguns segundos.</span>
-                    <button onclick="window.openEditModal('add')" id="btn-new-item" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 shadow-lg"><i class="fas fa-plus"></i> Novo Item</button>
-                </div>
-            </div>
+    <!-- Footer (não rola) -->
+    <div class="p-4 border-t border-white/10 bg-black/20 flex justify-between items-center shrink-0">
+        <span class="text-xs text-gray-500">As alterações podem levar alguns segundos.</span>
+        <button onclick="window.openEditModal('add')" id="btn-new-item" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 shadow-lg"><i class="fas fa-plus"></i> Novo Item</button>
+    </div>
+</div>
         </div>
     </div>
 
