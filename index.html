@@ -200,10 +200,17 @@
             display: block;
             width: 100%;
         }
-        /* Força os links do Behold a abrirem em nova aba */
         behold-widget a {
             text-decoration: none;
         }
+
+        /* Animação de shake para senha errada */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .shake { animation: shake 0.4s ease-in-out; }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-yellow/30 selection:text-brand-yellow">
@@ -261,8 +268,15 @@
             <div id="admin-login-screen" class="bg-[#1e293b] w-full max-w-md p-8 rounded-2xl shadow-2xl border border-white/10 transform scale-95 transition-all">
                 <h2 class="text-2xl font-bold text-white mb-6 text-center"><i class="fas fa-user-lock text-brand-yellow mr-2"></i> Acesso Administrativo</h2>
                 <div class="space-y-4">
-                    <input type="password" id="admin-password" placeholder="Digite a senha" class="admin-field text-center text-lg">
-                    <button onclick="window.adminLogin()" class="w-full bg-brand-yellow text-brand-dark font-bold py-3 rounded-xl hover:bg-white transition-colors">Entrar</button>
+                    <div>
+                        <input type="password" id="admin-password" placeholder="Digite a senha" class="admin-field text-center text-lg" autocomplete="off">
+                        <p id="admin-login-error" class="text-red-400 text-xs text-center mt-2 hidden">
+                            <i class="fas fa-exclamation-triangle mr-1"></i> Senha incorreta. Tente novamente.
+                        </p>
+                    </div>
+                    <button onclick="window.adminLogin()" id="admin-login-btn" class="w-full bg-brand-yellow text-brand-dark font-bold py-3 rounded-xl hover:bg-white transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i> Entrar
+                    </button>
                     <button onclick="window.closeAdmin()" class="w-full text-gray-400 py-2 hover:text-white text-sm">Cancelar</button>
                 </div>
             </div>
@@ -693,16 +707,10 @@
 
     <script>
         (function() {
-            // ============================================================
-            // AJUSTE DE COMPORTAMENTO DOS LINKS DO BEHOLD
-            // Força os links dos posts a abrirem em nova aba no Instagram
-            // ============================================================
             const setupBeholdLinks = () => {
                 const widget = document.querySelector('behold-widget');
                 if (!widget) return;
 
-                // O Behold renderiza os posts dentro de Shadow DOM
-                // Precisamos acessar o shadowRoot para manipular os links
                 const processLinks = () => {
                     try {
                         const shadowRoot = widget.shadowRoot;
@@ -710,15 +718,11 @@
                         
                         const links = shadowRoot.querySelectorAll('a');
                         links.forEach(link => {
-                            // Força abrir em nova aba
                             link.setAttribute('target', '_blank');
                             link.setAttribute('rel', 'noopener noreferrer');
                             
-                            // Garante que o link vá direto pro Instagram (não ao beholds.so)
                             const href = link.getAttribute('href') || '';
                             if (!href.includes('instagram.com') && href.includes('behold')) {
-                                // Extrai o shortcode do post da URL do Behold, se possível
-                                // e redireciona para o Instagram
                                 const match = href.match(/\/p\/([^\/\?]+)/) || href.match(/\/reel\/([^\/\?]+)/);
                                 if (match) {
                                     const type = href.includes('/reel/') ? 'reel' : 'p';
@@ -726,18 +730,14 @@
                                 }
                             }
                         });
-                    } catch (e) {
-                        // Shadow DOM pode não estar acessível ainda
-                    }
+                    } catch (e) {}
                 };
 
-                // Tenta processar várias vezes, pois o Behold renderiza assincronamente
                 processLinks();
                 setTimeout(processLinks, 1000);
                 setTimeout(processLinks, 3000);
                 setTimeout(processLinks, 6000);
                 
-                // Observer para pegar quando os links forem renderizados
                 if (widget.shadowRoot) {
                     const observer = new MutationObserver(processLinks);
                     observer.observe(widget.shadowRoot, { childList: true, subtree: true });
@@ -762,6 +762,13 @@
             youtubeChannel: 'UCEhO2WiTY8qy_cBoQpwoJjQ',
             cacheTime: 3600000
         };
+
+        // ============================================================
+        // VALIDAÇÃO LOCAL DA SENHA DO ADMIN
+        // IMPORTANTE: Esta senha deve ser IGUAL à do arquivo code.gs
+        // Se você mudar no code.gs, mude AQUI também!
+        // ============================================================
+        const ADMIN_PASSWORD_LOCAL = "12345";
 
         // --- OTIMIZAÇÃO DE IMAGENS (Proxy wsrv.nl) ---
         const optimizeImage = (url, width = 800) => {
@@ -815,6 +822,7 @@
             const modal = document.getElementById('admin-modal');
             const login = document.getElementById('admin-login-screen');
             const dashboard = document.getElementById('admin-dashboard');
+            const errorMsg = document.getElementById('admin-login-error');
             
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
@@ -826,6 +834,8 @@
             } else {
                 login.classList.remove('hidden');
                 dashboard.classList.add('hidden');
+                document.getElementById('admin-password').value = '';
+                if (errorMsg) errorMsg.classList.add('hidden');
             }
         };
 
@@ -835,18 +845,88 @@
             setTimeout(() => modal.classList.add('hidden'), 300);
         };
 
-        window.adminLogin = () => {
-            const pass = document.getElementById('admin-password').value;
-            if(pass) {
-                window.adminState.password = pass;
-                window.adminState.isAuthenticated = true;
-                
+        // ============================================================
+        // LOGIN DO ADMIN COM VALIDAÇÃO LOCAL
+        // ============================================================
+        window.adminLogin = async () => {
+            const input = document.getElementById('admin-password');
+            const errorMsg = document.getElementById('admin-login-error');
+            const btn = document.getElementById('admin-login-btn');
+            const pass = input.value;
+            
+            // Esconde erro anterior
+            if (errorMsg) errorMsg.classList.add('hidden');
+            
+            // Validação básica
+            if (!pass) {
+                if (errorMsg) {
+                    errorMsg.textContent = 'Digite a senha.';
+                    errorMsg.classList.remove('hidden');
+                }
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                return;
+            }
+            
+            // Feedback visual
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+            
+            // ============================================================
+            // VALIDAÇÃO LOCAL (client-side)
+            // A validação real também acontece no servidor (code.gs)
+            // ============================================================
+            if (pass !== ADMIN_PASSWORD_LOCAL) {
+                setTimeout(() => {
+                    if (errorMsg) {
+                        errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Senha incorreta. Tente novamente.';
+                        errorMsg.classList.remove('hidden');
+                    }
+                    input.classList.add('shake');
+                    setTimeout(() => input.classList.remove('shake'), 500);
+                    input.value = '';
+                    input.focus();
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+                }, 600);
+                return;
+            }
+            
+            // Senha correta! Autentica
+            window.adminState.password = pass;
+            window.adminState.isAuthenticated = true;
+            
+            setTimeout(() => {
                 document.getElementById('admin-login-screen').classList.add('hidden');
                 document.getElementById('admin-dashboard').classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+                input.value = '';
                 loadAdminTab('eventos');
-            } else {
-                alert('Digite a senha.');
+            }, 600);
+        };
+
+        // Detecta "Enter" no campo de senha
+        document.getElementById('admin-password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                window.adminLogin();
             }
+        });
+
+        // ============================================================
+        // LOGOUT AUTOMÁTICO SE O SERVIDOR RETORNAR "SENHA INCORRETA"
+        // ============================================================
+        const handleServerAuthError = (result) => {
+            if (result && result.message && result.message.toLowerCase().includes('senha incorreta')) {
+                alert('Sessão expirada ou senha alterada. Faça login novamente.');
+                window.adminState.isAuthenticated = false;
+                window.adminState.password = '';
+                window.closeAdmin();
+                setTimeout(() => window.openAdmin(), 400);
+                return true;
+            }
+            return false;
         };
 
         window.loadAdminTab = async (tab) => {
@@ -980,6 +1060,8 @@
                     body: JSON.stringify(payload)
                 });
                 const result = await res.json();
+                
+                if (handleServerAuthError(result)) return;
                 
                 if (result.success) {
                     localStorage.setItem('cache_config_v2', JSON.stringify({
@@ -1207,6 +1289,12 @@
                 });
                 const result = await res.json();
                 
+                if (handleServerAuthError(result)) {
+                    btn.disabled = false;
+                    btn.textContent = 'Salvar';
+                    return;
+                }
+                
                 if(result.success) {
                     if (mode === 'edit' && index) {
                         window.adminState.currentData[index] = newData;
@@ -1259,6 +1347,9 @@
                     })
                 });
                 const result = await res.json();
+                
+                if (handleServerAuthError(result)) return;
+                
                  if(result.success) {
                     alert('Excluído com sucesso!');
                     window.adminState.currentData.splice(index, 1);
