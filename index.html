@@ -321,16 +321,24 @@
                 </div>
             </div>
             
-            <!-- PÁGINA MARKETING -->
+             <!-- PÁGINA MARKETING -->
             <div id="marketing-page" class="page-content hidden w-full h-full animate-fade-in">
                 <div class="marketing-container-v2">
                     
                     <!-- Lado Esquerdo: Título + Botões -->
                     <div class="marketing-left">
+                        <!-- CONTROLES MOVIDOS PARA CÁ (antes do título) -->
+                        <div class="marketing-controls">
+                            <button id="prev-marketing" class="marketing-nav-btn">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button id="next-marketing" class="marketing-nav-btn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+
                         <div class="marketing-category-label">EVENTO ESPECIAL</div>
-                        <h1 id="marketing-title-v2" class="marketing-title-v2">
-                            <!-- JS injeta aqui -->
-                        </h1>
+                        <h1 id="marketing-title-v2" class="marketing-title-v2"></h1>
                         <div class="marketing-buttons-v2">
                             <button id="marketing-details-btn" class="btn-primary-v2">
                                 <i class="fas fa-info-circle"></i> Ver Detalhes
@@ -345,16 +353,6 @@
                     <div class="marketing-right">
                         <div id="marketing-bg-blob" class="marketing-bg-blob"></div>
                         <div id="product-queue" class="product-queue-container"></div>
-                    </div>
-
-                    <!-- Controles do Slider -->
-                    <div class="marketing-controls">
-                        <button id="prev-marketing" class="marketing-nav-btn">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button id="next-marketing" class="marketing-nav-btn">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
                     </div>
 
                 </div>
