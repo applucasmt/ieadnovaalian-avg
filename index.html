@@ -3,34 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    
-    <!-- Título Principal -->
     <title>IEAD Setor Nova Aliança</title>
+    <link rel="shortcut icon" href="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp" type="image/webp">
+    <link rel="icon" href="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp" type="image/webp">
 
-    <!-- Favicon (Ícone do Navegador) -->
-    <link rel="shortcut icon" href="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" type="image/png">
-    <link rel="icon" href="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" type="image/png">
-
-    <!-- Meta Descrição para SEO -->
-    <meta name="description" content="Site oficial da Igreja Evangélica Assembleia de Deus, Setor Jardim Nova Aliança. Acompanhe nossos eventos, cultos ao vivo e galeria de fotos.">
-
-    <!-- Otimização para Redes Sociais (Open Graph) -->
+    <meta name="description" content="Site oficial da Igreja Evangélica Assembleia de Deus, Setor Jardim Nova Aliança.">
     <meta property="og:title" content="IEAD Setor Nova Aliança">
     <meta property="og:description" content="Fazendo discípulos, cuidando de vidas e impactando a nossa geração.">
-    <meta property="og:image" content="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png">
+    <meta property="og:image" content="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
 
-    <!-- CDN Tailwind CSS (Development Mode) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
-    <!-- Preconnect para o otimizador de imagens -->
     <link rel="preconnect" href="https://wsrv.nl">
     <link rel="preconnect" href="https://w.behold.so">
 
@@ -43,29 +33,19 @@
                         'brand-yellow': '#EEBC5A',
                         'brand-dark': '#0f172a',
                         'brand-surface': '#1e293b',
-                        'netflix-red': '#EEBC5A',
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     animation: {
                         'fade-in': 'fadeIn 0.6s ease-out forwards',
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'modal-in': 'modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                     },
                     keyframes: {
                         fadeIn: {
                             '0%': { opacity: '0', transform: 'translateY(10px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        modalIn: {
-                            '0%': { opacity: '0', transform: 'scale(0.95)' },
-                            '100%': { opacity: '1', transform: 'scale(1)' },
                         }
                     },
-                    screens: {
-                        'xs': '475px',
-                    }
+                    screens: { 'xs': '475px' }
                 }
             }
         }
@@ -91,7 +71,7 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
         .nav-link.active-nav { color: #EEBC5A; position: relative; }
@@ -114,7 +94,6 @@
             padding-top: 80px; 
             padding-bottom: 100px; 
         }
-
         @media (min-width: 768px) {
             .marketing-container {
                 flex-direction: row;
@@ -128,7 +107,6 @@
 
         .fade-in-up { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
         .fade-in-up.visible { opacity: 1; transform: translateY(0); }
-        
         .fade-in-right { opacity: 0; transform: translateX(-20px); transition: all 0.6s ease; }
         .fade-in-right.visible { opacity: 1; transform: translateX(0); }
 
@@ -139,7 +117,6 @@
             transition: all 0.3s ease;
         }
         .glass-btn:hover { background: rgba(238, 188, 90, 0.8); color: #0f172a; transform: scale(1.05); border-color: #EEBC5A; }
-        .glass-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
         .product-queue-container {
             position: relative;
@@ -161,7 +138,6 @@
             border-radius: 16px;
             z-index: 10;
         }
-        
         .depth-layer { height: 55vh; width: auto; max-width: 85vw; }
         @media (min-width: 768px) { .depth-layer { height: 70vh; max-height: 750px; } }
 
@@ -176,7 +152,7 @@
             .product-hidden-left { transform: translate(-50%, 20%) scale(0.5); }
         }
 
-        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 1rem; background: #000; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 1rem; background: #000; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         .prose-custom p { margin-bottom: 1rem; line-height: 1.75; color: #cbd5e1; }
 
@@ -195,27 +171,24 @@
         .input-dark { background: #333; border: 1px solid #444; color: white; border-radius: 4px; padding: 12px 16px; }
         .input-dark:focus { outline: none; border-color: white; background: #444; }
 
-        /* --- ESTILOS DO WIDGET INSTAGRAM (Behold.so) --- */
-        behold-widget {
-            display: block;
-            width: 100%;
-        }
-        behold-widget a {
-            text-decoration: none;
-        }
+        behold-widget { display: block; width: 100%; }
+        behold-widget a { text-decoration: none; }
 
-        /* Animação de shake para senha errada */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-10px); }
             75% { transform: translateX(10px); }
         }
         .shake { animation: shake 0.4s ease-in-out; }
+
+        @keyframes slowZoom {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-yellow/30 selection:text-brand-yellow">
 
-    <!-- Background Animado (Global) -->
     <div class="animated-bg absolute inset-0 -z-10 overflow-hidden pointer-events-none">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
@@ -259,12 +232,11 @@
         </div>
     </div>
 
-    <!-- MODAL DE ADMINISTRAÇÃO (GERAL) -->
+    <!-- MODAL DE ADMINISTRAÇÃO -->
     <div id="admin-modal" class="fixed inset-0 z-[70] hidden opacity-0 transition-opacity duration-300" aria-modal="true" role="dialog">
         <div class="absolute inset-0 admin-modal-bg transition-opacity" onclick="window.closeAdmin()"></div>
         <div class="absolute inset-0 flex items-center justify-center p-4">
             
-            <!-- TELA DE LOGIN -->
             <div id="admin-login-screen" class="bg-[#1e293b] w-full max-w-md p-8 rounded-2xl shadow-2xl border border-white/10 transform scale-95 transition-all">
                 <h2 class="text-2xl font-bold text-white mb-6 text-center"><i class="fas fa-user-lock text-brand-yellow mr-2"></i> Acesso Administrativo</h2>
                 <div class="space-y-4">
@@ -281,15 +253,12 @@
                 </div>
             </div>
 
-            <!-- DASHBOARD DE ADMINISTRAÇÃO -->
             <div id="admin-dashboard" class="hidden bg-[#1e293b] w-full max-w-6xl h-[90vh] rounded-2xl shadow-2xl border border-white/10 flex flex-col pointer-events-auto">
-                <!-- Header Admin -->
                 <div class="p-4 border-b border-white/10 flex justify-between items-center bg-black/20">
                     <h2 class="text-xl font-bold text-white"><i class="fas fa-cog text-brand-yellow mr-2"></i> Painel de Controle</h2>
                     <button onclick="window.closeAdmin()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
                 </div>
                 
-                <!-- Navegação Admin -->
                 <div class="flex overflow-x-auto p-2 bg-white/5 gap-2 border-b border-white/5">
                     <button onclick="loadAdminTab('eventos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab active" data-tab="eventos">Eventos/Agenda</button>
                     <button onclick="loadAdminTab('avisos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="avisos">Avisos Home</button>
@@ -300,12 +269,10 @@
                     <button onclick="loadAdminTab('config')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab" data-tab="config"><i class="fas fa-palette mr-1"></i> Site/Config</button>
                 </div>
 
-                <!-- Lista de Itens -->
                 <div class="flex-grow overflow-y-auto p-4" id="admin-content-area">
                     <div class="text-center py-10 text-gray-500">Selecione uma aba acima para editar.</div>
                 </div>
 
-                <!-- Footer Admin -->
                 <div class="p-4 border-t border-white/10 bg-black/20 flex justify-between items-center">
                     <span class="text-xs text-gray-500">As alterações podem levar alguns segundos.</span>
                     <button onclick="openEditModal('add')" id="btn-new-item" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 shadow-lg"><i class="fas fa-plus"></i> Novo Item</button>
@@ -314,7 +281,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE EDIÇÃO DE ITEM -->
     <div id="edit-item-modal" class="fixed inset-0 z-[80] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="closeEditModal()"></div>
         <div class="bg-brand-surface w-full max-w-lg rounded-xl border border-white/10 relative z-10 shadow-2xl flex flex-col max-h-[90vh]">
@@ -322,9 +288,7 @@
                 <h3 class="text-white font-bold text-lg" id="edit-modal-title">Editar Item</h3>
                 <button onclick="closeEditModal()" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
             </div>
-            <div class="p-6 overflow-y-auto flex-grow space-y-4" id="edit-form-container">
-                <!-- Inputs injetados via JS -->
-            </div>
+            <div class="p-6 overflow-y-auto flex-grow space-y-4" id="edit-form-container"></div>
             <div class="p-4 border-t border-white/10 bg-black/20 flex justify-end gap-3">
                 <button onclick="closeEditModal()" class="px-4 py-2 text-gray-400 hover:text-white text-sm">Cancelar</button>
                 <button onclick="saveAdminItem()" id="btn-save-item" class="bg-brand-yellow text-brand-dark font-bold px-6 py-2 rounded-lg hover:bg-white transition-colors">Salvar</button>
@@ -332,19 +296,17 @@
         </div>
     </div>
 
-    <!-- Toast -->
     <div id="toast" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:w-auto bg-white text-black font-bold px-6 py-4 rounded shadow-2xl z-[90] translate-y-32 opacity-0 transition-all duration-300 border-l-4 border-[#EEBC5A] text-center md:text-left">
         Notificação
     </div>
 
     <div id="app" class="min-h-screen flex flex-col relative z-10">
         
-        <!-- HEADER -->
         <header class="sticky top-0 z-50 glass-panel border-b border-white/5 transition-all duration-300" id="main-header">
             <nav class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
                 <a href="#" data-page="igreja" class="nav-link flex items-center gap-3 group active:scale-95 transition-transform">
                     <div class="relative">
-                        <img id="site-logo" src="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300">
+                        <img id="site-logo" src="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300">
                         <div class="absolute inset-0 bg-brand-yellow blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
                     </div>
                     <div class="flex flex-col">
@@ -353,7 +315,6 @@
                     </div>
                 </a>
 
-                <!-- Desktop Menu -->
                 <div class="hidden lg:flex items-center gap-1 bg-white/5 rounded-full p-1 border border-white/5 backdrop-blur-md">
                     <a href="#" data-page="igreja" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all">Igreja</a>
                     <a href="#" data-page="agendas" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all">Agenda</a>
@@ -370,43 +331,39 @@
                 <div class="flex items-center gap-3">
                     <a href="#" data-page="aovivo" class="hidden sm:flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-4 py-2 rounded-full text-sm font-semibold transition-all group nav-link active:scale-95">
                         <span class="relative flex h-2 w-2">
-                          <span id="live-pulse" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 hidden"></span>
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 hidden"></span>
                           <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                         </span>
                         AO VIVO
                     </a>
-                    <!-- Mobile Menu Button -->
                     <button id="mobile-menu-button" class="lg:hidden p-3 -mr-2 text-gray-300 hover:text-white active:bg-white/10 rounded-lg transition-colors active:scale-95">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
             </nav>
 
-            <!-- Mobile Menu -->
             <div id="mobile-menu" class="hidden lg:hidden bg-brand-dark/95 backdrop-blur-xl border-t border-white/5 absolute w-full left-0 top-full shadow-2xl overflow-hidden transition-all duration-300 z-50">
                  <div class="flex flex-col p-4 gap-2">
-                     <a href="#" data-page="igreja" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 active:bg-white/20 font-medium transition-colors flex items-center gap-4"><i class="fas fa-church w-6 text-center text-brand-yellow"></i> Igreja</a>
-                     <a href="#" data-page="agendas" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 active:bg-white/20 font-medium transition-colors flex items-center gap-4"><i class="fas fa-calendar-alt w-6 text-center text-brand-yellow"></i> Agenda</a>
-                     <a href="#" data-page="ministerios" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 active:bg-white/20 font-medium transition-colors flex items-center gap-4"><i class="fas fa-users w-6 text-center text-brand-yellow"></i> Ministérios</a>
-                     <a href="#" data-page="ebd" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 active:bg-white/20 font-medium transition-colors flex items-center gap-4 text-[#EEBC5A] font-bold"><i class="fas fa-book-reader w-6 text-center text-[#EEBC5A]"></i> EBD</a>
-                     <a href="#" data-page="talentos" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 active:bg-white/20 font-medium transition-colors flex items-center gap-4"><i class="fas fa-star w-6 text-center text-brand-yellow"></i> Talentos</a>
-                     <a href="#" data-page="marketing" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 active:bg-white/20 font-medium transition-colors flex items-center gap-4"><i class="fas fa-bullhorn w-6 text-center text-brand-yellow"></i> Marketing</a>
-                     <a href="#" data-page="radio" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 active:bg-white/20 font-medium transition-colors flex items-center gap-4"><i class="fas fa-broadcast-tower w-6 text-center text-brand-yellow"></i> Rádio</a>
-                     <a href="#" data-page="gallery" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 active:bg-white/20 font-medium transition-colors flex items-center gap-4"><i class="fas fa-images w-6 text-center text-brand-yellow"></i> Galeria</a>
-                     <a href="#" data-page="sobre" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 active:bg-white/20 font-medium transition-colors flex items-center gap-4"><i class="fas fa-info-circle w-6 text-center text-brand-yellow"></i> Sobre</a>
-                     <a href="#" data-page="contato" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 active:bg-white/20 font-medium transition-colors flex items-center gap-4"><i class="fas fa-envelope w-6 text-center text-brand-yellow"></i> Contato</a>
-                     <a href="#" data-page="aovivo" class="mobile-nav-link p-4 rounded-xl text-red-300 bg-red-500/10 active:bg-red-500/20 font-medium transition-colors flex items-center gap-4"><i class="fas fa-video w-6 text-center text-red-500"></i> Ao Vivo</a>
+                     <a href="#" data-page="igreja" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 font-medium transition-colors flex items-center gap-4"><i class="fas fa-church w-6 text-center text-brand-yellow"></i> Igreja</a>
+                     <a href="#" data-page="agendas" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 font-medium transition-colors flex items-center gap-4"><i class="fas fa-calendar-alt w-6 text-center text-brand-yellow"></i> Agenda</a>
+                     <a href="#" data-page="ministerios" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 font-medium transition-colors flex items-center gap-4"><i class="fas fa-users w-6 text-center text-brand-yellow"></i> Ministérios</a>
+                     <a href="#" data-page="ebd" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 font-medium transition-colors flex items-center gap-4 text-[#EEBC5A] font-bold"><i class="fas fa-book-reader w-6 text-center text-[#EEBC5A]"></i> EBD</a>
+                     <a href="#" data-page="talentos" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 font-medium transition-colors flex items-center gap-4"><i class="fas fa-star w-6 text-center text-brand-yellow"></i> Talentos</a>
+                     <a href="#" data-page="marketing" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 font-medium transition-colors flex items-center gap-4"><i class="fas fa-bullhorn w-6 text-center text-brand-yellow"></i> Marketing</a>
+                     <a href="#" data-page="radio" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 font-medium transition-colors flex items-center gap-4"><i class="fas fa-broadcast-tower w-6 text-center text-brand-yellow"></i> Rádio</a>
+                     <a href="#" data-page="gallery" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 font-medium transition-colors flex items-center gap-4"><i class="fas fa-images w-6 text-center text-brand-yellow"></i> Galeria</a>
+                     <a href="#" data-page="sobre" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 font-medium transition-colors flex items-center gap-4"><i class="fas fa-info-circle w-6 text-center text-brand-yellow"></i> Sobre</a>
+                     <a href="#" data-page="contato" class="mobile-nav-link p-4 rounded-xl text-gray-200 hover:bg-white/10 font-medium transition-colors flex items-center gap-4"><i class="fas fa-envelope w-6 text-center text-brand-yellow"></i> Contato</a>
+                     <a href="#" data-page="aovivo" class="mobile-nav-link p-4 rounded-xl text-red-300 bg-red-500/10 font-medium transition-colors flex items-center gap-4"><i class="fas fa-video w-6 text-center text-red-500"></i> Ao Vivo</a>
                  </div>
             </div>
         </header>
 
-        <!-- MAIN CONTENT -->
         <main id="main-content" class="flex-grow">
-            <!-- PÁGINA IGREJA -->
             <div id="igreja-page" class="page-content">
                 <section class="relative min-h-[85vh] sm:min-h-[80vh] flex items-center justify-center overflow-hidden">
-                    <div class="absolute inset-0 z-0" style="-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);">
-                        <img id="site-hero" src="https://i.ibb.co/zhDMwkLJ/dji-fly-20241201-110126-166-1733065539755-photo-optimized.jpg" class="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105" style="animation: slowZoom 20s infinite alternate;" alt="Interior da Igreja">
+                    <div class="absolute inset-0 z-0">
+                        <img id="site-hero" src="https://i.ibb.co/4nx19qbR/imgi-22-dji-fly-20241201-110126-166-1733065539755-photo-optimized.webp" class="w-full h-full object-cover transition-transform duration-[20s] hover:scale-105" style="animation: slowZoom 20s infinite alternate;" alt="Interior da Igreja">
                         <div class="absolute inset-0 bg-[#0f172a]/50"></div>
                     </div>
                     <div class="relative z-10 text-center px-4 w-full max-w-5xl mx-auto animate-fade-in pt-10 sm:pt-0">
@@ -440,11 +397,7 @@
                     </div>
                     <div id="upcoming-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-16 sm:mb-24"></div>
 
-                    <!-- ============================================================ -->
-                    <!-- SEÇÃO INSTAGRAM (Behold.so)                                  -->
-                    <!-- ============================================================ -->
                     <section id="instagram-section" class="mt-12 sm:mt-16">
-                        <!-- Cabeçalho da Seção -->
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
                             <div>
                                 <div class="flex items-center gap-3 mb-2">
@@ -465,17 +418,13 @@
                             </a>
                         </div>
 
-                        <!-- Widget do Instagram (Behold.so) -->
                         <div class="glass-panel rounded-2xl overflow-hidden p-2 sm:p-4 border border-white/10">
                             <behold-widget feed-id="zcCyMT0oOBECwGlrRGba"></behold-widget>
                         </div>
                     </section>
-                    <!-- ============================================================ -->
-
                 </div>
             </div>
             
-            <!-- PÁGINA MARKETING -->
             <div id="marketing-page" class="page-content hidden w-full h-full animate-fade-in">
                 <div class="marketing-container max-w-7xl mx-auto px-6 md:px-12 w-full">
                     <div class="w-full md:w-5/12 min-h-[40vh] h-auto md:h-full flex flex-col justify-center z-20 relative space-y-3 md:space-y-6 order-1 md:order-1 pb-10 md:pb-0">
@@ -499,7 +448,7 @@
                     </div>
 
                     <div class="w-full md:w-7/12 h-[50vh] md:h-full relative flex items-center justify-center order-2 md:order-2 p-4">
-                        <div id="bg-blob" class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-[300px] h-[300px] md:w-[800px] md:h-[800px] rounded-full bg-brand-blue opacity-20 blur-[80px] md:blur-[100px] transition-colors duration-700 pointer-events-none -z-10"></div>
+                        <div class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-[300px] h-[300px] md:w-[800px] md:h-[800px] rounded-full bg-brand-blue opacity-20 blur-[80px] md:blur-[100px] pointer-events-none -z-10"></div>
                         <div id="product-queue" class="product-queue-container"></div>
                     </div>
                 </div>
@@ -516,7 +465,6 @@
                 </div>
             </div>
 
-            <!-- PÁGINA AGENDAS -->
             <div id="agendas-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="text-center mb-10 sm:mb-12">
                     <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Agenda Completa</h1>
@@ -525,16 +473,14 @@
                 <div id="all-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
             
-            <!-- PÁGINA MINISTÉRIOS -->
             <div id="ministerios-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="text-center mb-10 sm:mb-12">
                     <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Ministérios</h1>
-                    <p class="text-gray-400 max-w-2xl mx-auto">Cada ministério é uma oportunidade de servir e crescer. Encontre o seu lugar.</p>
+                    <p class="text-gray-400 max-w-2xl mx-auto">Cada ministério é uma oportunidade de servir e crescer.</p>
                 </div>
                 <div id="ministerios-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
 
-            <!-- PÁGINA EBD -->
             <div id="ebd-page" class="page-content hidden w-full h-full animate-fade-in">
                 <div class="w-full bg-gradient-to-b from-black/80 to-transparent p-4 flex justify-between items-center relative z-20">
                     <div class="flex items-center gap-4">
@@ -548,23 +494,19 @@
                 </div>
                 <div id="ebd-content-area" class="w-full relative z-0 pb-12"></div>
                 <div class="py-8 text-center text-[#808080] text-sm px-4">
-                    <div id="ebdConnectionStatus" class="inline-block border border-[#808080] px-2 py-1 text-xs mb-2 rounded">
-                        Conectando...
-                    </div>
+                    <div id="ebdConnectionStatus" class="inline-block border border-[#808080] px-2 py-1 text-xs mb-2 rounded">Conectando...</div>
                     <p class="text-xs">© 2026 EBD Streaming</p>
                 </div>
             </div>
 
-            <!-- PÁGINA TALENTOS -->
             <div id="talentos-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="text-center mb-10 sm:mb-12">
                     <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Nossos Talentos</h1>
-                    <p class="text-gray-400 max-w-2xl mx-auto">Conheça e convide nossos cantores e pregadores para o seu evento.</p>
+                    <p class="text-gray-400 max-w-2xl mx-auto">Conheça e convide nossos cantores e pregadores.</p>
                 </div>
                 <div id="talentos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
 
-            <!-- PÁGINA SOBRE -->
             <div id="sobre-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="max-w-4xl mx-auto">
                     <div class="text-center mb-10 sm:mb-12">
@@ -623,7 +565,7 @@
                         <span class="text-brand-yellow font-semibold tracking-widest text-xs sm:text-sm uppercase flex items-center gap-2 justify-center"><i class="fas fa-signal"></i> No Ar Agora</span>
                     </div>
                     <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Rádio Nazareno FM</h1>
-                    <p class="text-gray-400 mb-8 max-w-2xl mx-auto text-sm sm:text-base">Louvor, adoração e a palavra de Deus 24 horas por dia. Sintonize e seja abençoado.</p>
+                    <p class="text-gray-400 mb-8 max-w-2xl mx-auto text-sm sm:text-base">Louvor, adoração e a palavra de Deus 24 horas por dia.</p>
                     <div class="glass-panel p-2 rounded-2xl shadow-[0_0_50px_rgba(73,73,133,0.2)] mb-8">
                         <div class="video-wrapper rounded-xl overflow-hidden bg-black relative group">
                              <div class="absolute inset-0 bg-brand-blue/20 animate-pulse pointer-events-none z-10 opacity-20"></div>
@@ -631,11 +573,11 @@
                         </div>
                     </div>
                     <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-3 active:scale-95 transition-transform">
+                        <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-3">
                             <i class="fas fa-globe text-brand-yellow text-2xl"></i>
                             <div class="text-left"><span class="block text-xs text-gray-400">Acesse o site</span><a href="https://nazarenofm.com/" target="_blank" class="font-bold text-white hover:text-brand-yellow transition-colors">nazarenofm.com</a></div>
                         </div>
-                        <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-3 active:scale-95 transition-transform">
+                        <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-3">
                             <i class="fab fa-whatsapp text-[#25D366] text-2xl"></i>
                             <div class="text-left"><span class="block text-xs text-gray-400">Peça seu louvor</span><span class="font-bold text-white">via WhatsApp</span></div>
                         </div>
@@ -674,14 +616,14 @@
             <div class="container mx-auto px-4 sm:px-6">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
                     <div class="text-center md:text-left">
-                        <img id="footer-logo" src="https://i.ibb.co/8nc6dbh4/LOGO-OFICIAL.png" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all">
+                        <img id="footer-logo" src="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all">
                         <h3 class="font-bold text-white text-lg">IEAD Jardim Nova Aliança</h3>
                         <p class="text-gray-500 text-sm mt-2 max-w-xs mx-auto md:mx-0">Levando a palavra de Deus e transformando vidas através do amor de Cristo.</p>
                     </div>
                     <div class="flex gap-6">
-                        <a href="https://www.instagram.com/ieadnovaaliancavg/" target="_blank" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-instagram text-xl"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-facebook text-xl"></i></a>
-                        <a href="https://www.youtube.com/@ieadsetornovaalianca" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300 active:scale-95"><i class="fab fa-youtube text-xl"></i></a>
+                        <a href="https://www.instagram.com/ieadnovaaliancavg/" target="_blank" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300"><i class="fab fa-facebook text-xl"></i></a>
+                        <a href="https://www.youtube.com/@ieadsetornovaalianca" class="w-10 h-10 rounded-full bg-white/5 hover:bg-brand-yellow hover:text-brand-dark flex items-center justify-center transition-all duration-300"><i class="fab fa-youtube text-xl"></i></a>
                     </div>
                 </div>
                 <div class="border-t border-white/5 pt-6 text-center text-gray-600 text-xs sm:text-sm flex flex-col md:flex-row justify-between items-center gap-4">
@@ -710,17 +652,14 @@
             const setupBeholdLinks = () => {
                 const widget = document.querySelector('behold-widget');
                 if (!widget) return;
-
                 const processLinks = () => {
                     try {
                         const shadowRoot = widget.shadowRoot;
                         if (!shadowRoot) return;
-                        
                         const links = shadowRoot.querySelectorAll('a');
                         links.forEach(link => {
                             link.setAttribute('target', '_blank');
                             link.setAttribute('rel', 'noopener noreferrer');
-                            
                             const href = link.getAttribute('href') || '';
                             if (!href.includes('instagram.com') && href.includes('behold')) {
                                 const match = href.match(/\/p\/([^\/\?]+)/) || href.match(/\/reel\/([^\/\?]+)/);
@@ -732,30 +671,30 @@
                         });
                     } catch (e) {}
                 };
-
                 processLinks();
                 setTimeout(processLinks, 1000);
                 setTimeout(processLinks, 3000);
                 setTimeout(processLinks, 6000);
-                
                 if (widget.shadowRoot) {
                     const observer = new MutationObserver(processLinks);
                     observer.observe(widget.shadowRoot, { childList: true, subtree: true });
                 }
             };
-
-            if (document.readyState === 'complete') {
-                setupBeholdLinks();
-            } else {
-                window.addEventListener('load', setupBeholdLinks);
-            }
+            if (document.readyState === 'complete') setupBeholdLinks();
+            else window.addEventListener('load', setupBeholdLinks);
             setTimeout(setupBeholdLinks, 2000);
         })();
     </script>
 
+    <!-- ============================================================ -->
+    <!-- SCRIPT PRINCIPAL DO SITE                                     -->
+    <!-- ============================================================ -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --- CONFIG ---
+        
+        // ============================================================
+        // CONFIGURAÇÕES GLOBAIS
+        // ============================================================
         const CONFIG = {
             scriptUrl: 'https://script.google.com/macros/s/AKfycbxfp4FgLF0s_6UNQ8MrU3EBeJvCMLvS92xpLZ-HeO7H0FPlEtkSd_DWsGw4FJxC0hJ_ag/exec',
             youtubeKey: 'AIzaSyAov1GBz0bCyGsBLUkT6qjDPzT5TZbHrf8',
@@ -764,19 +703,22 @@
         };
 
         // ============================================================
-        // VALIDAÇÃO LOCAL DA SENHA DO ADMIN
-        // IMPORTANTE: Esta senha deve ser IGUAL à do arquivo code.gs
-        // Se você mudar no code.gs, mude AQUI também!
+        // SENHA DO ADMIN (deve ser IGUAL ao code.gs)
         // ============================================================
         const ADMIN_PASSWORD_LOCAL = "12345";
 
-        // --- OTIMIZAÇÃO DE IMAGENS (Proxy wsrv.nl) ---
-        const optimizeImage = (url, width = 800) => {
+        // ============================================================
+        // OTIMIZAÇÃO DE IMAGENS
+        // ============================================================
+        const optimizeImage = (url, width) => {
+            width = width || 800;
             if (!url || typeof url !== 'string') return url;
-            if (url.includes('wsrv.nl')) return url;
-            if (url.startsWith('http://') || url.startsWith('https://')) {
-                const encodedUrl = encodeURIComponent(url.replace(/^https?:\/\//, ''));
-                return `https://wsrv.nl/?url=${encodedUrl}&w=${width}&q=75&output=webp&we=1&il`;
+            if (url.indexOf('wsrv.nl') !== -1) return url;
+            // Não otimiza .webp (já é otimizado)
+            if (url.indexOf('.webp') !== -1) return url;
+            if (url.indexOf('http') === 0) {
+                const encoded = encodeURIComponent(url.replace(/^https?:\/\//, ''));
+                return 'https://wsrv.nl/?url=' + encoded + '&w=' + width + '&q=75&output=webp&we=1&il';
             }
             return url;
         };
@@ -791,33 +733,78 @@
             currentData: []
         };
 
-        // --- CACHE SYSTEM ---
-        const fetchWithCache = async (url, key, force = false) => {
+        // ============================================================
+        // SISTEMA DE CACHE
+        // ============================================================
+        const fetchWithCache = async (url, key, force) => {
+            force = force || false;
             const cached = localStorage.getItem(key);
             
             if (!force && cached) {
-                const data = JSON.parse(cached);
-                if (Date.now() - data.timestamp < CONFIG.cacheTime) {
-                    return data.content;
-                }
+                try {
+                    const data = JSON.parse(cached);
+                    if (Date.now() - data.timestamp < CONFIG.cacheTime) {
+                        return data.content;
+                    }
+                } catch(e) {}
             }
             
             try {
-                const response = await fetch(`${url}&cacheBust=${Date.now()}`); 
+                const response = await fetch(url + '&cacheBust=' + Date.now()); 
                 if (!response.ok) throw new Error('Network error');
                 const content = await response.json();
-                localStorage.setItem(key, JSON.stringify({
-                    timestamp: Date.now(),
-                    content: content
-                }));
+                try {
+                    localStorage.setItem(key, JSON.stringify({
+                        timestamp: Date.now(),
+                        content: content
+                    }));
+                } catch(e) {}
                 return content;
             } catch (error) {
-                console.error(error);
-                return cached ? JSON.parse(cached).content : []; 
+                console.error('Erro fetch ' + key + ':', error);
+                if (cached) {
+                    try { return JSON.parse(cached).content; } catch(e) { return []; }
+                }
+                return []; 
             }
         };
 
-        // --- ADMIN FUNCTIONS ---
+        // ============================================================
+        // APLICAR CONFIG (LOGO + HERO)
+        // ============================================================
+        const applyConfigImages = (config) => {
+            console.log('🎨 applyConfigImages chamada com:', config);
+            
+            if (!config) {
+                console.warn('⚠️ Config vazia');
+                return;
+            }
+            
+            // LOGO
+            if (config.logoUrl && typeof config.logoUrl === 'string' && config.logoUrl.trim()) {
+                const logoUrl = config.logoUrl.trim();
+                console.log('✅ Aplicando logo:', logoUrl);
+                const logoHeader = document.getElementById('site-logo');
+                const logoFooter = document.getElementById('footer-logo');
+                if (logoHeader) logoHeader.src = logoUrl;
+                if (logoFooter) logoFooter.src = logoUrl;
+            }
+            
+            // HERO
+            if (config.heroUrl && typeof config.heroUrl === 'string' && config.heroUrl.trim()) {
+                const heroUrl = config.heroUrl.trim();
+                console.log('✅ Aplicando hero:', heroUrl);
+                const hero = document.getElementById('site-hero');
+                if (hero) {
+                    hero.src = heroUrl;
+                    hero.setAttribute('data-hero-url', heroUrl);
+                }
+            }
+        };
+
+        // ============================================================
+        // ADMIN - LOGIN
+        // ============================================================
         window.openAdmin = () => {
             const modal = document.getElementById('admin-modal');
             const login = document.getElementById('admin-login-screen');
@@ -845,19 +832,14 @@
             setTimeout(() => modal.classList.add('hidden'), 300);
         };
 
-        // ============================================================
-        // LOGIN DO ADMIN COM VALIDAÇÃO LOCAL
-        // ============================================================
-        window.adminLogin = async () => {
+        window.adminLogin = () => {
             const input = document.getElementById('admin-password');
             const errorMsg = document.getElementById('admin-login-error');
             const btn = document.getElementById('admin-login-btn');
             const pass = input.value;
             
-            // Esconde erro anterior
             if (errorMsg) errorMsg.classList.add('hidden');
             
-            // Validação básica
             if (!pass) {
                 if (errorMsg) {
                     errorMsg.textContent = 'Digite a senha.';
@@ -868,14 +850,10 @@
                 return;
             }
             
-            // Feedback visual
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
             
-            // ============================================================
-            // VALIDAÇÃO LOCAL (client-side)
-            // A validação real também acontece no servidor (code.gs)
-            // ============================================================
+            // Validação local
             if (pass !== ADMIN_PASSWORD_LOCAL) {
                 setTimeout(() => {
                     if (errorMsg) {
@@ -892,7 +870,6 @@
                 return;
             }
             
-            // Senha correta! Autentica
             window.adminState.password = pass;
             window.adminState.isAuthenticated = true;
             
@@ -906,7 +883,6 @@
             }, 600);
         };
 
-        // Detecta "Enter" no campo de senha
         document.getElementById('admin-password').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -914,12 +890,9 @@
             }
         });
 
-        // ============================================================
-        // LOGOUT AUTOMÁTICO SE O SERVIDOR RETORNAR "SENHA INCORRETA"
-        // ============================================================
         const handleServerAuthError = (result) => {
-            if (result && result.message && result.message.toLowerCase().includes('senha incorreta')) {
-                alert('Sessão expirada ou senha alterada. Faça login novamente.');
+            if (result && result.message && result.message.toLowerCase().indexOf('senha incorreta') !== -1) {
+                alert('Sessão expirada. Faça login novamente.');
                 window.adminState.isAuthenticated = false;
                 window.adminState.password = '';
                 window.closeAdmin();
@@ -929,6 +902,9 @@
             return false;
         };
 
+        // ============================================================
+        // ADMIN - CARREGAR ABAS
+        // ============================================================
         window.loadAdminTab = async (tab) => {
             window.adminState.currentTab = tab;
             
@@ -938,20 +914,17 @@
             });
 
             const btnNewItem = document.getElementById('btn-new-item');
-            if (tab === 'config') {
-                btnNewItem.style.display = 'none';
-            } else {
-                btnNewItem.style.display = 'flex';
-            }
+            if (tab === 'config') btnNewItem.style.display = 'none';
+            else btnNewItem.style.display = 'flex';
             
             const contentArea = document.getElementById('admin-content-area');
             contentArea.innerHTML = '<div class="text-center py-10"><i class="fas fa-spinner fa-spin text-3xl text-brand-yellow"></i><p class="mt-2 text-gray-400">Carregando dados...</p></div>';
             
             try {
-                const data = await fetchWithCache(`${CONFIG.scriptUrl}?sheet=${tab}`, `admin_${tab}`, true);
+                const data = await fetchWithCache(CONFIG.scriptUrl + '?sheet=' + tab, 'admin_' + tab, true);
                 
                 if (tab === 'config') {
-                    const configData = Array.isArray(data) && data.length > 0 ? data : [{ logoUrl: '', heroUrl: '' }];
+                    const configData = (Array.isArray(data) && data.length > 0) ? data : [{ logoUrl: '', heroUrl: '' }];
                     window.adminState.currentData = configData;
                     renderConfigForm(configData[0]);
                 } else {
@@ -965,7 +938,6 @@
 
         const renderConfigForm = (config) => {
             const container = document.getElementById('admin-content-area');
-            
             const logoUrl = config.logoUrl || '';
             const heroUrl = config.heroUrl || '';
             
@@ -984,11 +956,10 @@
                                 <i class="fas fa-image mr-2"></i> URL da Logomarca
                             </label>
                             <input type="text" id="config-logoUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="${logoUrl}">
-                            
                             <div class="mt-4">
                                 <p class="text-xs text-gray-400 mb-2">Pré-visualização:</p>
                                 <div class="w-24 h-24 bg-black/30 rounded-lg flex items-center justify-center border border-white/10 overflow-hidden">
-                                    <img id="preview-logo" src="${optimizeImage(logoUrl, 200)}" class="max-w-full max-h-full object-contain" onerror="this.style.display='none'">
+                                    <img id="preview-logo" src="${logoUrl}" class="max-w-full max-h-full object-contain" onerror="this.style.display='none'">
                                 </div>
                             </div>
                         </div>
@@ -998,11 +969,10 @@
                                 <i class="fas fa-panorama mr-2"></i> URL da Foto de Fundo (Hero)
                             </label>
                             <input type="text" id="config-heroUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="${heroUrl}">
-                            
                             <div class="mt-4">
                                 <p class="text-xs text-gray-400 mb-2">Pré-visualização:</p>
                                 <div class="w-full aspect-video bg-black/30 rounded-lg flex items-center justify-center border border-white/10 overflow-hidden">
-                                    <img id="preview-hero" src="${optimizeImage(heroUrl, 800)}" class="max-w-full max-h-full object-cover" onerror="this.style.display='none'">
+                                    <img id="preview-hero" src="${heroUrl}" class="max-w-full max-h-full object-cover" onerror="this.style.display='none'">
                                 </div>
                             </div>
                         </div>
@@ -1024,7 +994,7 @@
             inputLogo.addEventListener('input', (e) => {
                 const url = e.target.value.trim();
                 if (url) {
-                    previewLogo.src = optimizeImage(url, 200);
+                    previewLogo.src = url;
                     previewLogo.style.display = 'block';
                 } else {
                     previewLogo.style.display = 'none';
@@ -1034,7 +1004,7 @@
             inputHero.addEventListener('input', (e) => {
                 const url = e.target.value.trim();
                 if (url) {
-                    previewHero.src = optimizeImage(url, 800);
+                    previewHero.src = url;
                     previewHero.style.display = 'block';
                 } else {
                     previewHero.style.display = 'none';
@@ -1051,7 +1021,7 @@
                 action: 'edit',
                 password: window.adminState.password,
                 originalId: '',
-                data: { logoUrl, heroUrl }
+                data: { logoUrl: logoUrl, heroUrl: heroUrl }
             };
             
             try {
@@ -1064,13 +1034,14 @@
                 if (handleServerAuthError(result)) return;
                 
                 if (result.success) {
-                    localStorage.setItem('cache_config_v2', JSON.stringify({
-                        timestamp: Date.now(),
-                        content: [{ logoUrl, heroUrl }]
-                    }));
+                    try {
+                        localStorage.setItem('cache_config_v2', JSON.stringify({
+                            timestamp: Date.now(),
+                            content: [{ logoUrl: logoUrl, heroUrl: heroUrl }]
+                        }));
+                    } catch(e) {}
                     
-                    applyConfigImages({ logoUrl, heroUrl });
-                    
+                    applyConfigImages({ logoUrl: logoUrl, heroUrl: heroUrl });
                     alert('Configurações salvas com sucesso!');
                 } else {
                     alert('Erro: ' + result.message);
@@ -1080,22 +1051,9 @@
             }
         };
 
-        const applyConfigImages = (config) => {
-            if (!config) return;
-            
-            if (config.logoUrl) {
-                const logoHeader = document.getElementById('site-logo');
-                const logoFooter = document.getElementById('footer-logo');
-                if (logoHeader) logoHeader.src = optimizeImage(config.logoUrl, 200);
-                if (logoFooter) logoFooter.src = optimizeImage(config.logoUrl, 200);
-            }
-            
-            if (config.heroUrl) {
-                const hero = document.getElementById('site-hero');
-                if (hero) hero.src = optimizeImage(config.heroUrl, 1920);
-            }
-        };
-
+        // ============================================================
+        // ADMIN - TABELA
+        // ============================================================
         const renderAdminTable = (data, tab) => {
             const container = document.getElementById('admin-content-area');
             if(!data || data.length === 0) {
@@ -1115,7 +1073,7 @@
             displayData.forEach((item, index) => {
                 const realIndex = data.length - 1 - index;
                 const imgUrl = item.coverUrl || item.capa || item.coverImageUrl;
-                const imgHtml = imgUrl ? `<img src="${optimizeImage(imgUrl, 100)}" loading="lazy" decoding="async" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display='none'">` : '';
+                const imgHtml = imgUrl ? `<img src="${optimizeImage(imgUrl, 100)}" loading="lazy" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display='none'">` : '';
 
                 html += `
                 <div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">
@@ -1139,10 +1097,10 @@
         const SCHEMAS = {
             eventos: [
                 {key: 'name', label: 'Nome do Evento', type: 'text'},
-                {key: 'date', label: 'Data Início (AAAA-MM-DDTHH:MM)', type: 'datetime-local'},
+                {key: 'date', label: 'Data Início', type: 'datetime-local'},
                 {key: 'endDate', label: 'Data Fim (Opcional)', type: 'datetime-local'},
                 {key: 'description', label: 'Descrição', type: 'textarea'},
-                {key: 'coverUrl', label: 'URL da Capa (Imagem)', type: 'text'}
+                {key: 'coverUrl', label: 'URL da Capa', type: 'text'}
             ],
             avisos: [
                 {key: 'texto', label: 'Texto do Aviso', type: 'textarea'}
@@ -1151,12 +1109,12 @@
                 {key: 'nome', label: 'Nome do Ministério', type: 'text'},
                 {key: 'lideres', label: 'Líderes', type: 'text'},
                 {key: 'regentes', label: 'Regentes', type: 'text'},
-                {key: 'telefone', label: 'Whatsapp (somente números)', type: 'text'},
+                {key: 'telefone', label: 'Whatsapp', type: 'text'},
                 {key: 'capa', label: 'URL da Foto', type: 'text'}
             ],
             talentos: [
                 {key: 'nome', label: 'Nome', type: 'text'},
-                {key: 'descricao', label: 'Descrição/Função', type: 'textarea'},
+                {key: 'descricao', label: 'Descrição', type: 'textarea'},
                 {key: 'telefone', label: 'Whatsapp', type: 'text'},
                 {key: 'video', label: 'Link YouTube', type: 'text'},
                 {key: 'capa', label: 'URL da Foto', type: 'text'}
@@ -1164,7 +1122,7 @@
             albuns: [
                 {key: 'albumName', label: 'Nome do Álbum', type: 'text'},
                 {key: 'coverImageUrl', label: 'URL da Capa', type: 'text'},
-                {key: 'albumUrl', label: 'Link do Álbum (Google Photos/Drive)', type: 'text'}
+                {key: 'albumUrl', label: 'Link do Álbum', type: 'text'}
             ],
             pastor: [
                 {key: 'nome', label: 'Nome', type: 'text'},
@@ -1172,7 +1130,7 @@
             ]
         };
 
-        window.openEditModal = (mode, index = null) => {
+        window.openEditModal = (mode, index) => {
             const modal = document.getElementById('edit-item-modal');
             const container = document.getElementById('edit-form-container');
             const title = document.getElementById('edit-modal-title');
@@ -1185,7 +1143,7 @@
             title.textContent = mode === 'add' ? 'Adicionar Novo Item' : 'Editar Item';
             
             let itemData = {};
-            if(mode === 'edit' && index !== null) {
+            if(mode === 'edit' && index !== null && index !== undefined) {
                 itemData = window.adminState.currentData[index];
                 btn.dataset.originalId = Object.values(itemData)[0];
             }
@@ -1211,7 +1169,7 @@
                 }
                 
                 input.className = 'admin-field';
-                input.id = `field-${field.key}`;
+                input.id = 'field-' + field.key;
                 
                 let val = itemData[field.key] || '';
                 if(field.type === 'datetime-local' && val) {
@@ -1226,7 +1184,7 @@
                 wrapper.appendChild(label);
                 wrapper.appendChild(input);
 
-                if (['coverUrl', 'capa', 'coverImageUrl'].includes(field.key)) {
+                if (['coverUrl', 'capa', 'coverImageUrl'].indexOf(field.key) !== -1) {
                     const preview = document.createElement('img');
                     preview.className = 'w-full h-40 object-contain bg-black/20 rounded mt-2 border border-white/5 hidden';
                     preview.onerror = () => { preview.classList.add('hidden'); };
@@ -1267,7 +1225,7 @@
             
             const newData = {};
             schema.forEach(field => {
-                const el = document.getElementById(`field-${field.key}`);
+                const el = document.getElementById('field-' + field.key);
                 newData[field.key] = el.value;
             });
             
@@ -1296,21 +1254,22 @@
                 }
                 
                 if(result.success) {
-                    if (mode === 'edit' && index) {
+                    if (mode === 'edit' && index !== null && index !== undefined) {
                         window.adminState.currentData[index] = newData;
                     } else {
                         window.adminState.currentData.push(newData);
                     }
 
-                    localStorage.setItem(`admin_${tab}`, JSON.stringify({
-                        timestamp: Date.now(),
-                        content: window.adminState.currentData
-                    }));
-                    
-                    localStorage.setItem(`cache_${tab}_v2`, JSON.stringify({
-                        timestamp: Date.now(),
-                        content: window.adminState.currentData
-                    }));
+                    try {
+                        localStorage.setItem('admin_' + tab, JSON.stringify({
+                            timestamp: Date.now(),
+                            content: window.adminState.currentData
+                        }));
+                        localStorage.setItem('cache_' + tab + '_v2', JSON.stringify({
+                            timestamp: Date.now(),
+                            content: window.adminState.currentData
+                        }));
+                    } catch(e) {}
 
                     renderAdminTable(window.adminState.currentData, tab);
                     loadData();
@@ -1363,7 +1322,9 @@
             }
         };
 
-        // --- MODAL EVENTOS ---
+        // ============================================================
+        // MODAL DE EVENTO
+        // ============================================================
         window.openEventModal = (eventId) => {
             const event = globalEvents.find(e => e._id === eventId);
             if(!event) return;
@@ -1416,30 +1377,26 @@
             }
         });
 
-        // --- COMPONENTES ---
+        // ============================================================
+        // HELPERS
+        // ============================================================
         const getEventStatusBadge = (start, end) => {
             const now = new Date();
             const startDate = parseDate(start);
             const endDate = end ? parseDate(end) : new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
 
             if (now < startDate) {
-                return `<span class="bg-blue-500/20 text-blue-300 text-xs font-bold px-2 py-1 rounded border border-blue-500/30 flex items-center gap-1"><i class="far fa-clock"></i> Em Breve</span>`;
+                return '<span class="bg-blue-500/20 text-blue-300 text-xs font-bold px-2 py-1 rounded border border-blue-500/30 flex items-center gap-1"><i class="far fa-clock"></i> Em Breve</span>';
             } else if (now >= startDate && now <= endDate) {
-                return `<span class="bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded border border-green-500/30 flex items-center gap-1 animate-pulse"><i class="fas fa-circle text-[8px]"></i> Acontecendo Agora</span>`;
+                return '<span class="bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded border border-green-500/30 flex items-center gap-1 animate-pulse"><i class="fas fa-circle text-[8px]"></i> Acontecendo Agora</span>';
             } else {
-                return `<span class="bg-gray-500/20 text-gray-400 text-xs font-bold px-2 py-1 rounded border border-gray-500/30 flex items-center gap-1"><i class="fas fa-check"></i> Encerrado</span>`;
+                return '<span class="bg-gray-500/20 text-gray-400 text-xs font-bold px-2 py-1 rounded border border-gray-500/30 flex items-center gap-1"><i class="fas fa-check"></i> Encerrado</span>';
             }
         };
 
         const createCard = (data, type) => {
             if (type === 'aviso') {
-                return `
-                <div class="glass-panel p-6 rounded-xl border-l-4 border-brand-yellow hover:bg-white/5 transition-all duration-300 active:scale-95">
-                    <div class="flex items-start gap-4">
-                        <i class="fas fa-bullhorn text-brand-yellow text-xl mt-1"></i>
-                        <p class="text-gray-200 leading-relaxed text-sm sm:text-base">${data.texto}</p>
-                    </div>
-                </div>`;
+                return '<div class="glass-panel p-6 rounded-xl border-l-4 border-brand-yellow hover:bg-white/5 transition-all duration-300 active:scale-95"><div class="flex items-start gap-4"><i class="fas fa-bullhorn text-brand-yellow text-xl mt-1"></i><p class="text-gray-200 leading-relaxed text-sm sm:text-base">' + data.texto + '</p></div></div>';
             }
 
             if (type === 'evento') {
@@ -1452,23 +1409,17 @@
                 let timeString = date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                 if (data.endDate) {
                     const endTime = parseDate(data.endDate).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                    timeString += ` - ${endTime}`;
+                    timeString += ' - ' + endTime;
                 }
 
                 return `
                 <div class="glass-panel group rounded-2xl overflow-hidden hover:-translate-y-2 active:scale-95 transition-all duration-300 flex flex-col h-full bg-brand-surface/50">
                     <div class="relative w-full aspect-[4/5] overflow-hidden cursor-pointer bg-brand-dark/50" onclick="window.openEventModal(${data._id})">
-                        <img src="${optimizedCover}" 
-                             loading="lazy" 
-                             decoding="async"
-                             onerror="this.src='https://placehold.co/1080x1350/1e293b/FFFFFF?text=Evento'" 
-                             class="w-full h-full object-cover">
-                        
+                        <img src="${optimizedCover}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/1080x1350/1e293b/FFFFFF?text=Evento'" class="w-full h-full object-cover">
                         <div class="absolute top-4 left-4 bg-brand-dark/90 backdrop-blur-sm rounded-lg p-2 text-center min-w-[60px] border border-white/10 shadow-lg z-10">
                             <span class="block text-xl font-bold text-white">${day}</span>
                             <span class="block text-xs font-bold text-brand-yellow">${month}</span>
                         </div>
-
                         <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent opacity-60"></div>
                         <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                              <div class="bg-black/50 backdrop-blur-md p-3 rounded-full text-white border border-white/20"><i class="fas fa-expand-alt"></i></div>
@@ -1478,15 +1429,10 @@
                         <div class="flex justify-between items-start gap-2 mb-2">
                             <h3 class="text-xl font-bold text-white line-clamp-2 group-hover:text-brand-yellow transition-colors cursor-pointer leading-tight" onclick="window.openEventModal(${data._id})">${data.name}</h3>
                         </div>
-                        
                         <div class="flex flex-wrap items-center gap-2 mb-3">
                             ${statusBadge}
-                            <div class="flex items-center gap-1 text-xs text-gray-400">
-                                <i class="far fa-clock"></i>
-                                <span>${timeString}</span>
-                            </div>
+                            <div class="flex items-center gap-1 text-xs text-gray-400"><i class="far fa-clock"></i><span>${timeString}</span></div>
                         </div>
-
                         <p class="text-gray-400 text-sm line-clamp-2 mb-4 flex-grow">${data.description}</p>
                         <button onclick="window.openEventModal(${data._id})" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-brand-yellow hover:text-brand-dark text-sm font-bold transition-all border border-white/5 active:scale-95 flex items-center justify-center gap-2">
                             <i class="far fa-eye"></i> Ver Detalhes
@@ -1500,15 +1446,9 @@
                 return `
                 <div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95">
                     <div class="relative h-56 bg-brand-dark/50">
-                        <img src="${optimizedCapa}" 
-                             loading="lazy" 
-                             decoding="async"
-                             onerror="this.src='https://placehold.co/600x400/1e293b/FFFFFF?text=${encodeURIComponent(data.nome)}'" 
-                             class="w-full h-full object-cover">
+                        <img src="${optimizedCapa}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/600x400/1e293b/FFFFFF?text=Ministerio'" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>
-                        <div class="absolute bottom-4 left-4">
-                            <h3 class="text-2xl font-bold text-white">${data.nome}</h3>
-                        </div>
+                        <div class="absolute bottom-4 left-4"><h3 class="text-2xl font-bold text-white">${data.nome}</h3></div>
                     </div>
                     <div class="p-6">
                         <div class="space-y-4 mb-6">
@@ -1516,17 +1456,9 @@
                                 <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-crown text-brand-yellow"></i></div>
                                 <div><p class="text-xs text-gray-500 uppercase font-bold">Liderança</p><p class="text-sm text-gray-200">${data.lideres || 'A definir'}</p></div>
                             </div>
-                            ${data.regentes ? `
-                            <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-users text-blue-400"></i></div>
-                                <div><p class="text-xs text-gray-500 uppercase font-bold">Regentes</p><p class="text-sm text-gray-200">${data.regentes}</p></div>
-                            </div>` : ''}
+                            ${data.regentes ? '<div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-users text-blue-400"></i></div><div><p class="text-xs text-gray-500 uppercase font-bold">Regentes</p><p class="text-sm text-gray-200">' + data.regentes + '</p></div></div>' : ''}
                         </div>
-                        
-                        ${data.telefone ? `
-                        <a href="https://wa.me/55${String(data.telefone || '').replace(/\D/g,'')}" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300">
-                            <i class="fab fa-whatsapp"></i> Entrar em Contato
-                        </a>` : ''}
+                        ${data.telefone ? '<a href="https://wa.me/55' + String(data.telefone || '').replace(/\D/g,'') + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Entrar em Contato</a>' : ''}
                     </div>
                 </div>`;
             }
@@ -1536,30 +1468,15 @@
                 return `
                 <div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">
                     <div class="relative h-64 sm:h-72 bg-brand-dark/50">
-                        <img src="${optimizedCapa}" 
-                             loading="lazy" 
-                             decoding="async"
-                             onerror="this.src='https://placehold.co/600x400/1e293b/FFFFFF?text=${encodeURIComponent(data.nome)}'" 
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <img src="${optimizedCapa}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/600x400/1e293b/FFFFFF?text=Talento'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                         <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>
-                        <div class="absolute bottom-4 left-4 right-4">
-                            <h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">${data.nome}</h3>
-                            <div class="h-1 w-12 bg-brand-yellow rounded-full"></div>
-                        </div>
+                        <div class="absolute bottom-4 left-4 right-4"><h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">${data.nome}</h3><div class="h-1 w-12 bg-brand-yellow rounded-full"></div></div>
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
                         <p class="text-gray-300 text-sm mb-6 flex-grow leading-relaxed">${data.descricao || 'Sem descrição.'}</p>
-                        
                         <div class="flex flex-col gap-3">
-                            ${data.video ? `
-                            <a href="${data.video}" target="_blank" class="flex items-center justify-center gap-2 w-full bg-red-600/10 text-red-500 hover:bg-red-600 hover:text-white border border-red-600/20 py-3 rounded-xl font-bold transition-all duration-300">
-                                <i class="fab fa-youtube"></i> Ver Vídeo
-                            </a>` : ''}
-
-                            ${data.telefone ? `
-                            <a href="https://wa.me/55${String(data.telefone || '').replace(/\D/g,'')}" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300">
-                                <i class="fab fa-whatsapp"></i> Contato
-                            </a>` : ''}
+                            ${data.video ? '<a href="' + data.video + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-red-600/10 text-red-500 hover:bg-red-600 hover:text-white border border-red-600/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-youtube"></i> Ver Vídeo</a>' : ''}
+                            ${data.telefone ? '<a href="https://wa.me/55' + String(data.telefone || '').replace(/\D/g,'') + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : ''}
                         </div>
                     </div>
                 </div>`;
@@ -1569,11 +1486,7 @@
                 const optimizedCover = optimizeImage(data.coverImageUrl, 500);
                 return `
                 <a href="${data.albumUrl}" target="_blank" class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform bg-brand-dark/50">
-                    <img src="${optimizedCover}" 
-                         loading="lazy" 
-                         decoding="async"
-                         onerror="this.src='https://placehold.co/400x400/1e293b/FFFFFF?text=Galeria'" 
-                         class="w-full h-full object-cover">
+                    <img src="${optimizedCover}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/400x400/1e293b/FFFFFF?text=Galeria'" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
                         <div class="text-center p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                             <i class="fas fa-images text-3xl text-brand-yellow mb-2"></i>
@@ -1585,18 +1498,19 @@
             }
         };
 
-        // --- MARKETING SLIDER ---
+        // ============================================================
+        // MARKETING SLIDER
+        // ============================================================
         let marketingQueue = [];
         const initMarketingSlider = (events) => {
             const queueContainer = document.getElementById('product-queue');
             if(!queueContainer) return;
 
             let sourceEvents = [...events]; 
-            
             if (sourceEvents.length === 0) return;
             
             while (sourceEvents.length < 3) {
-                sourceEvents = [...sourceEvents, ...sourceEvents];
+                sourceEvents = sourceEvents.concat(sourceEvents);
             }
 
             marketingQueue = sourceEvents.map(e => ({
@@ -1608,7 +1522,7 @@
                 if(marketingQueue[i]) {
                     const img = document.createElement('img');
                     img.src = optimizeImage(marketingQueue[i].image, 900);
-                    img.className = `depth-layer ${i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2'}`;
+                    img.className = 'depth-layer ' + (i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2');
                     img.dataset.index = i;
                     img.loading = 'lazy';
                     img.decoding = 'async';
@@ -1670,7 +1584,7 @@
                     for(let i=0; i<3; i++) {
                         const img = document.createElement('img');
                         img.src = optimizeImage(marketingQueue[i].image, 900);
-                        img.className = `depth-layer ${i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2'}`;
+                        img.className = 'depth-layer ' + (i===0 ? 'product-main' : i===1 ? 'product-next' : 'product-next-2');
                         img.loading = 'lazy';
                         img.decoding = 'async';
                         img.onerror = function() { this.src = 'https://placehold.co/1080x1350/1e293b/FFFFFF?text=Cartaz'; };
@@ -1714,12 +1628,15 @@
             if (typeof dateStr === 'string') {
                 const parts = dateStr.split('/');
                 if(parts.length === 3) {
-                    return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                    return new Date(parts[2] + '-' + parts[1] + '-' + parts[0]);
                 }
             }
             return new Date();
         };
 
+        // ============================================================
+        // RENDERIZAÇÃO PRINCIPAL
+        // ============================================================
         const renderComponents = (events, avisos, ministerios, albums, talentos, pastor, config) => {
              const containers = {
                 avisos: document.getElementById('avisos-container'),
@@ -1730,21 +1647,23 @@
                 albums: document.getElementById('albums-container')
             };
 
-            if (config && config.length > 0) {
+            // ✅ APLICA CONFIG PRIMEIRO (logo + hero)
+            if (config && config.length > 0 && config[0]) {
                 applyConfigImages(config[0]);
             }
 
             if (pastor && pastor.length > 0 && pastor[0].capa) {
                 const pastorContainer = document.getElementById('pastor-img-container');
-                if (pastorContainer) pastorContainer.innerHTML = `<img src="${optimizeImage(pastor[0].capa, 200)}" loading="lazy" decoding="async" alt="Pastor Lourival Soares" class="w-full h-full object-cover">`;
+                if (pastorContainer) pastorContainer.innerHTML = '<img src="' + optimizeImage(pastor[0].capa, 200) + '" loading="lazy" alt="Pastor" class="w-full h-full object-cover">';
             }
 
             if (events && events.length) {
                 const normalizedEvents = events.map((e, i) => {
                     const getVal = (keys) => {
-                        for(const k of keys) {
-                            if(e[k]) return e[k];
-                            const foundKey = Object.keys(e).find(oky => oky.toLowerCase().includes(k.toLowerCase()));
+                        for(var k=0; k<keys.length; k++) {
+                            const key = keys[k];
+                            if(e[key]) return e[key];
+                            const foundKey = Object.keys(e).find(oky => oky.toLowerCase().indexOf(key.toLowerCase()) !== -1);
                             if(foundKey) return e[foundKey];
                         }
                         return null;
@@ -1763,7 +1682,9 @@
                 initMarketingSlider(globalEvents);
             }
 
-            if(avisos && avisos.length) containers.avisos.innerHTML = avisos.filter(a => a.texto).map(a => createCard(a, 'aviso')).join('');
+            if(avisos && avisos.length && containers.avisos) {
+                containers.avisos.innerHTML = avisos.filter(a => a.texto).map(a => createCard(a, 'aviso')).join('');
+            }
             
             if(globalEvents && globalEvents.length) {
                 const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -1776,7 +1697,7 @@
                 });
 
                 containers.upcoming.innerHTML = future.slice(0, 3).map(e => createCard(e, 'evento')).join('');
-                if(containers.allEvents) containers.allEvents.innerHTML = future.length > 0 ? future.map(e => createCard(e, 'evento')).join('') : `<div class="col-span-full text-center text-gray-400 py-10">Nenhum evento agendado.</div>`;
+                if(containers.allEvents) containers.allEvents.innerHTML = future.length > 0 ? future.map(e => createCard(e, 'evento')).join('') : '<div class="col-span-full text-center text-gray-400 py-10">Nenhum evento agendado.</div>';
             }
 
             if(ministerios && ministerios.length && containers.ministerios) containers.ministerios.innerHTML = ministerios.map(m => createCard(m, 'ministerio')).join('');
@@ -1784,98 +1705,76 @@
             if(albums && albums.length && containers.albums) containers.albums.innerHTML = albums.map(a => createCard(a, 'album')).join('');
         };
 
+        // ============================================================
+        // CARREGAR DADOS
+        // ============================================================
         const loadData = async () => {
+            // 1. Renderiza primeiro com cache (rápido)
             const cachedKeys = ['cache_eventos_v2', 'cache_avisos_v2', 'cache_ministerios_v2', 'cache_albuns_v2', 'cache_talentos_v2', 'cache_pastor_v2', 'cache_config_v2'];
             const cachedData = cachedKeys.map(key => {
-                const saved = localStorage.getItem(key);
-                return saved ? JSON.parse(saved).content : [];
+                try {
+                    const saved = localStorage.getItem(key);
+                    return saved ? JSON.parse(saved).content : [];
+                } catch(e) { return []; }
             });
             
-            renderComponents(...cachedData);
+            renderComponents.apply(null, cachedData);
 
+            // 2. Busca dados frescos do servidor
             try {
-                const [events, avisos, ministerios, albums, talentos, pastor, config] = await Promise.all([
-                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=eventos`, 'cache_eventos_v2'),
-                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=avisos`, 'cache_avisos_v2'),
-                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=ministerios`, 'cache_ministerios_v2'),
-                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=albuns`, 'cache_albuns_v2'),
-                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=talentos`, 'cache_talentos_v2'),
-                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=pastor`, 'cache_pastor_v2'),
-                    fetchWithCache(`${CONFIG.scriptUrl}?sheet=config`, 'cache_config_v2')
+                const results = await Promise.all([
+                    fetchWithCache(CONFIG.scriptUrl + '?sheet=eventos', 'cache_eventos_v2', false),
+                    fetchWithCache(CONFIG.scriptUrl + '?sheet=avisos', 'cache_avisos_v2', false),
+                    fetchWithCache(CONFIG.scriptUrl + '?sheet=ministerios', 'cache_ministerios_v2', false),
+                    fetchWithCache(CONFIG.scriptUrl + '?sheet=albuns', 'cache_albuns_v2', false),
+                    fetchWithCache(CONFIG.scriptUrl + '?sheet=talentos', 'cache_talentos_v2', false),
+                    fetchWithCache(CONFIG.scriptUrl + '?sheet=pastor', 'cache_pastor_v2', false),
+                    fetchWithCache(CONFIG.scriptUrl + '?sheet=config', 'cache_config_v2', true)  // SEMPRE fresco
                 ]);
 
-                renderComponents(events, avisos, ministerios, albums, talentos, pastor, config);
+                renderComponents.apply(null, results);
             } catch (e) {
-                console.log("Usando versão em cache devido a erro de rede ou cache hit");
+                console.log("Usando versão em cache devido a erro");
             }
         };
 
-        // --- YOUTUBE LIVE CHECK ---
+        // ============================================================
+        // YOUTUBE LIVE
+        // ============================================================
         const checkLive = async () => {
             const container = document.getElementById('live-container');
             const domain = window.location.hostname; 
 
-            const renderPlayer = (videoId = null) => {
+            const renderPlayer = (videoId) => {
                 let embedSrc = '';
-                const params = `autoplay=1&modestbranding=1&rel=0&playsinline=1&origin=https://${domain}`;
+                const params = 'autoplay=1&modestbranding=1&rel=0&playsinline=1&origin=https://' + domain;
                 
                 if (videoId) {
-                    embedSrc = `https://www.youtube.com/embed/${videoId}?${params}`;
+                    embedSrc = 'https://www.youtube.com/embed/' + videoId + '?' + params;
                 } else {
-                    embedSrc = `https://www.youtube.com/embed/live_stream?channel=${CONFIG.youtubeChannel}&${params}`;
+                    embedSrc = 'https://www.youtube.com/embed/live_stream?channel=' + CONFIG.youtubeChannel + '&' + params;
                 }
 
-                container.innerHTML = `
-                <div class="w-full animate-fade-in">
-                    <div class="video-wrapper w-full shadow-2xl border border-white/10 relative">
-                        <iframe width="560" height="315" 
-                            src="${embedSrc}" 
-                            title="Culto Ao Vivo" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                            referrerpolicy="strict-origin-when-cross-origin" 
-                            allowfullscreen>
-                        </iframe>
-                    </div>
-                    <div class="flex justify-between items-center mt-3 px-2">
-                        <div class="flex items-center gap-2">
-                            <span class="relative flex h-3 w-3">
-                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                              <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                            </span>
-                            <p class="text-xs text-gray-400">Transmissão Oficial</p>
-                        </div>
-                        <div class="flex gap-4">
-                            <button onclick="if(navigator.share) navigator.share({title: 'Culto Ao Vivo - IEAD Nova Aliança', url: 'https://www.youtube.com/channel/${CONFIG.youtubeChannel}/live'})" class="text-xs text-gray-400 hover:text-white transition-colors flex items-center gap-1">
-                                <i class="fas fa-share-alt"></i> Compartilhar
-                            </button>
-                            <a href="https://www.youtube.com/channel/${CONFIG.youtubeChannel}/live" target="_blank" class="text-xs text-brand-yellow hover:underline transition-colors flex items-center gap-1">
-                                Assistir no YouTube <i class="fas fa-external-link-alt"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>`;
+                container.innerHTML = '<div class="w-full animate-fade-in"><div class="video-wrapper w-full shadow-2xl border border-white/10 relative"><iframe width="560" height="315" src="' + embedSrc + '" title="Culto Ao Vivo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><div class="flex justify-between items-center mt-3 px-2"><div class="flex items-center gap-2"><span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span></span><p class="text-xs text-gray-400">Transmissão Oficial</p></div><div class="flex gap-4"><a href="https://www.youtube.com/channel/' + CONFIG.youtubeChannel + '/live" target="_blank" class="text-xs text-brand-yellow hover:underline transition-colors flex items-center gap-1">Assistir no YouTube <i class="fas fa-external-link-alt"></i></a></div></div></div>';
             };
 
             try {
-                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CONFIG.youtubeChannel}&eventType=live&type=video&key=${CONFIG.youtubeKey}`);
-                
+                const res = await fetch('https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=' + CONFIG.youtubeChannel + '&eventType=live&type=video&key=' + CONFIG.youtubeKey);
                 if (!res.ok) throw new Error('API Error');
-
                 const data = await res.json();
-
                 if (data.items && data.items.length > 0) {
                     renderPlayer(data.items[0].id.videoId);
                 } else {
                     renderPlayer(); 
                 }
             } catch (e) {
-                console.log('Live check failed', e);
                 renderPlayer();
             }
         };
 
-        // --- NAVIGATION ---
+        // ============================================================
+        // NAVEGAÇÃO
+        // ============================================================
         const setupNav = () => {
             const links = document.querySelectorAll('.nav-link, .mobile-nav-link');
             const pages = document.querySelectorAll('.page-content');
@@ -1889,7 +1788,7 @@
                     p.classList.remove('animate-fade-in'); 
                 });
 
-                const target = document.getElementById(`${pageId}-page`);
+                const target = document.getElementById(pageId + '-page');
                 if(target) {
                     target.classList.remove('hidden');
                     void target.offsetWidth; 
@@ -1903,13 +1802,8 @@
                 
                 mobileMenu.classList.add('hidden');
                 
-                if(pageId === 'aovivo') {
-                    checkLive();
-                }
-                
-                if(pageId === 'ebd') {
-                    window.ebd.fetchInitialData();
-                }
+                if(pageId === 'aovivo') checkLive();
+                if(pageId === 'ebd') window.ebd.fetchInitialData();
             };
 
             links.forEach(link => {
@@ -1927,7 +1821,9 @@
             window.switchPage('igreja');
         };
 
-        // --- EBD MODULE ---
+        // ============================================================
+        // MÓDULO EBD
+        // ============================================================
         window.ebd = (function() {
             const API_URL = "https://script.google.com/macros/s/AKfycbyZQQ8hy5GuNCR-kjnqr6rDziFi3-K7U2kwy7wmCv3gRxM5wlzlvaIMpf7Geb76psQ/exec";
             const EBD_CLASSES = ["Jardim da Infância", "Juniores", "Adolescentes", "Novos Crentes", "Jovens", "Adultos"];
@@ -1936,7 +1832,6 @@
             let globalTeachers = [];
             let globalSchedule = [];
             let isOffline = false;
-            let heroInterval = null;
             let editingId = null;
             
             const mockT = [{ id: 1, name: "João (Demo)", photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" }];
@@ -1963,7 +1858,7 @@
                 
                 setLoading(true);
                 try {
-                    const res = await fetch(`${API_URL}?action=read`, { redirect: 'follow' });
+                    const res = await fetch(API_URL + '?action=read', { redirect: 'follow' });
                     if(!res.ok) throw new Error("Erro na rede");
                     const data = await res.json();
                     if(data.error) throw new Error(data.error);
@@ -1982,13 +1877,13 @@
 
             async function sendToApi(payload) {
                 if (isOffline) {
-                    showToast("Modo Offline (Simulação)");
-                    if(payload.action.includes('add')) payload.id = Date.now();
+                    showToast("Modo Offline");
+                    if(payload.action.indexOf('add') !== -1) payload.id = Date.now();
                     if(payload.action === 'addTeacher') globalTeachers.push(payload);
                     if(payload.action === 'addSchedule') globalSchedule.push(payload);
                     if(payload.action === 'updateSchedule') {
                         const idx = globalSchedule.findIndex(s => s.id == payload.id);
-                        if(idx !== -1) globalSchedule[idx] = { ...globalSchedule[idx], ...payload };
+                        if(idx !== -1) globalSchedule[idx] = Object.assign({}, globalSchedule[idx], payload);
                     }
                     if(payload.action === 'deleteSchedule') globalSchedule = globalSchedule.filter(s => s.id !== payload.id);
                     if(payload.action === 'deleteTeacher') globalTeachers = globalTeachers.filter(t => t.id !== payload.id);
@@ -2012,7 +1907,6 @@
             function renderApp() {
                 const el = document.getElementById('ebd-content-area');
                 if(!el) return;
-                if(heroInterval) clearInterval(heroInterval);
                 currentUser === 'admin' ? renderAdmin(el) : renderPublic(el);
             }
 
@@ -2024,7 +1918,7 @@
                 });
 
                 if (sorted.length === 0) {
-                    container.innerHTML = `<div class="col-span-full text-center text-gray-500 py-10">Nenhuma escala agendada.</div>`;
+                    container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-10">Nenhuma escala agendada.</div>';
                     return;
                 }
 
@@ -2036,51 +1930,26 @@
                     const monthCap = month.charAt(0).toUpperCase() + month.slice(1);
                     const year = dateObj.getFullYear();
                     const weekNum = Math.ceil(dateParts[2] / 7);
-                    
-                    const label = `${weekNum}ª Semana de ${monthCap} / ${year}`;
-                    
+                    const label = weekNum + 'ª Semana de ' + monthCap + ' / ' + year;
                     if (!groups[label]) groups[label] = [];
                     groups[label].push(item);
                 });
 
-                let html = `<div class="container mx-auto px-4 py-8">
-                    <h2 class="text-2xl font-bold text-white mb-8 pl-2 border-l-4 border-[#EEBC5A]">Escala de Professores</h2>
-                    <div class="space-y-12">`;
+                let html = '<div class="container mx-auto px-4 py-8"><h2 class="text-2xl font-bold text-white mb-8 pl-2 border-l-4 border-[#EEBC5A]">Escala de Professores</h2><div class="space-y-12">';
 
                 for (const [label, items] of Object.entries(groups)) {
-                    html += `
-                        <div class="fade-in">
-                            <h3 class="text-xl font-bold text-gray-400 mb-4 border-b border-white/10 pb-2 flex items-center gap-2">
-                                <i class="far fa-calendar-check text-[#EEBC5A]"></i> ${label}
-                            </h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    `;
+                    html += '<div class="fade-in"><h3 class="text-xl font-bold text-gray-400 mb-4 border-b border-white/10 pb-2 flex items-center gap-2"><i class="far fa-calendar-check text-[#EEBC5A]"></i> ' + label + '</h3><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">';
                     
                     items.forEach(item => {
                          const dateParts = item.date.split('-');
-                         const dateFormatted = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                         const dateFormatted = dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0];
                          const t = globalTeachers.find(x => x.id == item.teacherId) || {name: 'Professor', photo: ''};
                         
-                         html += `
-                            <div class="glass-panel rounded-xl overflow-hidden flex flex-col items-center text-center p-6 border border-white/5 hover:border-[#EEBC5A]/50 transition-all group active:scale-95 relative bg-[#1e293b]/40">
-                                <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-[#EEBC5A] mb-3 shadow-[0_0_15px_rgba(238,188,90,0.3)] bg-[#1e293b]">
-                                    <img src="${optimizeImage(t.photo, 200) || 'https://via.placeholder.com/150'}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=random'">
-                                </div>
-                                <h3 class="text-base font-bold text-white mb-1 leading-tight">${t.name}</h3>
-                                <span class="text-[#EEBC5A] text-[10px] font-bold uppercase tracking-wider mb-3 block opacity-90 border border-[#EEBC5A]/30 px-2 py-0.5 rounded bg-[#EEBC5A]/10">${item.class || 'Geral'}</span>
-                                
-                                <div class="text-gray-400 text-xs flex items-center gap-1.5 bg-black/20 px-3 py-1 rounded-full">
-                                    <i class="far fa-clock"></i>
-                                    <span>${dateFormatted}</span>
-                                </div>
-                            </div>
-                         `;
+                         html += '<div class="glass-panel rounded-xl overflow-hidden flex flex-col items-center text-center p-6 border border-white/5 hover:border-[#EEBC5A]/50 transition-all group active:scale-95 relative bg-[#1e293b]/40"><div class="w-20 h-20 rounded-full overflow-hidden border-2 border-[#EEBC5A] mb-3 shadow-[0_0_15px_rgba(238,188,90,0.3)] bg-[#1e293b]"><img src="' + (optimizeImage(t.photo, 200) || 'https://via.placeholder.com/150') + '" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src=\'https://ui-avatars.com/api/?name=' + encodeURIComponent(t.name) + '&background=random\'"></div><h3 class="text-base font-bold text-white mb-1 leading-tight">' + t.name + '</h3><span class="text-[#EEBC5A] text-[10px] font-bold uppercase tracking-wider mb-3 block opacity-90 border border-[#EEBC5A]/30 px-2 py-0.5 rounded bg-[#EEBC5A]/10">' + (item.class || 'Geral') + '</span><div class="text-gray-400 text-xs flex items-center gap-1.5 bg-black/20 px-3 py-1 rounded-full"><i class="far fa-clock"></i><span>' + dateFormatted + '</span></div></div>';
                     });
-
-                    html += `</div></div>`;
+                    html += '</div></div>';
                 }
-
-                html += `</div></div>`;
+                html += '</div></div>';
                 container.innerHTML = html;
             }
 
@@ -2088,77 +1957,11 @@
                 const isEditing = editingId !== null;
                 const editItem = isEditing ? globalSchedule.find(s => s.id === editingId) : null;
 
-                container.innerHTML = `
-                    <div class="pt-4 px-4 max-w-5xl mx-auto fade-in">
-                        <div class="flex justify-between items-center mb-6 pb-4 border-b border-[#333]">
-                            <h2 class="text-2xl font-bold text-white">Gestão EBD</h2>
-                            <button onclick="window.ebd.logout()" class="text-xs font-bold text-[#EEBC5A] border border-[#EEBC5A] px-3 py-1.5 rounded hover:bg-[#EEBC5A] hover:text-brand-dark transition">SAIR</button>
-                        </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <div class="bg-[#181818] p-6 rounded border border-[#333] ${isEditing ? 'border-l-4 border-l-blue-500' : ''}">
-                                <div class="flex justify-between items-center mb-4">
-                                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                                        <i class="fas ${isEditing ? 'fa-edit text-blue-500' : 'fa-plus-circle text-[#EEBC5A]'}"></i> 
-                                        ${isEditing ? 'Editar Escala' : 'Nova Escala'}
-                                    </h3>
-                                    ${isEditing ? `<button onclick="window.ebd.cancelEdit()" class="text-xs text-gray-400 hover:text-white">Cancelar</button>` : ''}
-                                </div>
-                                <form onsubmit="window.ebd.handleAddSchedule(event)" class="space-y-4">
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div><label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Data</label><input type="date" id="newSchedDate" class="w-full input-dark text-gray-300" required value="${editItem ? editItem.date : ''}"></div>
-                                        <div><label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Professor</label><select id="newSchedTeacher" class="w-full input-dark bg-[#333]" required><option value="">Selecione...</option>${globalTeachers.map(t => `<option value="${t.id}" ${editItem && editItem.teacherId == t.id ? 'selected' : ''}>${t.name}</option>`).join('')}</select></div>
-                                    </div>
-                                    <div><label class="block text-[10px] uppercase text-[#EEBC5A] font-bold mb-1">Classe</label><select id="newSchedClass" class="w-full input-dark bg-[#333]" required><option value="">Selecione...</option>${EBD_CLASSES.map(c => `<option value="${c}" ${editItem && editItem.class === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
-                                    
-                                    <input type="hidden" id="newSchedTitle" value="Aula EBD">
-                                    <input type="hidden" id="newSchedSummary" value="">
-                                    <input type="hidden" id="newSchedLink" value="">
-                                    <input type="file" id="newSchedCoverFile" accept="image/*" class="hidden">
-
-                                    <button class="w-full ${isEditing ? 'bg-blue-600 hover:bg-blue-700' : 'bg-[#EEBC5A] hover:bg-[#d4a040]'} text-white font-bold py-3 rounded mt-4 transition">${isEditing ? 'ATUALIZAR' : 'PUBLICAR'}</button>
-                                </form>
-                            </div>
-                            <div class="space-y-8">
-                                <div class="bg-[#181818] p-6 rounded border border-[#333]">
-                                    <h3 class="text-lg font-bold text-white mb-4">Novo Professor</h3>
-                                    <form onsubmit="window.ebd.handleAddTeacher(event)" class="flex gap-2">
-                                        <input type="text" id="newTeacherName" placeholder="Nome" class="flex-1 input-dark" required>
-                                        <div class="w-12 overflow-hidden relative group cursor-pointer border border-[#444] rounded bg-[#333]">
-                                            <input type="file" id="newTeacherFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10">
-                                            <div class="w-full h-full flex items-center justify-center text-gray-400 group-hover:text-white"><i class="fas fa-camera"></i></div>
-                                        </div>
-                                        <button class="bg-[#333] hover:bg-[#444] text-white px-4 rounded border border-[#555]"><i class="fas fa-plus"></i></button>
-                                    </form>
-                                    <div class="mt-4 flex flex-wrap gap-2 max-h-40 overflow-y-auto">${globalTeachers.map(t => `<div class="bg-[#222] px-3 py-1 rounded-full border border-[#333] flex items-center gap-2 text-xs"><img src="${optimizeImage(t.photo, 80)}" loading="lazy" decoding="async" class="w-4 h-4 rounded-full object-cover"><span class="text-gray-300">${t.name}</span><button onclick="window.ebd.deleteItem('deleteTeacher', ${t.id})" class="text-[#EEBC5A] hover:text-white ml-1">×</button></div>`).join('')}</div>
-                                </div>
-                                <div class="bg-[#181818] p-6 rounded border border-[#333]">
-                                    <h3 class="text-lg font-bold text-white mb-4">Escala Atual</h3>
-                                    <div class="space-y-2 max-h-[400px] overflow-y-auto">
-                                        ${globalSchedule.map(s => {
-                                            const tName = globalTeachers.find(t => t.id == s.teacherId)?.name || 'Desconhecido';
-                                            return `<div class="flex justify-between items-center p-3 bg-[#111] border-l-2 ${editingId === s.id ? 'border-blue-500 bg-blue-900/20' : 'border-[#EEBC5A]'}">
-                                                <div>
-                                                    <div class="text-[#EEBC5A] font-bold text-xs">${s.date.split('-').reverse().join('/')}</div>
-                                                    <div class="text-white text-sm font-medium">${tName} <span class="text-gray-500 text-xs ml-1">(${s.class})</span></div>
-                                                </div>
-                                                <div class="flex gap-2">
-                                                    <button onclick="window.ebd.editItem(${s.id})" class="text-gray-400 hover:text-blue-500"><i class="fas fa-pencil-alt"></i></button>
-                                                    <button onclick="window.ebd.deleteItem('deleteSchedule', ${s.id})" class="text-gray-400 hover:text-red-500"><i class="fas fa-trash"></i></button>
-                                                </div>
-                                            </div>`
-                                        }).join('')}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
+                let html = '<div class="pt-4 px-4 max-w-5xl mx-auto fade-in"><div class="flex justify-between items-center mb-6 pb-4 border-b border-[#333]"><h2 class="text-2xl font-bold text-white">Gestão EBD</h2><button onclick="window.ebd.logout()" class="text-xs font-bold text-[#EEBC5A] border border-[#EEBC5A] px-3 py-1.5 rounded hover:bg-[#EEBC5A] hover:text-brand-dark transition">SAIR</button></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="bg-[#181818] p-6 rounded border border-[#333]"><div class="flex justify-between items-center mb-4"><h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fas ' + (isEditing ? 'fa-edit text-blue-500' : 'fa-plus-circle text-[#EEBC5A]') + '"></i> ' + (isEditing ? 'Editar Escala' : 'Nova Escala') + '</h3>' + (isEditing ? '<button onclick="window.ebd.cancelEdit()" class="text-xs text-gray-400 hover:text-white">Cancelar</button>' : '') + '</div><form onsubmit="window.ebd.handleAddSchedule(event)" class="space-y-4"><div class="grid grid-cols-2 gap-4"><div><label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Data</label><input type="date" id="newSchedDate" class="w-full input-dark text-gray-300" required value="' + (editItem ? editItem.date : '') + '"></div><div><label class="block text-[10px] uppercase text-gray-500 font-bold mb-1">Professor</label><select id="newSchedTeacher" class="w-full input-dark bg-[#333]" required><option value="">Selecione...</option>' + globalTeachers.map(t => '<option value="' + t.id + '" ' + (editItem && editItem.teacherId == t.id ? 'selected' : '') + '>' + t.name + '</option>').join('') + '</select></div></div><div><label class="block text-[10px] uppercase text-[#EEBC5A] font-bold mb-1">Classe</label><select id="newSchedClass" class="w-full input-dark bg-[#333]" required><option value="">Selecione...</option>' + EBD_CLASSES.map(c => '<option value="' + c + '" ' + (editItem && editItem.class === c ? 'selected' : '') + '>' + c + '</option>').join('') + '</select></div><button class="w-full ' + (isEditing ? 'bg-blue-600 hover:bg-blue-700' : 'bg-[#EEBC5A] hover:bg-[#d4a040]') + ' text-white font-bold py-3 rounded mt-4 transition">' + (isEditing ? 'ATUALIZAR' : 'PUBLICAR') + '</button></form></div><div class="space-y-8"><div class="bg-[#181818] p-6 rounded border border-[#333]"><h3 class="text-lg font-bold text-white mb-4">Novo Professor</h3><form onsubmit="window.ebd.handleAddTeacher(event)" class="flex gap-2"><input type="text" id="newTeacherName" placeholder="Nome" class="flex-1 input-dark" required><div class="w-12 overflow-hidden relative group cursor-pointer border border-[#444] rounded bg-[#333]"><input type="file" id="newTeacherFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10"><div class="w-full h-full flex items-center justify-center text-gray-400 group-hover:text-white"><i class="fas fa-camera"></i></div></div><button class="bg-[#333] hover:bg-[#444] text-white px-4 rounded border border-[#555]"><i class="fas fa-plus"></i></button></form><div class="mt-4 flex flex-wrap gap-2 max-h-40 overflow-y-auto">' + globalTeachers.map(t => '<div class="bg-[#222] px-3 py-1 rounded-full border border-[#333] flex items-center gap-2 text-xs"><img src="' + optimizeImage(t.photo, 80) + '" class="w-4 h-4 rounded-full object-cover"><span class="text-gray-300">' + t.name + '</span><button onclick="window.ebd.deleteItem(\'deleteTeacher\', ' + t.id + ')" class="text-[#EEBC5A] hover:text-white ml-1">×</button></div>').join('') + '</div></div><div class="bg-[#181818] p-6 rounded border border-[#333]"><h3 class="text-lg font-bold text-white mb-4">Escala Atual</h3><div class="space-y-2 max-h-[400px] overflow-y-auto">' + globalSchedule.map(s => { const tName = globalTeachers.find(t => t.id == s.teacherId)?.name || 'Desconhecido'; return '<div class="flex justify-between items-center p-3 bg-[#111] border-l-2 ' + (editingId === s.id ? 'border-blue-500 bg-blue-900/20' : 'border-[#EEBC5A]') + '"><div><div class="text-[#EEBC5A] font-bold text-xs">' + s.date.split('-').reverse().join('/') + '</div><div class="text-white text-sm font-medium">' + tName + ' <span class="text-gray-500 text-xs ml-1">(' + s.class + ')</span></div></div><div class="flex gap-2"><button onclick="window.ebd.editItem(' + s.id + ')" class="text-gray-400 hover:text-blue-500"><i class="fas fa-pencil-alt"></i></button><button onclick="window.ebd.deleteItem(\'deleteSchedule\', ' + s.id + ')" class="text-gray-400 hover:text-red-500"><i class="fas fa-trash"></i></button></div></div>'; }).join('') + '</div></div></div></div></div>';
+                container.innerHTML = html;
             }
 
-            function editItem(id) {
-                editingId = id;
-                renderApp();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            function editItem(id) { editingId = id; renderApp(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
             function cancelEdit() { editingId = null; renderApp(); }
 
             async function handleAddSchedule(e) {
@@ -2169,11 +1972,9 @@
                     date: document.getElementById('newSchedDate').value,
                     teacherId: document.getElementById('newSchedTeacher').value,
                     title: "Aula EBD",
-                    summary: "",
-                    link: "",
+                    summary: "", link: "", cover: "",
                     class: document.getElementById('newSchedClass').value,
-                    isUpload: false,
-                    cover: ""
+                    isUpload: false
                 };
                 await sendToApi(payload);
                 if(editingId) cancelEdit();
@@ -2214,19 +2015,14 @@
             function logout() { currentUser = null; renderApp(); }
 
             return {
-                fetchInitialData,
-                toggleLoginModal,
-                handleLogin,
-                logout,
-                handleAddSchedule,
-                handleAddTeacher,
-                deleteItem,
-                editItem,
-                cancelEdit
+                fetchInitialData, toggleLoginModal, handleLogin, logout,
+                handleAddSchedule, handleAddTeacher, deleteItem, editItem, cancelEdit
             };
         })();
 
-        // --- INIT ---
+        // ============================================================
+        // INIT
+        // ============================================================
         const init = () => {
             document.getElementById('current-year').textContent = new Date().getFullYear();
             setupNav();
