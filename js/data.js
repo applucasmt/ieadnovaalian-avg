@@ -2,6 +2,9 @@
 // IEAD NOVA ALIANÇA - SISTEMA DE DADOS E CACHE
 // ============================================================
 
+// ============================================================
+// FETCH COM CACHE (localStorage)
+// ============================================================
 window.fetchWithCache = async (url, key, force) => {
     force = force || false;
     const cached = localStorage.getItem(key);
@@ -36,14 +39,14 @@ window.fetchWithCache = async (url, key, force) => {
 };
 
 // ============================================================
-// APLICAR CONFIG (LOGO + HERO + POSIÇÃO + TEXTOS)
+// APLICAR CONFIG (LOGO + HERO PC/MOBILE + POSIÇÃO + TEXTOS)
 // ============================================================
 window.applyConfigImages = (config) => {
     console.log('🎨 applyConfigImages:', config);
     if (!config) return;
     
     // ============================================================
-    // 1. LOGO
+    // 1. LOGO (header + footer + favicon)
     // ============================================================
     if (config.logoUrl && typeof config.logoUrl === 'string' && config.logoUrl.trim()) {
         const logoUrl = config.logoUrl.trim();
@@ -57,19 +60,32 @@ window.applyConfigImages = (config) => {
     }
     
     // ============================================================
-    // 2. HERO IMAGEM
+    // 2. HERO IMAGEM - Detecção automática de dispositivo
+    // Celular (<= 768px): usa heroUrlMobile (se existir)
+    // PC: usa heroUrl
     // ============================================================
-    if (config.heroUrl && typeof config.heroUrl === 'string' && config.heroUrl.trim()) {
-        const heroUrl = config.heroUrl.trim();
+    const isMobile = window.innerWidth <= 768;
+    
+    let heroUrlToUse = '';
+    
+    if (isMobile && config.heroUrlMobile && typeof config.heroUrlMobile === 'string' && config.heroUrlMobile.trim() !== '') {
+        heroUrlToUse = config.heroUrlMobile.trim();
+        console.log('📱 Usando imagem MOBILE:', heroUrlToUse);
+    } else if (config.heroUrl && typeof config.heroUrl === 'string' && config.heroUrl.trim() !== '') {
+        heroUrlToUse = config.heroUrl.trim();
+        console.log('💻 Usando imagem DESKTOP:', heroUrlToUse);
+    }
+    
+    if (heroUrlToUse) {
         const hero = document.getElementById('site-hero');
         if (hero) {
-            hero.src = heroUrl;
-            hero.setAttribute('data-hero-url', heroUrl);
+            hero.src = heroUrlToUse;
+            hero.setAttribute('data-hero-url', heroUrlToUse);
         }
     }
     
     // ============================================================
-    // 3. TEXTOS DO HERO (editáveis)
+    // 3. TEXTOS DO HERO
     // ============================================================
     const badgeEl = document.getElementById('hero-badge');
     const titleEl = document.getElementById('hero-title');
@@ -80,7 +96,6 @@ window.applyConfigImages = (config) => {
     }
     
     if (titleEl && config.heroTitle && config.heroTitle.trim()) {
-        // Suporta \n para quebra de linha e destaca a segunda linha
         const parts = config.heroTitle.split('\\n');
         if (parts.length > 1) {
             titleEl.innerHTML = parts[0] + '<br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">' + parts[1] + '</span>';
@@ -118,6 +133,26 @@ window.applyConfigImages = (config) => {
         }
     }
 };
+
+// ============================================================
+// TROCAR IMAGEM AO REDIMENSIONAR (PC ↔ Celular)
+// ============================================================
+let lastIsMobile = window.innerWidth <= 768;
+window.addEventListener('resize', () => {
+    const currentIsMobile = window.innerWidth <= 768;
+    if (currentIsMobile !== lastIsMobile) {
+        lastIsMobile = currentIsMobile;
+        try {
+            const cached = localStorage.getItem('cache_config_v2');
+            if (cached) {
+                const data = JSON.parse(cached);
+                if (data.content && data.content[0]) {
+                    window.applyConfigImages(data.content[0]);
+                }
+            }
+        } catch(e) {}
+    }
+});
 
 // ============================================================
 // CARREGAR DADOS
