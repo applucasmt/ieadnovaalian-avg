@@ -39,7 +39,7 @@ body {
 }
 
 /* ============================================================
-   HERO - Imagem sempre em COVER
+   HERO - Cover sempre (usa imagens diferentes por dispositivo)
    ============================================================ */
 #site-hero {
     width: 100%;
@@ -51,8 +51,7 @@ body {
 
 /* ============================================================
    HERO SECTION
-   Desktop: 85vh (como está)
-   Mobile: 35vh (faixa horizontal, como no desenho)
+   Desktop: 85vh | Mobile: 62vh
    ============================================================ */
 .hero-section {
     min-height: 85vh;
@@ -62,13 +61,13 @@ body {
 
 @media (max-width: 768px) {
     .hero-section {
-        min-height: 38vh;
+        min-height: 62vh;
     }
 }
 
 @media (max-width: 400px) {
     .hero-section {
-        min-height: 35vh;
+        min-height: 58vh;
     }
 }
 
@@ -143,129 +142,99 @@ body {
 }
 
 /* ============================================================
-   MOBILE (<= 768px) - Hero compacto, textos pequenos
-   Como no desenho: imagem em faixa horizontal, texto à esquerda
+   MOBILE (<= 768px) - Mesmo visual do PC
    ============================================================ */
 @media (max-width: 768px) {
-    /* Esquerda - como no desenho */
     .hero-content.pos-left {
         left: 0;
         right: auto;
         top: 50%;
         transform: translateY(-50%);
         text-align: left;
-        padding-left: 4%;
-        padding-right: 15%;
+        padding-left: 6%;
+        padding-right: 12%;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         width: 100%;
     }
 
-    /* Centro */
     .hero-content.pos-center {
         left: 50%;
         transform: translate(-50%, -50%);
         top: 50%;
         text-align: center;
-        padding-left: 5%;
-        padding-right: 5%;
+        padding-left: 6%;
+        padding-right: 6%;
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
     }
 
-    /* Direita */
     .hero-content.pos-right {
         right: 0;
         left: auto;
         top: 50%;
         transform: translateY(-50%);
         text-align: right;
-        padding-right: 4%;
-        padding-left: 15%;
+        padding-right: 6%;
+        padding-left: 12%;
         display: flex;
         flex-direction: column;
         align-items: flex-end;
         width: 100%;
     }
 
-    /* Personalizado */
     .hero-content.pos-custom {
         left: var(--hero-x, 50%);
         top: var(--hero-y, 50%);
         transform: translate(-50%, -50%);
         text-align: var(--hero-align, center);
-        width: 92%;
-        max-width: 92%;
+        width: 90%;
+        max-width: 90%;
         align-items: var(--hero-align, center);
     }
 
-    /* ============================================================
-       TEXTOS - Compactos, como no desenho
-       ============================================================ */
-
-    /* Badge (linha pequena dourada) */
     .hero-content .preview-badge,
     .hero-content > div:first-child {
-        font-size: 0.5rem;
-        padding: 0.2rem 0.5rem;
-        margin-bottom: 0.3rem;
-        letter-spacing: 0.1em;
+        font-size: clamp(0.55rem, 2.5vw, 0.7rem);
+        padding: 0.25rem 0.7rem;
+        margin-bottom: 0.6rem;
+        letter-spacing: 0.12em;
     }
 
-    /* Título principal */
     .hero-content h1 {
-        font-size: clamp(1rem, 5.5vw, 1.5rem);
-        line-height: 1.05;
-        margin-bottom: 0.3rem;
+        font-size: clamp(1.6rem, 8.5vw, 2.8rem);
+        line-height: 1.1;
+        margin-bottom: 0.6rem;
         letter-spacing: -0.02em;
     }
 
-    /* Descrição */
     .hero-content p {
-        font-size: clamp(0.55rem, 2.5vw, 0.7rem);
-        line-height: 1.3;
-        margin-bottom: 0.5rem;
-        max-width: 95%;
+        font-size: clamp(0.8rem, 3.5vw, 1rem);
+        line-height: 1.45;
+        margin-bottom: 1.1rem;
     }
 
-    /* Botões - pequenos, lado a lado */
     .hero-content button {
-        padding: 0.4rem 0.8rem;
-        font-size: clamp(0.6rem, 2.5vw, 0.75rem);
-        border-radius: 999px;
-    }
-
-    /* Container de botões - lado a lado */
-    .hero-content > div:last-child {
-        display: flex;
-        flex-direction: row;
-        gap: 0.4rem;
-        flex-wrap: nowrap;
+        padding: 0.75rem 1.25rem;
+        font-size: clamp(0.8rem, 3vw, 0.95rem);
     }
 }
 
-/* ============================================================
-   MOBILE PEQUENO
-   ============================================================ */
 @media (max-width: 400px) {
-    .hero-section {
-        min-height: 33vh;
-    }
-
     .hero-content h1 {
-        font-size: 1rem;
+        font-size: clamp(1.4rem, 8vw, 2rem);
     }
 
     .hero-content p {
-        font-size: 0.55rem;
+        font-size: clamp(0.75rem, 3.2vw, 0.9rem);
     }
 
     .hero-content button {
-        padding: 0.35rem 0.7rem;
-        font-size: 0.6rem;
+        padding: 0.7rem 1rem;
+        font-size: 0.8rem;
     }
 }
 
