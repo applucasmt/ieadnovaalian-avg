@@ -18,7 +18,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <link rel="preconnect" href="https://wsrv.nl">
@@ -77,6 +77,39 @@
                     <button onclick="window.closeEventModal()" class="px-6 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-medium transition-all border border-white/5 active:scale-95">Fechar</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL DO MARKETING (Popup de Detalhes) -->
+    <div id="marketing-modal" class="fixed inset-0 z-[75] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="window.closeMarketingModal()"></div>
+        <div class="marketing-modal-content" id="marketing-modal-box">
+            
+            <!-- Botão Fechar -->
+            <button onclick="window.closeMarketingModal()" class="marketing-modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- Conteúdo com scroll -->
+            <div class="marketing-modal-scroll">
+                <!-- Imagem -->
+                <div class="marketing-modal-image">
+                    <img id="marketing-modal-img" src="" alt="Cartaz do evento">
+                </div>
+                
+                <!-- Informações -->
+                <div class="marketing-modal-info">
+                    <div class="marketing-modal-category">EVENTO ESPECIAL</div>
+                    <h2 id="marketing-modal-title" class="marketing-modal-title"></h2>
+                    <p id="marketing-modal-desc" class="marketing-modal-desc"></p>
+                    
+                    <!-- Botão Whatsapp -->
+                    <a id="marketing-modal-whatsapp" href="#" target="_blank" class="marketing-modal-whatsapp-btn">
+                        <i class="fab fa-whatsapp text-xl"></i> Solicitar Cartaz via WhatsApp
+                    </a>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -288,43 +321,42 @@
                 </div>
             </div>
             
+            <!-- PÁGINA MARKETING -->
             <div id="marketing-page" class="page-content hidden w-full h-full animate-fade-in">
-                <div class="marketing-container max-w-7xl mx-auto px-6 md:px-12 w-full">
-                    <div class="w-full md:w-5/12 min-h-[40vh] h-auto md:h-full flex flex-col justify-center z-20 relative space-y-3 md:space-y-6 order-1 md:order-1 pb-10 md:pb-0">
-                        <div class="overflow-hidden">
-                            <p id="marketing-category" class="text-[10px] md:text-sm font-bold tracking-[0.2em] text-brand-yellow uppercase fade-in-right">EVENTOS</p>
-                        </div>
-                        <div class="overflow-hidden pb-2">
-                            <h1 id="marketing-title" class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight fade-in-up uppercase break-words drop-shadow-lg"></h1>
-                        </div>
-                        <div class="overflow-hidden">
-                            <p id="marketing-desc" class="text-gray-300 max-w-md text-xs sm:text-sm md:text-base leading-relaxed fade-in-up shadow-black drop-shadow-md"></p>
-                        </div>
-                        <div id="marketing-btns" class="pt-4 overflow-hidden fade-in-up flex flex-wrap gap-3 z-30 relative">
-                            <button id="marketing-action-btn" class="glass-btn px-6 py-3 rounded-full text-white font-bold tracking-widest text-[10px] md:text-xs uppercase flex items-center gap-2 hover:bg-brand-yellow hover:text-black transition-all">
-                                Ver Detalhes <i class="fas fa-arrow-right"></i>
+                <div class="marketing-container-v2">
+                    
+                    <!-- Lado Esquerdo: Título + Botões -->
+                    <div class="marketing-left">
+                        <div class="marketing-category-label">EVENTO ESPECIAL</div>
+                        <h1 id="marketing-title-v2" class="marketing-title-v2">
+                            <!-- JS injeta aqui -->
+                        </h1>
+                        <div class="marketing-buttons-v2">
+                            <button id="marketing-details-btn" class="btn-primary-v2">
+                                <i class="fas fa-info-circle"></i> Ver Detalhes
                             </button>
-                            <a href="https://wa.me/5565992977124?text=Paz do Senhor! Gostaria de solicitar o cartaz do culto." target="_blank" class="glass-btn px-6 py-3 rounded-full text-white font-bold tracking-widest text-[10px] md:text-xs uppercase flex items-center gap-2 hover:bg-[#25D366] hover:border-[#25D366] transition-all">
-                                <i class="fab fa-whatsapp text-lg"></i> Solicitar Cartaz
+                            <a id="marketing-whatsapp-btn" href="#" target="_blank" class="btn-whatsapp-v2">
+                                <i class="fab fa-whatsapp"></i> Solicitar Cartaz
                             </a>
                         </div>
                     </div>
 
-                    <div class="w-full md:w-7/12 h-[50vh] md:h-full relative flex items-center justify-center order-2 md:order-2 p-4">
-                        <div class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-[300px] h-[300px] md:w-[800px] md:h-[800px] rounded-full bg-brand-blue opacity-20 blur-[80px] md:blur-[100px] pointer-events-none -z-10"></div>
+                    <!-- Lado Direito: Slider de Imagens -->
+                    <div class="marketing-right">
+                        <div id="marketing-bg-blob" class="marketing-bg-blob"></div>
                         <div id="product-queue" class="product-queue-container"></div>
                     </div>
-                </div>
 
-                <div class="absolute bottom-4 md:bottom-8 left-0 w-full px-6 md:px-12 z-30 pointer-events-none">
-                    <div class="max-w-7xl mx-auto flex justify-center md:justify-end items-end gap-4 pointer-events-auto pb-2 md:pb-0">
-                        <button id="prev-marketing" class="glass-btn w-12 h-12 rounded-full flex items-center justify-center text-gray-300 hover:text-white disabled:opacity-30 active:scale-95 transition-all shadow-lg">
-                            <i class="fas fa-chevron-left text-lg"></i>
+                    <!-- Controles do Slider -->
+                    <div class="marketing-controls">
+                        <button id="prev-marketing" class="marketing-nav-btn">
+                            <i class="fas fa-chevron-left"></i>
                         </button>
-                        <button id="next-marketing" class="glass-btn w-12 h-12 rounded-full flex items-center justify-center text-gray-300 hover:text-white disabled:opacity-30 active:scale-95 transition-all shadow-lg">
-                            <i class="fas fa-chevron-right text-lg"></i>
+                        <button id="next-marketing" class="marketing-nav-btn">
+                            <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
+
                 </div>
             </div>
 
