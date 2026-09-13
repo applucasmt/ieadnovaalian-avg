@@ -80,36 +80,26 @@
         </div>
     </div>
 
-    <!-- MODAL DO MARKETING (Popup de Detalhes) -->
+    <!-- MODAL DO MARKETING -->
     <div id="marketing-modal" class="fixed inset-0 z-[75] hidden items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="window.closeMarketingModal()"></div>
         <div class="marketing-modal-content" id="marketing-modal-box">
-            
-            <!-- Botão Fechar -->
             <button onclick="window.closeMarketingModal()" class="marketing-modal-close">
                 <i class="fas fa-times"></i>
             </button>
-
-            <!-- Conteúdo com scroll -->
             <div class="marketing-modal-scroll">
-                <!-- Imagem -->
                 <div class="marketing-modal-image">
                     <img id="marketing-modal-img" src="" alt="Cartaz do evento">
                 </div>
-                
-                <!-- Informações -->
                 <div class="marketing-modal-info">
                     <div class="marketing-modal-category">EVENTO ESPECIAL</div>
                     <h2 id="marketing-modal-title" class="marketing-modal-title"></h2>
                     <p id="marketing-modal-desc" class="marketing-modal-desc"></p>
-                    
-                    <!-- Botão Whatsapp -->
                     <a id="marketing-modal-whatsapp" href="#" target="_blank" class="marketing-modal-whatsapp-btn">
                         <i class="fab fa-whatsapp text-xl"></i> Solicitar Cartaz via WhatsApp
                     </a>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -321,22 +311,12 @@
                 </div>
             </div>
             
-             <!-- PÁGINA MARKETING -->
+            <!-- PÁGINA MARKETING -->
             <div id="marketing-page" class="page-content hidden w-full h-full animate-fade-in">
                 <div class="marketing-container-v2">
                     
-                    <!-- Lado Esquerdo: Título + Botões -->
+                    <!-- Lado Esquerdo: Título + Botões de Ação -->
                     <div class="marketing-left">
-                        <!-- CONTROLES MOVIDOS PARA CÁ (antes do título) -->
-                        <div class="marketing-controls">
-                            <button id="prev-marketing" class="marketing-nav-btn">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button id="next-marketing" class="marketing-nav-btn">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-
                         <div class="marketing-category-label">EVENTO ESPECIAL</div>
                         <h1 id="marketing-title-v2" class="marketing-title-v2"></h1>
                         <div class="marketing-buttons-v2">
@@ -349,10 +329,20 @@
                         </div>
                     </div>
 
-                    <!-- Lado Direito: Slider de Imagens -->
+                    <!-- Lado Direito: Slider + Controles -->
                     <div class="marketing-right">
                         <div id="marketing-bg-blob" class="marketing-bg-blob"></div>
                         <div id="product-queue" class="product-queue-container"></div>
+                        
+                        <!-- CONTROLES DO SLIDER (sempre na coluna direita) -->
+                        <div class="marketing-controls">
+                            <button id="prev-marketing" class="marketing-nav-btn">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button id="next-marketing" class="marketing-nav-btn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
                     </div>
 
                 </div>
