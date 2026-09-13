@@ -1,5 +1,5 @@
 // ============================================================
-// IEAD NOVA ALIANÇA - SLIDER DE MARKETING (V2 SIMPLIFICADO)
+// IEAD NOVA ALIANÇA - SLIDER DE MARKETING (V2)
 // ============================================================
 
 let marketingQueue = [];
@@ -14,7 +14,6 @@ window.initMarketingSlider = (events) => {
 
     let sourceEvents = [...events];
     
-    // Se não tem eventos, sai
     if (sourceEvents.length === 0) return;
 
     // Garante pelo menos 3 itens para o efeito 3D
@@ -22,33 +21,37 @@ window.initMarketingSlider = (events) => {
         sourceEvents = sourceEvents.concat(sourceEvents);
     }
 
+    // ============================================================
+    // LOG PARA DEBUG - Verificar as URLs das imagens
+    // ============================================================
+    console.log('🎠 Eventos no marketing:');
+    sourceEvents.forEach((e, i) => {
+        console.log('  [' + i + '] ' + e.name + ' → coverUrl: ' + (e.coverUrl || 'VAZIO'));
+    });
+
     // Fila de marketing
     marketingQueue = sourceEvents.map(e => ({
         id: e._id,
         title: e.name,
         desc: e.description,
-        image: e.coverUrl
+        image: e.coverUrl || ''  // Garante que seja string
     }));
 
     currentMarketingIndex = 0;
 
-    // Renderiza o slider
     renderMarketingSlider();
     updateMarketingTitle(marketingQueue[0]);
     
-    // Configura botões
     const nextBtn = document.getElementById('next-marketing');
     const prevBtn = document.getElementById('prev-marketing');
     if (nextBtn) nextBtn.onclick = () => moveMarketing('next');
     if (prevBtn) prevBtn.onclick = () => moveMarketing('prev');
     
-    // Botão "Ver Detalhes"
     const detailsBtn = document.getElementById('marketing-details-btn');
     if (detailsBtn) {
         detailsBtn.onclick = () => window.openMarketingModal(marketingQueue[currentMarketingIndex]);
     }
     
-    // Botão WhatsApp (atualiza href baseado no item atual)
     updateWhatsappButton(marketingQueue[0]);
 
     // Clique na imagem abre o modal
@@ -61,7 +64,7 @@ window.initMarketingSlider = (events) => {
 };
 
 // ============================================================
-// RENDERIZAR O SLIDER (3 imagens visíveis)
+// RENDERIZAR O SLIDER
 // ============================================================
 function renderMarketingSlider() {
     const queueContainer = document.getElementById('product-queue');
@@ -75,6 +78,7 @@ function renderMarketingSlider() {
         
         const img = document.createElement('img');
         img.src = window.optimizeImage(item.image, 900);
+        img.alt = item.title || 'Cartaz';
         img.className = 'depth-layer ' + (
             i === 0 ? 'product-main' : 
             i === 1 ? 'product-next' : 
@@ -92,7 +96,7 @@ function renderMarketingSlider() {
 }
 
 // ============================================================
-// ATUALIZAR APENAS O TÍTULO (simplificado)
+// ATUALIZAR TÍTULO
 // ============================================================
 function updateMarketingTitle(item) {
     if (!item) return;
@@ -100,7 +104,6 @@ function updateMarketingTitle(item) {
     const titleEl = document.getElementById('marketing-title-v2');
     
     if (titleEl) {
-        // Fade out + fade in
         titleEl.style.opacity = '0';
         titleEl.style.transform = 'translateY(10px)';
         
@@ -112,7 +115,6 @@ function updateMarketingTitle(item) {
         }, 150);
     }
     
-    // Atualiza botão WhatsApp
     updateWhatsappButton(item);
 }
 
@@ -129,7 +131,7 @@ function updateWhatsappButton(item) {
 }
 
 // ============================================================
-// MOVER O SLIDER (next / prev)
+// MOVER O SLIDER
 // ============================================================
 window.moveMarketing = (direction) => {
     if (window.isMarketingAnimating) return;
@@ -150,7 +152,6 @@ window.moveMarketing = (direction) => {
     }
 
     if (direction === 'next') {
-        // Anima as classes
         items[0].classList.replace('product-main', 'product-hidden-left');
         if (items[1]) items[1].classList.replace('product-next', 'product-main');
         if (items[2]) items[2].classList.replace('product-next-2', 'product-next');
@@ -165,10 +166,10 @@ window.moveMarketing = (direction) => {
     } else {
         currentMarketingIndex = (currentMarketingIndex - 1 + marketingQueue.length) % marketingQueue.length;
         
-        // Cria nova imagem entrando pela esquerda
         const newItem = marketingQueue[currentMarketingIndex];
         const newImg = document.createElement('img');
         newImg.src = window.optimizeImage(newItem.image, 900);
+        newImg.alt = newItem.title || 'Cartaz';
         newImg.className = 'depth-layer product-hidden-left';
         newImg.loading = 'lazy';
         newImg.onerror = function() { 
@@ -193,7 +194,7 @@ window.moveMarketing = (direction) => {
 };
 
 // ============================================================
-// ABRIR MODAL DE MARKETING (popup com detalhes completos)
+// ABRIR MODAL DE MARKETING (com debug da imagem)
 // ============================================================
 window.openMarketingModal = (item) => {
     if (!item) return;
@@ -204,10 +205,27 @@ window.openMarketingModal = (item) => {
     const descEl = document.getElementById('marketing-modal-desc');
     const whatsappEl = document.getElementById('marketing-modal-whatsapp');
     
-    // Preenche dados
-    imgEl.src = window.optimizeImage(item.image, 1200);
+    // ============================================================
+    // DEBUG - Verificar URL da imagem
+    // ============================================================
+    console.log('🖼️ Abrindo modal com:');
+    console.log('   Título:', item.title);
+    console.log('   Descrição:', item.desc);
+    console.log('   URL da imagem (raw):', item.image);
+    
+    // Verifica se a URL está vazia
+    if (!item.image || item.image.trim() === '') {
+        console.warn('⚠️ URL da imagem está VAZIA!');
+        imgEl.src = 'https://placehold.co/1080x1350/1e293b/FFFFFF?text=Sem+Imagem';
+    } else {
+        // Usa a URL direta sem otimização para o modal
+        imgEl.src = item.image;
+        console.log('   URL aplicada (direta):', item.image);
+    }
+    
     imgEl.onerror = () => {
-        imgEl.src = 'https://placehold.co/1080x1350/1e293b/FFFFFF?text=Cartaz';
+        console.warn('⚠️ Erro ao carregar imagem, usando placeholder');
+        imgEl.src = 'https://placehold.co/1080x1350/1e293b/FFFFFF?text=Erro+ao+Carregar';
     };
     
     titleEl.textContent = item.title || 'Evento';
@@ -217,14 +235,13 @@ window.openMarketingModal = (item) => {
     const text = encodeURIComponent('Paz do Senhor! Gostaria de solicitar o cartaz do evento: ' + title);
     whatsappEl.href = 'https://wa.me/5565992977124?text=' + text;
     
-    // Abre o modal
     modal.classList.remove('hidden');
     modal.classList.add('flex');
     document.body.style.overflow = 'hidden';
 };
 
 // ============================================================
-// FECHAR MODAL DE MARKETING
+// FECHAR MODAL
 // ============================================================
 window.closeMarketingModal = () => {
     const modal = document.getElementById('marketing-modal');
@@ -235,9 +252,6 @@ window.closeMarketingModal = () => {
     document.body.style.overflow = '';
 };
 
-// ============================================================
-// FECHAR MODAL COM ESC
-// ============================================================
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         const modal = document.getElementById('marketing-modal');
@@ -247,7 +261,4 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// ============================================================
-// LOG DE INICIALIZAÇÃO
-// ============================================================
 console.log('🎠 marketing.js V2 carregado');
