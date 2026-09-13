@@ -412,30 +412,40 @@ body {
 }
 
 /* ============================================================
-   CONTROLES DE NAVEGAÇÃO - CORRIGIDOS
-   Posicionados EMBaIXO do slider, do lado DIREITO
+   CONTROLES DE NAVEGAÇÃO
+   Mobile: entre a imagem e o título (centralizado)
+   Desktop: canto inferior direito
    ============================================================ */
+
 .marketing-controls {
-    position: absolute;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    left: auto;
-    transform: none;
+    position: relative;
     display: flex;
-    gap: 0.75rem;
+    gap: 1rem;
     z-index: 30;
+    justify-content: center;
+    align-items: center;
+    margin: 1.5rem auto;
+    order: 1.5;
+    width: 100%;
 }
 
 @media (min-width: 1024px) {
     .marketing-controls {
+        position: absolute;
         bottom: 2.5rem;
         right: 3rem;
+        left: auto;
+        transform: none;
+        margin: 0;
+        order: initial;
+        width: auto;
+        justify-content: flex-end;
     }
 }
 
 .marketing-nav-btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
@@ -447,7 +457,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
 .marketing-nav-btn:hover {
@@ -864,7 +874,7 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   RESPONSIVO MARKETING
+   RESPONSIVO MARKETING (MOBILE PEQUENO)
    ============================================================ */
 @media (max-width: 640px) {
     .marketing-container-v2 {
@@ -894,17 +904,16 @@ behold-widget a { text-decoration: none; }
         margin-bottom: 1rem;
     }
     
-    /* Botões no canto inferior direito no mobile */
+    /* Botões entre imagem e texto no mobile */
     .marketing-controls {
-        bottom: 1rem;
-        right: 1rem;
-        left: auto;
-        transform: none;
+        margin: 1.25rem auto;
+        gap: 0.85rem;
     }
     
     .marketing-nav-btn {
-        width: 42px;
-        height: 42px;
+        width: 48px;
+        height: 48px;
+        font-size: 1rem;
     }
 }
 
