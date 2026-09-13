@@ -272,4 +272,484 @@ window.renderConfigForm = (config) => {
                 '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3">' +
                     '<i class="fas fa-eye mr-2"></i> Pré-visualização do Hero' +
                 '</label>' +
-                '<
+                '<div class="hero-preview-box" id="hero-preview-box" style="' + previewBgStyle + '">' +
+                    '<div class="hero-preview-overlay"></div>' +
+                    '<div class="hero-preview-content preview-center" id="hero-preview-content">' +
+                        '<div class="preview-badge" id="preview-badge">' + heroSubtitle + '</div>' +
+                        '<div class="preview-title" id="preview-title">' + heroTitle.replace('\\n', '<br>') + '</div>' +
+                        '<div class="preview-desc" id="preview-desc">' + heroDescription + '</div>' +
+                        '<div class="preview-buttons">' +
+                            '<span class="preview-btn-1"><i class="fas fa-play" style="font-size: 0.5rem;"></i> Assistir Culto</span>' +
+                            '<span class="preview-btn-2">Fale Conosco</span>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<p class="text-[10px] text-gray-500 mt-2 italic">Esta é uma simulação fiel. O resultado final será idêntico.</p>' +
+            '</div>' +
+
+            // ============================================================
+            // TEXTOS DO HERO (editáveis)
+            // ============================================================
+            '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3">' +
+                    '<i class="fas fa-font mr-2"></i> Textos do Hero' +
+                '</label>' +
+                '<div class="space-y-3">' +
+                    '<div>' +
+                        '<label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Badge (linha pequena acima)</label>' +
+                        '<input type="text" id="config-heroSubtitle" class="admin-field" value="' + heroSubtitle + '" oninput="window.updatePreviewText()">' +
+                    '</div>' +
+                    '<div>' +
+                        '<label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Título (use \\n para quebrar linha)</label>' +
+                        '<input type="text" id="config-heroTitle" class="admin-field" value="' + heroTitle + '" oninput="window.updatePreviewText()">' +
+                    '</div>' +
+                    '<div>' +
+                        '<label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Descrição</label>' +
+                        '<textarea id="config-heroDescription" rows="3" class="admin-field" oninput="window.updatePreviewText()">' + heroDescription + '</textarea>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+
+            // ============================================================
+            // POSIÇÃO DO TEXTO
+            // ============================================================
+            '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3">' +
+                    '<i class="fas fa-arrows-alt mr-2"></i> Posição do Texto' +
+                '</label>' +
+                '<div class="flex gap-2 mb-4 flex-wrap">' +
+                    '<button class="pos-btn ' + (currentPosition === 'left' ? 'active' : '') + '" onclick="window.setHeroPosition(\'left\')" data-pos="left">' +
+                        '<i class="fas fa-align-left"></i> Esquerda' +
+                    '</button>' +
+                    '<button class="pos-btn ' + (currentPosition === 'center' ? 'active' : '') + '" onclick="window.setHeroPosition(\'center\')" data-pos="center">' +
+                        '<i class="fas fa-align-center"></i> Centro' +
+                    '</button>' +
+                    '<button class="pos-btn ' + (currentPosition === 'right' ? 'active' : '') + '" onclick="window.setHeroPosition(\'right\')" data-pos="right">' +
+                        '<i class="fas fa-align-right"></i> Direita' +
+                    '</button>' +
+                    '<button class="pos-btn ' + (currentPosition === 'custom' ? 'active' : '') + '" onclick="window.setHeroPosition(\'custom\')" data-pos="custom">' +
+                        '<i class="fas fa-sliders-h"></i> Personalizado' +
+                    '</button>' +
+                '</div>' +
+
+                '<div id="custom-controls" class="' + (currentPosition === 'custom' ? '' : 'hidden') + ' space-y-4 mt-4 pt-4 border-t border-white/10">' +
+                    '<div>' +
+                        '<label class="flex justify-between text-xs text-gray-400 mb-2">' +
+                            '<span>Posição Horizontal (X)</span>' +
+                            '<span id="posX-label" class="text-brand-yellow font-bold">' + currentPosX + '%</span>' +
+                        '</label>' +
+                        '<input type="range" id="slider-posX" class="admin-slider" min="0" max="100" value="' + currentPosX + '" oninput="window.updateHeroPreview()">' +
+                    '</div>' +
+                    '<div>' +
+                        '<label class="flex justify-between text-xs text-gray-400 mb-2">' +
+                            '<span>Posição Vertical (Y)</span>' +
+                            '<span id="posY-label" class="text-brand-yellow font-bold">' + currentPosY + '%</span>' +
+                        '</label>' +
+                        '<input type="range" id="slider-posY" class="admin-slider" min="0" max="100" value="' + currentPosY + '" oninput="window.updateHeroPreview()">' +
+                    '</div>' +
+                    '<div>' +
+                        '<label class="block text-xs text-gray-400 mb-2">Alinhamento do Texto</label>' +
+                        '<div class="flex gap-2" id="align-buttons">' +
+                            '<button class="pos-btn ' + (currentAlign === 'left' ? 'active' : '') + '" onclick="window.setHeroAlign(\'left\')" data-align="left" style="font-size: 0.7rem; padding: 0.4rem;">Esquerda</button>' +
+                            '<button class="pos-btn ' + (currentAlign === 'center' ? 'active' : '') + '" onclick="window.setHeroAlign(\'center\')" data-align="center" style="font-size: 0.7rem; padding: 0.4rem;">Centro</button>' +
+                            '<button class="pos-btn ' + (currentAlign === 'right' ? 'active' : '') + '" onclick="window.setHeroAlign(\'right\')" data-align="right" style="font-size: 0.7rem; padding: 0.4rem;">Direita</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+
+            // ============================================================
+            // LOGO
+            // ============================================================
+            '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2">' +
+                    '<i class="fas fa-image mr-2"></i> URL da Logomarca' +
+                '</label>' +
+                '<input type="text" id="config-logoUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + logoUrl + '">' +
+                '<div class="mt-4">' +
+                    '<p class="text-xs text-gray-400 mb-2">Pré-visualização:</p>' +
+                    '<div class="w-24 h-24 bg-black/30 rounded-lg flex items-center justify-center border border-white/10 overflow-hidden">' +
+                        '<img id="preview-logo" src="' + (logoUrl || '') + '" class="max-w-full max-h-full object-contain" onerror="this.style.display=\'none\'">' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+
+            // ============================================================
+            // HERO URL
+            // ============================================================
+            '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2">' +
+                    '<i class="fas fa-panorama mr-2"></i> URL da Foto de Fundo' +
+                '</label>' +
+                '<input type="text" id="config-heroUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrl + '" oninput="window.updateHeroPreviewImage(this.value)">' +
+            '</div>' +
+
+            // ============================================================
+            // BOTÃO SALVAR
+            // ============================================================
+            '<div class="mt-8 pt-4 border-t border-white/10 flex justify-end">' +
+                '<button onclick="window.saveConfig()" class="bg-brand-yellow text-brand-dark font-bold px-8 py-3 rounded-lg hover:bg-white transition-colors flex items-center gap-2 shadow-lg">' +
+                    '<i class="fas fa-save"></i> Salvar Configurações' +
+                '</button>' +
+            '</div>' +
+        '</div>';
+
+    // Aplica a posição inicial no preview
+    window.updateHeroPreview();
+    window.updatePreviewText();
+
+    // Listener da logo
+    const inputLogo = document.getElementById('config-logoUrl');
+    const previewLogo = document.getElementById('preview-logo');
+    if (inputLogo && previewLogo) {
+        inputLogo.addEventListener('input', (e) => {
+            const url = e.target.value.trim();
+            if (url) { previewLogo.src = url; previewLogo.style.display = 'block'; }
+            else { previewLogo.style.display = 'none'; }
+        });
+    }
+};
+
+// ============================================================
+// MUDAR POSIÇÃO DO HERO
+// ============================================================
+window.setHeroPosition = (position) => {
+    window.heroState.position = position;
+    
+    document.querySelectorAll('.pos-btn[data-pos]').forEach(b => {
+        if (b.dataset.pos === position) b.classList.add('active');
+        else b.classList.remove('active');
+    });
+    
+    const customControls = document.getElementById('custom-controls');
+    if (customControls) {
+        if (position === 'custom') customControls.classList.remove('hidden');
+        else customControls.classList.add('hidden');
+    }
+    
+    window.updateHeroPreview();
+};
+
+window.setHeroAlign = (align) => {
+    window.heroState.align = align;
+    
+    document.querySelectorAll('.pos-btn[data-align]').forEach(b => {
+        if (b.dataset.align === align) b.classList.add('active');
+        else b.classList.remove('active');
+    });
+    
+    window.updateHeroPreview();
+};
+
+window.updateHeroPreview = () => {
+    const preview = document.getElementById('hero-preview-content');
+    if (!preview) return;
+    
+    const position = window.heroState.position;
+    const align = window.heroState.align;
+    
+    preview.classList.remove('preview-left', 'preview-center', 'preview-right', 'preview-custom');
+    
+    if (position === 'custom') {
+        const sliderX = document.getElementById('slider-posX');
+        const sliderY = document.getElementById('slider-posY');
+        const posX = sliderX ? sliderX.value : window.heroState.posX;
+        const posY = sliderY ? sliderY.value : window.heroState.posY;
+        
+        window.heroState.posX = posX;
+        window.heroState.posY = posY;
+        
+        const labelX = document.getElementById('posX-label');
+        const labelY = document.getElementById('posY-label');
+        if (labelX) labelX.textContent = posX + '%';
+        if (labelY) labelY.textContent = posY + '%';
+        
+        preview.classList.add('preview-custom');
+        preview.style.setProperty('--hero-x', posX + '%');
+        preview.style.setProperty('--hero-y', posY + '%');
+        preview.style.setProperty('--hero-align', align);
+    } else {
+        preview.classList.add('preview-' + position);
+        preview.style.removeProperty('--hero-x');
+        preview.style.removeProperty('--hero-y');
+        preview.style.removeProperty('--hero-align');
+    }
+};
+
+// ============================================================
+// ATUALIZAR TEXTOS DO PREVIEW EM TEMPO REAL
+// ============================================================
+window.updatePreviewText = () => {
+    const titleEl = document.getElementById('preview-title');
+    const badgeEl = document.getElementById('preview-badge');
+    const descEl = document.getElementById('preview-desc');
+    
+    const titleInput = document.getElementById('config-heroTitle');
+    const subtitleInput = document.getElementById('config-heroSubtitle');
+    const descInput = document.getElementById('config-heroDescription');
+    
+    if (titleEl && titleInput) {
+        titleEl.innerHTML = titleInput.value.replace(/\\n/g, '<br>');
+    }
+    if (badgeEl && subtitleInput) {
+        badgeEl.textContent = subtitleInput.value;
+    }
+    if (descEl && descInput) {
+        descEl.textContent = descInput.value;
+    }
+};
+
+window.updateHeroPreviewImage = (url) => {
+    const box = document.getElementById('hero-preview-box');
+    if (box && url) {
+        box.style.backgroundImage = 'url(\'' + url + '\')';
+    }
+};
+
+// ============================================================
+// SALVAR CONFIG
+// ============================================================
+window.saveConfig = async () => {
+    const logoUrl = document.getElementById('config-logoUrl').value.trim();
+    const heroUrl = document.getElementById('config-heroUrl').value.trim();
+    const heroTitle = document.getElementById('config-heroTitle').value;
+    const heroSubtitle = document.getElementById('config-heroSubtitle').value;
+    const heroDescription = document.getElementById('config-heroDescription').value;
+    
+    const position = window.heroState.position;
+    const align = window.heroState.align;
+    const posX = window.heroState.posX;
+    const posY = window.heroState.posY;
+    
+    const payload = {
+        sheet: 'config',
+        action: 'edit',
+        password: window.adminState.password,
+        originalId: '',
+        data: {
+            logoUrl: logoUrl,
+            heroUrl: heroUrl,
+            heroPosition: position,
+            heroAlign: align,
+            heroPosX: posX,
+            heroPosY: posY,
+            heroTitle: heroTitle,
+            heroSubtitle: heroSubtitle,
+            heroDescription: heroDescription
+        }
+    };
+    
+    try {
+        const res = await fetch(window.CONFIG.scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        
+        if (window.handleServerAuthError(result)) return;
+        
+        if (result.success) {
+            const newConfig = [payload.data];
+            
+            try {
+                localStorage.setItem('cache_config_v2', JSON.stringify({
+                    timestamp: Date.now(),
+                    content: newConfig
+                }));
+            } catch(e) {}
+            
+            window.applyConfigImages(newConfig[0]);
+            alert('✅ Configurações salvas com sucesso!\n\nRecarregue a página em outro navegador para confirmar.');
+        } else {
+            alert('Erro: ' + result.message);
+        }
+    } catch(e) {
+        alert('Erro de conexão: ' + e.message);
+    }
+};
+
+// ============================================================
+// MODAL DE EDIÇÃO (genérico)
+// ============================================================
+window.openEditModal = (mode, index) => {
+    const modal = document.getElementById('edit-item-modal');
+    const container = document.getElementById('edit-form-container');
+    const title = document.getElementById('edit-modal-title');
+    const btn = document.getElementById('btn-save-item');
+    
+    const tab = window.adminState.currentTab;
+    const schema = window.SCHEMAS[tab] || [];
+    
+    container.innerHTML = '';
+    title.textContent = mode === 'add' ? 'Adicionar Novo Item' : 'Editar Item';
+    
+    let itemData = {};
+    if (mode === 'edit' && index !== null && index !== undefined) {
+        itemData = window.adminState.currentData[index];
+        btn.dataset.originalId = Object.values(itemData)[0];
+    }
+    
+    btn.dataset.mode = mode;
+    btn.dataset.index = index;
+
+    schema.forEach(field => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'flex flex-col gap-1';
+        
+        const label = document.createElement('label');
+        label.className = 'text-xs text-gray-400 font-bold uppercase';
+        label.textContent = field.label;
+        
+        let input;
+        if (field.type === 'textarea') {
+            input = document.createElement('textarea');
+            input.rows = 3;
+        } else {
+            input = document.createElement('input');
+            input.type = field.type;
+        }
+        
+        input.className = 'admin-field';
+        input.id = 'field-' + field.key;
+        
+        let val = itemData[field.key] || '';
+        if (field.type === 'datetime-local' && val) {
+            try {
+                const d = new Date(val);
+                d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                val = d.toISOString().slice(0, 16);
+            } catch(e) {}
+        }
+        input.value = val;
+        
+        wrapper.appendChild(label);
+        wrapper.appendChild(input);
+
+        if (['coverUrl', 'capa', 'coverImageUrl'].indexOf(field.key) !== -1) {
+            const preview = document.createElement('img');
+            preview.className = 'w-full h-40 object-contain bg-black/20 rounded mt-2 border border-white/5 hidden';
+            preview.onerror = () => { preview.classList.add('hidden'); };
+            
+            const updatePreview = (url) => {
+                if (url) {
+                    preview.src = window.optimizeImage(url, 600);
+                    preview.classList.remove('hidden');
+                } else {
+                    preview.classList.add('hidden');
+                }
+            };
+
+            updatePreview(input.value);
+            input.addEventListener('input', (e) => updatePreview(e.target.value));
+            wrapper.appendChild(preview);
+        }
+
+        container.appendChild(wrapper);
+    });
+    
+    modal.classList.remove('hidden');
+};
+
+window.closeEditModal = () => {
+    document.getElementById('edit-item-modal').classList.add('hidden');
+};
+
+window.saveAdminItem = async () => {
+    const btn = document.getElementById('btn-save-item');
+    const mode = btn.dataset.mode;
+    const tab = window.adminState.currentTab;
+    const schema = window.SCHEMAS[tab];
+    const index = btn.dataset.index;
+    
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+    
+    const newData = {};
+    schema.forEach(field => {
+        const el = document.getElementById('field-' + field.key);
+        if (el) newData[field.key] = el.value;
+    });
+    
+    const payload = {
+        sheet: tab,
+        action: mode,
+        password: window.adminState.password,
+        data: newData
+    };
+    
+    if (mode === 'edit') payload.originalId = btn.dataset.originalId;
+    
+    try {
+        const res = await fetch(window.CONFIG.scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        
+        if (window.handleServerAuthError(result)) {
+            btn.disabled = false;
+            btn.textContent = 'Salvar';
+            return;
+        }
+        
+        if (result.success) {
+            if (mode === 'edit' && index !== null && index !== undefined) {
+                window.adminState.currentData[index] = newData;
+            } else {
+                window.adminState.currentData.push(newData);
+            }
+
+            try {
+                localStorage.setItem('admin_' + tab, JSON.stringify({ timestamp: Date.now(), content: window.adminState.currentData }));
+                localStorage.setItem('cache_' + tab + '_v2', JSON.stringify({ timestamp: Date.now(), content: window.adminState.currentData }));
+            } catch(e) {}
+
+            window.renderAdminTable(window.adminState.currentData, tab);
+            if (typeof window.loadData === 'function') window.loadData();
+
+            alert('Salvo com sucesso!');
+            window.closeEditModal();
+        } else {
+            alert('Erro: ' + result.message);
+        }
+    } catch(e) {
+        alert('Erro de conexão: ' + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Salvar';
+    }
+};
+
+window.deleteAdminItem = async (index) => {
+    if (!confirm('Tem certeza que deseja excluir este item?')) return;
+    
+    const tab = window.adminState.currentTab;
+    const item = window.adminState.currentData[index];
+    const originalId = Object.values(item)[0];
+    
+    try {
+        const res = await fetch(window.CONFIG.scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+                sheet: tab, action: 'delete', password: window.adminState.password,
+                originalId: originalId, data: {}
+            })
+        });
+        const result = await res.json();
+        
+        if (window.handleServerAuthError(result)) return;
+        
+        if (result.success) {
+            alert('Excluído com sucesso!');
+            window.adminState.currentData.splice(index, 1);
+            window.renderAdminTable(window.adminState.currentData, tab);
+            window.loadAdminTab(tab);
+        } else {
+            alert('Erro: ' + result.message);
+        }
+    } catch(e) {
+        alert('Erro: ' + e.message);
+    }
+};
+
+console.log('🔐 admin.js carregado');
