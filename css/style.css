@@ -39,8 +39,7 @@ body {
 }
 
 /* ============================================================
-   HERO - Imagem
-   Desktop: cover | Mobile: contain (imagem inteira)
+   HERO
    ============================================================ */
 #site-hero {
     width: 100%;
@@ -58,9 +57,6 @@ body {
     }
 }
 
-/* ============================================================
-   HERO SECTION
-   ============================================================ */
 .hero-section {
     min-height: 85vh;
     position: relative;
@@ -79,9 +75,6 @@ body {
     }
 }
 
-/* ============================================================
-   HERO CONTENT - BASE
-   ============================================================ */
 .hero-content {
     position: absolute;
     z-index: 10;
@@ -96,9 +89,7 @@ body {
     pointer-events: auto;
 }
 
-/* ============================================================
-   DESKTOP (>= 769px)
-   ============================================================ */
+/* Desktop */
 @media (min-width: 769px) {
     .hero-content.pos-left {
         left: 0;
@@ -149,9 +140,7 @@ body {
     }
 }
 
-/* ============================================================
-   MOBILE (<= 768px) - Texto subido para o topo da imagem
-   ============================================================ */
+/* Mobile - texto no topo */
 @media (max-width: 768px) {
     .hero-content.pos-left {
         left: 0;
@@ -248,7 +237,6 @@ body {
 
 /* ============================================================
    CONTEÚDO PRINCIPAL (após o hero)
-   Sobe o conteúdo para ficar mais próximo do hero
    ============================================================ */
 #main-content-wrapper {
     margin-top: -80px;
@@ -269,7 +257,7 @@ body {
 }
 
 /* ============================================================
-   SCROLLTELLING - Animações ao rolar a página
+   SCROLLTELLING
    ============================================================ */
 .reveal {
     opacity: 0;
@@ -281,7 +269,6 @@ body {
 .reveal.reveal-left { transform: translateX(-40px); }
 .reveal.reveal-right { transform: translateX(40px); }
 .reveal.reveal-scale { transform: scale(0.95); }
-.reveal.reveal-fade { transform: none; }
 
 .reveal.visible {
     opacity: 1;
@@ -303,45 +290,417 @@ body {
 }
 
 /* ============================================================
-   MARKETING PAGE (SLIDER)
+   MARKETING PAGE - NOVO LAYOUT (V2)
    ============================================================ */
-.marketing-container {
-    min-height: 100vh;
-    width: 100vw;
+.marketing-container-v2 {
     position: relative;
-    overflow-x: hidden;
-    overflow-y: auto;
+    width: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-top: 80px;
-    padding-bottom: 100px;
+    padding: 80px 1.5rem 100px;
+    overflow: hidden;
 }
-@media (min-width: 768px) {
-    .marketing-container {
+
+@media (min-width: 1024px) {
+    .marketing-container-v2 {
         flex-direction: row;
         align-items: center;
-        padding-top: 0;
-        padding-bottom: 0;
+        padding: 0 3rem;
         height: 100vh;
-        overflow: hidden;
     }
 }
 
-.fade-in-up { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
-.fade-in-up.visible { opacity: 1; transform: translateY(0); }
-.fade-in-right { opacity: 0; transform: translateX(-20px); transition: all 0.6s ease; }
-.fade-in-right.visible { opacity: 1; transform: translateX(0); }
+.marketing-left {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1rem 0;
+    z-index: 10;
+    position: relative;
+    order: 2;
+}
 
-.glass-btn {
+@media (min-width: 1024px) {
+    .marketing-left {
+        width: 45%;
+        align-items: flex-start;
+        text-align: left;
+        padding: 0 2rem 0 0;
+        order: 1;
+    }
+}
+
+.marketing-category-label {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: #EEBC5A;
+    padding: 0.35rem 1rem;
+    border: 1px solid rgba(238, 188, 90, 0.3);
+    border-radius: 999px;
+    background: rgba(238, 188, 90, 0.08);
+    margin-bottom: 1.25rem;
+    backdrop-filter: blur(8px);
+    text-transform: uppercase;
+}
+
+.marketing-title-v2 {
+    font-size: clamp(2rem, 8vw, 4.5rem);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    margin: 0 0 2rem 0;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    word-break: break-word;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+@media (min-width: 1024px) {
+    .marketing-title-v2 {
+        font-size: clamp(3rem, 6vw, 5.5rem);
+        margin-bottom: 2.5rem;
+    }
+}
+
+.marketing-buttons-v2 {
+    display: flex;
+    flex-direction: row;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+
+@media (min-width: 1024px) {
+    .marketing-buttons-v2 {
+        justify-content: flex-start;
+    }
+}
+
+.btn-primary-v2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    background: #EEBC5A;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 0.85rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 0 20px rgba(238, 188, 90, 0.3);
+    white-space: nowrap;
+}
+
+.btn-primary-v2:hover {
+    background: #fff;
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(238, 188, 90, 0.5);
+}
+
+.btn-whatsapp-v2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
+}
+
+.btn-whatsapp-v2:hover {
+    background: #25D366;
+    border-color: #25D366;
+    transform: scale(1.05);
+    color: #fff;
+}
+
+.marketing-right {
+    width: 100%;
+    height: 55vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    order: 1;
+}
+
+@media (min-width: 1024px) {
+    .marketing-right {
+        width: 55%;
+        height: 100%;
+        order: 2;
+    }
+}
+
+.marketing-bg-blob {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%) translateX(25%);
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: #494985;
+    opacity: 0.2;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: -1;
+}
+
+@media (min-width: 1024px) {
+    .marketing-bg-blob {
+        width: 800px;
+        height: 800px;
+        filter: blur(100px);
+    }
+}
+
+.marketing-controls {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.75rem;
+    z-index: 30;
+}
+
+@media (min-width: 1024px) {
+    .marketing-controls {
+        bottom: 2rem;
+        left: auto;
+        right: 3rem;
+        transform: none;
+    }
+}
+
+.marketing-nav-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.marketing-nav-btn:hover {
+    background: #EEBC5A;
+    color: #0f172a;
+    border-color: #EEBC5A;
+    transform: scale(1.1);
+}
+
+.marketing-nav-btn:active {
+    transform: scale(0.95);
+}
+
+/* ============================================================
+   MODAL DO MARKETING
+   ============================================================ */
+#marketing-modal {
+    display: none;
+}
+
+#marketing-modal:not(.hidden) {
+    display: flex;
+}
+
+.marketing-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    background: #1e293b;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+    z-index: 10;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.marketing-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    cursor: pointer;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s ease;
 }
-.glass-btn:hover { background: rgba(238, 188, 90, 0.8); color: #0f172a; transform: scale(1.05); border-color: #EEBC5A; }
-.glass-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
+.marketing-modal-close:hover {
+    background: rgba(220, 38, 38, 0.9);
+    transform: rotate(90deg);
+}
+
+.marketing-modal-scroll {
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.marketing-modal-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+.marketing-modal-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+.marketing-modal-scroll::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 4px;
+}
+.marketing-modal-scroll::-webkit-scrollbar-thumb:hover {
+    background: #EEBC5A;
+}
+
+.marketing-modal-image {
+    width: 100%;
+    background: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 60vh;
+    overflow: hidden;
+}
+
+.marketing-modal-image img {
+    width: 100%;
+    height: auto;
+    max-height: 60vh;
+    object-fit: contain;
+    display: block;
+}
+
+.marketing-modal-info {
+    padding: 1.75rem;
+}
+
+@media (min-width: 640px) {
+    .marketing-modal-info {
+        padding: 2rem;
+    }
+}
+
+.marketing-modal-category {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: #EEBC5A;
+    padding: 0.3rem 0.9rem;
+    border: 1px solid rgba(238, 188, 90, 0.3);
+    border-radius: 999px;
+    background: rgba(238, 188, 90, 0.08);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.marketing-modal-title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin: 0 0 1rem 0;
+}
+
+.marketing-modal-desc {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: #cbd5e1;
+    margin: 0 0 1.75rem 0;
+    white-space: pre-line;
+}
+
+.marketing-modal-whatsapp-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1rem;
+    background: #25D366;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+}
+
+.marketing-modal-whatsapp-btn:hover {
+    background: #20bd5a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
+}
+
+/* Slider 3D - Container */
+.marketing-right .product-queue-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+}
+
+/* ============================================================
+   SLIDER 3D (compartilhado)
+   ============================================================ */
 .product-queue-container {
     position: relative;
     width: 100%;
@@ -365,7 +724,7 @@ body {
 .depth-layer { height: 55vh; width: auto; max-width: 85vw; }
 @media (min-width: 768px) { .depth-layer { height: 70vh; max-height: 750px; } }
 
-.product-main { opacity: 1; transform: translate(0, 0) scale(1); z-index: 30; filter: blur(0px) drop-shadow(0 30px 60px rgba(0,0,0,0.8)); }
+.product-main { opacity: 1; transform: translate(0, 0) scale(1); z-index: 30; filter: blur(0px) drop-shadow(0 30px 60px rgba(0,0,0,0.8)); cursor: pointer; }
 .product-next { opacity: 0.7; transform: translate(40%, -5%) scale(0.85) rotate(4deg); z-index: 20; filter: blur(6px) brightness(0.6); }
 .product-next-2 { opacity: 0.4; transform: translate(80%, -10%) scale(0.7) rotate(8deg); z-index: 10; filter: blur(12px) brightness(0.4); }
 .product-hidden-left { opacity: 0; transform: translate(-120%, 20%) scale(0.6) rotate(-10deg); z-index: 0; filter: blur(20px); }
@@ -409,7 +768,7 @@ behold-widget { display: block; width: 100%; }
 behold-widget a { text-decoration: none; }
 
 /* ============================================================
-   ANIMAÇÕES DE UI
+   ANIMAÇÕES
    ============================================================ */
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
@@ -643,4 +1002,83 @@ behold-widget a { text-decoration: none; }
 @keyframes float {
     0%, 100% { transform: translate(0, 0) scale(1); }
     50% { transform: translate(30px, -30px) scale(1.1); }
+}
+
+/* ============================================================
+   RESPONSIVO EXTRA - MARKETING EM TELAS PEQUENAS
+   ============================================================ */
+@media (max-width: 640px) {
+    .marketing-container-v2 {
+        padding: 70px 1rem 90px;
+    }
+    
+    .marketing-title-v2 {
+        font-size: clamp(1.75rem, 9vw, 2.5rem);
+        margin-bottom: 1.5rem;
+    }
+    
+    .marketing-buttons-v2 {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-primary-v2,
+    .btn-whatsapp-v2 {
+        width: 100%;
+        justify-content: center;
+        padding: 0.85rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .marketing-right {
+        height: 50vh;
+        margin-bottom: 1rem;
+    }
+    
+    .marketing-controls {
+        bottom: 0.75rem;
+        position: relative;
+        margin-top: 1rem;
+    }
+    
+    .marketing-nav-btn {
+        width: 42px;
+        height: 42px;
+    }
+}
+
+/* ============================================================
+   MARKETING MODAL - RESPONSIVO
+   ============================================================ */
+@media (max-width: 640px) {
+    .marketing-modal-content {
+        max-width: 100%;
+        border-radius: 16px;
+        max-height: 95vh;
+    }
+    
+    .marketing-modal-image {
+        max-height: 50vh;
+    }
+    
+    .marketing-modal-image img {
+        max-height: 50vh;
+    }
+    
+    .marketing-modal-info {
+        padding: 1.25rem;
+    }
+    
+    .marketing-modal-title {
+        font-size: 1.35rem;
+    }
+    
+    .marketing-modal-desc {
+        font-size: 0.85rem;
+    }
+    
+    .marketing-modal-whatsapp-btn {
+        padding: 0.85rem;
+        font-size: 0.85rem;
+    }
 }
