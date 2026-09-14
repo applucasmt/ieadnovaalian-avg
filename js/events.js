@@ -3,7 +3,7 @@
 // ============================================================
 
 // ============================================================
-// BADGE DE STATUS DO EVENTO (Em Breve / Acontecendo / Encerrado)
+// BADGE DE STATUS DO EVENTO
 // ============================================================
 window.getEventStatusBadge = (start, end) => {
     const now = new Date();
@@ -19,13 +19,10 @@ window.getEventStatusBadge = (start, end) => {
 };
 
 // ============================================================
-// CRIAR CARDS (evento, ministério, talento, álbum)
+// CRIAR CARDS
 // ============================================================
 window.createCard = (data, type) => {
     
-    // ============================================================
-    // EVENTO
-    // ============================================================
     if (type === 'evento') {
         const date = window.parseDate(data.date);
         const day = date.getDate().toString().padStart(2, '0');
@@ -67,9 +64,6 @@ window.createCard = (data, type) => {
                 '</div>';
     }
 
-    // ============================================================
-    // MINISTÉRIO
-    // ============================================================
     if (type === 'ministerio') {
         const optimizedCapa = window.optimizeImage(data.capa, 600);
         return '<div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95">' +
@@ -91,9 +85,6 @@ window.createCard = (data, type) => {
                 '</div>';
     }
 
-    // ============================================================
-    // TALENTO
-    // ============================================================
     if (type === 'talento') {
         const optimizedCapa = window.optimizeImage(data.capa, 600);
         return '<div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">' +
@@ -115,9 +106,6 @@ window.createCard = (data, type) => {
                 '</div>';
     }
     
-    // ============================================================
-    // ÁLBUM
-    // ============================================================
     if (type === 'album') {
         const optimizedCover = window.optimizeImage(data.coverImageUrl, 500);
         return '<a href="' + data.albumUrl + '" target="_blank" class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform bg-brand-dark/50">' +
@@ -146,7 +134,18 @@ function escapeHtml(text) {
 }
 
 // ============================================================
-// RENDERIZAR CARROSSEL DE AVISOS (estilo Disney/Netflix)
+// HELPER: VERIFICAR SE É URL VÁLIDA
+// ============================================================
+function isValidImageUrl(url) {
+    if (!url || typeof url !== 'string') return false;
+    const trimmed = url.trim();
+    if (trimmed === '') return false;
+    // Precisa começar com http:// ou https:// e ter um mínimo
+    return /^https?:\/\/.+\..+/i.test(trimmed);
+}
+
+// ============================================================
+// RENDERIZAR CARROSSEL DE AVISOS
 // ============================================================
 window.renderAvisosCarousel = (avisos) => {
     const carousel = document.getElementById('avisos-carousel');
@@ -155,16 +154,18 @@ window.renderAvisosCarousel = (avisos) => {
     
     if (!carousel || !slidesContainer || !dotsContainer) return;
     
-    // Filtra apenas ativos (respeita campo 'active')
+    // Filtra apenas ativos
     const activeAvisos = (avisos || []).filter(a => {
         if (!a) return false;
-        // Se tiver campo 'active', respeita (só aceita "true", true, "1", "sim" ou vazio)
+        
+        // Respeita campo 'active'
         if (a.active !== undefined && a.active !== '' && a.active !== null) {
             const activeStr = String(a.active).toLowerCase();
             if (activeStr === 'false' || activeStr === '0' || activeStr === 'nao' || activeStr === 'não') {
                 return false;
             }
         }
+        
         // Precisa ter pelo menos um título ou texto
         return a.title || a.texto || a.description;
     });
@@ -174,7 +175,7 @@ window.renderAvisosCarousel = (avisos) => {
         return;
     }
     
-    // Ordena por 'order' (menor primeiro)
+    // Ordena por 'order'
     activeAvisos.sort((a, b) => {
         const oa = parseInt(a.order) || 0;
         const ob = parseInt(b.order) || 0;
@@ -197,37 +198,32 @@ window.renderAvisosCarousel = (avisos) => {
     
     // Renderiza cada slide
     activeAvisos.forEach((aviso, index) => {
-        // ============================================================
-        // SLIDE
-        // ============================================================
         const slide = document.createElement('div');
         slide.className = 'aviso-slide';
         slide.dataset.index = index;
         
-        // Cor de fundo base
-        const bgColor = aviso.bgColor || '#0f172a';
+        // Cor de fundo (padrão escuro)
+        const bgColor = (aviso.bgColor && aviso.bgColor.trim()) ? aviso.bgColor : '#0f172a';
         slide.style.background = bgColor;
         
-        // Imagem de fundo (se existir)
-        if (aviso.imageUrl && aviso.imageUrl.trim() !== '') {
-            const imgUrl = window.optimizeImage ? window.optimizeImage(aviso.imageUrl, 1920) : aviso.imageUrl;
+        // Só aplica imagem se a URL for VÁLIDA
+        if (isValidImageUrl(aviso.imageUrl)) {
+            const imgUrl = window.optimizeImage ? window.optimizeImage(aviso.imageUrl.trim(), 1920) : aviso.imageUrl.trim();
             slide.style.backgroundImage = 'url(' + imgUrl + ')';
             slide.style.backgroundSize = 'cover';
             slide.style.backgroundPosition = 'center';
         } else {
+            // Sem imagem: classe especial
             slide.classList.add('no-image');
         }
         
-        // ============================================================
-        // CONTEÚDO
-        // ============================================================
+        // Conteúdo
         const content = document.createElement('div');
         const position = aviso.position || 'center';
         const align = aviso.align || 'center';
         
         content.className = 'aviso-content pos-' + position;
         
-        // Posição customizada
         if (position === 'custom') {
             const posX = parseFloat(aviso.posX) || 50;
             const posY = parseFloat(aviso.posY) || 50;
@@ -236,43 +232,34 @@ window.renderAvisosCarousel = (avisos) => {
             content.style.setProperty('--aviso-align', align);
         }
         
-        // Cor do texto
-        const textColor = aviso.textColor || '#ffffff';
+        const textColor = (aviso.textColor && aviso.textColor.trim()) ? aviso.textColor : '#ffffff';
         content.style.color = textColor;
         
-        // ============================================================
-        // ELEMENTOS
-        // ============================================================
+        // Elementos
         let contentHTML = '';
         
-        // Subtítulo
-        if (aviso.subtitle) {
-            contentHTML += '<div class="aviso-subtitle">' + escapeHtml(aviso.subtitle) + '</div>';
+        if (aviso.subtitle && aviso.subtitle.trim()) {
+            contentHTML += '<div class="aviso-subtitle">' + escapeHtml(aviso.subtitle.trim()) + '</div>';
         }
         
-        // Título
         const title = aviso.title || aviso.texto || 'Aviso';
         contentHTML += '<h2 class="aviso-title" style="color: ' + textColor + '">' + escapeHtml(title) + '</h2>';
         
-        // Descrição
-        if (aviso.description) {
-            contentHTML += '<p class="aviso-description" style="color: ' + textColor + '">' + escapeHtml(aviso.description) + '</p>';
+        if (aviso.description && aviso.description.trim()) {
+            contentHTML += '<p class="aviso-description" style="color: ' + textColor + '">' + escapeHtml(aviso.description.trim()) + '</p>';
         }
         
-        // Botão
-        if (aviso.buttonText && aviso.buttonUrl) {
-            contentHTML += '<a href="' + escapeHtml(aviso.buttonUrl) + '" class="aviso-button"' +
-                (aviso.buttonUrl.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '') +
-                '>' + escapeHtml(aviso.buttonText) + ' <i class="fas fa-arrow-right"></i></a>';
+        if (aviso.buttonText && aviso.buttonText.trim() && aviso.buttonUrl && aviso.buttonUrl.trim()) {
+            contentHTML += '<a href="' + escapeHtml(aviso.buttonUrl.trim()) + '" class="aviso-button"' +
+                (aviso.buttonUrl.trim().startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '') +
+                '>' + escapeHtml(aviso.buttonText.trim()) + ' <i class="fas fa-arrow-right"></i></a>';
         }
         
         content.innerHTML = contentHTML;
         slide.appendChild(content);
         slidesContainer.appendChild(slide);
         
-        // ============================================================
-        // DOT
-        // ============================================================
+        // Dot
         const dot = document.createElement('button');
         dot.className = 'aviso-dot' + (index === 0 ? ' active' : '');
         dot.setAttribute('aria-label', 'Ir para aviso ' + (index + 1));
@@ -281,13 +268,11 @@ window.renderAvisosCarousel = (avisos) => {
         dotsContainer.appendChild(dot);
     });
     
-    // ============================================================
-    // ESTADO DO CARROSSEL
-    // ============================================================
+    // Estado
     let currentIndex = 0;
     let autoplayTimer = null;
     let progressTimer = null;
-    const AUTOPLAY_DELAY = 6000; // 6 segundos
+    const AUTOPLAY_DELAY = 6000;
     
     const slides = slidesContainer.querySelectorAll('.aviso-slide');
     const dots = dotsContainer.querySelectorAll('.aviso-dot');
@@ -296,7 +281,6 @@ window.renderAvisosCarousel = (avisos) => {
         slides[0].classList.add('active');
     }
     
-    // Ir para um slide específico
     const goToAviso = (index) => {
         if (index < 0) index = slides.length - 1;
         if (index >= slides.length) index = 0;
@@ -308,7 +292,6 @@ window.renderAvisosCarousel = (avisos) => {
         resetProgress();
     };
     
-    // Progresso no dot ativo
     function resetProgress() {
         dots.forEach(d => d.style.setProperty('--progress', '0%'));
         
@@ -327,11 +310,9 @@ window.renderAvisosCarousel = (avisos) => {
         }, 50);
     }
     
-    // Funções de navegação
     const nextAviso = () => goToAviso(currentIndex + 1);
     const prevAviso = () => goToAviso(currentIndex - 1);
     
-    // Autoplay
     function startAutoplay() {
         stopAutoplay();
         if (slides.length < 2) return;
@@ -353,14 +334,11 @@ window.renderAvisosCarousel = (avisos) => {
         }
     }
     
-    // Inicia autoplay
     startAutoplay();
     
-    // Pausa ao passar o mouse (desktop)
     carousel.addEventListener('mouseenter', stopAutoplay);
     carousel.addEventListener('mouseleave', startAutoplay);
     
-    // Eventos dos botões
     const prevBtn = document.getElementById('aviso-prev');
     const nextBtn = document.getElementById('aviso-next');
     
@@ -379,7 +357,7 @@ window.renderAvisosCarousel = (avisos) => {
         };
     }
     
-    // Swipe no mobile
+    // Swipe
     let touchStartX = 0;
     let touchEndX = 0;
     
@@ -399,29 +377,6 @@ window.renderAvisosCarousel = (avisos) => {
         
         startAutoplay();
     }, { passive: true });
-    
-    // Teclado (setas esquerda/direita)
-    document.addEventListener('keydown', (e) => {
-        if (carousel.classList.contains('hidden')) return;
-        
-        if (e.key === 'ArrowLeft') {
-            stopAutoplay();
-            prevAviso();
-            startAutoplay();
-        }
-        if (e.key === 'ArrowRight') {
-            stopAutoplay();
-            nextAviso();
-            startAutoplay();
-        }
-    });
-    
-    // Salva referências para uso externo (se necessário)
-    carousel._goToAviso = goToAviso;
-    carousel._nextAviso = nextAviso;
-    carousel._prevAviso = prevAviso;
-    carousel._stopAutoplay = stopAutoplay;
-    carousel._startAutoplay = startAutoplay;
 };
 
 // ============================================================
@@ -444,14 +399,10 @@ window.openEventModal = (eventId) => {
     let dateObj = window.parseDate(event.date);
     
     dateEl.textContent = dateObj.toLocaleDateString('pt-BR', { 
-        weekday: 'long', 
-        day: '2-digit', 
-        month: 'long', 
-        year: 'numeric' 
+        weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' 
     });
     timeEl.textContent = dateObj.toLocaleTimeString('pt-BR', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
+        hour: '2-digit', minute: '2-digit' 
     }) + 'h';
     
     title.textContent = event.name;
@@ -467,9 +418,6 @@ window.openEventModal = (eventId) => {
     document.body.style.overflow = 'hidden';
 };
 
-// ============================================================
-// FECHAR MODAL DE EVENTO
-// ============================================================
 window.closeEventModal = () => {
     const modal = document.getElementById('event-modal');
     modal.classList.add('opacity-0');
@@ -486,9 +434,6 @@ window.closeEventModal = () => {
     }, 300);
 };
 
-// ============================================================
-// FECHAR MODAIS COM ESC
-// ============================================================
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         if (!document.getElementById('event-modal').classList.contains('hidden')) {
@@ -509,7 +454,4 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// ============================================================
-// LOG DE INICIALIZAÇÃO
-// ============================================================
 console.log('📅 events.js carregado (com carrossel de avisos)');
