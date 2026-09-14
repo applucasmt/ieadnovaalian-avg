@@ -140,7 +140,6 @@ function isValidImageUrl(url) {
     if (!url || typeof url !== 'string') return false;
     const trimmed = url.trim();
     if (trimmed === '') return false;
-    // Precisa começar com http:// ou https:// e ter um mínimo
     return /^https?:\/\/.+\..+/i.test(trimmed);
 }
 
@@ -148,17 +147,21 @@ function isValidImageUrl(url) {
 // RENDERIZAR CARROSSEL DE AVISOS
 // ============================================================
 window.renderAvisosCarousel = (avisos) => {
+    console.log('🎬 renderAvisosCarousel chamado com:', avisos);
+    
     const carousel = document.getElementById('avisos-carousel');
     const slidesContainer = document.getElementById('avisos-slides');
     const dotsContainer = document.getElementById('aviso-dots');
     
-    if (!carousel || !slidesContainer || !dotsContainer) return;
+    if (!carousel || !slidesContainer || !dotsContainer) {
+        console.warn('❌ Elementos do carrossel não encontrados no DOM');
+        return;
+    }
     
     // Filtra apenas ativos
     const activeAvisos = (avisos || []).filter(a => {
         if (!a) return false;
         
-        // Respeita campo 'active'
         if (a.active !== undefined && a.active !== '' && a.active !== null) {
             const activeStr = String(a.active).toLowerCase();
             if (activeStr === 'false' || activeStr === '0' || activeStr === 'nao' || activeStr === 'não') {
@@ -166,9 +169,10 @@ window.renderAvisosCarousel = (avisos) => {
             }
         }
         
-        // Precisa ter pelo menos um título ou texto
         return a.title || a.texto || a.description;
     });
+    
+    console.log('✅ Avisos ativos:', activeAvisos.length);
     
     if (activeAvisos.length === 0) {
         carousel.classList.add('hidden');
@@ -185,7 +189,6 @@ window.renderAvisosCarousel = (avisos) => {
     // Mostra o carrossel
     carousel.classList.remove('hidden');
     
-    // Marca como single se só tem 1 aviso
     if (activeAvisos.length === 1) {
         carousel.classList.add('single');
     } else {
@@ -202,22 +205,18 @@ window.renderAvisosCarousel = (avisos) => {
         slide.className = 'aviso-slide';
         slide.dataset.index = index;
         
-        // Cor de fundo (padrão escuro)
         const bgColor = (aviso.bgColor && aviso.bgColor.trim()) ? aviso.bgColor : '#0f172a';
         slide.style.background = bgColor;
         
-        // Só aplica imagem se a URL for VÁLIDA
         if (isValidImageUrl(aviso.imageUrl)) {
             const imgUrl = window.optimizeImage ? window.optimizeImage(aviso.imageUrl.trim(), 1920) : aviso.imageUrl.trim();
             slide.style.backgroundImage = 'url(' + imgUrl + ')';
             slide.style.backgroundSize = 'cover';
             slide.style.backgroundPosition = 'center';
         } else {
-            // Sem imagem: classe especial
             slide.classList.add('no-image');
         }
         
-        // Conteúdo
         const content = document.createElement('div');
         const position = aviso.position || 'center';
         const align = aviso.align || 'center';
@@ -235,7 +234,6 @@ window.renderAvisosCarousel = (avisos) => {
         const textColor = (aviso.textColor && aviso.textColor.trim()) ? aviso.textColor : '#ffffff';
         content.style.color = textColor;
         
-        // Elementos
         let contentHTML = '';
         
         if (aviso.subtitle && aviso.subtitle.trim()) {
