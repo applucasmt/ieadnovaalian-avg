@@ -65,19 +65,17 @@ body {
 
 @media (max-width: 768px) {
     .hero-section {
-        min-height: auto;
-        height: auto;
-        aspect-ratio: 800 / 1200; /* ← altura natural da imagem vertical */
-        max-height: 85vh; /* não deixa passar de 85vh da tela */
+        min-height: 85vh;
+        height: 85vh;
+        aspect-ratio: auto;
+        max-height: none;
     }
 }
 
 @media (max-width: 400px) {
     .hero-section {
-        min-height: auto;
-        height: auto;
-        aspect-ratio: 800 / 1200;
-        max-height: 80vh;
+        min-height: 80vh;
+        height: 80vh;
     }
 }
 .hero-content {
