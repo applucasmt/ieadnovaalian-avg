@@ -195,6 +195,11 @@ window.renderAvisosCarousel = (avisos) => {
         carousel.classList.remove('single');
     }
     
+    // Detecta se é mobile para escolher tamanho da imagem
+    const isMobile = window.innerWidth <= 768;
+    // 1280px para desktop, 800px para mobile (economia de banda)
+    const imageWidth = isMobile ? 800 : 1600;
+    
     // Limpa containers
     slidesContainer.innerHTML = '';
     dotsContainer.innerHTML = '';
@@ -209,7 +214,24 @@ window.renderAvisosCarousel = (avisos) => {
         slide.style.background = bgColor;
         
         if (isValidImageUrl(aviso.imageUrl)) {
-            const imgUrl = window.optimizeImage ? window.optimizeImage(aviso.imageUrl.trim(), 1920) : aviso.imageUrl.trim();
+            // Aplica otimização + tamanho correto para o dispositivo
+            const rawUrl = aviso.imageUrl.trim();
+            const imgUrl = window.optimizeImage ? window.optimizeImage(rawUrl, imageWidth) : rawUrl;
+            
+            // Pré-carrega a imagem antes de aplicar (melhora UX)
+            const preloadImg = new Image();
+            preloadImg.onload = () => {
+                slide.style.backgroundImage = 'url(' + imgUrl + ')';
+                slide.style.backgroundSize = 'cover';
+                slide.style.backgroundPosition = 'center';
+            };
+            preloadImg.onerror = () => {
+                // Se falhar, mantém só a cor de fundo
+                slide.classList.add('no-image');
+            };
+            preloadImg.src = imgUrl;
+            
+            // Aplica direto também (fallback rápido)
             slide.style.backgroundImage = 'url(' + imgUrl + ')';
             slide.style.backgroundSize = 'cover';
             slide.style.backgroundPosition = 'center';
