@@ -3,7 +3,7 @@
 // ============================================================
 
 // ============================================================
-// FETCH COM CACHE (localStorage)
+// FETCH COM CACHE
 // ============================================================
 window.fetchWithCache = async (url, key, force) => {
     force = force || false;
@@ -45,9 +45,7 @@ window.applyConfigImages = (config) => {
     console.log('🎨 applyConfigImages:', config);
     if (!config) return;
     
-    // ============================================================
-    // 1. LOGO (header + footer + favicon)
-    // ============================================================
+    // LOGO
     if (config.logoUrl && typeof config.logoUrl === 'string' && config.logoUrl.trim()) {
         const logoUrl = config.logoUrl.trim();
         const logoHeader = document.getElementById('site-logo');
@@ -59,13 +57,8 @@ window.applyConfigImages = (config) => {
         faviconLinks.forEach(link => link.href = logoUrl);
     }
     
-    // ============================================================
-    // 2. HERO IMAGEM - Detecção automática de dispositivo
-    // Celular (<= 768px): usa heroUrlMobile (se existir)
-    // PC: usa heroUrl
-    // ============================================================
+    // HERO IMAGEM - Detecção de dispositivo
     const isMobile = window.innerWidth <= 768;
-    
     let heroUrlToUse = '';
     
     if (isMobile && config.heroUrlMobile && typeof config.heroUrlMobile === 'string' && config.heroUrlMobile.trim() !== '') {
@@ -84,9 +77,7 @@ window.applyConfigImages = (config) => {
         }
     }
     
-    // ============================================================
-    // 3. TEXTOS DO HERO
-    // ============================================================
+    // TEXTOS DO HERO
     const badgeEl = document.getElementById('hero-badge');
     const titleEl = document.getElementById('hero-title');
     const descEl = document.getElementById('hero-description');
@@ -108,9 +99,7 @@ window.applyConfigImages = (config) => {
         descEl.textContent = config.heroDescription.trim();
     }
     
-    // ============================================================
-    // 4. POSIÇÃO DO HERO
-    // ============================================================
+    // POSIÇÃO DO HERO
     const heroContent = document.getElementById('hero-content');
     if (heroContent) {
         heroContent.classList.remove('pos-left', 'pos-center', 'pos-right', 'pos-custom');
@@ -198,7 +187,6 @@ window.loadData = async () => {
 // ============================================================
 window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor, config) => {
     const containers = {
-        avisos: document.getElementById('avisos-container'),
         upcoming: document.getElementById('upcoming-events-container'),
         allEvents: document.getElementById('all-events-container'),
         ministerios: document.getElementById('ministerios-container'),
@@ -206,10 +194,16 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         albums: document.getElementById('albums-container')
     };
     
+    // ============================================================
+    // 1. APLICA CONFIG (logo + hero + posição)
+    // ============================================================
     if (config && config.length > 0 && config[0]) {
         window.applyConfigImages(config[0]);
     }
     
+    // ============================================================
+    // 2. FOTO DO PASTOR
+    // ============================================================
     if (pastor && pastor.length > 0 && pastor[0].capa) {
         const pastorContainer = document.getElementById('pastor-img-container');
         if (pastorContainer) {
@@ -217,6 +211,9 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         }
     }
     
+    // ============================================================
+    // 3. EVENTOS (normalizar + slider + cards)
+    // ============================================================
     if (events && events.length) {
         const normalizedEvents = events.map((e, i) => {
             const getVal = (keys) => {
@@ -246,10 +243,25 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         }
     }
     
-    if (avisos && avisos.length && containers.avisos) {
-        containers.avisos.innerHTML = avisos.filter(a => a.texto).map(a => window.createCard(a, 'aviso')).join('');
+    // ============================================================
+    // 4. AVISOS - CARROSSEL (estilo Disney/Netflix)
+    // ============================================================
+    if (avisos && avisos.length) {
+        console.log('📢 Renderizando carrossel de avisos:', avisos.length, 'itens');
+        if (typeof window.renderAvisosCarousel === 'function') {
+            window.renderAvisosCarousel(avisos);
+        } else {
+            console.warn('⚠️ renderAvisosCarousel não está definido');
+        }
+    } else {
+        // Sem avisos - esconde o carrossel
+        const carousel = document.getElementById('avisos-carousel');
+        if (carousel) carousel.classList.add('hidden');
     }
     
+    // ============================================================
+    // 5. EVENTOS FUTUROS
+    // ============================================================
     if (window.globalEvents && window.globalEvents.length) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -271,15 +283,29 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         }
     }
     
+    // ============================================================
+    // 6. MINISTÉRIOS
+    // ============================================================
     if (ministerios && ministerios.length && containers.ministerios) {
         containers.ministerios.innerHTML = ministerios.map(m => window.createCard(m, 'ministerio')).join('');
     }
+    
+    // ============================================================
+    // 7. TALENTOS
+    // ============================================================
     if (talentos && talentos.length && containers.talentos) {
         containers.talentos.innerHTML = talentos.map(t => window.createCard(t, 'talento')).join('');
     }
+    
+    // ============================================================
+    // 8. ÁLBUNS
+    // ============================================================
     if (albums && albums.length && containers.albums) {
         containers.albums.innerHTML = albums.map(a => window.createCard(a, 'album')).join('');
     }
 };
 
+// ============================================================
+// LOG DE INICIALIZAÇÃO
+// ============================================================
 console.log('📦 data.js carregado');
