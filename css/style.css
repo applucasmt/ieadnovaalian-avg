@@ -858,19 +858,20 @@ behold-widget a { text-decoration: none; }
 .avisos-carousel {
     position: relative;
     width: 100%;
-    aspect-ratio: 21 / 9;   /* Mesma proporção em TODOS os dispositivos */
+    aspect-ratio: 21 / 9;
     max-height: 480px;
     min-height: 260px;
     border-radius: 16px;
+    /* CORREÇÃO: força o arredondamento em todos os cantos */
     overflow: hidden;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    transform: translateZ(0);
     margin-bottom: 2rem;
     background: #0f172a;
     box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
-    /* Acelera renderização da imagem */
     contain: layout style;
 }
 
-/* Tablet - mesma proporção */
 @media (max-width: 1024px) {
     .avisos-carousel {
         aspect-ratio: 21 / 9;
@@ -880,14 +881,16 @@ behold-widget a { text-decoration: none; }
     }
 }
 
-/* Mobile - MESMA proporção 21:9, apenas menor */
 @media (max-width: 768px) {
     .avisos-carousel {
-        aspect-ratio: 21 / 9;   /* Igual ao PC */
+        aspect-ratio: 21 / 9;
         max-height: 50vh;
         min-height: 180px;
         border-radius: 12px;
         margin-bottom: 1.5rem;
+        padding-bottom: 0;
+        border: none;
+        outline: none;
     }
 }
 
@@ -921,8 +924,9 @@ behold-widget a { text-decoration: none; }
     background-position: center;
     background-repeat: no-repeat;
     background-color: #0f172a;
-    /* Pré-otimização para renderização */
     will-change: opacity, transform;
+    border-radius: inherit;
+    overflow: hidden;
 }
 
 .aviso-slide.active {
@@ -932,7 +936,6 @@ behold-widget a { text-decoration: none; }
     z-index: 2;
 }
 
-/* Overlay - gradiente lateral (igual em PC e mobile) */
 .aviso-slide::before {
     content: '';
     position: absolute;
@@ -946,6 +949,7 @@ behold-widget a { text-decoration: none; }
     );
     z-index: 1;
     pointer-events: none;
+    border-radius: inherit;
 }
 
 .aviso-slide.no-image::before {
@@ -957,10 +961,6 @@ behold-widget a { text-decoration: none; }
     );
 }
 
-/* ============================================================
-   CONTEÚDO DO AVISO - Mesmo comportamento em PC e mobile
-   ============================================================ */
-
 .aviso-content {
     position: absolute;
     z-index: 3;
@@ -971,8 +971,6 @@ behold-widget a { text-decoration: none; }
     height: 100%;
     justify-content: center;
 }
-
-/* Desktop E mobile usam as MESMAS regras */
 
 .aviso-content.pos-left {
     left: 0;
@@ -1016,7 +1014,6 @@ behold-widget a { text-decoration: none; }
     max-width: 65%;
 }
 
-/* Ajustes de PADDING no mobile (mesma lógica, apenas escala) */
 @media (max-width: 768px) {
     .aviso-content {
         padding: 1rem 1.25rem;
@@ -1047,7 +1044,7 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   TIPOGRAFIA - Escala conforme tamanho da tela
+   TIPOGRAFIA
    ============================================================ */
 
 .aviso-subtitle {
@@ -1110,7 +1107,6 @@ behold-widget a { text-decoration: none; }
     font-size: 0.85em;
 }
 
-/* Tipografia específica mobile - só reduz levemente, mantém proporciona */
 @media (max-width: 768px) {
     .aviso-subtitle {
         font-size: 0.6rem;
@@ -1134,7 +1130,7 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   CONTROLES DE NAVEGAÇÃO (◄ ►)
+   CONTROLES DE NAVEGAÇÃO
    ============================================================ */
 
 .aviso-nav {
