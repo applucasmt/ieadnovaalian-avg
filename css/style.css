@@ -39,7 +39,7 @@ body {
 }
 
 /* ============================================================
-   HERO
+   HERO - ESTÁTICA, SEM ZOOM, SEM PARALLAX
    ============================================================ */
 #site-hero {
     width: 100%;
@@ -47,18 +47,23 @@ body {
     object-fit: cover;
     object-position: center center;
     background: #0f172a;
+    display: block;
 }
 
 @media (max-width: 768px) {
     #site-hero {
-        object-fit: contain;
-        object-position: center center;
+        object-fit: cover;
+        object-position: center top;
         background: #0f172a;
+        width: 100%;
+        height: 100%;
+        display: block;
     }
 }
 
 .hero-section {
     min-height: 85vh;
+    height: 85vh;
     position: relative;
     overflow: hidden;
 }
@@ -78,6 +83,7 @@ body {
         height: 80vh;
     }
 }
+
 .hero-content {
     position: absolute;
     z-index: 10;
@@ -195,7 +201,7 @@ body {
 @media (max-width: 400px) { #main-content-wrapper { margin-top: -30px; } }
 
 /* ============================================================
-   SCROLLTELLING
+   SCROLLTELLING (REVEAL)
    ============================================================ */
 .reveal {
     opacity: 0;
@@ -245,7 +251,6 @@ body {
     }
 }
 
-/* COLUNA ESQUERDA - Texto */
 .marketing-left {
     width: 100%;
     display: flex;
@@ -366,7 +371,6 @@ body {
     color: #fff;
 }
 
-/* COLUNA DIREITA - Slider + Controles */
 .marketing-right {
     width: 100%;
     position: relative;
@@ -411,10 +415,7 @@ body {
     }
 }
 
-/* ============================================================
-   CONTROLES DE NAVEGAÇÃO
-   Sempre DENTRO da coluna direita, na base da imagem
-   ============================================================ */
+/* CONTROLES DE NAVEGAÇÃO */
 .marketing-controls {
     position: absolute;
     bottom: 1rem;
@@ -428,9 +429,7 @@ body {
 }
 
 @media (min-width: 1024px) {
-    .marketing-controls {
-        bottom: 1.5rem;
-    }
+    .marketing-controls { bottom: 1.5rem; }
 }
 
 .marketing-nav-btn {
