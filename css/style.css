@@ -852,44 +852,46 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   ⬇️⬇️⬇️ CARROSSEL DE AVISOS - NOVO ⬇️⬇️⬇️
+   ⬇️⬇️⬇️ CARROSSEL DE AVISOS - ESTILO DISNEY+ ⬇️⬇️⬇️
    ============================================================ */
-
-/* 
-   IMPORTANTE: Mesma proporção 16:9 em TODOS os dispositivos.
-   No mobile, o texto se adapta com clamp() para ficar legível.
-*/
 
 .avisos-carousel {
     position: relative;
     width: 100%;
-    /* Proporção 16:9 em TODOS os dispositivos (PC, tablet, celular) */
-    aspect-ratio: 16 / 9;
-    /* Limites de altura para não ficar exagerado em telas grandes */
-    max-height: 720px;
+    aspect-ratio: 21 / 9;  /* Ultra-wide como Disney+ */
+    max-height: 480px;      /* Altura controlada no PC */
     min-height: 280px;
-    border-radius: 20px;
+    border-radius: 16px;
     overflow: hidden;
     margin-bottom: 3rem;
     background: #0f172a;
     box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
 }
 
+/* Tablet */
+@media (max-width: 1024px) {
+    .avisos-carousel {
+        aspect-ratio: 16 / 9;
+        max-height: 420px;
+        border-radius: 14px;
+    }
+}
+
+/* Mobile - mantém 16:9 mas bem compacto */
 @media (max-width: 768px) {
     .avisos-carousel {
-        /* Mantém a mesma proporção 16:9 no mobile */
         aspect-ratio: 16 / 9;
-        min-height: 220px;
-        max-height: 60vh;
-        border-radius: 14px;
+        max-height: 55vh;
+        min-height: 200px;
+        border-radius: 12px;
         margin-bottom: 2rem;
     }
 }
 
 @media (max-width: 400px) {
     .avisos-carousel {
-        min-height: 200px;
-        border-radius: 12px;
+        min-height: 180px;
+        border-radius: 10px;
     }
 }
 
@@ -928,9 +930,9 @@ behold-widget a { text-decoration: none; }
     inset: 0;
     background: linear-gradient(
         to right,
-        rgba(0, 0, 0, 0.85) 0%,
-        rgba(0, 0, 0, 0.65) 35%,
-        rgba(0, 0, 0, 0.2) 65%,
+        rgba(0, 0, 0, 0.9) 0%,
+        rgba(0, 0, 0, 0.7) 30%,
+        rgba(0, 0, 0, 0.2) 60%,
         transparent 100%
     );
     z-index: 1;
@@ -940,7 +942,7 @@ behold-widget a { text-decoration: none; }
 .aviso-slide.no-image::before {
     background: linear-gradient(
         to right,
-        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.5) 0%,
         rgba(0, 0, 0, 0.2) 50%,
         transparent 100%
     );
@@ -951,19 +953,13 @@ behold-widget a { text-decoration: none; }
     z-index: 3;
     display: flex;
     flex-direction: column;
-    padding: 3rem 4rem;
+    padding: 2rem 3rem;
     width: 100%;
     height: 100%;
     justify-content: center;
 }
 
 @media (max-width: 768px) {
-    .aviso-content {
-        padding: 1.25rem 1.5rem;
-    }
-}
-
-@media (max-width: 400px) {
     .aviso-content {
         padding: 1rem 1.25rem;
     }
@@ -976,7 +972,7 @@ behold-widget a { text-decoration: none; }
     transform: translateY(-50%);
     align-items: flex-start;
     text-align: left;
-    max-width: 60%;
+    max-width: 55%;
     padding-left: 5%;
 }
 
@@ -986,7 +982,7 @@ behold-widget a { text-decoration: none; }
     transform: translate(-50%, -50%);
     align-items: center;
     text-align: center;
-    max-width: 70%;
+    max-width: 65%;
 }
 
 .aviso-content.pos-right {
@@ -996,7 +992,7 @@ behold-widget a { text-decoration: none; }
     transform: translateY(-50%);
     align-items: flex-end;
     text-align: right;
-    max-width: 60%;
+    max-width: 55%;
     padding-right: 5%;
 }
 
@@ -1006,10 +1002,9 @@ behold-widget a { text-decoration: none; }
     transform: translate(-50%, -50%);
     text-align: var(--aviso-align, center);
     align-items: var(--aviso-align, center);
-    max-width: 70%;
+    max-width: 65%;
 }
 
-/* Mobile - sempre centralizado, mas com a mesma proporção */
 @media (max-width: 768px) {
     .aviso-content.pos-left,
     .aviso-content.pos-center,
@@ -1022,17 +1017,16 @@ behold-widget a { text-decoration: none; }
         text-align: center;
         align-items: center;
         max-width: 92%;
-        padding: 1.25rem 1.5rem;
+        padding: 1rem 1.25rem;
     }
 }
 
 /* ============================================================
-   TIPOGRAFIA RESPONSIVA - Escala conforme proporção 16:9
+   TIPOGRAFIA - Escala mais controlada (estilo Disney+)
    ============================================================ */
 
 .aviso-subtitle {
-    /* Escala: 0.55rem em 320px → 0.9rem em 1920px */
-    font-size: clamp(0.55rem, 1.1vw, 0.9rem);
+    font-size: clamp(0.6rem, 0.85vw, 0.85rem);
     font-weight: 600;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -1042,8 +1036,7 @@ behold-widget a { text-decoration: none; }
 }
 
 .aviso-title {
-    /* Escala: 1.25rem em 320px → 4rem em 1920px */
-    font-size: clamp(1.25rem, 4.5vw, 4rem);
+    font-size: clamp(1.25rem, 3vw, 2.5rem);  /* Reduzido de 4rem para 2.5rem no PC */
     font-weight: 900;
     line-height: 1.05;
     letter-spacing: -0.03em;
@@ -1054,12 +1047,11 @@ behold-widget a { text-decoration: none; }
 }
 
 .aviso-description {
-    /* Escala: 0.7rem em 320px → 1.15rem em 1920px */
-    font-size: clamp(0.7rem, 1.2vw, 1.15rem);
+    font-size: clamp(0.7rem, 0.95vw, 1rem);
     line-height: 1.4;
     max-width: 90%;
     margin-bottom: 1rem;
-    opacity: 0.95;
+    opacity: 0.9;
     text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
 }
 
@@ -1067,9 +1059,8 @@ behold-widget a { text-decoration: none; }
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    /* Escala: 0.7rem em 320px → 0.9rem em 1920px */
-    padding: clamp(0.5rem, 1.2vw, 0.85rem) clamp(1rem, 2.5vw, 1.75rem);
-    font-size: clamp(0.65rem, 1.1vw, 0.9rem);
+    padding: clamp(0.5rem, 0.9vw, 0.75rem) clamp(1rem, 1.8vw, 1.5rem);
+    font-size: clamp(0.65rem, 0.85vw, 0.85rem);
     background: #ffffff;
     color: #0f172a;
     font-weight: 700;
@@ -1095,15 +1086,15 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   CONTROLES DE NAVEGAÇÃO - Sempre compactos no mobile
+   CONTROLES DE NAVEGAÇÃO
    ============================================================ */
 
 .aviso-nav {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(10px);
@@ -1114,7 +1105,7 @@ behold-widget a { text-decoration: none; }
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
+    font-size: 1rem;
     z-index: 10;
     opacity: 0;
 }
@@ -1130,54 +1121,52 @@ behold-widget a { text-decoration: none; }
     transform: translateY(-50%) scale(1.1);
 }
 
-.aviso-prev { left: 1.5rem; }
-.aviso-next { right: 1.5rem; }
+.aviso-prev { left: 1rem; }
+.aviso-next { right: 1rem; }
 
 @media (max-width: 768px) {
     .aviso-nav {
-        width: 36px;
-        height: 36px;
-        font-size: 0.9rem;
+        width: 34px;
+        height: 34px;
+        font-size: 0.85rem;
         opacity: 1;
-    }
-    .aviso-prev { left: 0.5rem; }
-    .aviso-next { right: 0.5rem; }
-}
-
-@media (max-width: 400px) {
-    .aviso-nav {
-        width: 32px;
-        height: 32px;
-        font-size: 0.8rem;
     }
     .aviso-prev { left: 0.4rem; }
     .aviso-next { right: 0.4rem; }
 }
 
+@media (max-width: 400px) {
+    .aviso-nav {
+        width: 30px;
+        height: 30px;
+        font-size: 0.75rem;
+    }
+}
+
 /* ============================================================
-   INDICADORES (DOTS)
+   INDICADORES (DOTS) - Estilo Disney+
    ============================================================ */
 
 .aviso-dots {
     position: absolute;
-    bottom: 1.5rem;
+    bottom: 1rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
     z-index: 10;
 }
 
 @media (max-width: 768px) {
     .aviso-dots {
-        bottom: 0.75rem;
-        gap: 0.35rem;
+        bottom: 0.5rem;
+        gap: 0.3rem;
     }
 }
 
 .aviso-dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.4);
     border: none;
@@ -1188,8 +1177,8 @@ behold-widget a { text-decoration: none; }
 
 @media (max-width: 768px) {
     .aviso-dot {
-        width: 7px;
-        height: 7px;
+        width: 6px;
+        height: 6px;
     }
 }
 
@@ -1199,13 +1188,13 @@ behold-widget a { text-decoration: none; }
 
 .aviso-dot.active {
     background: #ffffff;
-    width: 32px;
-    border-radius: 5px;
+    width: 24px;
+    border-radius: 4px;
 }
 
 @media (max-width: 768px) {
     .aviso-dot.active {
-        width: 22px;
+        width: 18px;
     }
 }
 
