@@ -321,18 +321,29 @@
                         <!-- Widget do Instagram (Feed próprio) -->
                         <div class="glass-panel rounded-2xl overflow-hidden p-2 sm:p-4 border border-white/10">
                             <div id="instagram-feed"
-                                 data-limit="12"
-                                 data-layout="grid"
-                                 data-columns="4"
-                                 data-columns-tablet="3"
-                                 data-mobile-columns="2"
-                                 data-gap="12"
-                                 data-radius="12"
-                                 data-aspect-ratio="1/1"
-                                 data-theme="dark"
-                                 data-show-caption="false"
-                                 data-show-date="false">
-                            </div>
+     data-limit="12"
+     data-layout="masonry"
+     data-columns="3"
+     data-columns-tablet="3"
+     data-mobile-columns="2"
+     data-gap="12"
+     data-radius="12"
+     data-aspect-ratio="1/1"
+     data-theme="dark"
+     data-show-caption="false"
+     data-show-date="false"
+     data-show-button="true"
+     data-hover-effect="zoom"
+     data-autoplay="false">
+</div>
+<style>
+    #instagram-feed {
+        --ig-accent: #eebc5a;
+        --ig-bg: #0f172a;
+        --ig-text: #ffffff;
+    }
+</style>
+<script src="https://ig-feed-hazel.vercel.app/widget.js"></script>
                         </div>
                     </section>
                     <!-- ============================================================ -->
