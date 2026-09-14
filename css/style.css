@@ -39,7 +39,7 @@ body {
 }
 
 /* ============================================================
-   HERO
+   HERO - MANTIDO IGUAL AO ORIGINAL
    ============================================================ */
 #site-hero {
     width: 100%;
@@ -127,8 +127,8 @@ body {
     .hero-content.pos-center,
     .hero-content.pos-right,
     .hero-content.pos-custom {
-        left: 50%; right: auto; top: 50%;
-        transform: translate(-50%, -50%);
+        left: 50%; right: auto; top: 0;
+        transform: translate(-50%, 15%);
         text-align: center;
         align-items: center;
         padding: 0 6%;
@@ -200,7 +200,7 @@ body {
 }
 
 /* ============================================================
-   CARROSSEL DE AVISOS (estilo Disney/Netflix)
+   CARROSSEL DE AVISOS
    ============================================================ */
 .avisos-carousel {
     position: relative;
@@ -228,14 +228,12 @@ body {
     display: none;
 }
 
-/* Container dos slides */
 .avisos-slides {
     position: relative;
     width: 100%;
     height: 100%;
 }
 
-/* Slide individual */
 .aviso-slide {
     position: absolute;
     inset: 0;
@@ -255,7 +253,6 @@ body {
     z-index: 2;
 }
 
-/* Overlay gradiente (para legibilidade do texto) */
 .aviso-slide::before {
     content: '';
     position: absolute;
@@ -271,7 +268,6 @@ body {
     pointer-events: none;
 }
 
-/* Se não tiver imagem, aplica cor sólida */
 .aviso-slide.no-image::before {
     background: linear-gradient(
         to right,
@@ -281,7 +277,6 @@ body {
     );
 }
 
-/* Conteúdo do slide */
 .aviso-content {
     position: absolute;
     z-index: 3;
@@ -299,7 +294,6 @@ body {
     }
 }
 
-/* Posições do conteúdo (como configurado no admin) */
 .aviso-content.pos-left {
     left: 0;
     right: auto;
@@ -340,7 +334,6 @@ body {
     max-width: 70%;
 }
 
-/* Mobile - sempre centraliza */
 @media (max-width: 768px) {
     .aviso-content.pos-left,
     .aviso-content.pos-center,
@@ -357,7 +350,6 @@ body {
     }
 }
 
-/* Tipografia */
 .aviso-subtitle {
     font-size: clamp(0.75rem, 1vw, 0.9rem);
     font-weight: 600;
@@ -388,7 +380,6 @@ body {
     text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Botão */
 .aviso-button {
     display: inline-flex;
     align-items: center;
@@ -419,7 +410,6 @@ body {
     font-size: 0.85em;
 }
 
-/* Controles de navegação */
 .aviso-nav {
     position: absolute;
     top: 50%;
@@ -452,13 +442,8 @@ body {
     transform: translateY(-50%) scale(1.1);
 }
 
-.aviso-prev {
-    left: 1.5rem;
-}
-
-.aviso-next {
-    right: 1.5rem;
-}
+.aviso-prev { left: 1.5rem; }
+.aviso-next { right: 1.5rem; }
 
 @media (max-width: 768px) {
     .aviso-nav {
@@ -466,12 +451,10 @@ body {
         height: 40px;
         opacity: 1;
     }
-    
     .aviso-prev { left: 0.75rem; }
     .aviso-next { right: 0.75rem; }
 }
 
-/* Indicadores (dots) */
 .aviso-dots {
     position: absolute;
     bottom: 1.5rem;
@@ -503,7 +486,6 @@ body {
     border-radius: 5px;
 }
 
-/* Barra de progresso no dot ativo */
 .aviso-dot.active::after {
     content: '';
     display: block;
@@ -513,7 +495,6 @@ body {
     background: linear-gradient(to right, #EEBC5A var(--progress, 0%), transparent var(--progress, 0%));
 }
 
-/* Aviso único (sem carrossel) */
 .avisos-carousel.single .aviso-nav,
 .avisos-carousel.single .aviso-dots {
     display: none;
@@ -711,7 +692,6 @@ body {
     }
 }
 
-/* Controles */
 .marketing-controls {
     position: absolute;
     bottom: 1rem;
