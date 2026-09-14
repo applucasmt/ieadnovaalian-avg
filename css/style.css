@@ -39,7 +39,7 @@ body {
 }
 
 /* ============================================================
-   HERO - ESTÁTICA, SEM ZOOM, SEM PARALLAX
+   HERO
    ============================================================ */
 #site-hero {
     width: 100%;
@@ -52,12 +52,9 @@ body {
 
 @media (max-width: 768px) {
     #site-hero {
-        object-fit: cover;
-        object-position: center top;
+        object-fit: contain;
+        object-position: center center;
         background: #0f172a;
-        width: 100%;
-        height: 100%;
-        display: block;
     }
 }
 
@@ -70,17 +67,15 @@ body {
 
 @media (max-width: 768px) {
     .hero-section {
-        min-height: 85vh;
-        height: 85vh;
-        aspect-ratio: auto;
-        max-height: none;
+        min-height: 70vh;
+        height: 70vh;
     }
 }
 
 @media (max-width: 400px) {
     .hero-section {
-        min-height: 80vh;
-        height: 80vh;
+        min-height: 65vh;
+        height: 65vh;
     }
 }
 
@@ -128,36 +123,17 @@ body {
 }
 
 @media (max-width: 768px) {
-    .hero-content.pos-left {
-        left: 0; right: auto; top: 0;
-        transform: translateY(15%);
-        text-align: left;
-        padding-left: 6%; padding-right: 12%;
-        display: flex; flex-direction: column; align-items: flex-start;
-        width: 100%;
-    }
-    .hero-content.pos-center {
-        left: 50%; transform: translate(-50%, 15%); top: 0;
-        text-align: center;
-        padding-left: 6%; padding-right: 6%;
-        display: flex; flex-direction: column; align-items: center;
-        width: 100%;
-    }
-    .hero-content.pos-right {
-        right: 0; left: auto; top: 0;
-        transform: translateY(15%);
-        text-align: right;
-        padding-right: 6%; padding-left: 12%;
-        display: flex; flex-direction: column; align-items: flex-end;
-        width: 100%;
-    }
+    .hero-content.pos-left,
+    .hero-content.pos-center,
+    .hero-content.pos-right,
     .hero-content.pos-custom {
-        left: var(--hero-x, 50%);
-        top: max(15%, var(--hero-y, 15%));
-        transform: translate(-50%, 0);
-        text-align: var(--hero-align, center);
-        width: 90%; max-width: 90%;
-        align-items: var(--hero-align, center);
+        left: 50%; right: auto; top: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        align-items: center;
+        padding: 0 6%;
+        width: 100%;
+        max-width: 100%;
     }
     .hero-content .preview-badge,
     .hero-content > div:first-child {
@@ -201,7 +177,7 @@ body {
 @media (max-width: 400px) { #main-content-wrapper { margin-top: -30px; } }
 
 /* ============================================================
-   SCROLLTELLING (REVEAL)
+   SCROLLTELLING
    ============================================================ */
 .reveal {
     opacity: 0;
@@ -224,7 +200,327 @@ body {
 }
 
 /* ============================================================
-   MARKETING PAGE V2 - LAYOUT DEFINITIVO
+   CARROSSEL DE AVISOS (estilo Disney/Netflix)
+   ============================================================ */
+.avisos-carousel {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1920 / 720;
+    max-height: 600px;
+    min-height: 320px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+    background: #0f172a;
+    box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 768px) {
+    .avisos-carousel {
+        aspect-ratio: 4 / 5;
+        max-height: 70vh;
+        min-height: 400px;
+        border-radius: 16px;
+    }
+}
+
+.avisos-carousel.hidden {
+    display: none;
+}
+
+/* Container dos slides */
+.avisos-slides {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Slide individual */
+.aviso-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.7s ease-in-out, transform 0.7s ease-in-out;
+    pointer-events: none;
+    transform: scale(1.02);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.aviso-slide.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+    z-index: 2;
+}
+
+/* Overlay gradiente (para legibilidade do texto) */
+.aviso-slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.85) 0%,
+        rgba(0, 0, 0, 0.65) 35%,
+        rgba(0, 0, 0, 0.2) 65%,
+        transparent 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Se não tiver imagem, aplica cor sólida */
+.aviso-slide.no-image::before {
+    background: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.2) 50%,
+        transparent 100%
+    );
+}
+
+/* Conteúdo do slide */
+.aviso-content {
+    position: absolute;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    padding: 3rem 4rem;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .aviso-content {
+        padding: 1.5rem;
+    }
+}
+
+/* Posições do conteúdo (como configurado no admin) */
+.aviso-content.pos-left {
+    left: 0;
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    align-items: flex-start;
+    text-align: left;
+    max-width: 60%;
+    padding-left: 5%;
+}
+
+.aviso-content.pos-center {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    text-align: center;
+    max-width: 70%;
+}
+
+.aviso-content.pos-right {
+    right: 0;
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    align-items: flex-end;
+    text-align: right;
+    max-width: 60%;
+    padding-right: 5%;
+}
+
+.aviso-content.pos-custom {
+    left: var(--aviso-x, 50%);
+    top: var(--aviso-y, 50%);
+    transform: translate(-50%, -50%);
+    text-align: var(--aviso-align, center);
+    align-items: var(--aviso-align, center);
+    max-width: 70%;
+}
+
+/* Mobile - sempre centraliza */
+@media (max-width: 768px) {
+    .aviso-content.pos-left,
+    .aviso-content.pos-center,
+    .aviso-content.pos-right,
+    .aviso-content.pos-custom {
+        left: 50%;
+        right: auto;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        align-items: center;
+        max-width: 90%;
+        padding: 1.5rem;
+    }
+}
+
+/* Tipografia */
+.aviso-subtitle {
+    font-size: clamp(0.75rem, 1vw, 0.9rem);
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #EEBC5A;
+    margin-bottom: 0.75rem;
+    opacity: 0.95;
+}
+
+.aviso-title {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+    word-break: break-word;
+}
+
+.aviso-description {
+    font-size: clamp(0.9rem, 1.3vw, 1.15rem);
+    line-height: 1.5;
+    max-width: 500px;
+    margin-bottom: 1.5rem;
+    opacity: 0.95;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Botão */
+.aviso-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.75rem;
+    background: #ffffff;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 999px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.aviso-button:hover {
+    background: #EEBC5A;
+    transform: scale(1.05);
+    box-shadow: 0 6px 30px rgba(238, 188, 90, 0.4);
+}
+
+.aviso-button i {
+    font-size: 0.85em;
+}
+
+/* Controles de navegação */
+.aviso-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    z-index: 10;
+    opacity: 0;
+}
+
+.avisos-carousel:hover .aviso-nav {
+    opacity: 1;
+}
+
+.aviso-nav:hover {
+    background: #EEBC5A;
+    color: #0f172a;
+    border-color: #EEBC5A;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.aviso-prev {
+    left: 1.5rem;
+}
+
+.aviso-next {
+    right: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .aviso-nav {
+        width: 40px;
+        height: 40px;
+        opacity: 1;
+    }
+    
+    .aviso-prev { left: 0.75rem; }
+    .aviso-next { right: 0.75rem; }
+}
+
+/* Indicadores (dots) */
+.aviso-dots {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+}
+
+.aviso-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.aviso-dot:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.aviso-dot.active {
+    background: #ffffff;
+    width: 32px;
+    border-radius: 5px;
+}
+
+/* Barra de progresso no dot ativo */
+.aviso-dot.active::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(to right, #EEBC5A var(--progress, 0%), transparent var(--progress, 0%));
+}
+
+/* Aviso único (sem carrossel) */
+.avisos-carousel.single .aviso-nav,
+.avisos-carousel.single .aviso-dots {
+    display: none;
+}
+
+/* ============================================================
+   MARKETING PAGE V2
    ============================================================ */
 .marketing-container-v2 {
     position: relative;
@@ -415,7 +711,7 @@ body {
     }
 }
 
-/* CONTROLES DE NAVEGAÇÃO */
+/* Controles */
 .marketing-controls {
     position: absolute;
     bottom: 1rem;
