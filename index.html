@@ -282,9 +282,29 @@
                 </section>
                 
                 <div id="main-content-wrapper" class="container mx-auto px-4 sm:px-6 pt-6 pb-10 sm:py-16">
-                    <div id="avisos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-16 sm:mb-20"></div>
                     
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
+                    <!-- ============================================================ -->
+                    <!-- CARROSSEL DE AVISOS (estilo Disney/Netflix)                  -->
+                    <!-- ============================================================ -->
+                    <div id="avisos-carousel" class="avisos-carousel hidden">
+                        <div class="avisos-slides" id="avisos-slides">
+                            <!-- Slides injetados via JS -->
+                        </div>
+
+                        <!-- Controles (só aparecem se tiver 2+ avisos) -->
+                        <button id="aviso-prev" class="aviso-nav aviso-prev" aria-label="Aviso anterior">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="aviso-next" class="aviso-nav aviso-next" aria-label="Próximo aviso">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+
+                        <!-- Indicadores -->
+                        <div id="aviso-dots" class="aviso-dots"></div>
+                    </div>
+                    <!-- ============================================================ -->
+                    
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4 mt-16 sm:mt-20">
                         <div>
                             <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">Próximos Eventos</h2>
                             <div class="h-1 w-20 bg-brand-yellow rounded-full"></div>
@@ -294,7 +314,7 @@
                     <div id="upcoming-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-16 sm:mb-24"></div>
 
                     <!-- ============================================================ -->
-                    <!-- SEÇÃO INSTAGRAM - WIDGET PRÓPRIO (config do painel admin)    -->
+                    <!-- SEÇÃO INSTAGRAM - WIDGET PRÓPRIO                             -->
                     <!-- ============================================================ -->
                     <section id="instagram-section" class="mt-12 sm:mt-16">
                         <!-- Cabeçalho da Seção -->
@@ -549,9 +569,7 @@
     <script src="js/app.js"></script>
     <script src="js/scroll-reveal.js"></script>
 
-    <!-- ============================================================ -->
-    <!-- WIDGET DO INSTAGRAM FEED (PRÓPRIO - config automática)       -->
-    <!-- ============================================================ -->
+    <!-- Widget do Instagram Feed (próprio) -->
     <script src="https://ig-feed-hazel.vercel.app/widget.js"></script>
 </body>
 </html>
