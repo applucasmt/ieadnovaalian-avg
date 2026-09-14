@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>id="instagram-feed">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>IEAD Setor Nova Aliança</title>
@@ -294,7 +294,7 @@
                     <div id="upcoming-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-16 sm:mb-24"></div>
 
                     <!-- ============================================================ -->
-                    <!-- SEÇÃO INSTAGRAM - WIDGET PRÓPRIO (IG FEED)                   -->
+                    <!-- SEÇÃO INSTAGRAM - WIDGET PRÓPRIO (config do painel admin)    -->
                     <!-- ============================================================ -->
                     <section id="instagram-section" class="mt-12 sm:mt-16">
                         <!-- Cabeçalho da Seção -->
@@ -318,9 +318,9 @@
                             </a>
                         </div>
 
-                        <!-- Widget do Instagram (config vem do painel admin) -->
-<div id="instagram-feed"></div>
-<script src="https://ig-feed-hazel.vercel.app/widget.js"></script>
+                        <!-- Widget do Instagram (config carregada automaticamente do painel admin) -->
+                        <div class="glass-panel rounded-2xl overflow-hidden p-2 sm:p-4 border border-white/10">
+                            <div id="instagram-feed"></div>
                         </div>
                     </section>
                     <!-- ============================================================ -->
@@ -550,7 +550,7 @@
     <script src="js/scroll-reveal.js"></script>
 
     <!-- ============================================================ -->
-    <!-- WIDGET DO INSTAGRAM FEED (PRÓPRIO - SUBSTITUI O BEHOLD)      -->
+    <!-- WIDGET DO INSTAGRAM FEED (PRÓPRIO - config automática)       -->
     <!-- ============================================================ -->
     <script src="https://ig-feed-hazel.vercel.app/widget.js"></script>
 </body>
