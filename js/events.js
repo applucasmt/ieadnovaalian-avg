@@ -195,14 +195,30 @@ window.renderAvisosCarousel = (avisos) => {
         carousel.classList.remove('single');
     }
     
-    // Detecta se é mobile para escolher tamanho da imagem
-    const isMobile = window.innerWidth <= 768;
-    // 1280px para desktop, 800px para mobile (economia de banda)
-    const imageWidth = isMobile ? 800 : 1600;
+    // Imagem otimizada: sempre 1920 de largura (16:9 é baixa resolução e o cache do wsrv.nl resolve)
+    const imageWidth = 1920;
     
     // Limpa containers
     slidesContainer.innerHTML = '';
     dotsContainer.innerHTML = '';
+    
+    // ============================================================
+    // PRÉ-CARREGA TODAS AS IMAGENS ANTES DE RENDERIZAR
+    // (Melhora muito o UX: nada de "carregando por partes")
+    // ============================================================
+    const imageUrls = activeAvisos.map(a => {
+        if (!isValidImageUrl(a.imageUrl)) return null;
+        const rawUrl = a.imageUrl.trim();
+        return window.optimizeImage ? window.optimizeImage(rawUrl, imageWidth) : rawUrl;
+    });
+    
+    // Inicia o pré-carregamento em paralelo
+    imageUrls.forEach(url => {
+        if (url) {
+            const img = new Image();
+            img.src = url;
+        }
+    });
     
     // Renderiza cada slide
     activeAvisos.forEach((aviso, index) => {
@@ -211,27 +227,12 @@ window.renderAvisosCarousel = (avisos) => {
         slide.dataset.index = index;
         
         const bgColor = (aviso.bgColor && aviso.bgColor.trim()) ? aviso.bgColor : '#0f172a';
-        slide.style.background = bgColor;
+        slide.style.backgroundColor = bgColor;
         
         if (isValidImageUrl(aviso.imageUrl)) {
-            // Aplica otimização + tamanho correto para o dispositivo
             const rawUrl = aviso.imageUrl.trim();
             const imgUrl = window.optimizeImage ? window.optimizeImage(rawUrl, imageWidth) : rawUrl;
             
-            // Pré-carrega a imagem antes de aplicar (melhora UX)
-            const preloadImg = new Image();
-            preloadImg.onload = () => {
-                slide.style.backgroundImage = 'url(' + imgUrl + ')';
-                slide.style.backgroundSize = 'cover';
-                slide.style.backgroundPosition = 'center';
-            };
-            preloadImg.onerror = () => {
-                // Se falhar, mantém só a cor de fundo
-                slide.classList.add('no-image');
-            };
-            preloadImg.src = imgUrl;
-            
-            // Aplica direto também (fallback rápido)
             slide.style.backgroundImage = 'url(' + imgUrl + ')';
             slide.style.backgroundSize = 'cover';
             slide.style.backgroundPosition = 'center';
