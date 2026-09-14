@@ -873,11 +873,31 @@ behold-widget a { text-decoration: none; }
     .avisos-carousel {
         aspect-ratio: 16 / 9;
         max-height: 420px;
+        border-radius: 14px;/* ============================================================
+   ⬇️⬇️⬇️ CARROSSEL DE AVISOS - ESTILO DISNEY+ ⬇️⬇️⬇️
+   ============================================================ */
+
+.avisos-carousel {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    max-height: 480px;
+    min-height: 280px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+    background: #0f172a;
+    box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 1024px) {
+    .avisos-carousel {
+        aspect-ratio: 16 / 9;
+        max-height: 420px;
         border-radius: 14px;
     }
 }
 
-/* Mobile - mantém 16:9 mas bem compacto */
 @media (max-width: 768px) {
     .avisos-carousel {
         aspect-ratio: 16 / 9;
@@ -915,6 +935,7 @@ behold-widget a { text-decoration: none; }
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-color: #0f172a;
 }
 
 .aviso-slide.active {
@@ -965,6 +986,10 @@ behold-widget a { text-decoration: none; }
     }
 }
 
+/* ============================================================
+   POSIÇÕES - DESKTOP
+   ============================================================ */
+
 .aviso-content.pos-left {
     left: 0;
     right: auto;
@@ -1005,24 +1030,60 @@ behold-widget a { text-decoration: none; }
     max-width: 65%;
 }
 
+/* ============================================================
+   POSIÇÕES - MOBILE (RESPEITA A CONFIGURAÇÃO DO ADMIN)
+   ============================================================ */
+
 @media (max-width: 768px) {
-    .aviso-content.pos-left,
-    .aviso-content.pos-center,
-    .aviso-content.pos-right,
-    .aviso-content.pos-custom {
+    .aviso-content.pos-left {
+        left: 0;
+        right: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        align-items: flex-start;
+        text-align: left;
+        max-width: 85%;
+        padding-left: 6%;
+        padding-right: 6%;
+    }
+    
+    .aviso-content.pos-center {
         left: 50%;
         right: auto;
         top: 50%;
         transform: translate(-50%, -50%);
-        text-align: center;
         align-items: center;
+        text-align: center;
         max-width: 92%;
-        padding: 1rem 1.25rem;
+        padding-left: 6%;
+        padding-right: 6%;
+    }
+    
+    .aviso-content.pos-right {
+        right: 0;
+        left: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        align-items: flex-end;
+        text-align: right;
+        max-width: 85%;
+        padding-right: 6%;
+        padding-left: 6%;
+    }
+    
+    .aviso-content.pos-custom {
+        left: var(--aviso-x, 50%);
+        top: var(--aviso-y, 50%);
+        transform: translate(-50%, -50%);
+        text-align: var(--aviso-align, center);
+        align-items: var(--aviso-align, center);
+        max-width: 90%;
+        padding: 1rem;
     }
 }
 
 /* ============================================================
-   TIPOGRAFIA - Escala mais controlada (estilo Disney+)
+   TIPOGRAFIA
    ============================================================ */
 
 .aviso-subtitle {
@@ -1036,7 +1097,7 @@ behold-widget a { text-decoration: none; }
 }
 
 .aviso-title {
-    font-size: clamp(1.25rem, 3vw, 2.5rem);  /* Reduzido de 4rem para 2.5rem no PC */
+    font-size: clamp(1.25rem, 3vw, 2.5rem);
     font-weight: 900;
     line-height: 1.05;
     letter-spacing: -0.03em;
@@ -1144,7 +1205,7 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   INDICADORES (DOTS) - Estilo Disney+
+   INDICADORES (DOTS)
    ============================================================ */
 
 .aviso-dots {
