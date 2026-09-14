@@ -19,17 +19,10 @@ window.getEventStatusBadge = (start, end) => {
 };
 
 // ============================================================
-// CRIAR CARDS (aviso, evento, ministério, talento, álbum)
+// CRIAR CARDS (evento, ministério, talento, álbum)
 // ============================================================
 window.createCard = (data, type) => {
     
-    // ============================================================
-    // AVISO
-    // ============================================================
-    if (type === 'aviso') {
-        return '<div class="glass-panel p-6 rounded-xl border-l-4 border-brand-yellow hover:bg-white/5 transition-all duration-300 active:scale-95"><div class="flex items-start gap-4"><i class="fas fa-bullhorn text-brand-yellow text-xl mt-1"></i><p class="text-gray-200 leading-relaxed text-sm sm:text-base">' + (data.texto || '') + '</p></div></div>';
-    }
-
     // ============================================================
     // EVENTO
     // ============================================================
@@ -123,7 +116,7 @@ window.createCard = (data, type) => {
     }
     
     // ============================================================
-    // ÁLBUM (Galeria)
+    // ÁLBUM
     // ============================================================
     if (type === 'album') {
         const optimizedCover = window.optimizeImage(data.coverImageUrl, 500);
@@ -143,6 +136,295 @@ window.createCard = (data, type) => {
 };
 
 // ============================================================
+// HELPER: ESCAPAR HTML
+// ============================================================
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ============================================================
+// RENDERIZAR CARROSSEL DE AVISOS (estilo Disney/Netflix)
+// ============================================================
+window.renderAvisosCarousel = (avisos) => {
+    const carousel = document.getElementById('avisos-carousel');
+    const slidesContainer = document.getElementById('avisos-slides');
+    const dotsContainer = document.getElementById('aviso-dots');
+    
+    if (!carousel || !slidesContainer || !dotsContainer) return;
+    
+    // Filtra apenas ativos (respeita campo 'active')
+    const activeAvisos = (avisos || []).filter(a => {
+        if (!a) return false;
+        // Se tiver campo 'active', respeita (só aceita "true", true, "1", "sim" ou vazio)
+        if (a.active !== undefined && a.active !== '' && a.active !== null) {
+            const activeStr = String(a.active).toLowerCase();
+            if (activeStr === 'false' || activeStr === '0' || activeStr === 'nao' || activeStr === 'não') {
+                return false;
+            }
+        }
+        // Precisa ter pelo menos um título ou texto
+        return a.title || a.texto || a.description;
+    });
+    
+    if (activeAvisos.length === 0) {
+        carousel.classList.add('hidden');
+        return;
+    }
+    
+    // Ordena por 'order' (menor primeiro)
+    activeAvisos.sort((a, b) => {
+        const oa = parseInt(a.order) || 0;
+        const ob = parseInt(b.order) || 0;
+        return oa - ob;
+    });
+    
+    // Mostra o carrossel
+    carousel.classList.remove('hidden');
+    
+    // Marca como single se só tem 1 aviso
+    if (activeAvisos.length === 1) {
+        carousel.classList.add('single');
+    } else {
+        carousel.classList.remove('single');
+    }
+    
+    // Limpa containers
+    slidesContainer.innerHTML = '';
+    dotsContainer.innerHTML = '';
+    
+    // Renderiza cada slide
+    activeAvisos.forEach((aviso, index) => {
+        // ============================================================
+        // SLIDE
+        // ============================================================
+        const slide = document.createElement('div');
+        slide.className = 'aviso-slide';
+        slide.dataset.index = index;
+        
+        // Cor de fundo base
+        const bgColor = aviso.bgColor || '#0f172a';
+        slide.style.background = bgColor;
+        
+        // Imagem de fundo (se existir)
+        if (aviso.imageUrl && aviso.imageUrl.trim() !== '') {
+            const imgUrl = window.optimizeImage ? window.optimizeImage(aviso.imageUrl, 1920) : aviso.imageUrl;
+            slide.style.backgroundImage = 'url(' + imgUrl + ')';
+            slide.style.backgroundSize = 'cover';
+            slide.style.backgroundPosition = 'center';
+        } else {
+            slide.classList.add('no-image');
+        }
+        
+        // ============================================================
+        // CONTEÚDO
+        // ============================================================
+        const content = document.createElement('div');
+        const position = aviso.position || 'center';
+        const align = aviso.align || 'center';
+        
+        content.className = 'aviso-content pos-' + position;
+        
+        // Posição customizada
+        if (position === 'custom') {
+            const posX = parseFloat(aviso.posX) || 50;
+            const posY = parseFloat(aviso.posY) || 50;
+            content.style.setProperty('--aviso-x', posX + '%');
+            content.style.setProperty('--aviso-y', posY + '%');
+            content.style.setProperty('--aviso-align', align);
+        }
+        
+        // Cor do texto
+        const textColor = aviso.textColor || '#ffffff';
+        content.style.color = textColor;
+        
+        // ============================================================
+        // ELEMENTOS
+        // ============================================================
+        let contentHTML = '';
+        
+        // Subtítulo
+        if (aviso.subtitle) {
+            contentHTML += '<div class="aviso-subtitle">' + escapeHtml(aviso.subtitle) + '</div>';
+        }
+        
+        // Título
+        const title = aviso.title || aviso.texto || 'Aviso';
+        contentHTML += '<h2 class="aviso-title" style="color: ' + textColor + '">' + escapeHtml(title) + '</h2>';
+        
+        // Descrição
+        if (aviso.description) {
+            contentHTML += '<p class="aviso-description" style="color: ' + textColor + '">' + escapeHtml(aviso.description) + '</p>';
+        }
+        
+        // Botão
+        if (aviso.buttonText && aviso.buttonUrl) {
+            contentHTML += '<a href="' + escapeHtml(aviso.buttonUrl) + '" class="aviso-button"' +
+                (aviso.buttonUrl.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '') +
+                '>' + escapeHtml(aviso.buttonText) + ' <i class="fas fa-arrow-right"></i></a>';
+        }
+        
+        content.innerHTML = contentHTML;
+        slide.appendChild(content);
+        slidesContainer.appendChild(slide);
+        
+        // ============================================================
+        // DOT
+        // ============================================================
+        const dot = document.createElement('button');
+        dot.className = 'aviso-dot' + (index === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Ir para aviso ' + (index + 1));
+        dot.dataset.index = index;
+        dot.onclick = () => goToAviso(index);
+        dotsContainer.appendChild(dot);
+    });
+    
+    // ============================================================
+    // ESTADO DO CARROSSEL
+    // ============================================================
+    let currentIndex = 0;
+    let autoplayTimer = null;
+    let progressTimer = null;
+    const AUTOPLAY_DELAY = 6000; // 6 segundos
+    
+    const slides = slidesContainer.querySelectorAll('.aviso-slide');
+    const dots = dotsContainer.querySelectorAll('.aviso-dot');
+    
+    if (slides.length > 0) {
+        slides[0].classList.add('active');
+    }
+    
+    // Ir para um slide específico
+    const goToAviso = (index) => {
+        if (index < 0) index = slides.length - 1;
+        if (index >= slides.length) index = 0;
+        
+        slides.forEach((s, i) => s.classList.toggle('active', i === index));
+        dots.forEach((d, i) => d.classList.toggle('active', i === index));
+        
+        currentIndex = index;
+        resetProgress();
+    };
+    
+    // Progresso no dot ativo
+    function resetProgress() {
+        dots.forEach(d => d.style.setProperty('--progress', '0%'));
+        
+        if (progressTimer) clearInterval(progressTimer);
+        
+        const activeDot = dots[currentIndex];
+        if (!activeDot) return;
+        
+        let progress = 0;
+        const step = 100 / (AUTOPLAY_DELAY / 50);
+        
+        progressTimer = setInterval(() => {
+            progress += step;
+            if (progress >= 100) progress = 100;
+            activeDot.style.setProperty('--progress', progress + '%');
+        }, 50);
+    }
+    
+    // Funções de navegação
+    const nextAviso = () => goToAviso(currentIndex + 1);
+    const prevAviso = () => goToAviso(currentIndex - 1);
+    
+    // Autoplay
+    function startAutoplay() {
+        stopAutoplay();
+        if (slides.length < 2) return;
+        
+        resetProgress();
+        autoplayTimer = setInterval(() => {
+            goToAviso(currentIndex + 1);
+        }, AUTOPLAY_DELAY);
+    }
+    
+    function stopAutoplay() {
+        if (autoplayTimer) {
+            clearInterval(autoplayTimer);
+            autoplayTimer = null;
+        }
+        if (progressTimer) {
+            clearInterval(progressTimer);
+            progressTimer = null;
+        }
+    }
+    
+    // Inicia autoplay
+    startAutoplay();
+    
+    // Pausa ao passar o mouse (desktop)
+    carousel.addEventListener('mouseenter', stopAutoplay);
+    carousel.addEventListener('mouseleave', startAutoplay);
+    
+    // Eventos dos botões
+    const prevBtn = document.getElementById('aviso-prev');
+    const nextBtn = document.getElementById('aviso-next');
+    
+    if (prevBtn) {
+        prevBtn.onclick = () => {
+            stopAutoplay();
+            prevAviso();
+            startAutoplay();
+        };
+    }
+    if (nextBtn) {
+        nextBtn.onclick = () => {
+            stopAutoplay();
+            nextAviso();
+            startAutoplay();
+        };
+    }
+    
+    // Swipe no mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    carousel.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        stopAutoplay();
+    }, { passive: true });
+    
+    carousel.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) nextAviso();
+            else prevAviso();
+        }
+        
+        startAutoplay();
+    }, { passive: true });
+    
+    // Teclado (setas esquerda/direita)
+    document.addEventListener('keydown', (e) => {
+        if (carousel.classList.contains('hidden')) return;
+        
+        if (e.key === 'ArrowLeft') {
+            stopAutoplay();
+            prevAviso();
+            startAutoplay();
+        }
+        if (e.key === 'ArrowRight') {
+            stopAutoplay();
+            nextAviso();
+            startAutoplay();
+        }
+    });
+    
+    // Salva referências para uso externo (se necessário)
+    carousel._goToAviso = goToAviso;
+    carousel._nextAviso = nextAviso;
+    carousel._prevAviso = prevAviso;
+    carousel._stopAutoplay = stopAutoplay;
+    carousel._startAutoplay = startAutoplay;
+};
+
+// ============================================================
 // MODAL DE DETALHES DO EVENTO
 // ============================================================
 window.openEventModal = (eventId) => {
@@ -156,7 +438,6 @@ window.openEventModal = (eventId) => {
     const title = document.getElementById('modal-title');
     const desc = document.getElementById('modal-desc');
 
-    // Imagem em alta qualidade para o modal
     img.src = window.optimizeImage(event.coverUrl, 1000) || 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
     img.onerror = () => img.src = 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
     
@@ -222,10 +503,13 @@ document.addEventListener('keydown', (e) => {
         if (document.getElementById('ebd-login-modal') && !document.getElementById('ebd-login-modal').classList.contains('hidden')) {
             window.ebd.toggleLoginModal();
         }
+        if (document.getElementById('marketing-modal') && !document.getElementById('marketing-modal').classList.contains('hidden')) {
+            window.closeMarketingModal();
+        }
     }
 });
 
 // ============================================================
 // LOG DE INICIALIZAÇÃO
 // ============================================================
-console.log('📅 events.js carregado');
+console.log('📅 events.js carregado (com carrossel de avisos)');
