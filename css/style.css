@@ -854,12 +854,20 @@ behold-widget a { text-decoration: none; }
 /* ============================================================
    ⬇️⬇️⬇️ CARROSSEL DE AVISOS - NOVO ⬇️⬇️⬇️
    ============================================================ */
+
+/* 
+   IMPORTANTE: Mesma proporção 16:9 em TODOS os dispositivos.
+   No mobile, o texto se adapta com clamp() para ficar legível.
+*/
+
 .avisos-carousel {
     position: relative;
     width: 100%;
-    aspect-ratio: 1920 / 720;
-    max-height: 600px;
-    min-height: 320px;
+    /* Proporção 16:9 em TODOS os dispositivos (PC, tablet, celular) */
+    aspect-ratio: 16 / 9;
+    /* Limites de altura para não ficar exagerado em telas grandes */
+    max-height: 720px;
+    min-height: 280px;
     border-radius: 20px;
     overflow: hidden;
     margin-bottom: 3rem;
@@ -869,10 +877,19 @@ behold-widget a { text-decoration: none; }
 
 @media (max-width: 768px) {
     .avisos-carousel {
-        aspect-ratio: 4 / 5;
-        max-height: 70vh;
-        min-height: 400px;
-        border-radius: 16px;
+        /* Mantém a mesma proporção 16:9 no mobile */
+        aspect-ratio: 16 / 9;
+        min-height: 220px;
+        max-height: 60vh;
+        border-radius: 14px;
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .avisos-carousel {
+        min-height: 200px;
+        border-radius: 12px;
     }
 }
 
@@ -942,7 +959,13 @@ behold-widget a { text-decoration: none; }
 
 @media (max-width: 768px) {
     .aviso-content {
-        padding: 1.5rem;
+        padding: 1.25rem 1.5rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .aviso-content {
+        padding: 1rem 1.25rem;
     }
 }
 
@@ -986,6 +1009,7 @@ behold-widget a { text-decoration: none; }
     max-width: 70%;
 }
 
+/* Mobile - sempre centralizado, mas com a mesma proporção */
 @media (max-width: 768px) {
     .aviso-content.pos-left,
     .aviso-content.pos-center,
@@ -997,37 +1021,44 @@ behold-widget a { text-decoration: none; }
         transform: translate(-50%, -50%);
         text-align: center;
         align-items: center;
-        max-width: 90%;
-        padding: 1.5rem;
+        max-width: 92%;
+        padding: 1.25rem 1.5rem;
     }
 }
 
+/* ============================================================
+   TIPOGRAFIA RESPONSIVA - Escala conforme proporção 16:9
+   ============================================================ */
+
 .aviso-subtitle {
-    font-size: clamp(0.75rem, 1vw, 0.9rem);
+    /* Escala: 0.55rem em 320px → 0.9rem em 1920px */
+    font-size: clamp(0.55rem, 1.1vw, 0.9rem);
     font-weight: 600;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: #EEBC5A;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
     opacity: 0.95;
 }
 
 .aviso-title {
-    font-size: clamp(2rem, 5vw, 4rem);
+    /* Escala: 1.25rem em 320px → 4rem em 1920px */
+    font-size: clamp(1.25rem, 4.5vw, 4rem);
     font-weight: 900;
-    line-height: 1;
+    line-height: 1.05;
     letter-spacing: -0.03em;
     text-transform: uppercase;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
     word-break: break-word;
 }
 
 .aviso-description {
-    font-size: clamp(0.9rem, 1.3vw, 1.15rem);
-    line-height: 1.5;
-    max-width: 500px;
-    margin-bottom: 1.5rem;
+    /* Escala: 0.7rem em 320px → 1.15rem em 1920px */
+    font-size: clamp(0.7rem, 1.2vw, 1.15rem);
+    line-height: 1.4;
+    max-width: 90%;
+    margin-bottom: 1rem;
     opacity: 0.95;
     text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
 }
@@ -1035,12 +1066,13 @@ behold-widget a { text-decoration: none; }
 .aviso-button {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.85rem 1.75rem;
+    gap: 0.4rem;
+    /* Escala: 0.7rem em 320px → 0.9rem em 1920px */
+    padding: clamp(0.5rem, 1.2vw, 0.85rem) clamp(1rem, 2.5vw, 1.75rem);
+    font-size: clamp(0.65rem, 1.1vw, 0.9rem);
     background: #ffffff;
     color: #0f172a;
     font-weight: 700;
-    font-size: 0.9rem;
     border-radius: 999px;
     text-decoration: none;
     text-transform: uppercase;
@@ -1061,6 +1093,10 @@ behold-widget a { text-decoration: none; }
 .aviso-button i {
     font-size: 0.85em;
 }
+
+/* ============================================================
+   CONTROLES DE NAVEGAÇÃO - Sempre compactos no mobile
+   ============================================================ */
 
 .aviso-nav {
     position: absolute;
@@ -1099,13 +1135,28 @@ behold-widget a { text-decoration: none; }
 
 @media (max-width: 768px) {
     .aviso-nav {
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
         opacity: 1;
     }
-    .aviso-prev { left: 0.75rem; }
-    .aviso-next { right: 0.75rem; }
+    .aviso-prev { left: 0.5rem; }
+    .aviso-next { right: 0.5rem; }
 }
+
+@media (max-width: 400px) {
+    .aviso-nav {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+    .aviso-prev { left: 0.4rem; }
+    .aviso-next { right: 0.4rem; }
+}
+
+/* ============================================================
+   INDICADORES (DOTS)
+   ============================================================ */
 
 .aviso-dots {
     position: absolute;
@@ -1115,6 +1166,13 @@ behold-widget a { text-decoration: none; }
     display: flex;
     gap: 0.5rem;
     z-index: 10;
+}
+
+@media (max-width: 768px) {
+    .aviso-dots {
+        bottom: 0.75rem;
+        gap: 0.35rem;
+    }
 }
 
 .aviso-dot {
@@ -1128,6 +1186,13 @@ behold-widget a { text-decoration: none; }
     padding: 0;
 }
 
+@media (max-width: 768px) {
+    .aviso-dot {
+        width: 7px;
+        height: 7px;
+    }
+}
+
 .aviso-dot:hover {
     background: rgba(255, 255, 255, 0.7);
 }
@@ -1136,6 +1201,12 @@ behold-widget a { text-decoration: none; }
     background: #ffffff;
     width: 32px;
     border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+    .aviso-dot.active {
+        width: 22px;
+    }
 }
 
 .aviso-dot.active::after {
