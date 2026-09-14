@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <link rel="preconnect" href="https://wsrv.nl">
-    <link rel="preconnect" href="https://w.behold.so">
+    <link rel="preconnect" href="https://ig-feed-hazel.vercel.app">
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -80,26 +80,36 @@
         </div>
     </div>
 
-    <!-- MODAL DO MARKETING -->
+    <!-- MODAL DO MARKETING (Popup de Detalhes) -->
     <div id="marketing-modal" class="fixed inset-0 z-[75] hidden items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="window.closeMarketingModal()"></div>
         <div class="marketing-modal-content" id="marketing-modal-box">
+            
+            <!-- Botão Fechar -->
             <button onclick="window.closeMarketingModal()" class="marketing-modal-close">
                 <i class="fas fa-times"></i>
             </button>
+
+            <!-- Conteúdo com scroll -->
             <div class="marketing-modal-scroll">
+                <!-- Imagem -->
                 <div class="marketing-modal-image">
                     <img id="marketing-modal-img" src="" alt="Cartaz do evento">
                 </div>
+                
+                <!-- Informações -->
                 <div class="marketing-modal-info">
                     <div class="marketing-modal-category">EVENTO ESPECIAL</div>
                     <h2 id="marketing-modal-title" class="marketing-modal-title"></h2>
                     <p id="marketing-modal-desc" class="marketing-modal-desc"></p>
+                    
+                    <!-- Botão Whatsapp -->
                     <a id="marketing-modal-whatsapp" href="#" target="_blank" class="marketing-modal-whatsapp-btn">
                         <i class="fab fa-whatsapp text-xl"></i> Solicitar Cartaz via WhatsApp
                     </a>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -283,7 +293,11 @@
                     </div>
                     <div id="upcoming-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-16 sm:mb-24"></div>
 
+                    <!-- ============================================================ -->
+                    <!-- SEÇÃO INSTAGRAM - WIDGET PRÓPRIO (IG FEED)                   -->
+                    <!-- ============================================================ -->
                     <section id="instagram-section" class="mt-12 sm:mt-16">
+                        <!-- Cabeçalho da Seção -->
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
                             <div>
                                 <div class="flex items-center gap-3 mb-2">
@@ -304,10 +318,25 @@
                             </a>
                         </div>
 
+                        <!-- Widget do Instagram (Feed próprio) -->
                         <div class="glass-panel rounded-2xl overflow-hidden p-2 sm:p-4 border border-white/10">
-                            <behold-widget feed-id="zcCyMT0oOBECwGlrRGba"></behold-widget>
+                            <div id="instagram-feed"
+                                 data-limit="12"
+                                 data-layout="grid"
+                                 data-columns="4"
+                                 data-columns-tablet="3"
+                                 data-mobile-columns="2"
+                                 data-gap="12"
+                                 data-radius="12"
+                                 data-aspect-ratio="1/1"
+                                 data-theme="dark"
+                                 data-show-caption="false"
+                                 data-show-date="false">
+                            </div>
                         </div>
                     </section>
+                    <!-- ============================================================ -->
+
                 </div>
             </div>
             
@@ -315,10 +344,12 @@
             <div id="marketing-page" class="page-content hidden w-full h-full animate-fade-in">
                 <div class="marketing-container-v2">
                     
-                    <!-- Lado Esquerdo: Título + Botões de Ação -->
+                    <!-- Lado Esquerdo: Título + Botões -->
                     <div class="marketing-left">
                         <div class="marketing-category-label">EVENTO ESPECIAL</div>
-                        <h1 id="marketing-title-v2" class="marketing-title-v2"></h1>
+                        <h1 id="marketing-title-v2" class="marketing-title-v2">
+                            <!-- JS injeta aqui -->
+                        </h1>
                         <div class="marketing-buttons-v2">
                             <button id="marketing-details-btn" class="btn-primary-v2">
                                 <i class="fas fa-info-circle"></i> Ver Detalhes
@@ -329,12 +360,12 @@
                         </div>
                     </div>
 
-                    <!-- Lado Direito: Slider + Controles -->
+                    <!-- Lado Direito: Slider de Imagens -->
                     <div class="marketing-right">
                         <div id="marketing-bg-blob" class="marketing-bg-blob"></div>
                         <div id="product-queue" class="product-queue-container"></div>
-                        
-                        <!-- CONTROLES DO SLIDER (sempre na coluna direita) -->
+
+                        <!-- Controles do Slider -->
                         <div class="marketing-controls">
                             <button id="prev-marketing" class="marketing-nav-btn">
                                 <i class="fas fa-chevron-left"></i>
@@ -519,15 +550,20 @@
         </footer>
     </div>
 
+    <!-- Scripts do site -->
     <script src="js/config.js"></script>
     <script src="js/data.js"></script>
     <script src="js/events.js"></script>
     <script src="js/marketing.js"></script>
-    <script src="js/instagram.js"></script>
     <script src="js/live.js"></script>
     <script src="js/ebd.js"></script>
     <script src="js/admin.js"></script>
     <script src="js/app.js"></script>
     <script src="js/scroll-reveal.js"></script>
+
+    <!-- ============================================================ -->
+    <!-- WIDGET DO INSTAGRAM FEED (PRÓPRIO - SUBSTITUI O BEHOLD)      -->
+    <!-- ============================================================ -->
+    <script src="https://ig-feed-hazel.vercel.app/widget.js"></script>
 </body>
 </html>
