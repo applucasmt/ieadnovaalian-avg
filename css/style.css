@@ -63,9 +63,23 @@ body {
     overflow: hidden;
 }
 
-@media (max-width: 768px) { .hero-section { min-height: 70vh; } }
-@media (max-width: 400px) { .hero-section { min-height: 65vh; } }
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: auto;
+        height: auto;
+        aspect-ratio: 800 / 1200; /* ← altura natural da imagem vertical */
+        max-height: 85vh; /* não deixa passar de 85vh da tela */
+    }
+}
 
+@media (max-width: 400px) {
+    .hero-section {
+        min-height: auto;
+        height: auto;
+        aspect-ratio: 800 / 1200;
+        max-height: 80vh;
+    }
+}
 .hero-content {
     position: absolute;
     z-index: 10;
