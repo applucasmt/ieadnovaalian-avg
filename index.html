@@ -55,6 +55,32 @@
 </head>
 <body class="antialiased selection:bg-brand-yellow/30 selection:text-brand-yellow">
 
+<!-- ============================================================
+     TELA DE LOADING INICIAL
+     Aparece enquanto os dados carregam. Some quando o site
+     está pronto (ou depois de 5s de segurança).
+     ============================================================ -->
+<div id="initial-loading" class="initial-loading">
+    <div class="initial-loading-content">
+        <div class="initial-loading-logo-wrap">
+            <img
+                src="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp"
+                alt="IEAD Nova Aliança"
+                class="initial-loading-logo"
+                onerror="this.style.display='none'"
+            >
+            <div class="initial-loading-ring"></div>
+        </div>
+        <div class="initial-loading-text">
+            <span class="initial-loading-title">IEAD Nova Aliança</span>
+            <span class="initial-loading-subtitle">Carregando...</span>
+        </div>
+        <div class="initial-loading-dots">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+</div>
+    
     <!-- MODAL DE DETALHES DO EVENTO -->
     <div id="event-modal" class="fixed inset-0 z-[60] hidden opacity-0 transition-opacity duration-300" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="window.closeEventModal()"></div>
