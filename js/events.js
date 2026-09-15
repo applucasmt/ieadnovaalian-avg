@@ -244,15 +244,23 @@ window.renderAvisosCarousel = (avisos) => {
         const bgColor = (aviso.bgColor && aviso.bgColor.trim()) ? aviso.bgColor : '#0f172a';
         slide.style.backgroundColor = bgColor;
         
-        const hasImage = isValidImageUrl(aviso.imageUrl);
+               const hasImage = isValidImageUrl(aviso.imageUrl);
         
         if (hasImage) {
             const rawUrl = aviso.imageUrl.trim();
             const imgUrl = window.optimizeImage ? window.optimizeImage(rawUrl, imageWidth) : rawUrl;
             
+            // Aplica a imagem
             slide.style.backgroundImage = 'url(' + imgUrl + ')';
             slide.style.backgroundSize = 'cover';
-            slide.style.backgroundPosition = 'center';
+            slide.style.backgroundPosition = 'center center';
+            slide.style.backgroundRepeat = 'no-repeat';
+            
+            // IMPORTANTE: remove a cor de fundo quando tem imagem
+            slide.style.backgroundColor = 'transparent';
+            
+            // Adiciona classe especial para o CSS tratar
+            slide.classList.add('has-image');
         } else {
             slide.classList.add('no-image');
         }
