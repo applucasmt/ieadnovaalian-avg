@@ -920,12 +920,14 @@ behold-widget a { text-decoration: none; }
     pointer-events: none;
     transform: scale(1.02);
     background-size: cover;
-    background-position: center;
+    background-position: center center;
     background-repeat: no-repeat;
     background-color: #0f172a;
     will-change: opacity, transform;
     border-radius: inherit;
     overflow: hidden;
+    /* CORREÇÃO: força o background a cobrir tudo */
+    background-clip: border-box;
 }
 
 .aviso-slide.active {
