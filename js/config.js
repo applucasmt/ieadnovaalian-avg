@@ -6,7 +6,7 @@
 // CONFIGURAÇÕES DA APLICAÇÃO
 // ============================================================
 window.CONFIG = {
-    scriptUrl: 'https://script.google.com/macros/s/AKfycbxfp4FgLF0s_6UNQ8MrU3EBeJvCMLvS92xpLZ-HeO7H0FPlEtkSd_DWsGw4FJxC0hJ_ag/exec',
+    scriptUrl: 'https://script.google.com/macros/s/AKfycbzm6Tpwxlxs4Mlm2_VtYRXhw27qahnTrWWnrXkLTCyDbxKL964I_HOvChiru2JcSOY/exec',
     youtubeKey: 'AIzaSyAov1GBz0bCyGsBLUkT6qjDPzT5TZbHrf8',
     youtubeChannel: 'UCEhO2WiTY8qy_cBoQpwoJjQ',
     cacheTime: 3600000, // 1 hora em milissegundos
