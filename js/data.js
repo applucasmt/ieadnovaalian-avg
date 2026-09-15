@@ -500,26 +500,29 @@ window.hideInitialLoading = () => {
     if (!el) return;
     if (el.classList.contains('is-hiding') || el.classList.contains('is-hidden')) return;
 
-    el.classList.add('is-hiding');
+    // ✅ Espera o próximo frame de renderização (garante que o
+    //    navegador já pintou os cards/avisos na tela antes de esconder)
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            // Pequeno delay extra para garantir que imagens em lazy-load
+            // já começaram a aparecer
+            setTimeout(() => {
+                el.classList.add('is-hiding');
 
-    // Depois da transição, marca como hidden (remove do fluxo)
-    setTimeout(() => {
-        el.classList.add('is-hidden');
-    }, 600);
+                // Depois da transição, marca como hidden (remove do fluxo)
+                setTimeout(() => {
+                    el.classList.add('is-hidden');
+                }, 600);
+            }, 600);
+        });
+    });
 };
 
-// Esconde automaticamente quando a página terminar de carregar
-// OU depois de 5s de segurança (o que acontecer primeiro)
+// ✅ Watchdog: se nada esconder em 10s, esconde de qualquer forma
 window.__initialLoadingWatchdog = setTimeout(() => {
+    console.warn('⏱️ Watchdog do loading acionado (10s)');
     window.hideInitialLoading();
-}, 5000);
-
-window.addEventListener('load', () => {
-    // pequeno atraso pra dar tempo do primeiro render
-    setTimeout(() => {
-        window.hideInitialLoading();
-    }, 200);
-});
+}, 10000);
 // ============================================================
 // LOG
 // ============================================================
