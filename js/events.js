@@ -19,10 +19,38 @@ window.getEventStatusBadge = (start, end) => {
 };
 
 // ============================================================
+// ✅ CORREÇÃO / NOVO: HELPER DE ESCAPE HTML (movido para cima)
+// Estava declarada no meio do arquivo e só era usada dentro do
+// renderAvisosCarousel. Agora fica disponível desde o topo, para
+// que createCard também possa usá-la com segurança.
+// ============================================================
+function escapeHtml(text) {
+    if (text === undefined || text === null) return '';
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+}
+
+// ============================================================
+// ✅ CORREÇÃO / NOVO: HELPER DE URL VÁLIDA (movido para cima)
+// Mesmo motivo do escapeHtml: disponível desde o início.
+// ============================================================
+function isValidImageUrl(url) {
+    if (!url || typeof url !== 'string') return false;
+    const trimmed = url.trim();
+    if (trimmed === '') return false;
+    return /^https?:\/\/.+\..+/i.test(trimmed);
+}
+
+// ============================================================
 // CRIAR CARDS
+// ✅ CORREÇÃO: sanitiza os textos com escapeHtml() para evitar
+//    quebra de layout caso o admin digite <, >, & etc.
+//    Também sanitiza atributos onerror e URLs de imagem.
 // ============================================================
 window.createCard = (data, type) => {
-    
+    if (!data) return '';
+
     if (type === 'evento') {
         const date = window.parseDate(data.date);
         const day = date.getDate().toString().padStart(2, '0');
@@ -35,6 +63,10 @@ window.createCard = (data, type) => {
             const endTime = window.parseDate(data.endDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
             timeString += ' - ' + endTime;
         }
+
+        // ✅ CORREÇÃO: escape dos textos dinâmicos
+        const safeName = escapeHtml(data.name);
+        const safeDesc = escapeHtml(data.description || '');
 
         return '<div class="glass-panel group rounded-2xl overflow-hidden hover:-translate-y-2 active:scale-95 transition-all duration-300 flex flex-col h-full bg-brand-surface/50">' +
                     '<div class="relative w-full aspect-[4/5] overflow-hidden cursor-pointer bg-brand-dark/50" onclick="window.openEventModal(' + data._id + ')">' +
@@ -50,13 +82,13 @@ window.createCard = (data, type) => {
                     '</div>' +
                     '<div class="p-6 flex flex-col flex-grow">' +
                         '<div class="flex justify-between items-start gap-2 mb-2">' +
-                            '<h3 class="text-xl font-bold text-white line-clamp-2 group-hover:text-brand-yellow transition-colors cursor-pointer leading-tight" onclick="window.openEventModal(' + data._id + ')">' + data.name + '</h3>' +
+                            '<h3 class="text-xl font-bold text-white line-clamp-2 group-hover:text-brand-yellow transition-colors cursor-pointer leading-tight" onclick="window.openEventModal(' + data._id + ')">' + safeName + '</h3>' +
                         '</div>' +
                         '<div class="flex flex-wrap items-center gap-2 mb-3">' +
                             statusBadge +
                             '<div class="flex items-center gap-1 text-xs text-gray-400"><i class="far fa-clock"></i><span>' + timeString + '</span></div>' +
                         '</div>' +
-                        '<p class="text-gray-400 text-sm line-clamp-2 mb-4 flex-grow">' + (data.description || '') + '</p>' +
+                        '<p class="text-gray-400 text-sm line-clamp-2 mb-4 flex-grow">' + safeDesc + '</p>' +
                         '<button onclick="window.openEventModal(' + data._id + ')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-brand-yellow hover:text-brand-dark text-sm font-bold transition-all border border-white/5 active:scale-95 flex items-center justify-center gap-2">' +
                             '<i class="far fa-eye"></i> Ver Detalhes' +
                         '</button>' +
@@ -66,41 +98,53 @@ window.createCard = (data, type) => {
 
     if (type === 'ministerio') {
         const optimizedCapa = window.optimizeImage(data.capa, 600);
+        // ✅ CORREÇÃO: escape dos textos dinâmicos
+        const safeNome = escapeHtml(data.nome || '');
+        const safeLideres = escapeHtml(data.lideres || 'A definir');
+        const safeRegentes = escapeHtml(data.regentes || '');
+        const safeTelefone = String(data.telefone || '').replace(/\D/g, '');
+
         return '<div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95">' +
                     '<div class="relative h-56 bg-brand-dark/50">' +
                         '<img src="' + optimizedCapa + '" loading="lazy" decoding="async" onerror="this.src=\'https://placehold.co/600x400/1e293b/FFFFFF?text=Ministerio\'" class="w-full h-full object-cover">' +
                         '<div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>' +
-                        '<div class="absolute bottom-4 left-4"><h3 class="text-2xl font-bold text-white">' + (data.nome || '') + '</h3></div>' +
+                        '<div class="absolute bottom-4 left-4"><h3 class="text-2xl font-bold text-white">' + safeNome + '</h3></div>' +
                     '</div>' +
                     '<div class="p-6">' +
                         '<div class="space-y-4 mb-6">' +
                             '<div class="flex items-start gap-3">' +
                                 '<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-crown text-brand-yellow"></i></div>' +
-                                '<div><p class="text-xs text-gray-500 uppercase font-bold">Liderança</p><p class="text-sm text-gray-200">' + (data.lideres || 'A definir') + '</p></div>' +
+                                '<div><p class="text-xs text-gray-500 uppercase font-bold">Liderança</p><p class="text-sm text-gray-200">' + safeLideres + '</p></div>' +
                             '</div>' +
-                            (data.regentes ? '<div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-users text-blue-400"></i></div><div><p class="text-xs text-gray-500 uppercase font-bold">Regentes</p><p class="text-sm text-gray-200">' + data.regentes + '</p></div></div>' : '') +
+                            (data.regentes ? '<div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-users text-blue-400"></i></div><div><p class="text-xs text-gray-500 uppercase font-bold">Regentes</p><p class="text-sm text-gray-200">' + safeRegentes + '</p></div></div>' : '') +
                         '</div>' +
-                        (data.telefone ? '<a href="https://wa.me/55' + String(data.telefone || '').replace(/\D/g,'') + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Entrar em Contato</a>' : '') +
+                        (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Entrar em Contato</a>' : '') +
                     '</div>' +
                 '</div>';
     }
 
     if (type === 'talento') {
         const optimizedCapa = window.optimizeImage(data.capa, 600);
+        // ✅ CORREÇÃO: escape dos textos dinâmicos
+        const safeNome = escapeHtml(data.nome || '');
+        const safeDescricao = escapeHtml(data.descricao || 'Sem descrição.');
+        const safeTelefone = String(data.telefone || '').replace(/\D/g, '');
+        const safeVideo = escapeHtml(data.video || '');
+
         return '<div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">' +
                     '<div class="relative h-64 sm:h-72 bg-brand-dark/50">' +
                         '<img src="' + optimizedCapa + '" loading="lazy" decoding="async" onerror="this.src=\'https://placehold.co/600x400/1e293b/FFFFFF?text=Talento\'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">' +
                         '<div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>' +
                         '<div class="absolute bottom-4 left-4 right-4">' +
-                            '<h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">' + (data.nome || '') + '</h3>' +
+                            '<h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">' + safeNome + '</h3>' +
                             '<div class="h-1 w-12 bg-brand-yellow rounded-full"></div>' +
                         '</div>' +
                     '</div>' +
                     '<div class="p-6 flex flex-col flex-grow">' +
-                        '<p class="text-gray-300 text-sm mb-6 flex-grow leading-relaxed">' + (data.descricao || 'Sem descrição.') + '</p>' +
+                        '<p class="text-gray-300 text-sm mb-6 flex-grow leading-relaxed">' + safeDescricao + '</p>' +
                         '<div class="flex flex-col gap-3">' +
-                            (data.video ? '<a href="' + data.video + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-red-600/10 text-red-500 hover:bg-red-600 hover:text-white border border-red-600/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-youtube"></i> Ver Vídeo</a>' : '') +
-                            (data.telefone ? '<a href="https://wa.me/55' + String(data.telefone || '').replace(/\D/g,'') + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
+                            (data.video ? '<a href="' + safeVideo + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-red-600/10 text-red-500 hover:bg-red-600 hover:text-white border border-red-600/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-youtube"></i> Ver Vídeo</a>' : '') +
+                            (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
                         '</div>' +
                     '</div>' +
                 '</div>';
@@ -108,12 +152,16 @@ window.createCard = (data, type) => {
     
     if (type === 'album') {
         const optimizedCover = window.optimizeImage(data.coverImageUrl, 500);
-        return '<a href="' + data.albumUrl + '" target="_blank" class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform bg-brand-dark/50">' +
+        // ✅ CORREÇÃO: escape dos textos dinâmicos
+        const safeName = escapeHtml(data.albumName || '');
+        const safeUrl = escapeHtml(data.albumUrl || '#');
+
+        return '<a href="' + safeUrl + '" target="_blank" class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform bg-brand-dark/50">' +
                     '<img src="' + optimizedCover + '" loading="lazy" decoding="async" onerror="this.src=\'https://placehold.co/400x400/1e293b/FFFFFF?text=Galeria\'" class="w-full h-full object-cover">' +
                     '<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">' +
                         '<div class="text-center p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">' +
                             '<i class="fas fa-images text-3xl text-brand-yellow mb-2"></i>' +
-                            '<h3 class="font-bold text-white text-lg">' + (data.albumName || '') + '</h3>' +
+                            '<h3 class="font-bold text-white text-lg">' + safeName + '</h3>' +
                             '<p class="text-sm text-gray-300 mt-1">Ver fotos</p>' +
                         '</div>' +
                     '</div>' +
@@ -124,27 +172,10 @@ window.createCard = (data, type) => {
 };
 
 // ============================================================
-// HELPER: ESCAPAR HTML
-// ============================================================
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-// ============================================================
-// HELPER: VERIFICAR SE É URL VÁLIDA
-// ============================================================
-function isValidImageUrl(url) {
-    if (!url || typeof url !== 'string') return false;
-    const trimmed = url.trim();
-    if (trimmed === '') return false;
-    return /^https?:\/\/.+\..+/i.test(trimmed);
-}
-
-// ============================================================
 // RENDERIZAR CARROSSEL DE AVISOS
+// ✅ CORREÇÃO: passa a usar os helpers no topo do arquivo.
+//    Também limpa timers antigos ao re-renderizar (evita
+//    autoplay duplicado quando o carrossel é reconstruído).
 // ============================================================
 window.renderAvisosCarousel = (avisos) => {
     console.log('🎬 renderAvisosCarousel chamado com:', avisos);
@@ -157,18 +188,23 @@ window.renderAvisosCarousel = (avisos) => {
         console.warn('❌ Elementos do carrossel não encontrados no DOM');
         return;
     }
+
+    // ✅ CORREÇÃO: limpa timers antigos para não duplicar autoplay
+    if (window.__avisoAutoplayTimer) {
+        clearInterval(window.__avisoAutoplayTimer);
+        window.__avisoAutoplayTimer = null;
+    }
+    if (window.__avisoProgressTimer) {
+        clearInterval(window.__avisoProgressTimer);
+        window.__avisoProgressTimer = null;
+    }
     
     // ============================================================
     // FILTRA APENAS ATIVOS
     // ============================================================
-    // Um aviso é válido se tiver:
-    // - Pelo menos 1 imagem válida, OU
-    // - Pelo menos 1 campo de texto (title/texto/subtitle/description/button)
-    // ============================================================
     const activeAvisos = (avisos || []).filter(a => {
         if (!a) return false;
         
-        // Respeita campo 'active'
         if (a.active !== undefined && a.active !== '' && a.active !== null) {
             const activeStr = String(a.active).toLowerCase();
             if (activeStr === 'false' || activeStr === '0' || activeStr === 'nao' || activeStr === 'não') {
@@ -176,10 +212,8 @@ window.renderAvisosCarousel = (avisos) => {
             }
         }
         
-        // Verifica se tem imagem válida
         const hasImage = isValidImageUrl(a.imageUrl);
         
-        // Verifica se tem pelo menos um texto não vazio
         const hasText = Boolean(
             (a.title && String(a.title).trim()) ||
             (a.texto && String(a.texto).trim()) ||
@@ -188,7 +222,6 @@ window.renderAvisosCarousel = (avisos) => {
             (a.buttonText && String(a.buttonText).trim())
         );
         
-        // Precisa ter pelo menos imagem OU texto
         return hasImage || hasText;
     });
     
@@ -196,17 +229,18 @@ window.renderAvisosCarousel = (avisos) => {
     
     if (activeAvisos.length === 0) {
         carousel.classList.add('hidden');
+        // ✅ CORREÇÃO: limpa conteúdo ao esconder
+        slidesContainer.innerHTML = '';
+        dotsContainer.innerHTML = '';
         return;
     }
     
-    // Ordena por 'order'
     activeAvisos.sort((a, b) => {
         const oa = parseInt(a.order) || 0;
         const ob = parseInt(b.order) || 0;
         return oa - ob;
     });
     
-    // Mostra o carrossel
     carousel.classList.remove('hidden');
     
     if (activeAvisos.length === 1) {
@@ -215,10 +249,8 @@ window.renderAvisosCarousel = (avisos) => {
         carousel.classList.remove('single');
     }
     
-    // Imagem otimizada
     const imageWidth = 1920;
     
-    // Limpa containers
     slidesContainer.innerHTML = '';
     dotsContainer.innerHTML = '';
     
@@ -238,36 +270,25 @@ window.renderAvisosCarousel = (avisos) => {
         slide.className = 'aviso-slide';
         slide.dataset.index = index;
         
-        // ============================================================
-        // IMAGEM DE FUNDO (SE TIVER)
-        // ============================================================
         const bgColor = (aviso.bgColor && aviso.bgColor.trim()) ? aviso.bgColor : '#0f172a';
         slide.style.backgroundColor = bgColor;
         
-               const hasImage = isValidImageUrl(aviso.imageUrl);
+        const hasImage = isValidImageUrl(aviso.imageUrl);
         
         if (hasImage) {
             const rawUrl = aviso.imageUrl.trim();
             const imgUrl = window.optimizeImage ? window.optimizeImage(rawUrl, imageWidth) : rawUrl;
             
-            // Aplica a imagem
             slide.style.backgroundImage = 'url(' + imgUrl + ')';
             slide.style.backgroundSize = 'cover';
             slide.style.backgroundPosition = 'center center';
             slide.style.backgroundRepeat = 'no-repeat';
-            
-            // IMPORTANTE: remove a cor de fundo quando tem imagem
             slide.style.backgroundColor = 'transparent';
-            
-            // Adiciona classe especial para o CSS tratar
             slide.classList.add('has-image');
         } else {
             slide.classList.add('no-image');
         }
         
-        // ============================================================
-        // VERIFICA SE TEM TEXTO
-        // ============================================================
         const hasTitle = aviso.title && String(aviso.title).trim();
         const hasTexto = aviso.texto && String(aviso.texto).trim();
         const hasSubtitle = aviso.subtitle && String(aviso.subtitle).trim();
@@ -276,17 +297,10 @@ window.renderAvisosCarousel = (avisos) => {
         
         const hasAnyText = hasTitle || hasTexto || hasSubtitle || hasDescription || hasButton;
         
-        // ============================================================
-        // MODO APENAS IMAGEM (sem texto)
-        // Aplica overlay sutil se tiver só imagem
-        // ============================================================
         if (hasImage && !hasAnyText) {
             slide.classList.add('image-only');
         }
         
-        // ============================================================
-        // CONTEÚDO (SÓ SE TIVER TEXTO)
-        // ============================================================
         if (hasAnyText) {
             const content = document.createElement('div');
             const position = aviso.position || 'center';
@@ -332,7 +346,6 @@ window.renderAvisosCarousel = (avisos) => {
         
         slidesContainer.appendChild(slide);
         
-        // Dot
         const dot = document.createElement('button');
         dot.className = 'aviso-dot' + (index === 0 ? ' active' : '');
         dot.setAttribute('aria-label', 'Ir para aviso ' + (index + 1));
@@ -343,10 +356,10 @@ window.renderAvisosCarousel = (avisos) => {
     
     // ============================================================
     // ESTADO DO CARROSSEL
+    // ✅ CORREÇÃO: timers agora são globais (window.__aviso*)
+    //    para que possam ser limpos no início do próximo render.
     // ============================================================
     let currentIndex = 0;
-    let autoplayTimer = null;
-    let progressTimer = null;
     const AUTOPLAY_DELAY = 6000;
     
     const slides = slidesContainer.querySelectorAll('.aviso-slide');
@@ -370,7 +383,10 @@ window.renderAvisosCarousel = (avisos) => {
     function resetProgress() {
         dots.forEach(d => d.style.setProperty('--progress', '0%'));
         
-        if (progressTimer) clearInterval(progressTimer);
+        if (window.__avisoProgressTimer) {
+            clearInterval(window.__avisoProgressTimer);
+            window.__avisoProgressTimer = null;
+        }
         
         const activeDot = dots[currentIndex];
         if (!activeDot) return;
@@ -378,7 +394,7 @@ window.renderAvisosCarousel = (avisos) => {
         let progress = 0;
         const step = 100 / (AUTOPLAY_DELAY / 50);
         
-        progressTimer = setInterval(() => {
+        window.__avisoProgressTimer = setInterval(() => {
             progress += step;
             if (progress >= 100) progress = 100;
             activeDot.style.setProperty('--progress', progress + '%');
@@ -393,19 +409,19 @@ window.renderAvisosCarousel = (avisos) => {
         if (slides.length < 2) return;
         
         resetProgress();
-        autoplayTimer = setInterval(() => {
+        window.__avisoAutoplayTimer = setInterval(() => {
             goToAviso(currentIndex + 1);
         }, AUTOPLAY_DELAY);
     }
     
     function stopAutoplay() {
-        if (autoplayTimer) {
-            clearInterval(autoplayTimer);
-            autoplayTimer = null;
+        if (window.__avisoAutoplayTimer) {
+            clearInterval(window.__avisoAutoplayTimer);
+            window.__avisoAutoplayTimer = null;
         }
-        if (progressTimer) {
-            clearInterval(progressTimer);
-            progressTimer = null;
+        if (window.__avisoProgressTimer) {
+            clearInterval(window.__avisoProgressTimer);
+            window.__avisoProgressTimer = null;
         }
     }
     
@@ -480,6 +496,7 @@ window.openEventModal = (eventId) => {
         hour: '2-digit', minute: '2-digit' 
     }) + 'h';
     
+    // ✅ CORREÇÃO: usa textContent (já era) — mantém seguro contra HTML
     title.textContent = event.name;
     desc.textContent = event.description || 'Sem descrição adicional.';
 
