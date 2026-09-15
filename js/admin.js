@@ -10,27 +10,7 @@ window.SCHEMAS = {
         { key: 'description', label: 'Descrição', type: 'textarea' },
         { key: 'coverUrl', label: 'URL da Capa', type: 'text' }
     ],
-    
-    // ============================================================
-    // AVISOS - NOVO FORMATO (CARROSSEL ESTILO DISNEY/NETFLIX)
-    // ============================================================
-    avisos: [
-        { key: 'title', label: '📝 Título do Aviso', type: 'text', required: true },
-        { key: 'subtitle', label: 'Subtítulo (linha acima do título)', type: 'text' },
-        { key: 'description', label: 'Descrição (texto abaixo do título)', type: 'textarea' },
-        { key: 'imageUrl', label: '🖼️ URL da Imagem de Fundo (opcional)', type: 'text', hint: 'Deixe vazio para usar só cor de fundo' },
-        { key: 'bgColor', label: '🎨 Cor de Fundo (se não tiver imagem)', type: 'color', default: '#0f172a' },
-        { key: 'textColor', label: '🎨 Cor do Texto', type: 'color', default: '#ffffff' },
-        { key: 'buttonText', label: '🔘 Texto do Botão (ex: "Saiba mais")', type: 'text' },
-        { key: 'buttonUrl', label: '🔗 Link do Botão', type: 'text', hint: 'Ex: https://exemplo.com ou /contato' },
-        { key: 'position', label: '📍 Posição do Conteúdo', type: 'select', options: ['left', 'center', 'right', 'custom'], default: 'center' },
-        { key: 'align', label: '↔️ Alinhamento do Texto (só para "custom")', type: 'select', options: ['left', 'center', 'right'], default: 'center' },
-        { key: 'posX', label: '📍 Posição X % (só para "custom")', type: 'number', default: 50, hint: '0 = esquerda, 100 = direita' },
-        { key: 'posY', label: '📍 Posição Y % (só para "custom")', type: 'number', default: 50, hint: '0 = topo, 100 = embaixo' },
-        { key: 'order', label: '🔢 Ordem (menor número aparece primeiro)', type: 'number', default: 1 },
-        { key: 'active', label: '✅ Ativo?', type: 'select', options: ['true', 'false'], default: 'true' }
-    ],
-    
+    avisos: [{ key: 'texto', label: 'Texto do Aviso', type: 'textarea' }],
     ministerios: [
         { key: 'nome', label: 'Nome do Ministério', type: 'text' },
         { key: 'lideres', label: 'Líderes', type: 'text' },
@@ -208,9 +188,6 @@ window.loadAdminTab = async (tab) => {
     }
 };
 
-// ============================================================
-// RENDERIZAR TABELA DE ITENS
-// ============================================================
 window.renderAdminTable = (data, tab) => {
     const container = document.getElementById('admin-content-area');
     if (!data || data.length === 0) {
@@ -223,33 +200,20 @@ window.renderAdminTable = (data, tab) => {
     if (data[0].nome) displayKey = 'nome';
     if (data[0].titulo) displayKey = 'titulo';
     if (data[0].texto) displayKey = 'texto';
-    if (data[0].title) displayKey = 'title';  // Para avisos
 
     let html = '<div class="grid gap-2">';
     const displayData = [...data].reverse();
 
     displayData.forEach((item, index) => {
         const realIndex = data.length - 1 - index;
-        const imgUrl = item.coverUrl || item.capa || item.coverImageUrl || item.imageUrl;
+        const imgUrl = item.coverUrl || item.capa || item.coverImageUrl;
         const imgHtml = imgUrl ? '<img src="' + window.optimizeImage(imgUrl, 100) + '" loading="lazy" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display=\'none\'">' : '';
-
-        // Para avisos, mostra se está ativo/inativo
-        let statusBadge = '';
-        if (tab === 'avisos' && item.active !== undefined) {
-            const isActive = String(item.active).toLowerCase() !== 'false' && String(item.active) !== '0';
-            statusBadge = isActive 
-                ? '<span class="text-xs text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded ml-2">ativo</span>'
-                : '<span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded ml-2">inativo</span>';
-        }
 
         html += '<div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">' +
                     '<div class="flex items-center overflow-hidden pr-4 w-full">' +
                         imgHtml +
-                        '<div class="truncate flex-1">' +
-                            '<div class="flex items-center">' +
-                                '<span class="font-bold text-white block truncate">' + (item[displayKey] || 'Item sem título') + '</span>' +
-                                statusBadge +
-                            '</div>' +
+                        '<div class="truncate">' +
+                            '<span class="font-bold text-white block truncate">' + (item[displayKey] || 'Item sem título') + '</span>' +
                             '<span class="text-xs text-gray-400">' + Object.keys(item).length + ' campos</span>' +
                         '</div>' +
                     '</div>' +
@@ -614,7 +578,7 @@ window.saveConfig = async () => {
 };
 
 // ============================================================
-// MODAL DE EDIÇÃO DE ITEM (com todos os tipos de campo)
+// MODAL DE EDIÇÃO
 // ============================================================
 window.openEditModal = (mode, index) => {
     const modal = document.getElementById('edit-item-modal');
@@ -646,43 +610,10 @@ window.openEditModal = (mode, index) => {
         label.textContent = field.label;
         
         let input;
-        
-        // Textarea
         if (field.type === 'textarea') {
             input = document.createElement('textarea');
             input.rows = 3;
-        } 
-        // Select
-        else if (field.type === 'select') {
-            input = document.createElement('select');
-            (field.options || []).forEach(opt => {
-                const option = document.createElement('option');
-                option.value = opt;
-                option.textContent = opt;
-                if (itemData[field.key] === opt || (!itemData[field.key] && field.default === opt)) {
-                    option.selected = true;
-                }
-                input.appendChild(option);
-            });
-        } 
-        // Color picker
-        else if (field.type === 'color') {
-            input = document.createElement('input');
-            input.type = 'color';
-            if (!itemData[field.key] && field.default) {
-                input.value = field.default;
-            }
-        } 
-        // Number
-        else if (field.type === 'number') {
-            input = document.createElement('input');
-            input.type = 'number';
-            if (!itemData[field.key] && field.default !== undefined) {
-                input.value = field.default;
-            }
-        } 
-        // Text/Outros
-        else {
+        } else {
             input = document.createElement('input');
             input.type = field.type;
         }
@@ -690,12 +621,7 @@ window.openEditModal = (mode, index) => {
         input.className = 'admin-field';
         input.id = 'field-' + field.key;
         
-        // Preenche valor
-        let val = itemData[field.key];
-        if (val === undefined || val === null) {
-            val = field.default !== undefined ? field.default : '';
-        }
-        
+        let val = itemData[field.key] || '';
         if (field.type === 'datetime-local' && val) {
             try {
                 const d = new Date(val);
@@ -703,31 +629,19 @@ window.openEditModal = (mode, index) => {
                 val = d.toISOString().slice(0, 16);
             } catch(e) {}
         }
-        
-        if (field.type !== 'color' || val) {
-            input.value = val;
-        }
+        input.value = val;
         
         wrapper.appendChild(label);
         wrapper.appendChild(input);
-        
-        // Hint (dica abaixo do campo)
-        if (field.hint) {
-            const hint = document.createElement('p');
-            hint.className = 'text-[10px] text-gray-500 italic mt-1';
-            hint.textContent = field.hint;
-            wrapper.appendChild(hint);
-        }
 
-        // Preview de imagem
-        if (['coverUrl', 'capa', 'coverImageUrl', 'imageUrl'].indexOf(field.key) !== -1) {
+        if (['coverUrl', 'capa', 'coverImageUrl'].indexOf(field.key) !== -1) {
             const preview = document.createElement('img');
             preview.className = 'w-full h-40 object-contain bg-black/20 rounded mt-2 border border-white/5 hidden';
             preview.onerror = () => { preview.classList.add('hidden'); };
             
             const updatePreview = (url) => {
-                if (url && url.trim()) {
-                    preview.src = window.optimizeImage ? window.optimizeImage(url, 600) : url;
+                if (url) {
+                    preview.src = window.optimizeImage(url, 600);
                     preview.classList.remove('hidden');
                 } else {
                     preview.classList.add('hidden');
@@ -742,89 +656,6 @@ window.openEditModal = (mode, index) => {
         container.appendChild(wrapper);
     });
     
-    // Adiciona preview do aviso se for a aba "avisos"
-    if (tab === 'avisos') {
-        const previewSection = document.createElement('div');
-        previewSection.className = 'mt-6 pt-6 border-t border-white/10';
-        previewSection.innerHTML = 
-            '<h4 class="text-sm font-bold text-brand-yellow mb-3">' +
-                '<i class="fas fa-eye mr-2"></i> Preview do Aviso' +
-            '</h4>' +
-            '<div class="preview-aviso-box" id="preview-aviso-box">' +
-                '<div class="preview-aviso-content" id="preview-aviso-content">' +
-                    '<div class="preview-aviso-subtitle" id="preview-aviso-subtitle"></div>' +
-                    '<div class="preview-aviso-title" id="preview-aviso-title">Título do Aviso</div>' +
-                    '<div class="preview-aviso-desc" id="preview-aviso-desc"></div>' +
-                '</div>' +
-            '</div>';
-        container.appendChild(previewSection);
-        
-        // Estilo inline para o preview
-        const style = document.createElement('style');
-        style.textContent = 
-            '.preview-aviso-box {' +
-                'position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: #0f172a; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.1); margin-top: 8px;' +
-            '}' +
-            '.preview-aviso-content {' +
-                'position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 20px;' +
-            '}' +
-            '.preview-aviso-content.pos-left { align-items: flex-start; text-align: left; padding-left: 24px; }' +
-            '.preview-aviso-content.pos-center { align-items: center; text-align: center; }' +
-            '.preview-aviso-content.pos-right { align-items: flex-end; text-align: right; padding-right: 24px; }' +
-            '.preview-aviso-subtitle { font-size: 10px; color: #EEBC5A; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }' +
-            '.preview-aviso-title { font-size: 20px; font-weight: 900; color: #fff; line-height: 1.1; text-transform: uppercase; margin-bottom: 6px; }' +
-            '.preview-aviso-desc { font-size: 11px; color: rgba(255,255,255,0.9); line-height: 1.4; max-width: 90%; }' +
-            '.preview-aviso-box::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, transparent 100%); pointer-events: none; }';
-        container.appendChild(style);
-        
-        // Atualiza preview em tempo real
-        const updateAvisoPreview = () => {
-            const bg = document.getElementById('preview-aviso-box');
-            const content = document.getElementById('preview-aviso-content');
-            const subtitleEl = document.getElementById('preview-aviso-subtitle');
-            const titleEl = document.getElementById('preview-aviso-title');
-            const descEl = document.getElementById('preview-aviso-desc');
-            
-            const imageUrl = document.getElementById('field-imageUrl')?.value || '';
-            const bgColor = document.getElementById('field-bgColor')?.value || '#0f172a';
-            const textColor = document.getElementById('field-textColor')?.value || '#ffffff';
-            const position = document.getElementById('field-position')?.value || 'center';
-            const subtitle = document.getElementById('field-subtitle')?.value || '';
-            const title = document.getElementById('field-title')?.value || 'Título do Aviso';
-            const desc = document.getElementById('field-description')?.value || '';
-            
-            if (imageUrl && imageUrl.trim()) {
-                const imgUrl = window.optimizeImage ? window.optimizeImage(imageUrl, 1200) : imageUrl;
-                bg.style.backgroundImage = 'url(' + imgUrl + ')';
-            } else {
-                bg.style.backgroundImage = 'none';
-                bg.style.background = bgColor;
-            }
-            
-            content.className = 'preview-aviso-content pos-' + position;
-            
-            subtitleEl.textContent = subtitle;
-            subtitleEl.style.display = subtitle ? 'block' : 'none';
-            titleEl.textContent = title;
-            titleEl.style.color = textColor;
-            descEl.textContent = desc;
-            descEl.style.color = textColor;
-            descEl.style.display = desc ? 'block' : 'none';
-        };
-        
-        // Adiciona listeners em todos os campos
-        ['field-imageUrl', 'field-bgColor', 'field-textColor', 'field-position', 'field-subtitle', 'field-title', 'field-description'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.addEventListener('input', updateAvisoPreview);
-                el.addEventListener('change', updateAvisoPreview);
-            }
-        });
-        
-        // Roda uma vez para inicializar
-        setTimeout(updateAvisoPreview, 100);
-    }
-    
     modal.classList.remove('hidden');
 };
 
@@ -832,9 +663,6 @@ window.closeEditModal = () => {
     document.getElementById('edit-item-modal').classList.add('hidden');
 };
 
-// ============================================================
-// SALVAR ITEM
-// ============================================================
 window.saveAdminItem = async () => {
     const btn = document.getElementById('btn-save-item');
     const mode = btn.dataset.mode;
@@ -848,9 +676,7 @@ window.saveAdminItem = async () => {
     const newData = {};
     schema.forEach(field => {
         const el = document.getElementById('field-' + field.key);
-        if (el) {
-            newData[field.key] = el.value;
-        }
+        if (el) newData[field.key] = el.value;
     });
     
     const payload = {
@@ -860,9 +686,7 @@ window.saveAdminItem = async () => {
         data: newData
     };
     
-    if (mode === 'edit') {
-        payload.originalId = btn.dataset.originalId;
-    }
+    if (mode === 'edit') payload.originalId = btn.dataset.originalId;
     
     try {
         const res = await fetch(window.CONFIG.scriptUrl, {
@@ -885,14 +709,8 @@ window.saveAdminItem = async () => {
             }
 
             try {
-                localStorage.setItem('admin_' + tab, JSON.stringify({ 
-                    timestamp: Date.now(), 
-                    content: window.adminState.currentData 
-                }));
-                localStorage.setItem('cache_' + tab + '_v2', JSON.stringify({ 
-                    timestamp: Date.now(), 
-                    content: window.adminState.currentData 
-                }));
+                localStorage.setItem('admin_' + tab, JSON.stringify({ timestamp: Date.now(), content: window.adminState.currentData }));
+                localStorage.setItem('cache_' + tab + '_v2', JSON.stringify({ timestamp: Date.now(), content: window.adminState.currentData }));
             } catch(e) {}
 
             window.renderAdminTable(window.adminState.currentData, tab);
@@ -911,9 +729,6 @@ window.saveAdminItem = async () => {
     }
 };
 
-// ============================================================
-// DELETAR ITEM
-// ============================================================
 window.deleteAdminItem = async (index) => {
     if (!confirm('Tem certeza que deseja excluir este item?')) return;
     
@@ -925,11 +740,8 @@ window.deleteAdminItem = async (index) => {
         const res = await fetch(window.CONFIG.scriptUrl, {
             method: 'POST',
             body: JSON.stringify({
-                sheet: tab, 
-                action: 'delete', 
-                password: window.adminState.password,
-                originalId: originalId, 
-                data: {}
+                sheet: tab, action: 'delete', password: window.adminState.password,
+                originalId: originalId, data: {}
             })
         });
         const result = await res.json();
@@ -939,17 +751,8 @@ window.deleteAdminItem = async (index) => {
         if (result.success) {
             alert('Excluído com sucesso!');
             window.adminState.currentData.splice(index, 1);
-            
-            // Atualiza cache
-            try {
-                localStorage.setItem('cache_' + tab + '_v2', JSON.stringify({ 
-                    timestamp: Date.now(), 
-                    content: window.adminState.currentData 
-                }));
-            } catch(e) {}
-            
             window.renderAdminTable(window.adminState.currentData, tab);
-            if (typeof window.loadData === 'function') window.loadData();
+            window.loadAdminTab(tab);
         } else {
             alert('Erro: ' + result.message);
         }
@@ -958,7 +761,4 @@ window.deleteAdminItem = async (index) => {
     }
 };
 
-// ============================================================
-// LOG
-// ============================================================
-console.log('🔐 admin.js carregado (com suporte a avisos em carrossel)');
+console.log('🔐 admin.js carregado');
