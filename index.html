@@ -15,12 +15,12 @@
     <meta property="og:locale" content="pt_BR">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
+
     <link rel="preconnect" href="https://wsrv.nl">
     <link rel="preconnect" href="https://ig-feed-hazel.vercel.app">
 
@@ -84,7 +84,7 @@
     <div id="marketing-modal" class="fixed inset-0 z-[75] hidden items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="window.closeMarketingModal()"></div>
         <div class="marketing-modal-content" id="marketing-modal-box">
-            
+
             <!-- Botão Fechar -->
             <button onclick="window.closeMarketingModal()" class="marketing-modal-close">
                 <i class="fas fa-times"></i>
@@ -96,13 +96,13 @@
                 <div class="marketing-modal-image">
                     <img id="marketing-modal-img" src="" alt="Cartaz do evento">
                 </div>
-                
+
                 <!-- Informações -->
                 <div class="marketing-modal-info">
                     <div class="marketing-modal-category">EVENTO ESPECIAL</div>
                     <h2 id="marketing-modal-title" class="marketing-modal-title"></h2>
                     <p id="marketing-modal-desc" class="marketing-modal-desc"></p>
-                    
+
                     <!-- Botão Whatsapp -->
                     <a id="marketing-modal-whatsapp" href="#" target="_blank" class="marketing-modal-whatsapp-btn">
                         <i class="fab fa-whatsapp text-xl"></i> Solicitar Cartaz via WhatsApp
@@ -130,7 +130,7 @@
     <div id="admin-modal" class="fixed inset-0 z-[70] hidden opacity-0 transition-opacity duration-300" aria-modal="true" role="dialog">
         <div class="absolute inset-0 admin-modal-bg transition-opacity" onclick="window.closeAdmin()"></div>
         <div class="absolute inset-0 flex items-center justify-center p-4">
-            
+
             <div id="admin-login-screen" class="bg-[#1e293b] w-full max-w-md p-8 rounded-2xl shadow-2xl border border-white/10 transform scale-95 transition-all">
                 <h2 class="text-2xl font-bold text-white mb-6 text-center"><i class="fas fa-user-lock text-brand-yellow mr-2"></i> Acesso Administrativo</h2>
                 <div class="space-y-4">
@@ -152,7 +152,7 @@
                     <h2 class="text-xl font-bold text-white"><i class="fas fa-cog text-brand-yellow mr-2"></i> Painel de Controle</h2>
                     <button onclick="window.closeAdmin()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
                 </div>
-                
+
                 <div class="flex overflow-x-auto p-2 bg-white/5 gap-2 border-b border-white/5 shrink-0">
                     <button onclick="loadAdminTab('eventos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab active whitespace-nowrap" data-tab="eventos">Eventos/Agenda</button>
                     <button onclick="loadAdminTab('avisos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="avisos">Avisos Home</button>
@@ -195,7 +195,7 @@
     </div>
 
     <div id="app" class="min-h-screen flex flex-col relative z-10">
-        
+
         <header class="sticky top-0 z-50 glass-panel border-b border-white/5 transition-all duration-300" id="main-header">
             <nav class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
                 <a href="#" data-page="igreja" class="nav-link flex items-center gap-3 group active:scale-95 transition-transform">
@@ -257,19 +257,17 @@
             <div id="igreja-page" class="page-content">
                 <section class="hero-section relative flex items-center justify-center overflow-hidden">
                     <div class="absolute inset-0 z-0">
-                        <img id="site-hero" src="https://i.ibb.co/4nx19qbR/imgi-22-dji-fly-20241201-110126-166-1733065539755-photo-optimized.webp" alt="Interior da Igreja">
+                        <!-- ✅ CORREÇÃO: src vazio. JS aplica a imagem correta. -->
+                        <img id="site-hero" src="" alt="Interior da Igreja">
                         <div class="absolute inset-0 bg-[#0f172a]/50"></div>
                     </div>
-                    <div id="hero-content" class="hero-content pos-center">
-                        <div class="preview-badge" id="hero-badge" style="background: rgba(238,188,90,0.15); border: 1px solid rgba(238,188,90,0.3); color: #EEBC5A; padding: 0.25rem 1rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; backdrop-filter: blur(8px);">
-                            Bem-vindo à casa do pai
-                        </div>
-                        <h1 class="text-4xl xs:text-5xl sm:text-7xl md:text-8xl font-bold text-white tracking-tight mb-4 sm:mb-6 leading-tight drop-shadow-lg" id="hero-title">
-                            JARDIM <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">NOVA ALIANÇA</span>
-                        </h1>
-                        <p class="text-base sm:text-xl text-gray-300 font-light max-w-2xl mb-8 sm:mb-10 leading-relaxed" id="hero-description">
-                            Um lugar de adoração, comunhão e crescimento espiritual. Venha fazer parte desta família.
-                        </p>
+                    <div id="hero-content" class="hero-content">
+                        <!-- ✅ CORREÇÃO: badge vazio -->
+                        <div class="preview-badge" id="hero-badge" style="background: rgba(238,188,90,0.15); border: 1px solid rgba(238,188,90,0.3); color: #EEBC5A; padding: 0.25rem 1rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; backdrop-filter: blur(8px); display: none;"></div>
+                        <!-- ✅ CORREÇÃO: título vazio -->
+                        <h1 class="text-4xl xs:text-5xl sm:text-7xl md:text-8xl font-bold text-white tracking-tight mb-4 sm:mb-6 leading-tight drop-shadow-lg" id="hero-title"></h1>
+                        <!-- ✅ CORREÇÃO: descrição vazia -->
+                        <p class="text-base sm:text-xl text-gray-300 font-light max-w-2xl mb-8 sm:mb-10 leading-relaxed" id="hero-description"></p>
                         <div class="flex flex-col sm:flex-row gap-4">
                             <button onclick="window.switchPage('aovivo')" class="bg-brand-yellow text-brand-dark font-bold py-3 sm:py-4 px-8 rounded-full active:scale-95 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(238,188,90,0.4)] flex justify-center items-center gap-2">
                                 <i class="fas fa-play text-sm"></i> Assistir Culto
@@ -280,9 +278,9 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <div id="main-content-wrapper" class="container mx-auto px-4 sm:px-6 pt-6 pb-10 sm:py-16">
-                    
+
                     <!-- ============================================================ -->
                     <!-- CARROSSEL DE AVISOS (estilo Disney/Netflix)                  -->
                     <!-- ============================================================ -->
@@ -303,7 +301,7 @@
                         <div id="aviso-dots" class="aviso-dots"></div>
                     </div>
                     <!-- ============================================================ -->
-                    
+
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4 mt-16 sm:mt-20">
                         <div>
                             <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">Próximos Eventos</h2>
@@ -317,7 +315,6 @@
                     <!-- SEÇÃO INSTAGRAM - WIDGET PRÓPRIO                             -->
                     <!-- ============================================================ -->
                     <section id="instagram-section" class="mt-12 sm:mt-16">
-                        <!-- Cabeçalho da Seção -->
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
                             <div>
                                 <div class="flex items-center gap-3 mb-2">
@@ -338,7 +335,6 @@
                             </a>
                         </div>
 
-                        <!-- Widget do Instagram (config carregada automaticamente do painel admin) -->
                         <div class="glass-panel rounded-2xl overflow-hidden p-2 sm:p-4 border border-white/10">
                             <div id="instagram-feed"></div>
                         </div>
@@ -347,16 +343,14 @@
 
                 </div>
             </div>
-            
+
             <!-- PÁGINA MARKETING -->
             <div id="marketing-page" class="page-content hidden w-full h-full animate-fade-in">
                 <div class="marketing-container-v2">
-                    
-                    <!-- Lado Esquerdo: Título + Botões -->
+
                     <div class="marketing-left">
                         <div class="marketing-category-label">EVENTO ESPECIAL</div>
                         <h1 id="marketing-title-v2" class="marketing-title-v2">
-                            <!-- JS injeta aqui -->
                         </h1>
                         <div class="marketing-buttons-v2">
                             <button id="marketing-details-btn" class="btn-primary-v2">
@@ -368,12 +362,10 @@
                         </div>
                     </div>
 
-                    <!-- Lado Direito: Slider de Imagens -->
                     <div class="marketing-right">
                         <div id="marketing-bg-blob" class="marketing-bg-blob"></div>
                         <div id="product-queue" class="product-queue-container"></div>
 
-                        <!-- Controles do Slider -->
                         <div class="marketing-controls">
                             <button id="prev-marketing" class="marketing-nav-btn">
                                 <i class="fas fa-chevron-left"></i>
@@ -394,7 +386,7 @@
                 </div>
                 <div id="all-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
-            
+
             <div id="ministerios-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="text-center mb-10 sm:mb-12">
                     <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Ministérios</h1>
@@ -457,7 +449,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div id="aovivo-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="max-w-5xl mx-auto">
                     <div class="text-center mb-10 sm:mb-12">
