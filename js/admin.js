@@ -2,6 +2,11 @@
 // IEAD NOVA ALIANÇA - PAINEL ADMIN
 // ============================================================
 
+console.log('🚀 admin.js: Iniciando carregamento...');
+
+// ============================================================
+// SCHEMAS
+// ============================================================
 window.SCHEMAS = {
     eventos: [
         { key: 'name', label: 'Nome do Evento', type: 'text' },
@@ -10,27 +15,22 @@ window.SCHEMAS = {
         { key: 'description', label: 'Descrição', type: 'textarea' },
         { key: 'coverUrl', label: 'URL da Capa', type: 'text' }
     ],
-    
-    // ============================================================
-    // AVISOS - CARROSSEL
-    // ============================================================
     avisos: [
         { key: 'title', label: '📝 Título do Aviso (opcional)', type: 'text' },
-        { key: 'subtitle', label: 'Subtítulo (linha acima do título)', type: 'text' },
-        { key: 'description', label: 'Descrição (texto abaixo do título)', type: 'textarea' },
-        { key: 'imageUrl', label: '🖼️ URL da Imagem de Fundo (opcional)', type: 'text', hint: 'Deixe vazio para usar só cor de fundo' },
-        { key: 'bgColor', label: '🎨 Cor de Fundo (se não tiver imagem)', type: 'color', default: '#0f172a' },
+        { key: 'subtitle', label: 'Subtítulo', type: 'text' },
+        { key: 'description', label: 'Descrição', type: 'textarea' },
+        { key: 'imageUrl', label: '🖼️ URL da Imagem de Fundo', type: 'text' },
+        { key: 'bgColor', label: '🎨 Cor de Fundo', type: 'color', default: '#0f172a' },
         { key: 'textColor', label: '🎨 Cor do Texto', type: 'color', default: '#ffffff' },
-        { key: 'buttonText', label: '🔘 Texto do Botão (ex: "Saiba mais")', type: 'text' },
-        { key: 'buttonUrl', label: '🔗 Link do Botão', type: 'text', hint: 'Ex: https://exemplo.com ou /contato' },
-        { key: 'position', label: '📍 Posição do Conteúdo', type: 'select', options: ['left', 'center', 'right', 'custom'], default: 'center' },
-        { key: 'align', label: '↔️ Alinhamento do Texto (só para "custom")', type: 'select', options: ['left', 'center', 'right'], default: 'center' },
-        { key: 'posX', label: '📍 Posição X % (só para "custom")', type: 'number', default: 50, hint: '0 = esquerda, 100 = direita' },
-        { key: 'posY', label: '📍 Posição Y % (só para "custom")', type: 'number', default: 50, hint: '0 = topo, 100 = embaixo' },
-        { key: 'order', label: '🔢 Ordem (menor número aparece primeiro)', type: 'number', default: 1 },
+        { key: 'buttonText', label: '🔘 Texto do Botão', type: 'text' },
+        { key: 'buttonUrl', label: '🔗 Link do Botão', type: 'text' },
+        { key: 'position', label: '📍 Posição', type: 'select', options: ['left', 'center', 'right', 'custom'], default: 'center' },
+        { key: 'align', label: '↔️ Alinhamento (custom)', type: 'select', options: ['left', 'center', 'right'], default: 'center' },
+        { key: 'posX', label: '📍 X %', type: 'number', default: 50 },
+        { key: 'posY', label: '📍 Y %', type: 'number', default: 50 },
+        { key: 'order', label: '🔢 Ordem', type: 'number', default: 1 },
         { key: 'active', label: '✅ Ativo?', type: 'select', options: ['true', 'false'], default: 'true' }
     ],
-    
     ministerios: [
         { key: 'nome', label: 'Nome do Ministério', type: 'text' },
         { key: 'lideres', label: 'Líderes', type: 'text' },
@@ -56,42 +56,59 @@ window.SCHEMAS = {
     ]
 };
 
+console.log('✅ admin.js: SCHEMAS carregados');
+
+// ============================================================
+// ESTADO DO HERO
+// ============================================================
 window.heroState = {
     position: 'center',
     align: 'center',
     posX: 50,
-    posY: 50,
-    title: '',
-    subtitle: '',
-    description: ''
+    posY: 50
 };
 
 // ============================================================
-// ABRIR / FECHAR ADMIN
+// ABRIR ADMIN
 // ============================================================
-window.openAdmin = () => {
+window.openAdmin = function() {
+    console.log('🔓 openAdmin() chamado');
+    
     const modal = document.getElementById('admin-modal');
     const login = document.getElementById('admin-login-screen');
     const dashboard = document.getElementById('admin-dashboard');
     const errorMsg = document.getElementById('admin-login-error');
     
+    if (!modal) {
+        console.error('❌ Modal do admin não encontrado');
+        alert('Erro: modal do admin não encontrado.');
+        return;
+    }
+    
     modal.classList.remove('hidden');
     setTimeout(() => modal.classList.remove('opacity-0'), 10);
     
-    if (window.adminState.isAuthenticated) {
+    if (window.adminState && window.adminState.isAuthenticated) {
         login.classList.add('hidden');
         dashboard.classList.remove('hidden');
         window.loadAdminTab('eventos');
     } else {
         login.classList.remove('hidden');
         dashboard.classList.add('hidden');
-        document.getElementById('admin-password').value = '';
+        const passInput = document.getElementById('admin-password');
+        if (passInput) passInput.value = '';
         if (errorMsg) errorMsg.classList.add('hidden');
     }
 };
 
-window.closeAdmin = () => {
+console.log('✅ admin.js: openAdmin definido');
+
+// ============================================================
+// FECHAR ADMIN
+// ============================================================
+window.closeAdmin = function() {
     const modal = document.getElementById('admin-modal');
+    if (!modal) return;
     modal.classList.add('opacity-0');
     setTimeout(() => modal.classList.add('hidden'), 300);
 };
@@ -99,36 +116,49 @@ window.closeAdmin = () => {
 // ============================================================
 // LOGIN
 // ============================================================
-window.adminLogin = () => {
+window.adminLogin = function() {
     const input = document.getElementById('admin-password');
     const errorMsg = document.getElementById('admin-login-error');
     const btn = document.getElementById('admin-login-btn');
-    const pass = input.value;
+    const pass = input ? input.value : '';
     
     if (errorMsg) errorMsg.classList.add('hidden');
     
     if (!pass) {
-        if (errorMsg) { errorMsg.textContent = 'Digite a senha.'; errorMsg.classList.remove('hidden'); }
-        input.classList.add('shake');
-        setTimeout(() => input.classList.remove('shake'), 500);
+        if (errorMsg) { 
+            errorMsg.textContent = 'Digite a senha.'; 
+            errorMsg.classList.remove('hidden'); 
+        }
+        if (input) {
+            input.classList.add('shake');
+            setTimeout(() => input.classList.remove('shake'), 500);
+        }
         return;
     }
     
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+    }
     
-    if (pass !== window.ADMIN_PASSWORD_LOCAL) {
+    const senhaCorreta = window.ADMIN_PASSWORD_LOCAL || '12345';
+    
+    if (pass !== senhaCorreta) {
         setTimeout(() => {
             if (errorMsg) {
                 errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Senha incorreta. Tente novamente.';
                 errorMsg.classList.remove('hidden');
             }
-            input.classList.add('shake');
-            setTimeout(() => input.classList.remove('shake'), 500);
-            input.value = '';
-            input.focus();
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+            if (input) {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                input.value = '';
+                input.focus();
+            }
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+            }
         }, 600);
         return;
     }
@@ -139,23 +169,19 @@ window.adminLogin = () => {
     setTimeout(() => {
         document.getElementById('admin-login-screen').classList.add('hidden');
         document.getElementById('admin-dashboard').classList.remove('hidden');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
-        input.value = '';
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+        }
+        if (input) input.value = '';
         window.loadAdminTab('eventos');
     }, 600);
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    const passInput = document.getElementById('admin-password');
-    if (passInput) {
-        passInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') { e.preventDefault(); window.adminLogin(); }
-        });
-    }
-});
-
-window.handleServerAuthError = (result) => {
+// ============================================================
+// HANDLER DE ERRO DE AUTENTICAÇÃO
+// ============================================================
+window.handleServerAuthError = function(result) {
     if (result && result.message && result.message.toLowerCase().indexOf('senha incorreta') !== -1) {
         alert('Sessão expirada. Faça login novamente.');
         window.adminState.isAuthenticated = false;
@@ -168,14 +194,19 @@ window.handleServerAuthError = (result) => {
 };
 
 // ============================================================
-// CARREGAR ABA (CORRIGIDO - SEM CACHE, COM DEBUG)
+// CARREGAR ABA
 // ============================================================
-window.loadAdminTab = async (tab) => {
+window.loadAdminTab = async function(tab) {
+    console.log('📂 Carregando aba:', tab);
+    
     window.adminState.currentTab = tab;
     
     document.querySelectorAll('.admin-tab').forEach(b => {
-        if (b.dataset.tab === tab) b.classList.add('active', 'bg-white/10', 'text-white');
-        else b.classList.remove('active', 'bg-white/10', 'text-white');
+        if (b.dataset.tab === tab) {
+            b.classList.add('active', 'bg-white/10', 'text-white');
+        } else {
+            b.classList.remove('active', 'bg-white/10', 'text-white');
+        }
     });
 
     const btnNewItem = document.getElementById('btn-new-item');
@@ -184,20 +215,22 @@ window.loadAdminTab = async (tab) => {
     }
     
     const contentArea = document.getElementById('admin-content-area');
+    if (!contentArea) {
+        console.error('❌ admin-content-area não encontrado');
+        return;
+    }
+    
     contentArea.innerHTML = '<div class="text-center py-10"><i class="fas fa-spinner fa-spin text-3xl text-brand-yellow"></i><p class="mt-2 text-gray-400">Carregando dados...</p></div>';
     
     try {
-        // SEMPRE busca dados frescos (ignora cache)
         const url = window.CONFIG.scriptUrl + '?sheet=' + tab + '&cacheBust=' + Date.now();
-        
-        console.log('🔄 Buscando dados da aba "' + tab + '":', url);
+        console.log('🌐 Buscando:', url);
         
         const res = await fetch(url);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         
         const data = await res.json();
-        
-        console.log('📦 Dados recebidos da aba "' + tab + '":', data);
+        console.log('📦 Dados recebidos:', data);
         
         if (data && data.error) {
             throw new Error(data.error);
@@ -209,16 +242,14 @@ window.loadAdminTab = async (tab) => {
                 heroPosition: 'center', heroAlign: 'center', heroPosX: 50, heroPosY: 50,
                 heroTitle: 'JARDIM\\nNOVA ALIANÇA',
                 heroSubtitle: 'Bem-vindo à casa do pai',
-                heroDescription: 'Um lugar de adoração, comunhão e crescimento espiritual. Venha fazer parte desta família.'
+                heroDescription: 'Um lugar de adoração, comunhão e crescimento espiritual.'
             }];
             window.adminState.currentData = configData;
             window.renderConfigForm(configData[0]);
         } else {
-            // Garante que é array
             const dataArray = Array.isArray(data) ? data : [];
             window.adminState.currentData = dataArray;
             
-            // Salva no cache local para fallback
             try {
                 localStorage.setItem('admin_' + tab, JSON.stringify({
                     timestamp: Date.now(),
@@ -229,23 +260,23 @@ window.loadAdminTab = async (tab) => {
             window.renderAdminTable(dataArray, tab);
         }
     } catch (e) {
-        console.error('❌ Erro ao carregar aba "' + tab + '":', e);
+        console.error('❌ Erro ao carregar aba:', e);
         contentArea.innerHTML = '<p class="text-red-400 text-center py-10">Erro ao carregar dados: ' + e.message + '</p>';
     }
 };
 
 // ============================================================
-// RENDERIZAR TABELA DE ITENS
+// RENDERIZAR TABELA
 // ============================================================
-window.renderAdminTable = (data, tab) => {
+window.renderAdminTable = function(data, tab) {
     const container = document.getElementById('admin-content-area');
+    if (!container) return;
     
     if (!data || data.length === 0) {
         container.innerHTML = '<p class="text-gray-400 text-center py-10">Nenhum item encontrado.</p>';
         return;
     }
 
-    // Detecta a chave principal de exibição
     let displayKey = Object.keys(data[0])[0];
     if (data[0].name) displayKey = 'name';
     if (data[0].nome) displayKey = 'nome';
@@ -264,7 +295,6 @@ window.renderAdminTable = (data, tab) => {
             ? '<img src="' + window.optimizeImage(imgUrl, 100) + '" loading="lazy" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display=\'none\'">' 
             : '';
 
-        // Badge de status (avisos)
         let statusBadge = '';
         if (tab === 'avisos' && item.active !== undefined) {
             const isActive = String(item.active).toLowerCase() !== 'false' && String(item.active) !== '0';
@@ -273,7 +303,6 @@ window.renderAdminTable = (data, tab) => {
                 : '<span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded ml-2">inativo</span>';
         }
 
-        // Nome para exibir
         let displayValue = item[displayKey];
         if (!displayValue) {
             if (item.name) displayValue = item.name;
@@ -285,7 +314,6 @@ window.renderAdminTable = (data, tab) => {
             else displayValue = 'Item sem título';
         }
         
-        // Trunca textos longos
         if (typeof displayValue === 'string' && displayValue.length > 60) {
             displayValue = displayValue.substring(0, 60) + '...';
         }
@@ -314,8 +342,9 @@ window.renderAdminTable = (data, tab) => {
 // ============================================================
 // RENDERIZAR FORM DE CONFIG
 // ============================================================
-window.renderConfigForm = (config) => {
+window.renderConfigForm = function(config) {
     const container = document.getElementById('admin-content-area');
+    if (!container) return;
     
     const logoUrl = config.logoUrl || '';
     const heroUrl = config.heroUrl || '';
@@ -343,10 +372,7 @@ window.renderConfigForm = (config) => {
                 '<h3 class="text-xl font-bold text-white flex items-center gap-2">' +
                     '<i class="fas fa-palette text-brand-yellow"></i> Identidade Visual do Site' +
                 '</h3>' +
-                '<p class="text-xs text-gray-400 mt-1">Altere logo, imagens (PC e celular), posição e textos.</p>' +
             '</div>' +
-
-            // PREVIEW
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
                 '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3">' +
                     '<i class="fas fa-eye mr-2"></i> Pré-visualização do Hero' +
@@ -357,121 +383,42 @@ window.renderConfigForm = (config) => {
                         '<div class="preview-badge" id="preview-badge">' + heroSubtitle + '</div>' +
                         '<div class="preview-title" id="preview-title">' + heroTitle.replace('\\n', '<br>') + '</div>' +
                         '<div class="preview-desc" id="preview-desc">' + heroDescription + '</div>' +
-                        '<div class="preview-buttons">' +
-                            '<span class="preview-btn-1"><i class="fas fa-play" style="font-size: 0.5rem;"></i> Assistir Culto</span>' +
-                            '<span class="preview-btn-2">Fale Conosco</span>' +
-                        '</div>' +
                     '</div>' +
                 '</div>' +
-                '<p class="text-[10px] text-gray-500 mt-2 italic">Esta é uma simulação fiel. O resultado final será idêntico.</p>' +
             '</div>' +
-
-            // TEXTOS
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
                 '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3">' +
                     '<i class="fas fa-font mr-2"></i> Textos do Hero' +
                 '</label>' +
                 '<div class="space-y-3">' +
-                    '<div>' +
-                        '<label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Badge</label>' +
-                        '<input type="text" id="config-heroSubtitle" class="admin-field" value="' + heroSubtitle + '" oninput="window.updatePreviewText()">' +
-                    '</div>' +
-                    '<div>' +
-                        '<label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Título (use \\n para quebra)</label>' +
-                        '<input type="text" id="config-heroTitle" class="admin-field" value="' + heroTitle + '" oninput="window.updatePreviewText()">' +
-                    '</div>' +
-                    '<div>' +
-                        '<label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Descrição</label>' +
-                        '<textarea id="config-heroDescription" rows="3" class="admin-field" oninput="window.updatePreviewText()">' + heroDescription + '</textarea>' +
-                    '</div>' +
+                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Badge</label><input type="text" id="config-heroSubtitle" class="admin-field" value="' + heroSubtitle + '" oninput="window.updatePreviewText()"></div>' +
+                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Título</label><input type="text" id="config-heroTitle" class="admin-field" value="' + heroTitle + '" oninput="window.updatePreviewText()"></div>' +
+                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Descrição</label><textarea id="config-heroDescription" rows="3" class="admin-field" oninput="window.updatePreviewText()">' + heroDescription + '</textarea></div>' +
                 '</div>' +
             '</div>' +
-
-            // POSIÇÃO
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
                 '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3">' +
                     '<i class="fas fa-arrows-alt mr-2"></i> Posição do Texto' +
                 '</label>' +
                 '<div class="flex gap-2 mb-4 flex-wrap">' +
-                    '<button class="pos-btn ' + (currentPosition === 'left' ? 'active' : '') + '" onclick="window.setHeroPosition(\'left\')" data-pos="left">' +
-                        '<i class="fas fa-align-left"></i> Esquerda' +
-                    '</button>' +
-                    '<button class="pos-btn ' + (currentPosition === 'center' ? 'active' : '') + '" onclick="window.setHeroPosition(\'center\')" data-pos="center">' +
-                        '<i class="fas fa-align-center"></i> Centro' +
-                    '</button>' +
-                    '<button class="pos-btn ' + (currentPosition === 'right' ? 'active' : '') + '" onclick="window.setHeroPosition(\'right\')" data-pos="right">' +
-                        '<i class="fas fa-align-right"></i> Direita' +
-                    '</button>' +
-                    '<button class="pos-btn ' + (currentPosition === 'custom' ? 'active' : '') + '" onclick="window.setHeroPosition(\'custom\')" data-pos="custom">' +
-                        '<i class="fas fa-sliders-h"></i> Personalizado' +
-                    '</button>' +
-                '</div>' +
-
-                '<div id="custom-controls" class="' + (currentPosition === 'custom' ? '' : 'hidden') + ' space-y-4 mt-4 pt-4 border-t border-white/10">' +
-                    '<div>' +
-                        '<label class="flex justify-between text-xs text-gray-400 mb-2">' +
-                            '<span>Posição Horizontal (X)</span>' +
-                            '<span id="posX-label" class="text-brand-yellow font-bold">' + currentPosX + '%</span>' +
-                        '</label>' +
-                        '<input type="range" id="slider-posX" class="admin-slider" min="0" max="100" value="' + currentPosX + '" oninput="window.updateHeroPreview()">' +
-                    '</div>' +
-                    '<div>' +
-                        '<label class="flex justify-between text-xs text-gray-400 mb-2">' +
-                            '<span>Posição Vertical (Y)</span>' +
-                            '<span id="posY-label" class="text-brand-yellow font-bold">' + currentPosY + '%</span>' +
-                        '</label>' +
-                        '<input type="range" id="slider-posY" class="admin-slider" min="0" max="100" value="' + currentPosY + '" oninput="window.updateHeroPreview()">' +
-                    '</div>' +
-                    '<div>' +
-                        '<label class="block text-xs text-gray-400 mb-2">Alinhamento do Texto</label>' +
-                        '<div class="flex gap-2" id="align-buttons">' +
-                            '<button class="pos-btn ' + (currentAlign === 'left' ? 'active' : '') + '" onclick="window.setHeroAlign(\'left\')" data-align="left" style="font-size: 0.7rem; padding: 0.4rem;">Esquerda</button>' +
-                            '<button class="pos-btn ' + (currentAlign === 'center' ? 'active' : '') + '" onclick="window.setHeroAlign(\'center\')" data-align="center" style="font-size: 0.7rem; padding: 0.4rem;">Centro</button>' +
-                            '<button class="pos-btn ' + (currentAlign === 'right' ? 'active' : '') + '" onclick="window.setHeroAlign(\'right\')" data-align="right" style="font-size: 0.7rem; padding: 0.4rem;">Direita</button>' +
-                        '</div>' +
-                    '</div>' +
+                    '<button class="pos-btn ' + (currentPosition === 'left' ? 'active' : '') + '" onclick="window.setHeroPosition(\'left\')" data-pos="left"><i class="fas fa-align-left"></i> Esquerda</button>' +
+                    '<button class="pos-btn ' + (currentPosition === 'center' ? 'active' : '') + '" onclick="window.setHeroPosition(\'center\')" data-pos="center"><i class="fas fa-align-center"></i> Centro</button>' +
+                    '<button class="pos-btn ' + (currentPosition === 'right' ? 'active' : '') + '" onclick="window.setHeroPosition(\'right\')" data-pos="right"><i class="fas fa-align-right"></i> Direita</button>' +
+                    '<button class="pos-btn ' + (currentPosition === 'custom' ? 'active' : '') + '" onclick="window.setHeroPosition(\'custom\')" data-pos="custom"><i class="fas fa-sliders-h"></i> Personalizado</button>' +
                 '</div>' +
             '</div>' +
-
-            // LOGO
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
-                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2">' +
-                    '<i class="fas fa-image mr-2"></i> URL da Logomarca' +
-                '</label>' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-image mr-2"></i> URL da Logomarca</label>' +
                 '<input type="text" id="config-logoUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + logoUrl + '">' +
-                '<div class="mt-4">' +
-                    '<p class="text-xs text-gray-400 mb-2">Pré-visualização:</p>' +
-                    '<div class="w-24 h-24 bg-black/30 rounded-lg flex items-center justify-center border border-white/10 overflow-hidden">' +
-                        '<img id="preview-logo" src="' + (logoUrl || '') + '" class="max-w-full max-h-full object-contain" onerror="this.style.display=\'none\'">' +
-                    '</div>' +
-                '</div>' +
             '</div>' +
-
-            // HERO PC
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
-                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2">' +
-                    '<i class="fas fa-desktop mr-2"></i> Foto de Fundo - PC (Horizontal)' +
-                '</label>' +
-                '<p class="text-[10px] text-gray-500 mb-2">Recomendado: 1920x1080px</p>' +
-                '<input type="text" id="config-heroUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrl + '" oninput="window.updateHeroPreviewImage(this.value)">' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-desktop mr-2"></i> Foto de Fundo - PC</label>' +
+                '<input type="text" id="config-heroUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrl + '">' +
             '</div>' +
-
-            // HERO MOBILE
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
-                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2">' +
-                    '<i class="fas fa-mobile-alt mr-2"></i> Foto de Fundo - Celular (Vertical)' +
-                '</label>' +
-                '<p class="text-[10px] text-gray-500 mb-2">Recomendado: 800x1200px (proporção 2:3)</p>' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-mobile-alt mr-2"></i> Foto de Fundo - Celular</label>' +
                 '<input type="text" id="config-heroUrlMobile" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrlMobile + '">' +
-                '<div class="mt-4">' +
-                    '<p class="text-xs text-gray-400 mb-2">Pré-visualização mobile:</p>' +
-                    '<div class="w-32 h-48 bg-black/30 rounded-lg border border-white/10 overflow-hidden">' +
-                        '<img id="preview-hero-mobile" src="' + (heroUrlMobile || '') + '" class="w-full h-full object-cover" onerror="this.style.display=\'none\'">' +
-                    '</div>' +
-                '</div>' +
             '</div>' +
-
-            // BOTÃO SALVAR
             '<div class="mt-8 pt-4 border-t border-white/10 flex justify-end">' +
                 '<button onclick="window.saveConfig()" class="bg-brand-yellow text-brand-dark font-bold px-8 py-3 rounded-lg hover:bg-white transition-colors flex items-center gap-2 shadow-lg">' +
                     '<i class="fas fa-save"></i> Salvar Configurações' +
@@ -481,33 +428,12 @@ window.renderConfigForm = (config) => {
 
     window.updateHeroPreview();
     window.updatePreviewText();
-
-    // Listeners
-    const inputLogo = document.getElementById('config-logoUrl');
-    const previewLogo = document.getElementById('preview-logo');
-    if (inputLogo && previewLogo) {
-        inputLogo.addEventListener('input', (e) => {
-            const url = e.target.value.trim();
-            if (url) { previewLogo.src = url; previewLogo.style.display = 'block'; }
-            else { previewLogo.style.display = 'none'; }
-        });
-    }
-
-    const inputHeroMobile = document.getElementById('config-heroUrlMobile');
-    const previewHeroMobile = document.getElementById('preview-hero-mobile');
-    if (inputHeroMobile && previewHeroMobile) {
-        inputHeroMobile.addEventListener('input', (e) => {
-            const url = e.target.value.trim();
-            if (url) { previewHeroMobile.src = url; previewHeroMobile.style.display = 'block'; }
-            else { previewHeroMobile.style.display = 'none'; }
-        });
-    }
 };
 
 // ============================================================
 // POSIÇÃO DO HERO
 // ============================================================
-window.setHeroPosition = (position) => {
+window.setHeroPosition = function(position) {
     window.heroState.position = position;
     
     document.querySelectorAll('.pos-btn[data-pos]').forEach(b => {
@@ -515,27 +441,15 @@ window.setHeroPosition = (position) => {
         else b.classList.remove('active');
     });
     
-    const customControls = document.getElementById('custom-controls');
-    if (customControls) {
-        if (position === 'custom') customControls.classList.remove('hidden');
-        else customControls.classList.add('hidden');
-    }
-    
     window.updateHeroPreview();
 };
 
-window.setHeroAlign = (align) => {
+window.setHeroAlign = function(align) {
     window.heroState.align = align;
-    
-    document.querySelectorAll('.pos-btn[data-align]').forEach(b => {
-        if (b.dataset.align === align) b.classList.add('active');
-        else b.classList.remove('active');
-    });
-    
     window.updateHeroPreview();
 };
 
-window.updateHeroPreview = () => {
+window.updateHeroPreview = function() {
     const preview = document.getElementById('hero-preview-content');
     if (!preview) return;
     
@@ -545,32 +459,16 @@ window.updateHeroPreview = () => {
     preview.classList.remove('preview-left', 'preview-center', 'preview-right', 'preview-custom');
     
     if (position === 'custom') {
-        const sliderX = document.getElementById('slider-posX');
-        const sliderY = document.getElementById('slider-posY');
-        const posX = sliderX ? sliderX.value : window.heroState.posX;
-        const posY = sliderY ? sliderY.value : window.heroState.posY;
-        
-        window.heroState.posX = posX;
-        window.heroState.posY = posY;
-        
-        const labelX = document.getElementById('posX-label');
-        const labelY = document.getElementById('posY-label');
-        if (labelX) labelX.textContent = posX + '%';
-        if (labelY) labelY.textContent = posY + '%';
-        
         preview.classList.add('preview-custom');
-        preview.style.setProperty('--hero-x', posX + '%');
-        preview.style.setProperty('--hero-y', posY + '%');
+        preview.style.setProperty('--hero-x', window.heroState.posX + '%');
+        preview.style.setProperty('--hero-y', window.heroState.posY + '%');
         preview.style.setProperty('--hero-align', align);
     } else {
         preview.classList.add('preview-' + position);
-        preview.style.removeProperty('--hero-x');
-        preview.style.removeProperty('--hero-y');
-        preview.style.removeProperty('--hero-align');
     }
 };
 
-window.updatePreviewText = () => {
+window.updatePreviewText = function() {
     const titleEl = document.getElementById('preview-title');
     const badgeEl = document.getElementById('preview-badge');
     const descEl = document.getElementById('preview-desc');
@@ -579,56 +477,31 @@ window.updatePreviewText = () => {
     const subtitleInput = document.getElementById('config-heroSubtitle');
     const descInput = document.getElementById('config-heroDescription');
     
-    if (titleEl && titleInput) {
-        titleEl.innerHTML = titleInput.value.replace(/\\n/g, '<br>');
-    }
-    if (badgeEl && subtitleInput) {
-        badgeEl.textContent = subtitleInput.value;
-    }
-    if (descEl && descInput) {
-        descEl.textContent = descInput.value;
-    }
-};
-
-window.updateHeroPreviewImage = (url) => {
-    const box = document.getElementById('hero-preview-box');
-    if (box && url) {
-        box.style.backgroundImage = 'url(\'' + url + '\')';
-    }
+    if (titleEl && titleInput) titleEl.innerHTML = titleInput.value.replace(/\\n/g, '<br>');
+    if (badgeEl && subtitleInput) badgeEl.textContent = subtitleInput.value;
+    if (descEl && descInput) descEl.textContent = descInput.value;
 };
 
 // ============================================================
 // SALVAR CONFIG
 // ============================================================
-window.saveConfig = async () => {
-    const logoUrl = document.getElementById('config-logoUrl').value.trim();
-    const heroUrl = document.getElementById('config-heroUrl').value.trim();
-    const heroUrlMobile = document.getElementById('config-heroUrlMobile') ? document.getElementById('config-heroUrlMobile').value.trim() : '';
-    const heroTitle = document.getElementById('config-heroTitle').value;
-    const heroSubtitle = document.getElementById('config-heroSubtitle').value;
-    const heroDescription = document.getElementById('config-heroDescription').value;
-    
-    const position = window.heroState.position;
-    const align = window.heroState.align;
-    const posX = window.heroState.posX;
-    const posY = window.heroState.posY;
-    
+window.saveConfig = async function() {
     const payload = {
         sheet: 'config',
         action: 'edit',
         password: window.adminState.password,
         originalId: '',
         data: {
-            logoUrl: logoUrl,
-            heroUrl: heroUrl,
-            heroUrlMobile: heroUrlMobile,
-            heroPosition: position,
-            heroAlign: align,
-            heroPosX: posX,
-            heroPosY: posY,
-            heroTitle: heroTitle,
-            heroSubtitle: heroSubtitle,
-            heroDescription: heroDescription
+            logoUrl: document.getElementById('config-logoUrl').value.trim(),
+            heroUrl: document.getElementById('config-heroUrl').value.trim(),
+            heroUrlMobile: document.getElementById('config-heroUrlMobile').value.trim(),
+            heroPosition: window.heroState.position,
+            heroAlign: window.heroState.align,
+            heroPosX: window.heroState.posX,
+            heroPosY: window.heroState.posY,
+            heroTitle: document.getElementById('config-heroTitle').value,
+            heroSubtitle: document.getElementById('config-heroSubtitle').value,
+            heroDescription: document.getElementById('config-heroDescription').value
         }
     };
     
@@ -642,16 +515,16 @@ window.saveConfig = async () => {
         if (window.handleServerAuthError(result)) return;
         
         if (result.success) {
-            const newConfig = [payload.data];
-            
             try {
                 localStorage.setItem('cache_config_v2', JSON.stringify({
                     timestamp: Date.now(),
-                    content: newConfig
+                    content: [payload.data]
                 }));
             } catch(e) {}
             
-            window.applyConfigImages(newConfig[0]);
+            if (typeof window.applyConfigImages === 'function') {
+                window.applyConfigImages(payload.data);
+            }
             alert('✅ Configurações salvas com sucesso!');
         } else {
             alert('Erro: ' + result.message);
@@ -662,13 +535,20 @@ window.saveConfig = async () => {
 };
 
 // ============================================================
-// MODAL DE EDIÇÃO DE ITEM
+// ABRIR MODAL DE EDIÇÃO
 // ============================================================
-window.openEditModal = (mode, index) => {
+window.openEditModal = function(mode, index) {
+    console.log('✏️ openEditModal:', mode, index);
+    
     const modal = document.getElementById('edit-item-modal');
     const container = document.getElementById('edit-form-container');
     const title = document.getElementById('edit-modal-title');
     const btn = document.getElementById('btn-save-item');
+    
+    if (!modal || !container || !title || !btn) {
+        console.error('❌ Elementos do modal não encontrados');
+        return;
+    }
     
     const tab = window.adminState.currentTab;
     const schema = window.SCHEMAS[tab] || [];
@@ -678,13 +558,11 @@ window.openEditModal = (mode, index) => {
     
     let itemData = {};
     if (mode === 'edit' && index !== null && index !== undefined) {
-        itemData = window.adminState.currentData[index];
-        if (itemData) {
+        itemData = window.adminState.currentData[index] || {};
+        if (itemData && Object.keys(itemData).length > 0) {
             btn.dataset.originalId = Object.values(itemData)[0];
         }
     }
-    
-    console.log('✏️ Abrindo modal para', mode, 'com dados:', itemData);
     
     btn.dataset.mode = mode;
     btn.dataset.index = index;
@@ -697,4 +575,221 @@ window.openEditModal = (mode, index) => {
         label.className = 'text-xs text-gray-400 font-bold uppercase';
         label.textContent = field.label;
         
-        let input
+        let input;
+        
+        if (field.type === 'textarea') {
+            input = document.createElement('textarea');
+            input.rows = 3;
+        } else if (field.type === 'select') {
+            input = document.createElement('select');
+            (field.options || []).forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                if (itemData[field.key] === opt) option.selected = true;
+                input.appendChild(option);
+            });
+        } else if (field.type === 'color') {
+            input = document.createElement('input');
+            input.type = 'color';
+        } else if (field.type === 'number') {
+            input = document.createElement('input');
+            input.type = 'number';
+        } else {
+            input = document.createElement('input');
+            input.type = field.type;
+        }
+        
+        input.className = 'admin-field';
+        input.id = 'field-' + field.key;
+        
+        let val = itemData[field.key];
+        if (val === undefined || val === null) {
+            val = field.default !== undefined ? field.default : '';
+        }
+        
+        if (field.type === 'datetime-local' && val) {
+            try {
+                const d = new Date(val);
+                if (!isNaN(d.getTime())) {
+                    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                    val = d.toISOString().slice(0, 16);
+                }
+            } catch(e) {}
+        }
+        
+        if (field.type !== 'color' || val) {
+            input.value = val;
+        } else if (field.type === 'color') {
+            input.value = field.default || '#000000';
+        }
+        
+        wrapper.appendChild(label);
+        wrapper.appendChild(input);
+        
+        if (field.hint) {
+            const hint = document.createElement('p');
+            hint.className = 'text-[10px] text-gray-500 italic mt-1';
+            hint.textContent = field.hint;
+            wrapper.appendChild(hint);
+        }
+
+        if (['coverUrl', 'capa', 'coverImageUrl', 'imageUrl'].indexOf(field.key) !== -1) {
+            const preview = document.createElement('img');
+            preview.className = 'w-full h-40 object-contain bg-black/20 rounded mt-2 border border-white/5 hidden';
+            preview.onerror = () => { preview.classList.add('hidden'); };
+            
+            const updatePreview = (url) => {
+                if (url && url.trim()) {
+                    preview.src = (typeof window.optimizeImage === 'function') ? window.optimizeImage(url, 600) : url;
+                    preview.classList.remove('hidden');
+                } else {
+                    preview.classList.add('hidden');
+                }
+            };
+
+            updatePreview(input.value);
+            input.addEventListener('input', (e) => updatePreview(e.target.value));
+            wrapper.appendChild(preview);
+        }
+
+        container.appendChild(wrapper);
+    });
+    
+    modal.classList.remove('hidden');
+};
+
+window.closeEditModal = function() {
+    document.getElementById('edit-item-modal').classList.add('hidden');
+};
+
+// ============================================================
+// SALVAR ITEM
+// ============================================================
+window.saveAdminItem = async function() {
+    const btn = document.getElementById('btn-save-item');
+    const mode = btn.dataset.mode;
+    const tab = window.adminState.currentTab;
+    const schema = window.SCHEMAS[tab];
+    const index = btn.dataset.index;
+    
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+    
+    const newData = {};
+    schema.forEach(field => {
+        const el = document.getElementById('field-' + field.key);
+        if (el) newData[field.key] = el.value;
+    });
+    
+    const payload = {
+        sheet: tab,
+        action: mode,
+        password: window.adminState.password,
+        data: newData
+    };
+    
+    if (mode === 'edit') {
+        payload.originalId = btn.dataset.originalId;
+    }
+    
+    try {
+        const res = await fetch(window.CONFIG.scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        
+        if (window.handleServerAuthError(result)) {
+            btn.disabled = false;
+            btn.textContent = 'Salvar';
+            return;
+        }
+        
+        if (result.success) {
+            if (mode === 'edit' && index !== null && index !== undefined) {
+                window.adminState.currentData[index] = newData;
+            } else {
+                window.adminState.currentData.push(newData);
+            }
+
+            try {
+                localStorage.setItem('admin_' + tab, JSON.stringify({ 
+                    timestamp: Date.now(), 
+                    content: window.adminState.currentData 
+                }));
+                localStorage.setItem('cache_' + tab + '_v2', JSON.stringify({ 
+                    timestamp: Date.now(), 
+                    content: window.adminState.currentData 
+                }));
+            } catch(e) {}
+
+            window.renderAdminTable(window.adminState.currentData, tab);
+            if (typeof window.loadData === 'function') window.loadData();
+
+            alert('Salvo com sucesso!');
+            window.closeEditModal();
+        } else {
+            alert('Erro: ' + result.message);
+        }
+    } catch(e) {
+        alert('Erro de conexão: ' + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Salvar';
+    }
+};
+
+// ============================================================
+// DELETAR ITEM
+// ============================================================
+window.deleteAdminItem = async function(index) {
+    if (!confirm('Tem certeza que deseja excluir este item?')) return;
+    
+    const tab = window.adminState.currentTab;
+    const item = window.adminState.currentData[index];
+    const originalId = Object.values(item)[0];
+    
+    try {
+        const res = await fetch(window.CONFIG.scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+                sheet: tab, 
+                action: 'delete', 
+                password: window.adminState.password,
+                originalId: originalId, 
+                data: {}
+            })
+        });
+        const result = await res.json();
+        
+        if (window.handleServerAuthError(result)) return;
+        
+        if (result.success) {
+            alert('Excluído com sucesso!');
+            window.adminState.currentData.splice(index, 1);
+            
+            try {
+                localStorage.setItem('cache_' + tab + '_v2', JSON.stringify({ 
+                    timestamp: Date.now(), 
+                    content: window.adminState.currentData 
+                }));
+            } catch(e) {}
+            
+            window.renderAdminTable(window.adminState.currentData, tab);
+            if (typeof window.loadData === 'function') window.loadData();
+        } else {
+            alert('Erro: ' + result.message);
+        }
+    } catch(e) {
+        alert('Erro: ' + e.message);
+    }
+};
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+console.log('✅ admin.js: Todas as funções definidas com sucesso');
+console.log('   - openAdmin:', typeof window.openAdmin);
+console.log('   - adminLogin:', typeof window.adminLogin);
+console.log('   - loadAdminTab:', typeof window.loadAdminTab);
