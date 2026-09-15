@@ -851,17 +851,25 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   ⬇️⬇️⬇️ CARROSSEL DE AVISOS - MESMA PROPORÇÃO EM TODOS ⬇️⬇️⬇️
+   ⬇️⬇️⬇️ CARROSSEL DE AVISOS (OPÇÃO 3 — PROPORÇÃO DA IMAGEM) ⬇️⬇️⬇️
+   ============================================================
+   A ideia:
+   - O carrossel NÃO tem mais `aspect-ratio` fixo nem `max-height`.
+   - Cada slide informa a proporção real da sua imagem via
+     CSS custom property `--aviso-ratio` (ex: "4 / 5", "1080 / 1350").
+   - O container adota essa proporção dinamicamente.
+   - A imagem de fundo usa `contain` para NUNCA cortar.
    ============================================================ */
 
 .avisos-carousel {
     position: relative;
     width: 100%;
-    aspect-ratio: 21 / 9;
-    max-height: 480px;
-    min-height: 260px;
+    /* ✅ CORREÇÃO: aspect-ratio agora vem do JS via --aviso-ratio.
+       Fallback de 4/5 se a imagem ainda não tiver carregado. */
+    aspect-ratio: var(--aviso-ratio, 4 / 5);
+    max-height: none;
+    min-height: 0;
     border-radius: 16px;
-    /* CORREÇÃO: força o arredondamento em todos os cantos */
     overflow: hidden;
     -webkit-mask-image: -webkit-radial-gradient(white, black);
     transform: translateZ(0);
@@ -869,35 +877,19 @@ behold-widget a { text-decoration: none; }
     background: #0f172a;
     box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
     contain: layout style;
-}
-
-@media (max-width: 1024px) {
-    .avisos-carousel {
-        aspect-ratio: 21 / 9;
-        max-height: 400px;
-        min-height: 240px;
-        border-radius: 14px;
-    }
+    /* ✅ CORREÇÃO: transição suave quando a proporção muda */
+    transition: aspect-ratio 0.3s ease;
 }
 
 @media (max-width: 768px) {
     .avisos-carousel {
-        aspect-ratio: 21 / 9;
-        max-height: 50vh;
-        min-height: 180px;
         border-radius: 12px;
         margin-bottom: 1.5rem;
-        padding-bottom: 0;
-        border: none;
-        outline: none;
     }
 }
 
 @media (max-width: 400px) {
     .avisos-carousel {
-        aspect-ratio: 21 / 9;
-        min-height: 160px;
-        max-height: 45vh;
         border-radius: 10px;
     }
 }
@@ -926,7 +918,6 @@ behold-widget a { text-decoration: none; }
     will-change: opacity, transform;
     border-radius: inherit;
     overflow: hidden;
-    /* CORREÇÃO: força o background a cobrir tudo */
     background-clip: border-box;
 }
 
@@ -938,20 +929,21 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   SLIDE COM IMAGEM: esconde a cor de fundo completamente
-   Garante que a imagem preencha 100% do container
+   SLIDE COM IMAGEM: usa CONTAIN para nunca cortar
    ============================================================ */
 .aviso-slide.has-image {
-    background-size: cover !important;
+    /* ✅ CORREÇÃO: contain em vez de cover — a imagem inteira
+       aparece, sem cortes, mantendo a proporção original. */
+    background-size: contain !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
-    /* Remove a cor de fundo quando há imagem */
-    background-color: transparent !important;
+    background-color: #0f172a !important;
 }
 
-/* Em mobile, garante que a imagem centralize bem */
+/* Em mobile, mantém contain também */
 @media (max-width: 768px) {
     .aviso-slide.has-image {
+        background-size: contain !important;
         background-position: center center !important;
     }
 }
@@ -1062,25 +1054,25 @@ behold-widget a { text-decoration: none; }
     .aviso-content {
         padding: 1rem 1.25rem;
     }
-    
+
     .aviso-content.pos-left {
         max-width: 75%;
         padding-left: 5%;
         padding-right: 5%;
     }
-    
+
     .aviso-content.pos-center {
         max-width: 85%;
         padding-left: 5%;
         padding-right: 5%;
     }
-    
+
     .aviso-content.pos-right {
         max-width: 75%;
         padding-right: 5%;
         padding-left: 5%;
     }
-    
+
     .aviso-content.pos-custom {
         max-width: 85%;
         padding: 1rem;
@@ -1156,17 +1148,17 @@ behold-widget a { text-decoration: none; }
         font-size: 0.6rem;
         margin-bottom: 0.3rem;
     }
-    
+
     .aviso-title {
         font-size: clamp(1rem, 5vw, 1.35rem);
         margin-bottom: 0.4rem;
     }
-    
+
     .aviso-description {
         font-size: 0.7rem;
         margin-bottom: 0.6rem;
     }
-    
+
     .aviso-button {
         padding: 0.45rem 1rem;
         font-size: 0.6rem;
