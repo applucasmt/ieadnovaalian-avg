@@ -851,19 +851,18 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   CARROSSEL DE AVISOS — MESMA LÓGICA NO PC E NO MOBILE
+   CARROSSEL DE AVISOS — CONTAINER ADAPTATIVO (PROPORÇÃO DA IMAGEM)
    ============================================================
-   - Proporção 21/9 fixa (mesma do desktop)
-   - background-size: cover (imagem preenche o container)
-   - background-position: center center (centralizado)
-   - Sem min-height / max-height que quebrem a proporção no mobile
+   O JS define --aviso-ratio com base na imagem real (ex: "1 / 1",
+   "16 / 9", "4 / 5"). O container adota essa proporção exata.
+   background-size: cover preenche, sem tarja.
    ============================================================ */
 
 .avisos-carousel {
     position: relative;
     width: 100%;
-    aspect-ratio: 21 / 9;
-    max-height: 480px;
+    aspect-ratio: var(--aviso-ratio, 16 / 9);
+    max-height: 80vh;
     min-height: 0;
     border-radius: 16px;
     overflow: hidden;
@@ -873,28 +872,19 @@ behold-widget a { text-decoration: none; }
     background: #0f172a;
     box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
     contain: layout style;
-}
-
-@media (max-width: 1024px) {
-    .avisos-carousel {
-        aspect-ratio: 21 / 9;
-        max-height: 400px;
-        border-radius: 14px;
-    }
+    transition: aspect-ratio 0.4s ease;
 }
 
 @media (max-width: 768px) {
     .avisos-carousel {
-        aspect-ratio: 21 / 9;
-        max-height: none;
         border-radius: 12px;
         margin-bottom: 1.5rem;
+        max-height: none;
     }
 }
 
 @media (max-width: 400px) {
     .avisos-carousel {
-        aspect-ratio: 21 / 9;
         border-radius: 10px;
     }
 }
@@ -933,21 +923,11 @@ behold-widget a { text-decoration: none; }
     z-index: 2;
 }
 
-/* ============================================================
-   SLIDE COM IMAGEM — cover em todas as telas (igual ao desktop)
-   ============================================================ */
 .aviso-slide.has-image {
     background-size: cover !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
     background-color: #0f172a !important;
-}
-
-@media (max-width: 768px) {
-    .aviso-slide.has-image {
-        background-size: cover !important;
-        background-position: center center !important;
-    }
 }
 
 .aviso-slide::before {
@@ -975,9 +955,6 @@ behold-widget a { text-decoration: none; }
     );
 }
 
-/* ============================================================
-   AVISO COM APENAS IMAGEM (sem texto)
-   ============================================================ */
 .aviso-slide.image-only::before {
     background: linear-gradient(
         to right,
