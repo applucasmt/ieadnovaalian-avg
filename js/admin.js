@@ -8,7 +8,8 @@ window.SCHEMAS = {
         { key: 'date', label: 'Data Início', type: 'datetime-local' },
         { key: 'endDate', label: 'Data Fim (Opcional)', type: 'datetime-local' },
         { key: 'description', label: 'Descrição', type: 'textarea' },
-        { key: 'coverUrl', label: 'URL da Capa', type: 'text' }
+        // ✅ CORREÇÃO: campo de imagem agora aceita upload (file) OU URL (text)
+        { key: 'coverUrl', label: 'URL da Capa', type: 'text', upload: true }
     ],
     
     // ============================================================
@@ -18,7 +19,8 @@ window.SCHEMAS = {
         { key: 'title', label: '📝 Título do Aviso', type: 'text', required: true },
         { key: 'subtitle', label: 'Subtítulo (linha acima do título)', type: 'text' },
         { key: 'description', label: 'Descrição (texto abaixo do título)', type: 'textarea' },
-        { key: 'imageUrl', label: '🖼️ URL da Imagem de Fundo (opcional)', type: 'text', hint: 'Deixe vazio para usar só cor de fundo' },
+        // ✅ CORREÇÃO: imageUrl agora aceita upload
+        { key: 'imageUrl', label: '🖼️ URL da Imagem de Fundo (opcional)', type: 'text', hint: 'Deixe vazio para usar só cor de fundo', upload: true },
         { key: 'bgColor', label: '🎨 Cor de Fundo (se não tiver imagem)', type: 'color', default: '#0f172a' },
         { key: 'textColor', label: '🎨 Cor do Texto', type: 'color', default: '#ffffff' },
         { key: 'buttonText', label: '🔘 Texto do Botão (ex: "Saiba mais")', type: 'text' },
@@ -36,23 +38,27 @@ window.SCHEMAS = {
         { key: 'lideres', label: 'Líderes', type: 'text' },
         { key: 'regentes', label: 'Regentes', type: 'text' },
         { key: 'telefone', label: 'Whatsapp', type: 'text' },
-        { key: 'capa', label: 'URL da Foto', type: 'text' }
+        // ✅ CORREÇÃO: capa aceita upload
+        { key: 'capa', label: 'URL da Foto', type: 'text', upload: true }
     ],
     talentos: [
         { key: 'nome', label: 'Nome', type: 'text' },
         { key: 'descricao', label: 'Descrição', type: 'textarea' },
         { key: 'telefone', label: 'Whatsapp', type: 'text' },
         { key: 'video', label: 'Link YouTube', type: 'text' },
-        { key: 'capa', label: 'URL da Foto', type: 'text' }
+        // ✅ CORREÇÃO: capa aceita upload
+        { key: 'capa', label: 'URL da Foto', type: 'text', upload: true }
     ],
     albuns: [
         { key: 'albumName', label: 'Nome do Álbum', type: 'text' },
-        { key: 'coverImageUrl', label: 'URL da Capa', type: 'text' },
+        // ✅ CORREÇÃO: coverImageUrl aceita upload
+        { key: 'coverImageUrl', label: 'URL da Capa', type: 'text', upload: true },
         { key: 'albumUrl', label: 'Link do Álbum', type: 'text' }
     ],
     pastor: [
         { key: 'nome', label: 'Nome', type: 'text' },
-        { key: 'capa', label: 'URL da Foto', type: 'text' }
+        // ✅ CORREÇÃO: capa aceita upload
+        { key: 'capa', label: 'URL da Foto', type: 'text', upload: true }
     ]
 };
 
@@ -64,6 +70,14 @@ window.heroState = {
     title: '',
     subtitle: '',
     description: ''
+};
+
+// ============================================================
+// ✅ CORREÇÃO / NOVO: helper para saber se um campo é de imagem
+// (usado para decidir se mostra botão de upload + preview).
+// ============================================================
+window.isImageField = (key) => {
+    return ['coverUrl', 'capa', 'coverImageUrl', 'imageUrl'].indexOf(key) !== -1;
 };
 
 // ============================================================
@@ -187,6 +201,7 @@ window.loadAdminTab = async (tab) => {
     contentArea.innerHTML = '<div class="text-center py-10"><i class="fas fa-spinner fa-spin text-3xl text-brand-yellow"></i><p class="mt-2 text-gray-400">Carregando dados...</p></div>';
     
     try {
+        // ✅ CORREÇÃO: força bypass do cache do admin (sempre pega do servidor)
         const data = await window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=' + tab, 'admin_' + tab, true);
         
         if (tab === 'config') {
@@ -200,8 +215,8 @@ window.loadAdminTab = async (tab) => {
             window.adminState.currentData = configData;
             window.renderConfigForm(configData[0]);
         } else {
-            window.adminState.currentData = data;
-            window.renderAdminTable(data, tab);
+            window.adminState.currentData = Array.isArray(data) ? data : [];
+            window.renderAdminTable(window.adminState.currentData, tab);
         }
     } catch (e) {
         contentArea.innerHTML = '<p class="text-red-400 text-center">Erro ao carregar dados.</p>';
@@ -391,6 +406,14 @@ window.renderConfigForm = (config) => {
                     '<i class="fas fa-image mr-2"></i> URL da Logomarca' +
                 '</label>' +
                 '<input type="text" id="config-logoUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + logoUrl + '">' +
+                // ✅ CORREÇÃO: botão de upload para a logo
+                '<div class="mt-2">' +
+                    '<input type="file" id="config-logoUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'logoUrl\')">' +
+                    '<button type="button" onclick="document.getElementById(\'config-logoUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-2">' +
+                        '<i class="fas fa-upload"></i> Enviar Imagem do Computador' +
+                    '</button>' +
+                    '<span id="config-logoUrl-status" class="text-[10px] text-gray-500 ml-2"></span>' +
+                '</div>' +
                 '<div class="mt-4">' +
                     '<p class="text-xs text-gray-400 mb-2">Pré-visualização:</p>' +
                     '<div class="w-24 h-24 bg-black/30 rounded-lg flex items-center justify-center border border-white/10 overflow-hidden">' +
@@ -406,6 +429,14 @@ window.renderConfigForm = (config) => {
                 '</label>' +
                 '<p class="text-[10px] text-gray-500 mb-2">Recomendado: 1920x1080px</p>' +
                 '<input type="text" id="config-heroUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrl + '" oninput="window.updateHeroPreviewImage(this.value)">' +
+                // ✅ CORREÇÃO: botão de upload para o hero PC
+                '<div class="mt-2">' +
+                    '<input type="file" id="config-heroUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrl\')">' +
+                    '<button type="button" onclick="document.getElementById(\'config-heroUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-2">' +
+                        '<i class="fas fa-upload"></i> Enviar Imagem do Computador' +
+                    '</button>' +
+                    '<span id="config-heroUrl-status" class="text-[10px] text-gray-500 ml-2"></span>' +
+                '</div>' +
             '</div>' +
 
             // HERO MOBILE
@@ -415,6 +446,14 @@ window.renderConfigForm = (config) => {
                 '</label>' +
                 '<p class="text-[10px] text-gray-500 mb-2">Recomendado: 800x1200px (proporção 2:3)</p>' +
                 '<input type="text" id="config-heroUrlMobile" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrlMobile + '">' +
+                // ✅ CORREÇÃO: botão de upload para o hero mobile
+                '<div class="mt-2">' +
+                    '<input type="file" id="config-heroUrlMobile-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrlMobile\')">' +
+                    '<button type="button" onclick="document.getElementById(\'config-heroUrlMobile-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-2">' +
+                        '<i class="fas fa-upload"></i> Enviar Imagem do Computador' +
+                    '</button>' +
+                    '<span id="config-heroUrlMobile-status" class="text-[10px] text-gray-500 ml-2"></span>' +
+                '</div>' +
                 '<div class="mt-4">' +
                     '<p class="text-xs text-gray-400 mb-2">Pré-visualização mobile:</p>' +
                     '<div class="w-32 h-48 bg-black/30 rounded-lg border border-white/10 overflow-hidden">' +
@@ -454,6 +493,60 @@ window.renderConfigForm = (config) => {
             else { previewHeroMobile.style.display = 'none'; }
         });
     }
+};
+
+// ============================================================
+// ✅ CORREÇÃO / NOVO: UPLOAD DE IMAGEM PARA O CONFIG (logo/hero)
+// Chamado pelos botões "Enviar Imagem do Computador" dentro
+// do painel de config. Faz upload via ImgBB (config.js) e
+// preenche o input de texto correspondente.
+// ============================================================
+window.handleConfigUpload = async (event, targetFieldKey) => {
+    const input = event.target;
+    const file = input.files && input.files[0];
+    if (!file) return;
+
+    const statusEl = document.getElementById('config-' + targetFieldKey + '-status');
+    const textInput = document.getElementById('config-' + targetFieldKey);
+
+    const setStatus = (msg, color) => {
+        if (statusEl) {
+            statusEl.textContent = msg;
+            statusEl.style.color = color || '#9ca3af';
+        }
+    };
+
+    setStatus('Enviando...', '#EEBC5A');
+
+    const result = await window.uploadImageToImgBB(file);
+
+    if (!result.success) {
+        setStatus('❌ ' + result.message, '#ef4444');
+        input.value = ''; // permite reenviar o mesmo arquivo
+        return;
+    }
+
+    setStatus('✅ Imagem enviada!', '#22c55e');
+
+    // Preenche o input de texto com a URL retornada
+    if (textInput) {
+        textInput.value = result.url;
+        // Dispara os eventos de atualização de preview
+        textInput.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    // Atualiza previews específicos
+    if (targetFieldKey === 'logoUrl') {
+        const previewLogo = document.getElementById('preview-logo');
+        if (previewLogo) { previewLogo.src = result.url; previewLogo.style.display = 'block'; }
+    } else if (targetFieldKey === 'heroUrl') {
+        window.updateHeroPreviewImage(result.url);
+    } else if (targetFieldKey === 'heroUrlMobile') {
+        const previewHeroMobile = document.getElementById('preview-hero-mobile');
+        if (previewHeroMobile) { previewHeroMobile.src = result.url; previewHeroMobile.style.display = 'block'; }
+    }
+
+    input.value = ''; // limpa para permitir novo upload do mesmo arquivo
 };
 
 // ============================================================
@@ -604,6 +697,10 @@ window.saveConfig = async () => {
             } catch(e) {}
             
             window.applyConfigImages(newConfig[0]);
+            
+            // ✅ CORREÇÃO: força o loadData a re-renderizar com dados frescos
+            if (typeof window.loadData === 'function') window.loadData(true);
+            
             alert('✅ Configurações salvas com sucesso!');
         } else {
             alert('Erro: ' + result.message);
@@ -615,6 +712,8 @@ window.saveConfig = async () => {
 
 // ============================================================
 // MODAL DE EDIÇÃO DE ITEM (com todos os tipos de campo)
+// ✅ CORREÇÃO: campos marcados com { upload: true } no SCHEMA
+//    ganham um botão de upload (ImgBB) + preview automático.
 // ============================================================
 window.openEditModal = (mode, index) => {
     const modal = document.getElementById('edit-item-modal');
@@ -630,8 +729,10 @@ window.openEditModal = (mode, index) => {
     
     let itemData = {};
     if (mode === 'edit' && index !== null && index !== undefined) {
-        itemData = window.adminState.currentData[index];
+        itemData = window.adminState.currentData[index] || {};
         btn.dataset.originalId = Object.values(itemData)[0];
+    } else {
+        btn.dataset.originalId = '';
     }
     
     btn.dataset.mode = mode;
@@ -719,8 +820,69 @@ window.openEditModal = (mode, index) => {
             wrapper.appendChild(hint);
         }
 
+        // ✅ CORREÇÃO: se o campo tem upload:true, adiciona o botão de upload
+        if (field.upload === true) {
+            const uploadRow = document.createElement('div');
+            uploadRow.className = 'flex items-center gap-2 mt-2';
+
+            const fileInputId = 'upload-' + field.key;
+            const statusId = 'upload-status-' + field.key;
+
+            uploadRow.innerHTML =
+                '<input type="file" id="' + fileInputId + '" accept="image/*" class="hidden" data-upload-for="' + field.key + '">' +
+                '<button type="button" data-upload-trigger="' + fileInputId + '" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-2">' +
+                    '<i class="fas fa-upload"></i> Enviar do Computador' +
+                '</button>' +
+                '<span id="' + statusId + '" class="text-[10px] text-gray-500"></span>';
+
+            wrapper.appendChild(uploadRow);
+
+            // Liga os eventos após inserir no DOM
+            setTimeout(() => {
+                const fileInput = document.getElementById(fileInputId);
+                const trigger = uploadRow.querySelector('[data-upload-trigger]');
+                const statusEl = document.getElementById(statusId);
+
+                if (trigger && fileInput) {
+                    trigger.addEventListener('click', () => fileInput.click());
+                }
+
+                if (fileInput) {
+                    fileInput.addEventListener('change', async (ev) => {
+                        const file = ev.target.files && ev.target.files[0];
+                        if (!file) return;
+
+                        const setStatus = (msg, color) => {
+                            if (statusEl) {
+                                statusEl.textContent = msg;
+                                statusEl.style.color = color || '#9ca3af';
+                            }
+                        };
+
+                        setStatus('Enviando...', '#EEBC5A');
+
+                        const result = await window.uploadImageToImgBB(file);
+
+                        if (!result.success) {
+                            setStatus('❌ ' + result.message, '#ef4444');
+                            fileInput.value = '';
+                            return;
+                        }
+
+                        setStatus('✅ Enviado!', '#22c55e');
+
+                        // Preenche o input de texto e dispara input para atualizar o preview
+                        input.value = result.url;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+
+                        fileInput.value = '';
+                    });
+                }
+            }, 0);
+        }
+
         // Preview de imagem
-        if (['coverUrl', 'capa', 'coverImageUrl', 'imageUrl'].indexOf(field.key) !== -1) {
+        if (window.isImageField(field.key)) {
             const preview = document.createElement('img');
             preview.className = 'w-full h-40 object-contain bg-black/20 rounded mt-2 border border-white/5 hidden';
             preview.onerror = () => { preview.classList.add('hidden'); };
@@ -834,6 +996,8 @@ window.closeEditModal = () => {
 
 // ============================================================
 // SALVAR ITEM
+// ✅ CORREÇÃO: chama window.loadData(true) para forçar atualização
+//    do site público após salvar (elimina fantasma + sincroniza).
 // ============================================================
 window.saveAdminItem = async () => {
     const btn = document.getElementById('btn-save-item');
@@ -896,7 +1060,9 @@ window.saveAdminItem = async () => {
             } catch(e) {}
 
             window.renderAdminTable(window.adminState.currentData, tab);
-            if (typeof window.loadData === 'function') window.loadData();
+            
+            // ✅ CORREÇÃO: força o site público a rebuscar do servidor
+            if (typeof window.loadData === 'function') window.loadData(true);
 
             alert('Salvo com sucesso!');
             window.closeEditModal();
@@ -913,6 +1079,13 @@ window.saveAdminItem = async () => {
 
 // ============================================================
 // DELETAR ITEM
+// ✅ CORREÇÃO: chama window.loadData(true) para forçar atualização
+//    do site público após deletar (elimina fantasma).
+// ✅ CORREÇÃO (Caminho 1 — ImgBB): NÃO tenta deletar a imagem do
+//    ImgBB automaticamente (a API pública do ImgBB não expõe esse
+//    endpoint). O link é removido da planilha e o site para de
+//    exibir. A imagem continua no ImgBB até ser apagada manualmente
+//    pelo painel do ImgBB (limitação aceita da Opção A).
 // ============================================================
 window.deleteAdminItem = async (index) => {
     if (!confirm('Tem certeza que deseja excluir este item?')) return;
@@ -949,7 +1122,9 @@ window.deleteAdminItem = async (index) => {
             } catch(e) {}
             
             window.renderAdminTable(window.adminState.currentData, tab);
-            if (typeof window.loadData === 'function') window.loadData();
+            
+            // ✅ CORREÇÃO: força o site público a rebuscar do servidor
+            if (typeof window.loadData === 'function') window.loadData(true);
         } else {
             alert('Erro: ' + result.message);
         }
@@ -961,4 +1136,4 @@ window.deleteAdminItem = async (index) => {
 // ============================================================
 // LOG
 // ============================================================
-console.log('🔐 admin.js carregado (com suporte a avisos em carrossel)');
+console.log('🔐 admin.js carregado (com suporte a avisos em carrossel + upload ImgBB)');
