@@ -221,7 +221,7 @@ window.loadData = async (force) => {
             );
         }
 
-        // ✅ Esconde a tela de loading
+        // ✅ Esconde a tela de loading (agora com delay interno)
         if (typeof window.hideInitialLoading === 'function') {
             window.hideInitialLoading();
         }
@@ -232,7 +232,6 @@ window.loadData = async (force) => {
             window.renderComponents([], [], [], [], [], [], null);
         }
 
-        // ✅ Mesmo em caso de erro, esconde a tela de loading
         if (typeof window.hideInitialLoading === 'function') {
             window.hideInitialLoading();
         }
