@@ -937,6 +937,25 @@ behold-widget a { text-decoration: none; }
     z-index: 2;
 }
 
+/* ============================================================
+   SLIDE COM IMAGEM: esconde a cor de fundo completamente
+   Garante que a imagem preencha 100% do container
+   ============================================================ */
+.aviso-slide.has-image {
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    /* Remove a cor de fundo quando há imagem */
+    background-color: transparent !important;
+}
+
+/* Em mobile, garante que a imagem centralize bem */
+@media (max-width: 768px) {
+    .aviso-slide.has-image {
+        background-position: center center !important;
+    }
+}
+
 .aviso-slide::before {
     content: '';
     position: absolute;
