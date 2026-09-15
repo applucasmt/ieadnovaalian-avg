@@ -1,20 +1,27 @@
 // ============================================================
 // IEAD NOVA ALIANÇA - SISTEMA DE DADOS E CACHE
-// ✅ CORREÇÃO (Opção C): conteúdo NUNCA é servido do localStorage.
-//    Só o "config" usa cache (com TTL), porque muda pouco e é leve.
-//    Isso elimina DEFINITIVAMENTE o "fantasma" de eventos/avisos.
+// ✅ Cache desligado para conteúdo (Opção C).
+// ✅ Config com TTL curto + pré-carregamento de imagem (sem flash).
+// ✅ Polling adaptativo por hash (?action=ping) — atualiza o site
+//    em qualquer navegador/dispositivo em até 45s.
 // ============================================================
 
 // ============================================================
-// ✅ CORREÇÃO / NOVO: chaves que PODEM usar cache.
-// Qualquer outra chave (cache_eventos_v2, cache_avisos_v2, ...)
-// é ignorada e sempre busca do servidor.
+// CHAVES QUE PODEM USAR CACHE
 // ============================================================
 window.CACHE_ENABLED_KEYS = ['cache_config_v2'];
 
 // ============================================================
-// ✅ CORREÇÃO / NOVO: limpa todo o cache da aplicação no localStorage.
-// Chamado pelo admin após save/delete, e disponível para uso manual.
+// CONFIGURAÇÃO DO POLLING
+// ============================================================
+window.AUTO_REFRESH_CONFIG = {
+    intervalMs: 45000,       // 45s entre verificações
+    pingTimeout: 15000,      // timeout do fetch do ping
+    enabled: true
+};
+
+// ============================================================
+// LIMPA TODO O CACHE DA APLICAÇÃO NO LOCALSTORAGE
 // ============================================================
 window.clearAppCache = () => {
     const keysToRemove = [
@@ -23,7 +30,6 @@ window.clearAppCache = () => {
         'cache_config_v2',
         'admin_eventos', 'admin_avisos', 'admin_ministerios',
         'admin_albuns', 'admin_talentos', 'admin_pastor', 'admin_config',
-        // chaves legadas (sem _v2), caso existam em navegadores antigos
         'cache_eventos', 'cache_avisos', 'cache_ministerios',
         'cache_albuns', 'cache_talentos', 'cache_pastor', 'cache_config'
     ];
@@ -35,16 +41,12 @@ window.clearAppCache = () => {
 
 // ============================================================
 // FETCH (COM CACHE APENAS PARA CONFIG)
-// ✅ CORREÇÃO (Opção C): se a chave NÃO estiver em
-//    window.CACHE_ENABLED_KEYS, o cache é ignorado por completo.
-//    O parâmetro "force" continua funcionando (força bypass total).
 // ============================================================
 window.fetchWithCache = async (url, key, force) => {
     force = force || false;
     const cacheAllowed = window.CACHE_ENABLED_KEYS.indexOf(key) !== -1;
     const cached = localStorage.getItem(key);
 
-    // Só usa cache se: (a) a chave permite cache, (b) não foi forçado
     if (cacheAllowed && !force && cached) {
         try {
             const data = JSON.parse(cached);
@@ -59,7 +61,6 @@ window.fetchWithCache = async (url, key, force) => {
         if (!response.ok) throw new Error('Network error');
         const content = await response.json();
 
-        // Só salva no cache se a chave permitir
         if (cacheAllowed) {
             try {
                 localStorage.setItem(key, JSON.stringify({
@@ -71,7 +72,6 @@ window.fetchWithCache = async (url, key, force) => {
         return content;
     } catch (error) {
         console.error('Erro fetch ' + key + ':', error);
-        // Fallback para cache só se a chave permitir
         if (cacheAllowed && cached) {
             try { return JSON.parse(cached).content; } catch(e) { return []; }
         }
@@ -80,9 +80,40 @@ window.fetchWithCache = async (url, key, force) => {
 };
 
 // ============================================================
-// APLICAR CONFIG (LOGO + HERO PC/MOBILE + POSIÇÃO + TEXTOS)
+// ✅ NOVO: PRÉ-CARREGAR IMAGEM
+// Retorna uma Promise que resolve quando a imagem carregou OU
+// depois de `timeoutMs` (o que vier primeiro). Se falhar, resolve
+// com `null` — nunca rejeita, para não travar o fluxo.
 // ============================================================
-window.applyConfigImages = (config) => {
+window.preloadImage = (url, timeoutMs) => {
+    timeoutMs = timeoutMs || 4000;
+    return new Promise((resolve) => {
+        if (!url || typeof url !== 'string' || !url.trim()) {
+            resolve(null);
+            return;
+        }
+
+        let done = false;
+        const finish = (result) => {
+            if (done) return;
+            done = true;
+            resolve(result);
+        };
+
+        const img = new Image();
+        img.onload = () => finish(url);
+        img.onerror = () => finish(null);
+        img.src = url;
+
+        setTimeout(() => finish(url), timeoutMs); // fallback: não trava
+    });
+};
+
+// ============================================================
+// APLICAR CONFIG (LOGO + HERO PC/MOBILE + POSIÇÃO + TEXTOS)
+// ✅ Pré-carrega a imagem do hero antes de aplicar (evita flash).
+// ============================================================
+window.applyConfigImages = async (config) => {
     console.log('🎨 applyConfigImages:', config);
     if (!config) return;
 
@@ -113,8 +144,15 @@ window.applyConfigImages = (config) => {
     if (heroUrlToUse) {
         const hero = document.getElementById('site-hero');
         if (hero) {
-            hero.src = heroUrlToUse;
-            hero.setAttribute('data-hero-url', heroUrlToUse);
+            const currentSrc = hero.getAttribute('src') || '';
+            // ✅ Só aplica se for diferente (evita reload desnecessário)
+            if (currentSrc !== heroUrlToUse) {
+                // ✅ Pré-carrega antes de aplicar (elimina o flash)
+                await window.preloadImage(heroUrlToUse, 4000);
+                hero.src = heroUrlToUse;
+                hero.setAttribute('data-hero-url', heroUrlToUse);
+                console.log('🖼️ Hero aplicado após preload:', heroUrlToUse);
+            }
         }
     }
 
@@ -186,12 +224,10 @@ window.addEventListener('resize', () => {
 
 // ============================================================
 // CARREGAR DADOS
-// ✅ CORREÇÃO (Opção C): conteúdo sempre busca do servidor.
-//    A função "renderComponents" é chamada UMA VEZ, com os dados
-//    frescos. Isso elimina o "flash" de dados antigos na tela.
+// ✅ Conteúdo sempre do servidor. Config também forçado.
 // ============================================================
 window.loadData = async (force) => {
-    force = force === true; // mantém compatibilidade de API, mas não é mais necessário
+    force = force === true;
 
     try {
         const results = await Promise.all([
@@ -201,7 +237,7 @@ window.loadData = async (force) => {
             window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=albuns', 'cache_albuns_v2', true),
             window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=talentos', 'cache_talentos_v2', true),
             window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=pastor', 'cache_pastor_v2', true),
-            window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=config', 'cache_config_v2', force)
+            window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=config', 'cache_config_v2', true)
         ]);
 
         if (typeof window.renderComponents === 'function') {
@@ -209,7 +245,6 @@ window.loadData = async (force) => {
         }
     } catch (e) {
         console.error('Erro ao carregar dados:', e);
-        // ✅ CORREÇÃO: em caso de erro, ainda renderiza vazio (não deixa tela "presa")
         if (typeof window.renderComponents === 'function') {
             window.renderComponents([], [], [], [], [], [], []);
         }
@@ -218,10 +253,8 @@ window.loadData = async (force) => {
 
 // ============================================================
 // RENDERIZAR COMPONENTES
-// ✅ CORREÇÃO: sempre limpa os containers, mesmo se vier vazio.
 // ============================================================
 window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor, config) => {
-    // ✅ CORREÇÃO: normaliza cada parâmetro para array
     events = Array.isArray(events) ? events : [];
     avisos = Array.isArray(avisos) ? avisos : [];
     ministerios = Array.isArray(ministerios) ? ministerios : [];
@@ -267,7 +300,7 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
 
         return {
             _id: i,
-            id: e.id || '',  // ✅ CORREÇÃO: preserva o id real do servidor
+            id: e.id || '',
             name: getVal(['name', 'nome', 'titulo', 'tema', 'evento']) || 'Evento sem nome',
             date: getVal(['date', 'data', 'inicio', 'comeco']) || new Date().toISOString(),
             endDate: getVal(['endDate', 'datafim', 'fim', 'termino']) || null,
@@ -344,6 +377,158 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
 };
 
 // ============================================================
+// ✅ NOVO: CHECAR ATUALIZAÇÕES VIA HASH (?action=ping)
+// Retorna true se o hash mudou (dados desatualizados no cliente).
+// ============================================================
+window.__lastDataHash = null;
+
+window.checkForUpdates = async () => {
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), window.AUTO_REFRESH_CONFIG.pingTimeout);
+
+        const res = await fetch(
+            window.CONFIG.scriptUrl + '?action=ping&cacheBust=' + Date.now(),
+            { signal: controller.signal }
+        );
+        clearTimeout(timeoutId);
+
+        if (!res.ok) return false;
+
+        const json = await res.json();
+        const hash = json && json.hash ? String(json.hash) : null;
+
+        if (!hash) return false;
+
+        if (window.__lastDataHash === null) {
+            // Primeira checagem — só guarda, não recarrega
+            window.__lastDataHash = hash;
+            return false;
+        }
+
+        if (hash !== window.__lastDataHash) {
+            console.log('🔄 Hash mudou (' + window.__lastDataHash + ' → ' + hash + '). Recarregando dados...');
+            window.__lastDataHash = hash;
+            return true;
+        }
+
+        return false;
+    } catch (e) {
+        // Falha silenciosa — não trava o polling
+        return false;
+    }
+};
+
+// ============================================================
+// ✅ NOVO: POLLING AUTOMÁTICO
+// - Roda a cada 45s SOMENTE quando a aba está visível
+// - Pausa quando a aba vai pra segundo plano
+// - Retoma na hora que a aba volta + checa imediatamente
+// - Também escuta "storage" e "BroadcastChannel" para
+//   atualização INSTANTÂNEA entre abas do mesmo navegador.
+// ============================================================
+window.initAutoRefresh = () => {
+    if (!window.AUTO_REFRESH_CONFIG.enabled) return;
+    if (window.__autoRefreshStarted) return;
+    window.__autoRefreshStarted = true;
+
+    let timer = null;
+
+    const doCheck = async () => {
+        const changed = await window.checkForUpdates();
+        if (changed && typeof window.loadData === 'function') {
+            window.loadData(true);
+        }
+    };
+
+    const start = () => {
+        stop();
+        timer = setInterval(doCheck, window.AUTO_REFRESH_CONFIG.intervalMs);
+    };
+
+    const stop = () => {
+        if (timer) {
+            clearInterval(timer);
+            timer = null;
+        }
+    };
+
+    // Pausa/retoma conforme visibilidade da aba
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            stop();
+        } else {
+            // Ao voltar pra aba, checa na hora e reinicia o timer
+            doCheck();
+            start();
+        }
+    });
+
+    // Só inicia se a aba já está visível
+    if (!document.hidden) {
+        // Primeira checagem depois de 5s (dá tempo do site carregar)
+        setTimeout(doCheck, 5000);
+        start();
+    }
+
+    // ============================================================
+    // ✅ BÔNUS: BroadcastChannel — abas do MESMO navegador
+    // ============================================================
+    try {
+        if ('BroadcastChannel' in window) {
+            const bc = new BroadcastChannel('iead_data_changes');
+            bc.addEventListener('message', (event) => {
+                if (event && event.data && event.data.type === 'data_changed') {
+                    console.log('📡 BroadcastChannel: dados mudaram em outra aba. Recarregando...');
+                    if (typeof window.loadData === 'function') {
+                        window.loadData(true);
+                    }
+                }
+            });
+            window.__broadcastChannel = bc;
+        }
+    } catch(e) {}
+
+    // ============================================================
+    // ✅ BÔNUS: storage event — abas do MESMO navegador (fallback)
+    // ============================================================
+    window.addEventListener('storage', (event) => {
+        if (event && event.key === '__iead_data_changed') {
+            console.log('💾 storage event: dados mudaram em outra aba. Recarregando...');
+            if (typeof window.loadData === 'function') {
+                window.loadData(true);
+            }
+        }
+    });
+
+    console.log('🔁 Polling automático iniciado (intervalo: ' + (window.AUTO_REFRESH_CONFIG.intervalMs / 1000) + 's)');
+};
+
+// ============================================================
+// ✅ NOVO: NOTIFICAR OUTRAS ABAS (chamado pelo admin.js)
+// ============================================================
+window.broadcastDataChanged = () => {
+    // Marca no localStorage — dispara "storage event" em outras abas
+    try {
+        localStorage.setItem('__iead_data_changed', String(Date.now()));
+    } catch(e) {}
+
+    // BroadcastChannel — mais rápido, só para mesmo navegador
+    try {
+        if (window.__broadcastChannel) {
+            window.__broadcastChannel.postMessage({ type: 'data_changed', ts: Date.now() });
+        } else if ('BroadcastChannel' in window) {
+            const bc = new BroadcastChannel('iead_data_changes');
+            bc.postMessage({ type: 'data_changed', ts: Date.now() });
+            bc.close();
+        }
+    } catch(e) {}
+
+    // Atualiza o hash local para não recarregar à toa no próximo ping
+    window.checkForUpdates();
+};
+
+// ============================================================
 // LOG DE INICIALIZAÇÃO
 // ============================================================
-console.log('📦 data.js carregado (Opção C: cache só para config)');
+console.log('📦 data.js carregado (com polling + preload de hero)');
