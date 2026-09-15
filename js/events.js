@@ -19,10 +19,7 @@ window.getEventStatusBadge = (start, end) => {
 };
 
 // ============================================================
-// ✅ CORREÇÃO / NOVO: HELPER DE ESCAPE HTML (movido para cima)
-// Estava declarada no meio do arquivo e só era usada dentro do
-// renderAvisosCarousel. Agora fica disponível desde o topo, para
-// que createCard também possa usá-la com segurança.
+// HELPER: ESCAPAR HTML
 // ============================================================
 function escapeHtml(text) {
     if (text === undefined || text === null) return '';
@@ -32,8 +29,7 @@ function escapeHtml(text) {
 }
 
 // ============================================================
-// ✅ CORREÇÃO / NOVO: HELPER DE URL VÁLIDA (movido para cima)
-// Mesmo motivo do escapeHtml: disponível desde o início.
+// HELPER: VERIFICAR SE É URL VÁLIDA
 // ============================================================
 function isValidImageUrl(url) {
     if (!url || typeof url !== 'string') return false;
@@ -44,9 +40,6 @@ function isValidImageUrl(url) {
 
 // ============================================================
 // CRIAR CARDS
-// ✅ CORREÇÃO: sanitiza os textos com escapeHtml() para evitar
-//    quebra de layout caso o admin digite <, >, & etc.
-//    Também sanitiza atributos onerror e URLs de imagem.
 // ============================================================
 window.createCard = (data, type) => {
     if (!data) return '';
@@ -57,14 +50,13 @@ window.createCard = (data, type) => {
         const month = date.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase().replace('.', '');
         const statusBadge = window.getEventStatusBadge(data.date, data.endDate);
         const optimizedCover = window.optimizeImage(data.coverUrl, 600);
-        
+
         let timeString = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
         if (data.endDate) {
             const endTime = window.parseDate(data.endDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
             timeString += ' - ' + endTime;
         }
 
-        // ✅ CORREÇÃO: escape dos textos dinâmicos
         const safeName = escapeHtml(data.name);
         const safeDesc = escapeHtml(data.description || '');
 
@@ -98,7 +90,6 @@ window.createCard = (data, type) => {
 
     if (type === 'ministerio') {
         const optimizedCapa = window.optimizeImage(data.capa, 600);
-        // ✅ CORREÇÃO: escape dos textos dinâmicos
         const safeNome = escapeHtml(data.nome || '');
         const safeLideres = escapeHtml(data.lideres || 'A definir');
         const safeRegentes = escapeHtml(data.regentes || '');
@@ -125,7 +116,6 @@ window.createCard = (data, type) => {
 
     if (type === 'talento') {
         const optimizedCapa = window.optimizeImage(data.capa, 600);
-        // ✅ CORREÇÃO: escape dos textos dinâmicos
         const safeNome = escapeHtml(data.nome || '');
         const safeDescricao = escapeHtml(data.descricao || 'Sem descrição.');
         const safeTelefone = String(data.telefone || '').replace(/\D/g, '');
@@ -149,10 +139,9 @@ window.createCard = (data, type) => {
                     '</div>' +
                 '</div>';
     }
-    
+
     if (type === 'album') {
         const optimizedCover = window.optimizeImage(data.coverImageUrl, 500);
-        // ✅ CORREÇÃO: escape dos textos dinâmicos
         const safeName = escapeHtml(data.albumName || '');
         const safeUrl = escapeHtml(data.albumUrl || '#');
 
@@ -167,29 +156,27 @@ window.createCard = (data, type) => {
                     '</div>' +
                 '</a>';
     }
-    
+
     return '';
 };
 
 // ============================================================
 // RENDERIZAR CARROSSEL DE AVISOS
-// ✅ CORREÇÃO: passa a usar os helpers no topo do arquivo.
-//    Também limpa timers antigos ao re-renderizar (evita
-//    autoplay duplicado quando o carrossel é reconstruído).
+// ✅ Container se adapta à proporção real da imagem (--aviso-ratio)
 // ============================================================
 window.renderAvisosCarousel = (avisos) => {
     console.log('🎬 renderAvisosCarousel chamado com:', avisos);
-    
+
     const carousel = document.getElementById('avisos-carousel');
     const slidesContainer = document.getElementById('avisos-slides');
     const dotsContainer = document.getElementById('aviso-dots');
-    
+
     if (!carousel || !slidesContainer || !dotsContainer) {
         console.warn('❌ Elementos do carrossel não encontrados no DOM');
         return;
     }
 
-    // ✅ CORREÇÃO: limpa timers antigos para não duplicar autoplay
+    // Limpa timers antigos (evita autoplay duplicado)
     if (window.__avisoAutoplayTimer) {
         clearInterval(window.__avisoAutoplayTimer);
         window.__avisoAutoplayTimer = null;
@@ -198,22 +185,17 @@ window.renderAvisosCarousel = (avisos) => {
         clearInterval(window.__avisoProgressTimer);
         window.__avisoProgressTimer = null;
     }
-    
-    // ============================================================
-    // FILTRA APENAS ATIVOS
-    // ============================================================
+
+    // Filtra apenas ativos
     const activeAvisos = (avisos || []).filter(a => {
         if (!a) return false;
-        
         if (a.active !== undefined && a.active !== '' && a.active !== null) {
             const activeStr = String(a.active).toLowerCase();
             if (activeStr === 'false' || activeStr === '0' || activeStr === 'nao' || activeStr === 'não') {
                 return false;
             }
         }
-        
         const hasImage = isValidImageUrl(a.imageUrl);
-        
         const hasText = Boolean(
             (a.title && String(a.title).trim()) ||
             (a.texto && String(a.texto).trim()) ||
@@ -221,93 +203,134 @@ window.renderAvisosCarousel = (avisos) => {
             (a.description && String(a.description).trim()) ||
             (a.buttonText && String(a.buttonText).trim())
         );
-        
         return hasImage || hasText;
     });
-    
+
     console.log('✅ Avisos válidos:', activeAvisos.length);
-    
+
     if (activeAvisos.length === 0) {
         carousel.classList.add('hidden');
-        // ✅ CORREÇÃO: limpa conteúdo ao esconder
         slidesContainer.innerHTML = '';
         dotsContainer.innerHTML = '';
         return;
     }
-    
+
     activeAvisos.sort((a, b) => {
         const oa = parseInt(a.order) || 0;
         const ob = parseInt(b.order) || 0;
         return oa - ob;
     });
-    
+
     carousel.classList.remove('hidden');
-    
+
     if (activeAvisos.length === 1) {
         carousel.classList.add('single');
     } else {
         carousel.classList.remove('single');
     }
-    
+
     const imageWidth = 1920;
-    
+
     slidesContainer.innerHTML = '';
     dotsContainer.innerHTML = '';
-    
-    // Pré-carrega imagens
-    activeAvisos.forEach(a => {
+
+    // ============================================================
+    // DETECÇÃO DE PROPORÇÃO POR SLIDE
+    // ============================================================
+    const FALLBACK_RATIO = '16 / 9';
+    const ratiosCache = {};              // index -> "W / H"
+    const currentIndexRef = { value: 0 }; // ref mutável do slide atual
+
+    const applyRatioToCarousel = (ratio) => {
+        carousel.style.setProperty('--aviso-ratio', ratio || FALLBACK_RATIO);
+    };
+
+    // Fallback inicial
+    applyRatioToCarousel(FALLBACK_RATIO);
+
+    // Pré-carrega imagens e captura proporção natural
+    activeAvisos.forEach((a, index) => {
         if (isValidImageUrl(a.imageUrl)) {
             const rawUrl = a.imageUrl.trim();
             const imgUrl = window.optimizeImage ? window.optimizeImage(rawUrl, imageWidth) : rawUrl;
             const img = new Image();
+            img.onload = () => {
+                if (img.naturalWidth && img.naturalHeight) {
+                    const ratio = img.naturalWidth + ' / ' + img.naturalHeight;
+                    ratiosCache[index] = ratio;
+                    // Se for o slide atual, aplica agora
+                    if (index === currentIndexRef.value) {
+                        applyRatioToCarousel(ratio);
+                    }
+                }
+            };
             img.src = imgUrl;
         }
     });
-    
+
     // Renderiza cada slide
     activeAvisos.forEach((aviso, index) => {
         const slide = document.createElement('div');
         slide.className = 'aviso-slide';
         slide.dataset.index = index;
-        
+
         const bgColor = (aviso.bgColor && aviso.bgColor.trim()) ? aviso.bgColor : '#0f172a';
         slide.style.backgroundColor = bgColor;
-        
+
         const hasImage = isValidImageUrl(aviso.imageUrl);
-        
+
         if (hasImage) {
             const rawUrl = aviso.imageUrl.trim();
             const imgUrl = window.optimizeImage ? window.optimizeImage(rawUrl, imageWidth) : rawUrl;
-            
+
             slide.style.backgroundImage = 'url(' + imgUrl + ')';
             slide.style.backgroundSize = 'cover';
             slide.style.backgroundPosition = 'center center';
             slide.style.backgroundRepeat = 'no-repeat';
-            slide.style.backgroundColor = 'transparent';
+            slide.style.backgroundColor = '#0f172a';
             slide.classList.add('has-image');
+
+            // Guarda a proporção no dataset (pode já ter vindo do cache)
+            if (ratiosCache[index]) {
+                slide.dataset.ratio = ratiosCache[index];
+            } else {
+                const img = new Image();
+                img.onload = () => {
+                    if (img.naturalWidth && img.naturalHeight) {
+                        const ratio = img.naturalWidth + ' / ' + img.naturalHeight;
+                        slide.dataset.ratio = ratio;
+                        ratiosCache[index] = ratio;
+                        if (index === currentIndexRef.value) {
+                            applyRatioToCarousel(ratio);
+                        }
+                    }
+                };
+                img.src = imgUrl;
+            }
         } else {
             slide.classList.add('no-image');
+            slide.dataset.ratio = FALLBACK_RATIO;
         }
-        
+
         const hasTitle = aviso.title && String(aviso.title).trim();
         const hasTexto = aviso.texto && String(aviso.texto).trim();
         const hasSubtitle = aviso.subtitle && String(aviso.subtitle).trim();
         const hasDescription = aviso.description && String(aviso.description).trim();
         const hasButton = aviso.buttonText && String(aviso.buttonText).trim() && aviso.buttonUrl && String(aviso.buttonUrl).trim();
-        
+
         const hasAnyText = hasTitle || hasTexto || hasSubtitle || hasDescription || hasButton;
-        
+
         if (hasImage && !hasAnyText) {
             slide.classList.add('image-only');
         }
-        
+
         if (hasAnyText) {
             const content = document.createElement('div');
             const position = aviso.position || 'center';
             const align = aviso.align || 'center';
-            
+
             content.className = 'aviso-content pos-' + position;
-            
+
             if (position === 'custom') {
                 const posX = parseFloat(aviso.posX) || 50;
                 const posY = parseFloat(aviso.posY) || 50;
@@ -315,37 +338,37 @@ window.renderAvisosCarousel = (avisos) => {
                 content.style.setProperty('--aviso-y', posY + '%');
                 content.style.setProperty('--aviso-align', align);
             }
-            
+
             const textColor = (aviso.textColor && aviso.textColor.trim()) ? aviso.textColor : '#ffffff';
             content.style.color = textColor;
-            
+
             let contentHTML = '';
-            
+
             if (hasSubtitle) {
                 contentHTML += '<div class="aviso-subtitle">' + escapeHtml(String(aviso.subtitle).trim()) + '</div>';
             }
-            
+
             if (hasTitle || hasTexto) {
                 const title = hasTitle ? aviso.title : aviso.texto;
                 contentHTML += '<h2 class="aviso-title" style="color: ' + textColor + '">' + escapeHtml(String(title).trim()) + '</h2>';
             }
-            
+
             if (hasDescription) {
                 contentHTML += '<p class="aviso-description" style="color: ' + textColor + '">' + escapeHtml(String(aviso.description).trim()) + '</p>';
             }
-            
+
             if (hasButton) {
                 contentHTML += '<a href="' + escapeHtml(String(aviso.buttonUrl).trim()) + '" class="aviso-button"' +
                     (String(aviso.buttonUrl).trim().startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '') +
                     '>' + escapeHtml(String(aviso.buttonText).trim()) + ' <i class="fas fa-arrow-right"></i></a>';
             }
-            
+
             content.innerHTML = contentHTML;
             slide.appendChild(content);
         }
-        
+
         slidesContainer.appendChild(slide);
-        
+
         const dot = document.createElement('button');
         dot.className = 'aviso-dot' + (index === 0 ? ' active' : '');
         dot.setAttribute('aria-label', 'Ir para aviso ' + (index + 1));
@@ -353,67 +376,74 @@ window.renderAvisosCarousel = (avisos) => {
         dot.onclick = () => goToAviso(index);
         dotsContainer.appendChild(dot);
     });
-    
+
     // ============================================================
     // ESTADO DO CARROSSEL
-    // ✅ CORREÇÃO: timers agora são globais (window.__aviso*)
-    //    para que possam ser limpos no início do próximo render.
     // ============================================================
     let currentIndex = 0;
     const AUTOPLAY_DELAY = 6000;
-    
+
     const slides = slidesContainer.querySelectorAll('.aviso-slide');
     const dots = dotsContainer.querySelectorAll('.aviso-dot');
-    
+
     if (slides.length > 0) {
         slides[0].classList.add('active');
+        // Aplica a proporção do primeiro slide (se já detectada)
+        const firstRatio = slides[0].dataset.ratio || ratiosCache[0];
+        if (firstRatio) applyRatioToCarousel(firstRatio);
     }
-    
+
     const goToAviso = (index) => {
         if (index < 0) index = slides.length - 1;
         if (index >= slides.length) index = 0;
-        
+
         slides.forEach((s, i) => s.classList.toggle('active', i === index));
         dots.forEach((d, i) => d.classList.toggle('active', i === index));
-        
+
         currentIndex = index;
+        currentIndexRef.value = index;
+
+        // Aplica a proporção do slide atual
+        const targetSlide = slides[index];
+        const ratio = (targetSlide && targetSlide.dataset.ratio) || ratiosCache[index];
+        if (ratio) applyRatioToCarousel(ratio);
+
         resetProgress();
     };
-    
+
     function resetProgress() {
         dots.forEach(d => d.style.setProperty('--progress', '0%'));
-        
+
         if (window.__avisoProgressTimer) {
             clearInterval(window.__avisoProgressTimer);
             window.__avisoProgressTimer = null;
         }
-        
+
         const activeDot = dots[currentIndex];
         if (!activeDot) return;
-        
+
         let progress = 0;
         const step = 100 / (AUTOPLAY_DELAY / 50);
-        
+
         window.__avisoProgressTimer = setInterval(() => {
             progress += step;
             if (progress >= 100) progress = 100;
             activeDot.style.setProperty('--progress', progress + '%');
         }, 50);
     }
-    
+
     const nextAviso = () => goToAviso(currentIndex + 1);
     const prevAviso = () => goToAviso(currentIndex - 1);
-    
+
     function startAutoplay() {
         stopAutoplay();
         if (slides.length < 2) return;
-        
         resetProgress();
         window.__avisoAutoplayTimer = setInterval(() => {
             goToAviso(currentIndex + 1);
         }, AUTOPLAY_DELAY);
     }
-    
+
     function stopAutoplay() {
         if (window.__avisoAutoplayTimer) {
             clearInterval(window.__avisoAutoplayTimer);
@@ -424,15 +454,15 @@ window.renderAvisosCarousel = (avisos) => {
             window.__avisoProgressTimer = null;
         }
     }
-    
+
     startAutoplay();
-    
+
     carousel.addEventListener('mouseenter', stopAutoplay);
     carousel.addEventListener('mouseleave', startAutoplay);
-    
+
     const prevBtn = document.getElementById('aviso-prev');
     const nextBtn = document.getElementById('aviso-next');
-    
+
     if (prevBtn) {
         prevBtn.onclick = () => {
             stopAutoplay();
@@ -447,25 +477,25 @@ window.renderAvisosCarousel = (avisos) => {
             startAutoplay();
         };
     }
-    
+
     // Swipe
     let touchStartX = 0;
     let touchEndX = 0;
-    
+
     carousel.addEventListener('touchstart', (e) => {
         touchStartX = e.changedTouches[0].screenX;
         stopAutoplay();
     }, { passive: true });
-    
+
     carousel.addEventListener('touchend', (e) => {
         touchEndX = e.changedTouches[0].screenX;
         const diff = touchStartX - touchEndX;
-        
+
         if (Math.abs(diff) > 50) {
             if (diff > 0) nextAviso();
             else prevAviso();
         }
-        
+
         startAutoplay();
     }, { passive: true });
 };
@@ -486,17 +516,16 @@ window.openEventModal = (eventId) => {
 
     img.src = window.optimizeImage(event.coverUrl, 1000) || 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
     img.onerror = () => img.src = 'https://placehold.co/600x400/1e293b/FFFFFF?text=Evento';
-    
+
     let dateObj = window.parseDate(event.date);
-    
-    dateEl.textContent = dateObj.toLocaleDateString('pt-BR', { 
-        weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' 
+
+    dateEl.textContent = dateObj.toLocaleDateString('pt-BR', {
+        weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
     });
-    timeEl.textContent = dateObj.toLocaleTimeString('pt-BR', { 
-        hour: '2-digit', minute: '2-digit' 
+    timeEl.textContent = dateObj.toLocaleTimeString('pt-BR', {
+        hour: '2-digit', minute: '2-digit'
     }) + 'h';
-    
-    // ✅ CORREÇÃO: usa textContent (já era) — mantém seguro contra HTML
+
     title.textContent = event.name;
     desc.textContent = event.description || 'Sem descrição adicional.';
 
@@ -506,20 +535,20 @@ window.openEventModal = (eventId) => {
         document.getElementById('modal-content-box').classList.remove('scale-95');
         document.getElementById('modal-content-box').classList.add('scale-100');
     }, 10);
-    
+
     document.body.style.overflow = 'hidden';
 };
 
 window.closeEventModal = () => {
     const modal = document.getElementById('event-modal');
     modal.classList.add('opacity-0');
-    
+
     const box = document.getElementById('modal-content-box');
     if (box) {
         box.classList.add('scale-95');
         box.classList.remove('scale-100');
     }
-    
+
     setTimeout(() => {
         modal.classList.add('hidden');
         document.body.style.overflow = '';
@@ -546,4 +575,4 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-console.log('📅 events.js carregado (com carrossel de avisos)');
+console.log('📅 events.js carregado (com carrossel de avisos adaptativo)');
