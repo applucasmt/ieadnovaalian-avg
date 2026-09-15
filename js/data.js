@@ -1,17 +1,17 @@
 // ============================================================
 // IEAD NOVA ALIANÇA - SISTEMA DE DADOS E CACHE
-// ✅ Opção 3: renderização progressiva.
-//    1) Config é buscado e aplicado primeiro (rápido, sem travar).
-//    2) O resto (eventos, avisos, etc.) é buscado em paralelo e
-//       renderizado quando chega.
-// ✅ Hero aplica na hora (preload em background, sem bloquear).
+// ✅ Opção 1: ZERO cache de config. Sempre busca do servidor.
+//    O hero aparece VAZIO até o dado real chegar — nunca mostra
+//    dado antigo, nunca "pisca".
+// ✅ Renderização progressiva: config primeiro, resto depois.
 // ✅ Polling adaptativo por hash (?action=ping).
 // ============================================================
 
 // ============================================================
 // CHAVES QUE PODEM USAR CACHE
+// ✅ VAZIO: nenhuma chave usa cache. Sempre busca do servidor.
 // ============================================================
-window.CACHE_ENABLED_KEYS = ['cache_config_v2'];
+window.CACHE_ENABLED_KEYS = [];
 
 // ============================================================
 // CONFIGURAÇÃO DO POLLING
@@ -42,41 +42,18 @@ window.clearAppCache = () => {
 };
 
 // ============================================================
-// FETCH (COM CACHE APENAS PARA CONFIG)
+// FETCH — SEM CACHE (sempre busca do servidor)
 // ============================================================
 window.fetchWithCache = async (url, key, force) => {
     force = force || false;
-    const cacheAllowed = window.CACHE_ENABLED_KEYS.indexOf(key) !== -1;
-    const cached = localStorage.getItem(key);
 
-    if (cacheAllowed && !force && cached) {
-        try {
-            const data = JSON.parse(cached);
-            if (Date.now() - data.timestamp < window.CONFIG.cacheTime) {
-                return data.content;
-            }
-        } catch(e) {}
-    }
-
+    // ✅ Sem cache: sempre busca do servidor
     try {
         const response = await fetch(url + '&cacheBust=' + Date.now());
         if (!response.ok) throw new Error('Network error');
-        const content = await response.json();
-
-        if (cacheAllowed) {
-            try {
-                localStorage.setItem(key, JSON.stringify({
-                    timestamp: Date.now(),
-                    content: content
-                }));
-            } catch(e) {}
-        }
-        return content;
+        return await response.json();
     } catch (error) {
         console.error('Erro fetch ' + key + ':', error);
-        if (cacheAllowed && cached) {
-            try { return JSON.parse(cached).content; } catch(e) { return []; }
-        }
         return [];
     }
 };
@@ -109,10 +86,10 @@ window.preloadImage = (url, timeoutMs) => {
 };
 
 // ============================================================
-// APLICAR CONFIG (LOGO + HERO PC/MOBILE + POSIÇÃO + TEXTOS)
-// ✅ Aplica IMEDIATAMENTE. Preload só serve para evitar flash
-//    visual quando a imagem ainda não está em cache do navegador.
-//    A aplicação NÃO espera o preload para não travar o layout.
+// APLICAR CONFIG
+// ✅ Aplica IMEDIATAMENTE. Não espera preload.
+// ✅ Só aplica o hero se veio URL válida.
+// ✅ Se não veio logo/título, deixa em branco (não força antigo).
 // ============================================================
 window.applyConfigImages = (config) => {
     console.log('🎨 applyConfigImages:', config);
@@ -145,18 +122,9 @@ window.applyConfigImages = (config) => {
     if (heroUrlToUse) {
         const hero = document.getElementById('site-hero');
         if (hero) {
-            const currentSrc = hero.getAttribute('src') || '';
-            if (currentSrc !== heroUrlToUse) {
-                // ✅ Aplica IMEDIATAMENTE (sem esperar)
-                hero.src = heroUrlToUse;
-                hero.setAttribute('data-hero-url', heroUrlToUse);
-                console.log('🖼️ Hero aplicado imediatamente:', heroUrlToUse);
-
-                // ✅ Em background, pré-carrega (só para garantir que está em cache)
-                window.preloadImage(heroUrlToUse, 4000).then(() => {
-                    console.log('✅ Hero confirmado em cache.');
-                });
-            }
+            hero.src = heroUrlToUse;
+            hero.setAttribute('data-hero-url', heroUrlToUse);
+            console.log('🖼️ Hero aplicado:', heroUrlToUse);
         }
     }
 
@@ -165,21 +133,23 @@ window.applyConfigImages = (config) => {
     const titleEl = document.getElementById('hero-title');
     const descEl = document.getElementById('hero-description');
 
-    if (badgeEl && config.heroSubtitle && config.heroSubtitle.trim()) {
-        badgeEl.textContent = config.heroSubtitle.trim();
+    if (badgeEl) {
+        badgeEl.textContent = (config.heroSubtitle && config.heroSubtitle.trim()) ? config.heroSubtitle.trim() : '';
     }
 
-    if (titleEl && config.heroTitle && config.heroTitle.trim()) {
-        const parts = config.heroTitle.split('\\n');
-        if (parts.length > 1) {
-            titleEl.innerHTML = parts[0] + '<br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">' + parts[1] + '</span>';
-        } else {
-            titleEl.textContent = config.heroTitle;
+    if (titleEl) {
+        if (config.heroTitle && config.heroTitle.trim()) {
+            const parts = config.heroTitle.split('\\n');
+            if (parts.length > 1) {
+                titleEl.innerHTML = parts[0] + '<br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">' + parts[1] + '</span>';
+            } else {
+                titleEl.textContent = config.heroTitle;
+            }
         }
     }
 
-    if (descEl && config.heroDescription && config.heroDescription.trim()) {
-        descEl.textContent = config.heroDescription.trim();
+    if (descEl) {
+        descEl.textContent = (config.heroDescription && config.heroDescription.trim()) ? config.heroDescription.trim() : '';
     }
 
     // POSIÇÃO DO HERO
@@ -214,32 +184,17 @@ window.addEventListener('resize', () => {
     const currentIsMobile = window.innerWidth <= 768;
     if (currentIsMobile !== lastIsMobile) {
         lastIsMobile = currentIsMobile;
-        try {
-            const cached = localStorage.getItem('cache_config_v2');
-            if (cached) {
-                const data = JSON.parse(cached);
-                if (data.content && data.content[0]) {
-                    window.applyConfigImages(data.content[0]);
-                }
-            }
-        } catch(e) {}
+        // Re-busca o config (sem cache) e aplica
+        if (typeof window.loadConfigOnly === 'function') {
+            window.loadConfigOnly();
+        }
     }
 });
 
 // ============================================================
-// ✅ CARREGAR DADOS — RENDERIZAÇÃO PROGRESSIVA (OPÇÃO 3)
-// ------------------------------------------------------------
-// FASE 1: busca e aplica SÓ o config (rápido). Sem esperar o
-//         resto. Isso coloca o hero no lugar certo JÁ.
-// FASE 2: busca o resto em paralelo e renderiza quando chega.
-//         Não bloqueia, não reflui a tela de forma brusca.
+// ✅ CARREGAR SÓ O CONFIG (usado pelo resize + fase 1 do loadData)
 // ============================================================
-window.loadData = async (force) => {
-    force = force === true;
-
-    // ------------------------------------------------------------
-    // FASE 1: CONFIG (rápido, aplica já)
-    // ------------------------------------------------------------
+window.loadConfigOnly = async () => {
     try {
         const config = await window.fetchWithCache(
             window.CONFIG.scriptUrl + '?sheet=config',
@@ -253,6 +208,21 @@ window.loadData = async (force) => {
     } catch (e) {
         console.error('Erro ao carregar config:', e);
     }
+};
+
+// ============================================================
+// ✅ CARREGAR DADOS — RENDERIZAÇÃO PROGRESSIVA
+// ------------------------------------------------------------
+// FASE 1: busca e aplica SÓ o config (rápido). Sem cache.
+// FASE 2: busca o resto em paralelo e renderiza quando chega.
+// ============================================================
+window.loadData = async (force) => {
+    force = force === true;
+
+    // ------------------------------------------------------------
+    // FASE 1: CONFIG (aplica assim que chega)
+    // ------------------------------------------------------------
+    await window.loadConfigOnly();
 
     // ------------------------------------------------------------
     // FASE 2: RESTO (eventos, avisos, ministérios, etc.)
@@ -267,16 +237,15 @@ window.loadData = async (force) => {
             window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=pastor', 'cache_pastor_v2', true)
         ]);
 
-        // ✅ Passa só os 6 primeiros (o config já foi aplicado na Fase 1)
         if (typeof window.renderComponents === 'function') {
             window.renderComponents(
-                results[0], // eventos
-                results[1], // avisos
-                results[2], // ministérios
-                results[3], // álbuns
-                results[4], // talentos
-                results[5], // pastor
-                null        // config já aplicado — passa null
+                results[0],
+                results[1],
+                results[2],
+                results[3],
+                results[4],
+                results[5],
+                null // config já aplicado na Fase 1
             );
         }
     } catch (e) {
@@ -289,7 +258,6 @@ window.loadData = async (force) => {
 
 // ============================================================
 // RENDERIZAR COMPONENTES
-// ✅ Aceita config = null (quando já foi aplicada na Fase 1).
 // ============================================================
 window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor, config) => {
     events = Array.isArray(events) ? events : [];
@@ -308,7 +276,7 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         albums: document.getElementById('albums-container')
     };
 
-    // 1. CONFIG — só aplica se veio (caso contrário, já foi aplicado)
+    // 1. CONFIG — só aplica se veio
     if (config.length > 0 && config[0]) {
         window.applyConfigImages(config[0]);
     }
@@ -524,7 +492,7 @@ window.initAutoRefresh = () => {
 };
 
 // ============================================================
-// NOTIFICAR OUTRAS ABAS (chamado pelo admin.js)
+// NOTIFICAR OUTRAS ABAS
 // ============================================================
 window.broadcastDataChanged = () => {
     try {
@@ -545,6 +513,6 @@ window.broadcastDataChanged = () => {
 };
 
 // ============================================================
-// LOG DE INICIALIZAÇÃO
+// LOG
 // ============================================================
-console.log('📦 data.js carregado (Opção 3: renderização progressiva + polling)');
+console.log('📦 data.js carregado (sem cache + progressivo)');
