@@ -39,7 +39,7 @@ body {
 }
 
 /* ============================================================
-   HERO - ESTÁTICA, SEM ZOOM, SEM PARALLAX
+   HERO
    ============================================================ */
 #site-hero {
     width: 100%;
@@ -224,7 +224,7 @@ body {
 }
 
 /* ============================================================
-   MARKETING PAGE V2 - LAYOUT DEFINITIVO
+   MARKETING PAGE V2
    ============================================================ */
 .marketing-container-v2 {
     position: relative;
@@ -415,7 +415,6 @@ body {
     }
 }
 
-/* CONTROLES DE NAVEGAÇÃO */
 .marketing-controls {
     position: absolute;
     bottom: 1rem;
@@ -959,6 +958,30 @@ behold-widget a { text-decoration: none; }
         rgba(0, 0, 0, 0.2) 50%,
         transparent 100%
     );
+}
+
+/* ============================================================
+   AVISO COM APENAS IMAGEM (sem texto)
+   Overlay bem sutil para não atrapalhar a imagem
+   ============================================================ */
+.aviso-slide.image-only::before {
+    background: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.15) 0%,
+        rgba(0, 0, 0, 0.05) 50%,
+        transparent 100%
+    );
+}
+
+@media (max-width: 768px) {
+    .aviso-slide.image-only::before {
+        background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.15) 0%,
+            rgba(0, 0, 0, 0.05) 50%,
+            transparent 100%
+        );
+    }
 }
 
 .aviso-content {
