@@ -7,7 +7,7 @@
 // ============================================================
 window.CONFIG = {
     scriptUrl: 'https://script.google.com/macros/s/AKfycbzm6Tpwxlxs4Mlm2_VtYRXhw27qahnTrWWnrXkLTCyDbxKL964I_HOvChiru2JcSOY/exec',
-    youtubeKey: 'AIzaSyAov1GBz0bCyGsBLUkT6qjDPzT5TZbHrf8',
+    youtubeKey: 'AIzaSyBIPVFix4B_5SNzaJfPw2x6jfbvitdJ7Kc',
     youtubeChannel: 'UCEhO2WiTY8qy_cBoQpwoJjQ',
     cacheTime: 3600000, // 1 hora em milissegundos
 
