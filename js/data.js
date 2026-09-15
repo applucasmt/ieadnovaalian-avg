@@ -487,6 +487,34 @@ window.broadcastDataChanged = () => {
 };
 
 // ============================================================
+// ✅ TELA DE LOADING — esconder quando o site está pronto
+// ============================================================
+window.hideInitialLoading = () => {
+    const el = document.getElementById('initial-loading');
+    if (!el) return;
+    if (el.classList.contains('is-hiding') || el.classList.contains('is-hidden')) return;
+
+    el.classList.add('is-hiding');
+
+    // Depois da transição, marca como hidden (remove do fluxo)
+    setTimeout(() => {
+        el.classList.add('is-hidden');
+    }, 600);
+};
+
+// Esconde automaticamente quando a página terminar de carregar
+// OU depois de 5s de segurança (o que acontecer primeiro)
+window.__initialLoadingWatchdog = setTimeout(() => {
+    window.hideInitialLoading();
+}, 5000);
+
+window.addEventListener('load', () => {
+    // pequeno atraso pra dar tempo do primeiro render
+    setTimeout(() => {
+        window.hideInitialLoading();
+    }, 200);
+});
+// ============================================================
 // LOG
 // ============================================================
 console.log('📦 data.js carregado (1 endpoint + ping rápido + polling 15s)');
