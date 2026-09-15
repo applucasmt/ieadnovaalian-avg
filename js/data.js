@@ -1,29 +1,21 @@
 // ============================================================
 // IEAD NOVA ALIANÇA - SISTEMA DE DADOS E CACHE
-// ✅ Opção 1: ZERO cache de config. Sempre busca do servidor.
-//    O hero aparece VAZIO até o dado real chegar — nunca mostra
-//    dado antigo, nunca "pisca".
-// ✅ Renderização progressiva: config primeiro, resto depois.
-// ✅ Polling adaptativo por hash (?action=ping).
+// ✅ Otimizado: 1 endpoint ?action=all (em vez de 7 requisições)
+// ✅ Ping instantâneo via PropertiesService
+// ✅ Polling de 15s
+// ✅ Renderização progressiva
 // ============================================================
 
-// ============================================================
-// CHAVES QUE PODEM USAR CACHE
-// ✅ VAZIO: nenhuma chave usa cache. Sempre busca do servidor.
-// ============================================================
 window.CACHE_ENABLED_KEYS = [];
 
-// ============================================================
-// CONFIGURAÇÃO DO POLLING
-// ============================================================
 window.AUTO_REFRESH_CONFIG = {
-    intervalMs: 45000,
-    pingTimeout: 15000,
+    intervalMs: 15000,       // ✅ 15s (antes era 45s)
+    pingTimeout: 8000,       // timeout do ping
     enabled: true
 };
 
 // ============================================================
-// LIMPA TODO O CACHE DA APLICAÇÃO NO LOCALSTORAGE
+// LIMPA TODO O CACHE
 // ============================================================
 window.clearAppCache = () => {
     const keysToRemove = [
@@ -38,16 +30,15 @@ window.clearAppCache = () => {
     keysToRemove.forEach(k => {
         try { localStorage.removeItem(k); } catch(e) {}
     });
-    console.log('🧹 clearAppCache: cache da aplicação limpo.');
+    console.log('🧹 clearAppCache: cache limpo.');
 };
 
 // ============================================================
-// FETCH — SEM CACHE (sempre busca do servidor)
+// FETCH — SEM CACHE
 // ============================================================
 window.fetchWithCache = async (url, key, force) => {
     force = force || false;
 
-    // ✅ Sem cache: sempre busca do servidor
     try {
         const response = await fetch(url + '&cacheBust=' + Date.now());
         if (!response.ok) throw new Error('Network error');
@@ -59,7 +50,7 @@ window.fetchWithCache = async (url, key, force) => {
 };
 
 // ============================================================
-// PRÉ-CARREGAR IMAGEM (em background, sem travar)
+// PRÉ-CARREGAR IMAGEM
 // ============================================================
 window.preloadImage = (url, timeoutMs) => {
     timeoutMs = timeoutMs || 4000;
@@ -87,9 +78,6 @@ window.preloadImage = (url, timeoutMs) => {
 
 // ============================================================
 // APLICAR CONFIG
-// ✅ Aplica IMEDIATAMENTE. Não espera preload.
-// ✅ Só aplica o hero se veio URL válida.
-// ✅ Se não veio logo/título, deixa em branco (não força antigo).
 // ============================================================
 window.applyConfigImages = (config) => {
     console.log('🎨 applyConfigImages:', config);
@@ -107,7 +95,7 @@ window.applyConfigImages = (config) => {
         faviconLinks.forEach(link => link.href = logoUrl);
     }
 
-    // HERO IMAGEM - Detecção de dispositivo
+    // HERO IMAGEM
     const isMobile = window.innerWidth <= 768;
     let heroUrlToUse = '';
 
@@ -134,7 +122,12 @@ window.applyConfigImages = (config) => {
     const descEl = document.getElementById('hero-description');
 
     if (badgeEl) {
-        badgeEl.textContent = (config.heroSubtitle && config.heroSubtitle.trim()) ? config.heroSubtitle.trim() : '';
+        if (config.heroSubtitle && config.heroSubtitle.trim()) {
+            badgeEl.textContent = config.heroSubtitle.trim();
+            badgeEl.style.display = 'inline-block';
+        } else {
+            badgeEl.style.display = 'none';
+        }
     }
 
     if (titleEl) {
@@ -177,75 +170,58 @@ window.applyConfigImages = (config) => {
 };
 
 // ============================================================
-// TROCAR IMAGEM AO REDIMENSIONAR (PC ↔ Celular)
+// RESIZE — re-aplica config
 // ============================================================
 let lastIsMobile = window.innerWidth <= 768;
 window.addEventListener('resize', () => {
     const currentIsMobile = window.innerWidth <= 768;
     if (currentIsMobile !== lastIsMobile) {
         lastIsMobile = currentIsMobile;
-        // Re-busca o config (sem cache) e aplica
-        if (typeof window.loadConfigOnly === 'function') {
-            window.loadConfigOnly();
+        if (typeof window.loadData === 'function') {
+            window.loadData(true);
         }
     }
 });
 
 // ============================================================
-// ✅ CARREGAR SÓ O CONFIG (usado pelo resize + fase 1 do loadData)
-// ============================================================
-window.loadConfigOnly = async () => {
-    try {
-        const config = await window.fetchWithCache(
-            window.CONFIG.scriptUrl + '?sheet=config',
-            'cache_config_v2',
-            true
-        );
-
-        if (typeof window.applyConfigImages === 'function') {
-            window.applyConfigImages((Array.isArray(config) && config[0]) ? config[0] : {});
-        }
-    } catch (e) {
-        console.error('Erro ao carregar config:', e);
-    }
-};
-
-// ============================================================
-// ✅ CARREGAR DADOS — RENDERIZAÇÃO PROGRESSIVA
+// ✅ CARREGAR DADOS — 1 REQUISIÇÃO (?action=all)
 // ------------------------------------------------------------
-// FASE 1: busca e aplica SÓ o config (rápido). Sem cache.
-// FASE 2: busca o resto em paralelo e renderiza quando chega.
+// FASE 1: busca tudo em 1 request e renderiza.
+// FASE 2: nada. (Antes eram 7 requests.)
 // ============================================================
 window.loadData = async (force) => {
     force = force === true;
 
-    // ------------------------------------------------------------
-    // FASE 1: CONFIG (aplica assim que chega)
-    // ------------------------------------------------------------
-    await window.loadConfigOnly();
-
-    // ------------------------------------------------------------
-    // FASE 2: RESTO (eventos, avisos, ministérios, etc.)
-    // ------------------------------------------------------------
     try {
-        const results = await Promise.all([
-            window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=eventos', 'cache_eventos_v2', true),
-            window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=avisos', 'cache_avisos_v2', true),
-            window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=ministerios', 'cache_ministerios_v2', true),
-            window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=albuns', 'cache_albuns_v2', true),
-            window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=talentos', 'cache_talentos_v2', true),
-            window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=pastor', 'cache_pastor_v2', true)
-        ]);
+        // ✅ UMA ÚNICA REQUISIÇÃO
+        const response = await fetch(
+            window.CONFIG.scriptUrl + '?action=all&cacheBust=' + Date.now()
+        );
 
+        if (!response.ok) throw new Error('Network error');
+        const data = await response.json();
+
+        // Guarda o hash atual
+        if (data && data._hash) {
+            window.__lastDataHash = String(data._hash);
+        }
+
+        // Aplica config PRIMEIRO (rápido)
+        const config = Array.isArray(data.config) ? data.config : [];
+        if (typeof window.applyConfigImages === 'function') {
+            window.applyConfigImages(config.length > 0 ? config[0] : {});
+        }
+
+        // Renderiza o resto
         if (typeof window.renderComponents === 'function') {
             window.renderComponents(
-                results[0],
-                results[1],
-                results[2],
-                results[3],
-                results[4],
-                results[5],
-                null // config já aplicado na Fase 1
+                Array.isArray(data.eventos) ? data.eventos : [],
+                Array.isArray(data.avisos) ? data.avisos : [],
+                Array.isArray(data.ministerios) ? data.ministerios : [],
+                Array.isArray(data.albuns) ? data.albuns : [],
+                Array.isArray(data.talentos) ? data.talentos : [],
+                Array.isArray(data.pastor) ? data.pastor : [],
+                null
             );
         }
     } catch (e) {
@@ -276,12 +252,11 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         albums: document.getElementById('albums-container')
     };
 
-    // 1. CONFIG — só aplica se veio
     if (config.length > 0 && config[0]) {
         window.applyConfigImages(config[0]);
     }
 
-    // 2. PASTOR
+    // PASTOR
     const pastorContainer = document.getElementById('pastor-img-container');
     if (pastorContainer) {
         if (pastor.length > 0 && pastor[0].capa) {
@@ -291,7 +266,7 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         }
     }
 
-    // 3. EVENTOS
+    // EVENTOS
     const normalizedEvents = events.map((e, i) => {
         const getVal = (keys) => {
             for(var k=0; k<keys.length; k++) {
@@ -320,14 +295,12 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         window.initMarketingSlider(window.globalEvents);
     }
 
-    // 4. AVISOS
+    // AVISOS
     const carousel = document.getElementById('avisos-carousel');
     if (avisos.length > 0) {
         console.log('📢 Renderizando carrossel de avisos:', avisos.length, 'itens');
         if (typeof window.renderAvisosCarousel === 'function') {
             window.renderAvisosCarousel(avisos);
-        } else {
-            console.warn('⚠️ renderAvisosCarousel não está definido');
         }
     } else {
         if (carousel) {
@@ -339,7 +312,7 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         }
     }
 
-    // 5. EVENTOS FUTUROS
+    // EVENTOS FUTUROS
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -359,21 +332,21 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
             : '<div class="col-span-full text-center text-gray-400 py-10">Nenhum evento agendado.</div>';
     }
 
-    // 6. MINISTÉRIOS
+    // MINISTÉRIOS
     if (containers.ministerios) {
         containers.ministerios.innerHTML = ministerios.length > 0
             ? ministerios.map(m => window.createCard(m, 'ministerio')).join('')
             : '';
     }
 
-    // 7. TALENTOS
+    // TALENTOS
     if (containers.talentos) {
         containers.talentos.innerHTML = talentos.length > 0
             ? talentos.map(t => window.createCard(t, 'talento')).join('')
             : '';
     }
 
-    // 8. ÁLBUNS
+    // ÁLBUNS
     if (containers.albums) {
         containers.albums.innerHTML = albums.length > 0
             ? albums.map(a => window.createCard(a, 'album')).join('')
@@ -383,6 +356,7 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
 
 // ============================================================
 // CHECAR ATUALIZAÇÕES VIA HASH (?action=ping)
+// ✅ Agora o ping lê só uma string (instantâneo)
 // ============================================================
 window.__lastDataHash = null;
 
@@ -410,7 +384,7 @@ window.checkForUpdates = async () => {
         }
 
         if (hash !== window.__lastDataHash) {
-            console.log('🔄 Hash mudou (' + window.__lastDataHash + ' → ' + hash + '). Recarregando dados...');
+            console.log('🔄 Hash mudou. Recarregando dados...');
             window.__lastDataHash = hash;
             return true;
         }
@@ -422,7 +396,7 @@ window.checkForUpdates = async () => {
 };
 
 // ============================================================
-// POLLING AUTOMÁTICO
+// POLLING AUTOMÁTICO (15s)
 // ============================================================
 window.initAutoRefresh = () => {
     if (!window.AUTO_REFRESH_CONFIG.enabled) return;
@@ -460,7 +434,7 @@ window.initAutoRefresh = () => {
     });
 
     if (!document.hidden) {
-        setTimeout(doCheck, 5000);
+        setTimeout(doCheck, 3000);
         start();
     }
 
@@ -469,7 +443,7 @@ window.initAutoRefresh = () => {
             const bc = new BroadcastChannel('iead_data_changes');
             bc.addEventListener('message', (event) => {
                 if (event && event.data && event.data.type === 'data_changed') {
-                    console.log('📡 BroadcastChannel: dados mudaram em outra aba. Recarregando...');
+                    console.log('📡 BroadcastChannel: dados mudaram. Recarregando...');
                     if (typeof window.loadData === 'function') {
                         window.loadData(true);
                     }
@@ -481,14 +455,14 @@ window.initAutoRefresh = () => {
 
     window.addEventListener('storage', (event) => {
         if (event && event.key === '__iead_data_changed') {
-            console.log('💾 storage event: dados mudaram em outra aba. Recarregando...');
+            console.log('💾 storage event: dados mudaram. Recarregando...');
             if (typeof window.loadData === 'function') {
                 window.loadData(true);
             }
         }
     });
 
-    console.log('🔁 Polling automático iniciado (intervalo: ' + (window.AUTO_REFRESH_CONFIG.intervalMs / 1000) + 's)');
+    console.log('🔁 Polling iniciado (15s)');
 };
 
 // ============================================================
@@ -515,4 +489,4 @@ window.broadcastDataChanged = () => {
 // ============================================================
 // LOG
 // ============================================================
-console.log('📦 data.js carregado (sem cache + progressivo)');
+console.log('📦 data.js carregado (1 endpoint + ping rápido + polling 15s)');
