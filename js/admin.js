@@ -8,18 +8,13 @@ window.SCHEMAS = {
         { key: 'date', label: 'Data Início', type: 'datetime-local' },
         { key: 'endDate', label: 'Data Fim (Opcional)', type: 'datetime-local' },
         { key: 'description', label: 'Descrição', type: 'textarea' },
-        // ✅ CORREÇÃO: campo de imagem agora aceita upload (file) OU URL (text)
         { key: 'coverUrl', label: 'URL da Capa', type: 'text', upload: true }
     ],
-    
-    // ============================================================
-    // AVISOS - NOVO FORMATO (CARROSSEL ESTILO DISNEY/NETFLIX)
-    // ============================================================
+
     avisos: [
         { key: 'title', label: '📝 Título do Aviso', type: 'text', required: true },
         { key: 'subtitle', label: 'Subtítulo (linha acima do título)', type: 'text' },
         { key: 'description', label: 'Descrição (texto abaixo do título)', type: 'textarea' },
-        // ✅ CORREÇÃO: imageUrl agora aceita upload
         { key: 'imageUrl', label: '🖼️ URL da Imagem de Fundo (opcional)', type: 'text', hint: 'Deixe vazio para usar só cor de fundo', upload: true },
         { key: 'bgColor', label: '🎨 Cor de Fundo (se não tiver imagem)', type: 'color', default: '#0f172a' },
         { key: 'textColor', label: '🎨 Cor do Texto', type: 'color', default: '#ffffff' },
@@ -32,13 +27,12 @@ window.SCHEMAS = {
         { key: 'order', label: '🔢 Ordem (menor número aparece primeiro)', type: 'number', default: 1 },
         { key: 'active', label: '✅ Ativo?', type: 'select', options: ['true', 'false'], default: 'true' }
     ],
-    
+
     ministerios: [
         { key: 'nome', label: 'Nome do Ministério', type: 'text' },
         { key: 'lideres', label: 'Líderes', type: 'text' },
         { key: 'regentes', label: 'Regentes', type: 'text' },
         { key: 'telefone', label: 'Whatsapp', type: 'text' },
-        // ✅ CORREÇÃO: capa aceita upload
         { key: 'capa', label: 'URL da Foto', type: 'text', upload: true }
     ],
     talentos: [
@@ -46,18 +40,15 @@ window.SCHEMAS = {
         { key: 'descricao', label: 'Descrição', type: 'textarea' },
         { key: 'telefone', label: 'Whatsapp', type: 'text' },
         { key: 'video', label: 'Link YouTube', type: 'text' },
-        // ✅ CORREÇÃO: capa aceita upload
         { key: 'capa', label: 'URL da Foto', type: 'text', upload: true }
     ],
     albuns: [
         { key: 'albumName', label: 'Nome do Álbum', type: 'text' },
-        // ✅ CORREÇÃO: coverImageUrl aceita upload
         { key: 'coverImageUrl', label: 'URL da Capa', type: 'text', upload: true },
         { key: 'albumUrl', label: 'Link do Álbum', type: 'text' }
     ],
     pastor: [
         { key: 'nome', label: 'Nome', type: 'text' },
-        // ✅ CORREÇÃO: capa aceita upload
         { key: 'capa', label: 'URL da Foto', type: 'text', upload: true }
     ]
 };
@@ -73,11 +64,26 @@ window.heroState = {
 };
 
 // ============================================================
-// ✅ CORREÇÃO / NOVO: helper para saber se um campo é de imagem
-// (usado para decidir se mostra botão de upload + preview).
+// HELPER: campo de imagem?
 // ============================================================
 window.isImageField = (key) => {
     return ['coverUrl', 'capa', 'coverImageUrl', 'imageUrl'].indexOf(key) !== -1;
+};
+
+// ============================================================
+// ✅ NOVO: helper para notificar outras abas + forçar reload
+// Chamado após qualquer save/delete bem-sucedido.
+// ============================================================
+window.notifyDataChanged = () => {
+    // 1. Recarrega os dados localmente
+    if (typeof window.loadData === 'function') {
+        window.loadData(true);
+    }
+
+    // 2. Notifica outras abas (mesmo navegador) + BroadcastChannel
+    if (typeof window.broadcastDataChanged === 'function') {
+        window.broadcastDataChanged();
+    }
 };
 
 // ============================================================
@@ -88,10 +94,10 @@ window.openAdmin = () => {
     const login = document.getElementById('admin-login-screen');
     const dashboard = document.getElementById('admin-dashboard');
     const errorMsg = document.getElementById('admin-login-error');
-    
+
     modal.classList.remove('hidden');
     setTimeout(() => modal.classList.remove('opacity-0'), 10);
-    
+
     if (window.adminState.isAuthenticated) {
         login.classList.add('hidden');
         dashboard.classList.remove('hidden');
@@ -118,19 +124,19 @@ window.adminLogin = () => {
     const errorMsg = document.getElementById('admin-login-error');
     const btn = document.getElementById('admin-login-btn');
     const pass = input.value;
-    
+
     if (errorMsg) errorMsg.classList.add('hidden');
-    
+
     if (!pass) {
         if (errorMsg) { errorMsg.textContent = 'Digite a senha.'; errorMsg.classList.remove('hidden'); }
         input.classList.add('shake');
         setTimeout(() => input.classList.remove('shake'), 500);
         return;
     }
-    
+
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
-    
+
     if (pass !== window.ADMIN_PASSWORD_LOCAL) {
         setTimeout(() => {
             if (errorMsg) {
@@ -146,10 +152,10 @@ window.adminLogin = () => {
         }, 600);
         return;
     }
-    
+
     window.adminState.password = pass;
     window.adminState.isAuthenticated = true;
-    
+
     setTimeout(() => {
         document.getElementById('admin-login-screen').classList.add('hidden');
         document.getElementById('admin-dashboard').classList.remove('hidden');
@@ -186,7 +192,7 @@ window.handleServerAuthError = (result) => {
 // ============================================================
 window.loadAdminTab = async (tab) => {
     window.adminState.currentTab = tab;
-    
+
     document.querySelectorAll('.admin-tab').forEach(b => {
         if (b.dataset.tab === tab) b.classList.add('active', 'bg-white/10', 'text-white');
         else b.classList.remove('active', 'bg-white/10', 'text-white');
@@ -196,14 +202,13 @@ window.loadAdminTab = async (tab) => {
     if (btnNewItem) {
         btnNewItem.style.display = (tab === 'config') ? 'none' : 'flex';
     }
-    
+
     const contentArea = document.getElementById('admin-content-area');
     contentArea.innerHTML = '<div class="text-center py-10"><i class="fas fa-spinner fa-spin text-3xl text-brand-yellow"></i><p class="mt-2 text-gray-400">Carregando dados...</p></div>';
-    
+
     try {
-        // ✅ CORREÇÃO: força bypass do cache do admin (sempre pega do servidor)
         const data = await window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=' + tab, 'admin_' + tab, true);
-        
+
         if (tab === 'config') {
             const configData = (Array.isArray(data) && data.length > 0) ? data : [{
                 logoUrl: '', heroUrl: '', heroUrlMobile: '',
@@ -238,7 +243,7 @@ window.renderAdminTable = (data, tab) => {
     if (data[0].nome) displayKey = 'nome';
     if (data[0].titulo) displayKey = 'titulo';
     if (data[0].texto) displayKey = 'texto';
-    if (data[0].title) displayKey = 'title';  // Para avisos
+    if (data[0].title) displayKey = 'title';
 
     let html = '<div class="grid gap-2">';
     const displayData = [...data].reverse();
@@ -248,11 +253,10 @@ window.renderAdminTable = (data, tab) => {
         const imgUrl = item.coverUrl || item.capa || item.coverImageUrl || item.imageUrl;
         const imgHtml = imgUrl ? '<img src="' + window.optimizeImage(imgUrl, 100) + '" loading="lazy" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display=\'none\'">' : '';
 
-        // Para avisos, mostra se está ativo/inativo
         let statusBadge = '';
         if (tab === 'avisos' && item.active !== undefined) {
             const isActive = String(item.active).toLowerCase() !== 'false' && String(item.active) !== '0';
-            statusBadge = isActive 
+            statusBadge = isActive
                 ? '<span class="text-xs text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded ml-2">ativo</span>'
                 : '<span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded ml-2">inativo</span>';
         }
@@ -283,7 +287,7 @@ window.renderAdminTable = (data, tab) => {
 // ============================================================
 window.renderConfigForm = (config) => {
     const container = document.getElementById('admin-content-area');
-    
+
     const logoUrl = config.logoUrl || '';
     const heroUrl = config.heroUrl || '';
     const heroUrlMobile = config.heroUrlMobile || '';
@@ -304,7 +308,7 @@ window.renderConfigForm = (config) => {
 
     const previewBgStyle = heroUrl ? 'background-image: url(\'' + heroUrl + '\');' : 'background: #0f172a;';
 
-    container.innerHTML = 
+    container.innerHTML =
         '<div class="max-w-4xl mx-auto py-4">' +
             '<div class="mb-6 pb-4 border-b border-white/10">' +
                 '<h3 class="text-xl font-bold text-white flex items-center gap-2">' +
@@ -406,7 +410,6 @@ window.renderConfigForm = (config) => {
                     '<i class="fas fa-image mr-2"></i> URL da Logomarca' +
                 '</label>' +
                 '<input type="text" id="config-logoUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + logoUrl + '">' +
-                // ✅ CORREÇÃO: botão de upload para a logo
                 '<div class="mt-2">' +
                     '<input type="file" id="config-logoUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'logoUrl\')">' +
                     '<button type="button" onclick="document.getElementById(\'config-logoUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-2">' +
@@ -429,7 +432,6 @@ window.renderConfigForm = (config) => {
                 '</label>' +
                 '<p class="text-[10px] text-gray-500 mb-2">Recomendado: 1920x1080px</p>' +
                 '<input type="text" id="config-heroUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrl + '" oninput="window.updateHeroPreviewImage(this.value)">' +
-                // ✅ CORREÇÃO: botão de upload para o hero PC
                 '<div class="mt-2">' +
                     '<input type="file" id="config-heroUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrl\')">' +
                     '<button type="button" onclick="document.getElementById(\'config-heroUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-2">' +
@@ -446,7 +448,6 @@ window.renderConfigForm = (config) => {
                 '</label>' +
                 '<p class="text-[10px] text-gray-500 mb-2">Recomendado: 800x1200px (proporção 2:3)</p>' +
                 '<input type="text" id="config-heroUrlMobile" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrlMobile + '">' +
-                // ✅ CORREÇÃO: botão de upload para o hero mobile
                 '<div class="mt-2">' +
                     '<input type="file" id="config-heroUrlMobile-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrlMobile\')">' +
                     '<button type="button" onclick="document.getElementById(\'config-heroUrlMobile-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-2">' +
@@ -473,7 +474,6 @@ window.renderConfigForm = (config) => {
     window.updateHeroPreview();
     window.updatePreviewText();
 
-    // Listeners
     const inputLogo = document.getElementById('config-logoUrl');
     const previewLogo = document.getElementById('preview-logo');
     if (inputLogo && previewLogo) {
@@ -496,10 +496,7 @@ window.renderConfigForm = (config) => {
 };
 
 // ============================================================
-// ✅ CORREÇÃO / NOVO: UPLOAD DE IMAGEM PARA O CONFIG (logo/hero)
-// Chamado pelos botões "Enviar Imagem do Computador" dentro
-// do painel de config. Faz upload via ImgBB (config.js) e
-// preenche o input de texto correspondente.
+// UPLOAD DE IMAGEM PARA O CONFIG (logo/hero)
 // ============================================================
 window.handleConfigUpload = async (event, targetFieldKey) => {
     const input = event.target;
@@ -522,20 +519,17 @@ window.handleConfigUpload = async (event, targetFieldKey) => {
 
     if (!result.success) {
         setStatus('❌ ' + result.message, '#ef4444');
-        input.value = ''; // permite reenviar o mesmo arquivo
+        input.value = '';
         return;
     }
 
     setStatus('✅ Imagem enviada!', '#22c55e');
 
-    // Preenche o input de texto com a URL retornada
     if (textInput) {
         textInput.value = result.url;
-        // Dispara os eventos de atualização de preview
         textInput.dispatchEvent(new Event('input', { bubbles: true }));
     }
 
-    // Atualiza previews específicos
     if (targetFieldKey === 'logoUrl') {
         const previewLogo = document.getElementById('preview-logo');
         if (previewLogo) { previewLogo.src = result.url; previewLogo.style.display = 'block'; }
@@ -546,7 +540,7 @@ window.handleConfigUpload = async (event, targetFieldKey) => {
         if (previewHeroMobile) { previewHeroMobile.src = result.url; previewHeroMobile.style.display = 'block'; }
     }
 
-    input.value = ''; // limpa para permitir novo upload do mesmo arquivo
+    input.value = '';
 };
 
 // ============================================================
@@ -554,55 +548,55 @@ window.handleConfigUpload = async (event, targetFieldKey) => {
 // ============================================================
 window.setHeroPosition = (position) => {
     window.heroState.position = position;
-    
+
     document.querySelectorAll('.pos-btn[data-pos]').forEach(b => {
         if (b.dataset.pos === position) b.classList.add('active');
         else b.classList.remove('active');
     });
-    
+
     const customControls = document.getElementById('custom-controls');
     if (customControls) {
         if (position === 'custom') customControls.classList.remove('hidden');
         else customControls.classList.add('hidden');
     }
-    
+
     window.updateHeroPreview();
 };
 
 window.setHeroAlign = (align) => {
     window.heroState.align = align;
-    
+
     document.querySelectorAll('.pos-btn[data-align]').forEach(b => {
         if (b.dataset.align === align) b.classList.add('active');
         else b.classList.remove('active');
     });
-    
+
     window.updateHeroPreview();
 };
 
 window.updateHeroPreview = () => {
     const preview = document.getElementById('hero-preview-content');
     if (!preview) return;
-    
+
     const position = window.heroState.position;
     const align = window.heroState.align;
-    
+
     preview.classList.remove('preview-left', 'preview-center', 'preview-right', 'preview-custom');
-    
+
     if (position === 'custom') {
         const sliderX = document.getElementById('slider-posX');
         const sliderY = document.getElementById('slider-posY');
         const posX = sliderX ? sliderX.value : window.heroState.posX;
         const posY = sliderY ? sliderY.value : window.heroState.posY;
-        
+
         window.heroState.posX = posX;
         window.heroState.posY = posY;
-        
+
         const labelX = document.getElementById('posX-label');
         const labelY = document.getElementById('posY-label');
         if (labelX) labelX.textContent = posX + '%';
         if (labelY) labelY.textContent = posY + '%';
-        
+
         preview.classList.add('preview-custom');
         preview.style.setProperty('--hero-x', posX + '%');
         preview.style.setProperty('--hero-y', posY + '%');
@@ -619,11 +613,11 @@ window.updatePreviewText = () => {
     const titleEl = document.getElementById('preview-title');
     const badgeEl = document.getElementById('preview-badge');
     const descEl = document.getElementById('preview-desc');
-    
+
     const titleInput = document.getElementById('config-heroTitle');
     const subtitleInput = document.getElementById('config-heroSubtitle');
     const descInput = document.getElementById('config-heroDescription');
-    
+
     if (titleEl && titleInput) {
         titleEl.innerHTML = titleInput.value.replace(/\\n/g, '<br>');
     }
@@ -644,6 +638,7 @@ window.updateHeroPreviewImage = (url) => {
 
 // ============================================================
 // SALVAR CONFIG
+// ✅ Chama notifyDataChanged() ao final
 // ============================================================
 window.saveConfig = async () => {
     const logoUrl = document.getElementById('config-logoUrl').value.trim();
@@ -652,17 +647,17 @@ window.saveConfig = async () => {
     const heroTitle = document.getElementById('config-heroTitle').value;
     const heroSubtitle = document.getElementById('config-heroSubtitle').value;
     const heroDescription = document.getElementById('config-heroDescription').value;
-    
+
     const position = window.heroState.position;
     const align = window.heroState.align;
     const posX = window.heroState.posX;
     const posY = window.heroState.posY;
-    
+
     const payload = {
         sheet: 'config',
         action: 'edit',
         password: window.adminState.password,
-        originalId: '',
+        originalId: 'config',
         data: {
             logoUrl: logoUrl,
             heroUrl: heroUrl,
@@ -676,31 +671,31 @@ window.saveConfig = async () => {
             heroDescription: heroDescription
         }
     };
-    
+
     try {
         const res = await fetch(window.CONFIG.scriptUrl, {
             method: 'POST',
             body: JSON.stringify(payload)
         });
         const result = await res.json();
-        
+
         if (window.handleServerAuthError(result)) return;
-        
+
         if (result.success) {
             const newConfig = [payload.data];
-            
+
             try {
                 localStorage.setItem('cache_config_v2', JSON.stringify({
                     timestamp: Date.now(),
                     content: newConfig
                 }));
             } catch(e) {}
-            
-            window.applyConfigImages(newConfig[0]);
-            
-            // ✅ CORREÇÃO: força o loadData a re-renderizar com dados frescos
-            if (typeof window.loadData === 'function') window.loadData(true);
-            
+
+            await window.applyConfigImages(newConfig[0]);
+
+            // ✅ Notifica outras abas + recarrega localmente
+            window.notifyDataChanged();
+
             alert('✅ Configurações salvas com sucesso!');
         } else {
             alert('Erro: ' + result.message);
@@ -711,49 +706,46 @@ window.saveConfig = async () => {
 };
 
 // ============================================================
-// MODAL DE EDIÇÃO DE ITEM (com todos os tipos de campo)
-// ✅ CORREÇÃO: campos marcados com { upload: true } no SCHEMA
-//    ganham um botão de upload (ImgBB) + preview automático.
+// MODAL DE EDIÇÃO DE ITEM
 // ============================================================
 window.openEditModal = (mode, index) => {
     const modal = document.getElementById('edit-item-modal');
     const container = document.getElementById('edit-form-container');
     const title = document.getElementById('edit-modal-title');
     const btn = document.getElementById('btn-save-item');
-    
+
     const tab = window.adminState.currentTab;
     const schema = window.SCHEMAS[tab] || [];
-    
+
     container.innerHTML = '';
     title.textContent = mode === 'add' ? 'Adicionar Novo Item' : 'Editar Item';
-    
+
     let itemData = {};
     if (mode === 'edit' && index !== null && index !== undefined) {
         itemData = window.adminState.currentData[index] || {};
-        btn.dataset.originalId = Object.values(itemData)[0];
+        // ✅ Usa a coluna "id" real
+        btn.dataset.originalId = itemData.id || '';
     } else {
         btn.dataset.originalId = '';
     }
-    
+
     btn.dataset.mode = mode;
     btn.dataset.index = index;
 
     schema.forEach(field => {
         const wrapper = document.createElement('div');
         wrapper.className = 'flex flex-col gap-1';
-        
+
         const label = document.createElement('label');
         label.className = 'text-xs text-gray-400 font-bold uppercase';
         label.textContent = field.label;
-        
+
         let input;
-        
-        // Textarea
+
         if (field.type === 'textarea') {
             input = document.createElement('textarea');
             input.rows = 3;
-        } 
-        // Select
+        }
         else if (field.type === 'select') {
             input = document.createElement('select');
             (field.options || []).forEach(opt => {
@@ -765,38 +757,34 @@ window.openEditModal = (mode, index) => {
                 }
                 input.appendChild(option);
             });
-        } 
-        // Color picker
+        }
         else if (field.type === 'color') {
             input = document.createElement('input');
             input.type = 'color';
             if (!itemData[field.key] && field.default) {
                 input.value = field.default;
             }
-        } 
-        // Number
+        }
         else if (field.type === 'number') {
             input = document.createElement('input');
             input.type = 'number';
             if (!itemData[field.key] && field.default !== undefined) {
                 input.value = field.default;
             }
-        } 
-        // Text/Outros
+        }
         else {
             input = document.createElement('input');
             input.type = field.type;
         }
-        
+
         input.className = 'admin-field';
         input.id = 'field-' + field.key;
-        
-        // Preenche valor
+
         let val = itemData[field.key];
         if (val === undefined || val === null) {
             val = field.default !== undefined ? field.default : '';
         }
-        
+
         if (field.type === 'datetime-local' && val) {
             try {
                 const d = new Date(val);
@@ -804,15 +792,14 @@ window.openEditModal = (mode, index) => {
                 val = d.toISOString().slice(0, 16);
             } catch(e) {}
         }
-        
+
         if (field.type !== 'color' || val) {
             input.value = val;
         }
-        
+
         wrapper.appendChild(label);
         wrapper.appendChild(input);
-        
-        // Hint (dica abaixo do campo)
+
         if (field.hint) {
             const hint = document.createElement('p');
             hint.className = 'text-[10px] text-gray-500 italic mt-1';
@@ -820,7 +807,6 @@ window.openEditModal = (mode, index) => {
             wrapper.appendChild(hint);
         }
 
-        // ✅ CORREÇÃO: se o campo tem upload:true, adiciona o botão de upload
         if (field.upload === true) {
             const uploadRow = document.createElement('div');
             uploadRow.className = 'flex items-center gap-2 mt-2';
@@ -837,7 +823,6 @@ window.openEditModal = (mode, index) => {
 
             wrapper.appendChild(uploadRow);
 
-            // Liga os eventos após inserir no DOM
             setTimeout(() => {
                 const fileInput = document.getElementById(fileInputId);
                 const trigger = uploadRow.querySelector('[data-upload-trigger]');
@@ -871,7 +856,6 @@ window.openEditModal = (mode, index) => {
 
                         setStatus('✅ Enviado!', '#22c55e');
 
-                        // Preenche o input de texto e dispara input para atualizar o preview
                         input.value = result.url;
                         input.dispatchEvent(new Event('input', { bubbles: true }));
 
@@ -881,12 +865,11 @@ window.openEditModal = (mode, index) => {
             }, 0);
         }
 
-        // Preview de imagem
         if (window.isImageField(field.key)) {
             const preview = document.createElement('img');
             preview.className = 'w-full h-40 object-contain bg-black/20 rounded mt-2 border border-white/5 hidden';
             preview.onerror = () => { preview.classList.add('hidden'); };
-            
+
             const updatePreview = (url) => {
                 if (url && url.trim()) {
                     preview.src = window.optimizeImage ? window.optimizeImage(url, 600) : url;
@@ -903,12 +886,11 @@ window.openEditModal = (mode, index) => {
 
         container.appendChild(wrapper);
     });
-    
-    // Adiciona preview do aviso se for a aba "avisos"
+
     if (tab === 'avisos') {
         const previewSection = document.createElement('div');
         previewSection.className = 'mt-6 pt-6 border-t border-white/10';
-        previewSection.innerHTML = 
+        previewSection.innerHTML =
             '<h4 class="text-sm font-bold text-brand-yellow mb-3">' +
                 '<i class="fas fa-eye mr-2"></i> Preview do Aviso' +
             '</h4>' +
@@ -920,10 +902,9 @@ window.openEditModal = (mode, index) => {
                 '</div>' +
             '</div>';
         container.appendChild(previewSection);
-        
-        // Estilo inline para o preview
+
         const style = document.createElement('style');
-        style.textContent = 
+        style.textContent =
             '.preview-aviso-box {' +
                 'position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: #0f172a; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.1); margin-top: 8px;' +
             '}' +
@@ -938,15 +919,14 @@ window.openEditModal = (mode, index) => {
             '.preview-aviso-desc { font-size: 11px; color: rgba(255,255,255,0.9); line-height: 1.4; max-width: 90%; }' +
             '.preview-aviso-box::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, transparent 100%); pointer-events: none; }';
         container.appendChild(style);
-        
-        // Atualiza preview em tempo real
+
         const updateAvisoPreview = () => {
             const bg = document.getElementById('preview-aviso-box');
             const content = document.getElementById('preview-aviso-content');
             const subtitleEl = document.getElementById('preview-aviso-subtitle');
             const titleEl = document.getElementById('preview-aviso-title');
             const descEl = document.getElementById('preview-aviso-desc');
-            
+
             const imageUrl = document.getElementById('field-imageUrl')?.value || '';
             const bgColor = document.getElementById('field-bgColor')?.value || '#0f172a';
             const textColor = document.getElementById('field-textColor')?.value || '#ffffff';
@@ -954,7 +934,7 @@ window.openEditModal = (mode, index) => {
             const subtitle = document.getElementById('field-subtitle')?.value || '';
             const title = document.getElementById('field-title')?.value || 'Título do Aviso';
             const desc = document.getElementById('field-description')?.value || '';
-            
+
             if (imageUrl && imageUrl.trim()) {
                 const imgUrl = window.optimizeImage ? window.optimizeImage(imageUrl, 1200) : imageUrl;
                 bg.style.backgroundImage = 'url(' + imgUrl + ')';
@@ -962,9 +942,9 @@ window.openEditModal = (mode, index) => {
                 bg.style.backgroundImage = 'none';
                 bg.style.background = bgColor;
             }
-            
+
             content.className = 'preview-aviso-content pos-' + position;
-            
+
             subtitleEl.textContent = subtitle;
             subtitleEl.style.display = subtitle ? 'block' : 'none';
             titleEl.textContent = title;
@@ -973,8 +953,7 @@ window.openEditModal = (mode, index) => {
             descEl.style.color = textColor;
             descEl.style.display = desc ? 'block' : 'none';
         };
-        
-        // Adiciona listeners em todos os campos
+
         ['field-imageUrl', 'field-bgColor', 'field-textColor', 'field-position', 'field-subtitle', 'field-title', 'field-description'].forEach(id => {
             const el = document.getElementById(id);
             if (el) {
@@ -982,11 +961,10 @@ window.openEditModal = (mode, index) => {
                 el.addEventListener('change', updateAvisoPreview);
             }
         });
-        
-        // Roda uma vez para inicializar
+
         setTimeout(updateAvisoPreview, 100);
     }
-    
+
     modal.classList.remove('hidden');
 };
 
@@ -996,8 +974,7 @@ window.closeEditModal = () => {
 
 // ============================================================
 // SALVAR ITEM
-// ✅ CORREÇÃO: chama window.loadData(true) para forçar atualização
-//    do site público após salvar (elimina fantasma + sincroniza).
+// ✅ Chama notifyDataChanged() ao final
 // ============================================================
 window.saveAdminItem = async () => {
     const btn = document.getElementById('btn-save-item');
@@ -1005,10 +982,10 @@ window.saveAdminItem = async () => {
     const tab = window.adminState.currentTab;
     const schema = window.SCHEMAS[tab];
     const index = btn.dataset.index;
-    
+
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-    
+
     const newData = {};
     schema.forEach(field => {
         const el = document.getElementById('field-' + field.key);
@@ -1016,31 +993,31 @@ window.saveAdminItem = async () => {
             newData[field.key] = el.value;
         }
     });
-    
+
     const payload = {
         sheet: tab,
         action: mode,
         password: window.adminState.password,
         data: newData
     };
-    
+
     if (mode === 'edit') {
         payload.originalId = btn.dataset.originalId;
     }
-    
+
     try {
         const res = await fetch(window.CONFIG.scriptUrl, {
             method: 'POST',
             body: JSON.stringify(payload)
         });
         const result = await res.json();
-        
+
         if (window.handleServerAuthError(result)) {
             btn.disabled = false;
             btn.textContent = 'Salvar';
             return;
         }
-        
+
         if (result.success) {
             if (mode === 'edit' && index !== null && index !== undefined) {
                 window.adminState.currentData[index] = newData;
@@ -1049,20 +1026,16 @@ window.saveAdminItem = async () => {
             }
 
             try {
-                localStorage.setItem('admin_' + tab, JSON.stringify({ 
-                    timestamp: Date.now(), 
-                    content: window.adminState.currentData 
-                }));
-                localStorage.setItem('cache_' + tab + '_v2', JSON.stringify({ 
-                    timestamp: Date.now(), 
-                    content: window.adminState.currentData 
+                localStorage.setItem('admin_' + tab, JSON.stringify({
+                    timestamp: Date.now(),
+                    content: window.adminState.currentData
                 }));
             } catch(e) {}
 
             window.renderAdminTable(window.adminState.currentData, tab);
-            
-            // ✅ CORREÇÃO: força o site público a rebuscar do servidor
-            if (typeof window.loadData === 'function') window.loadData(true);
+
+            // ✅ Notifica outras abas + recarrega localmente
+            window.notifyDataChanged();
 
             alert('Salvo com sucesso!');
             window.closeEditModal();
@@ -1079,52 +1052,51 @@ window.saveAdminItem = async () => {
 
 // ============================================================
 // DELETAR ITEM
-// ✅ CORREÇÃO: chama window.loadData(true) para forçar atualização
-//    do site público após deletar (elimina fantasma).
-// ✅ CORREÇÃO (Caminho 1 — ImgBB): NÃO tenta deletar a imagem do
-//    ImgBB automaticamente (a API pública do ImgBB não expõe esse
-//    endpoint). O link é removido da planilha e o site para de
-//    exibir. A imagem continua no ImgBB até ser apagada manualmente
-//    pelo painel do ImgBB (limitação aceita da Opção A).
+// ✅ Chama notifyDataChanged() ao final
 // ============================================================
 window.deleteAdminItem = async (index) => {
     if (!confirm('Tem certeza que deseja excluir este item?')) return;
-    
+
     const tab = window.adminState.currentTab;
     const item = window.adminState.currentData[index];
-    const originalId = Object.values(item)[0];
-    
+    // ✅ Usa a coluna "id" real
+    const originalId = item.id || '';
+
+    if (!originalId) {
+        alert('Este item não tem ID. Rode setupPlanilha() no Apps Script para adicionar a coluna id.');
+        return;
+    }
+
     try {
         const res = await fetch(window.CONFIG.scriptUrl, {
             method: 'POST',
             body: JSON.stringify({
-                sheet: tab, 
-                action: 'delete', 
+                sheet: tab,
+                action: 'delete',
                 password: window.adminState.password,
-                originalId: originalId, 
+                originalId: originalId,
                 data: {}
             })
         });
         const result = await res.json();
-        
+
         if (window.handleServerAuthError(result)) return;
-        
+
         if (result.success) {
             alert('Excluído com sucesso!');
             window.adminState.currentData.splice(index, 1);
-            
-            // Atualiza cache
+
             try {
-                localStorage.setItem('cache_' + tab + '_v2', JSON.stringify({ 
-                    timestamp: Date.now(), 
-                    content: window.adminState.currentData 
+                localStorage.setItem('admin_' + tab, JSON.stringify({
+                    timestamp: Date.now(),
+                    content: window.adminState.currentData
                 }));
             } catch(e) {}
-            
+
             window.renderAdminTable(window.adminState.currentData, tab);
-            
-            // ✅ CORREÇÃO: força o site público a rebuscar do servidor
-            if (typeof window.loadData === 'function') window.loadData(true);
+
+            // ✅ Notifica outras abas + recarrega localmente
+            window.notifyDataChanged();
         } else {
             alert('Erro: ' + result.message);
         }
@@ -1136,4 +1108,4 @@ window.deleteAdminItem = async (index) => {
 // ============================================================
 // LOG
 // ============================================================
-console.log('🔐 admin.js carregado (com suporte a avisos em carrossel + upload ImgBB)');
+console.log('🔐 admin.js carregado (com upload ImgBB + notifyDataChanged)');
