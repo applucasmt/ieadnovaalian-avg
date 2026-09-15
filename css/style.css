@@ -1272,3 +1272,33 @@ behold-widget a { text-decoration: none; }
 .avisos-carousel.single .aviso-dots {
     display: none;
 }
+
+/* ============================================================
+   ✅ CORREÇÃO: FALLBACK DO HERO VAZIO
+   ============================================================
+   Enquanto o JS não aplica o config, o hero fica com fundo
+   escuro e sem conteúdo visível. Sem flash, sem "salto".
+   ============================================================ */
+
+#site-hero[src=""] {
+    background: #0f172a;
+}
+
+#hero-badge:empty,
+#hero-title:empty,
+#hero-description:empty {
+    display: none;
+}
+
+#hero-content:not(.pos-left):not(.pos-center):not(.pos-right):not(.pos-custom) {
+    /* Sem posição definida: esconde até o JS aplicar */
+    opacity: 0;
+}
+
+#hero-content.pos-left,
+#hero-content.pos-center,
+#hero-content.pos-right,
+#hero-content.pos-custom {
+    opacity: 1;
+    transition: opacity 0.2s ease-in;
+}
