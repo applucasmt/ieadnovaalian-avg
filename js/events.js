@@ -161,9 +161,9 @@ window.renderAvisosCarousel = (avisos) => {
     // ============================================================
     // FILTRA APENAS ATIVOS
     // ============================================================
-    // Um aviso é considerado válido se tiver:
+    // Um aviso é válido se tiver:
     // - Pelo menos 1 imagem válida, OU
-    // - Pelo menos 1 campo de texto (title/texto/subtitle/description)
+    // - Pelo menos 1 campo de texto (title/texto/subtitle/description/button)
     // ============================================================
     const activeAvisos = (avisos || []).filter(a => {
         if (!a) return false;
@@ -253,26 +253,12 @@ window.renderAvisosCarousel = (avisos) => {
             slide.style.backgroundImage = 'url(' + imgUrl + ')';
             slide.style.backgroundSize = 'cover';
             slide.style.backgroundPosition = 'center';
-            
-            // Se tiver imagem MAS NÃO tiver texto, aplica overlay leve
-            // (para dar um contraste mínimo caso a imagem tenha texto claro)
-            const hasText = Boolean(
-                (aviso.title && String(aviso.title).trim()) ||
-                (aviso.texto && String(aviso.texto).trim()) ||
-                (aviso.subtitle && String(aviso.subtitle).trim()) ||
-                (aviso.description && String(aviso.description).trim()) ||
-                (aviso.buttonText && String(aviso.buttonText).trim())
-            );
-            
-            if (!hasText) {
-                slide.classList.add('image-only');
-            }
         } else {
             slide.classList.add('no-image');
         }
         
         // ============================================================
-        // CONTEÚDO (SÓ SE TIVER ALGUM TEXTO)
+        // VERIFICA SE TEM TEXTO
         // ============================================================
         const hasTitle = aviso.title && String(aviso.title).trim();
         const hasTexto = aviso.texto && String(aviso.texto).trim();
@@ -282,6 +268,17 @@ window.renderAvisosCarousel = (avisos) => {
         
         const hasAnyText = hasTitle || hasTexto || hasSubtitle || hasDescription || hasButton;
         
+        // ============================================================
+        // MODO APENAS IMAGEM (sem texto)
+        // Aplica overlay sutil se tiver só imagem
+        // ============================================================
+        if (hasImage && !hasAnyText) {
+            slide.classList.add('image-only');
+        }
+        
+        // ============================================================
+        // CONTEÚDO (SÓ SE TIVER TEXTO)
+        // ============================================================
         if (hasAnyText) {
             const content = document.createElement('div');
             const position = aviso.position || 'center';
