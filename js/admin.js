@@ -12,10 +12,10 @@ window.SCHEMAS = {
     ],
     
     // ============================================================
-    // AVISOS - NOVO FORMATO (CARROSSEL ESTILO DISNEY/NETFLIX)
+    // AVISOS - CARROSSEL
     // ============================================================
     avisos: [
-        { key: 'title', label: '📝 Título do Aviso', type: 'text', required: true },
+        { key: 'title', label: '📝 Título do Aviso (opcional)', type: 'text' },
         { key: 'subtitle', label: 'Subtítulo (linha acima do título)', type: 'text' },
         { key: 'description', label: 'Descrição (texto abaixo do título)', type: 'textarea' },
         { key: 'imageUrl', label: '🖼️ URL da Imagem de Fundo (opcional)', type: 'text', hint: 'Deixe vazio para usar só cor de fundo' },
@@ -168,7 +168,7 @@ window.handleServerAuthError = (result) => {
 };
 
 // ============================================================
-// CARREGAR ABA
+// CARREGAR ABA (CORRIGIDO - SEM CACHE, COM DEBUG)
 // ============================================================
 window.loadAdminTab = async (tab) => {
     window.adminState.currentTab = tab;
@@ -187,7 +187,21 @@ window.loadAdminTab = async (tab) => {
     contentArea.innerHTML = '<div class="text-center py-10"><i class="fas fa-spinner fa-spin text-3xl text-brand-yellow"></i><p class="mt-2 text-gray-400">Carregando dados...</p></div>';
     
     try {
-        const data = await window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=' + tab, 'admin_' + tab, true);
+        // SEMPRE busca dados frescos (ignora cache)
+        const url = window.CONFIG.scriptUrl + '?sheet=' + tab + '&cacheBust=' + Date.now();
+        
+        console.log('🔄 Buscando dados da aba "' + tab + '":', url);
+        
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        
+        const data = await res.json();
+        
+        console.log('📦 Dados recebidos da aba "' + tab + '":', data);
+        
+        if (data && data.error) {
+            throw new Error(data.error);
+        }
         
         if (tab === 'config') {
             const configData = (Array.isArray(data) && data.length > 0) ? data : [{
@@ -200,11 +214,23 @@ window.loadAdminTab = async (tab) => {
             window.adminState.currentData = configData;
             window.renderConfigForm(configData[0]);
         } else {
-            window.adminState.currentData = data;
-            window.renderAdminTable(data, tab);
+            // Garante que é array
+            const dataArray = Array.isArray(data) ? data : [];
+            window.adminState.currentData = dataArray;
+            
+            // Salva no cache local para fallback
+            try {
+                localStorage.setItem('admin_' + tab, JSON.stringify({
+                    timestamp: Date.now(),
+                    content: dataArray
+                }));
+            } catch(e) {}
+            
+            window.renderAdminTable(dataArray, tab);
         }
     } catch (e) {
-        contentArea.innerHTML = '<p class="text-red-400 text-center">Erro ao carregar dados.</p>';
+        console.error('❌ Erro ao carregar aba "' + tab + '":', e);
+        contentArea.innerHTML = '<p class="text-red-400 text-center py-10">Erro ao carregar dados: ' + e.message + '</p>';
     }
 };
 
@@ -213,17 +239,20 @@ window.loadAdminTab = async (tab) => {
 // ============================================================
 window.renderAdminTable = (data, tab) => {
     const container = document.getElementById('admin-content-area');
+    
     if (!data || data.length === 0) {
         container.innerHTML = '<p class="text-gray-400 text-center py-10">Nenhum item encontrado.</p>';
         return;
     }
 
+    // Detecta a chave principal de exibição
     let displayKey = Object.keys(data[0])[0];
     if (data[0].name) displayKey = 'name';
     if (data[0].nome) displayKey = 'nome';
     if (data[0].titulo) displayKey = 'titulo';
     if (data[0].texto) displayKey = 'texto';
-    if (data[0].title) displayKey = 'title';  // Para avisos
+    if (data[0].title) displayKey = 'title';
+    if (data[0].albumName) displayKey = 'albumName';
 
     let html = '<div class="grid gap-2">';
     const displayData = [...data].reverse();
@@ -231,9 +260,11 @@ window.renderAdminTable = (data, tab) => {
     displayData.forEach((item, index) => {
         const realIndex = data.length - 1 - index;
         const imgUrl = item.coverUrl || item.capa || item.coverImageUrl || item.imageUrl;
-        const imgHtml = imgUrl ? '<img src="' + window.optimizeImage(imgUrl, 100) + '" loading="lazy" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display=\'none\'">' : '';
+        const imgHtml = imgUrl 
+            ? '<img src="' + window.optimizeImage(imgUrl, 100) + '" loading="lazy" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display=\'none\'">' 
+            : '';
 
-        // Para avisos, mostra se está ativo/inativo
+        // Badge de status (avisos)
         let statusBadge = '';
         if (tab === 'avisos' && item.active !== undefined) {
             const isActive = String(item.active).toLowerCase() !== 'false' && String(item.active) !== '0';
@@ -242,12 +273,29 @@ window.renderAdminTable = (data, tab) => {
                 : '<span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded ml-2">inativo</span>';
         }
 
+        // Nome para exibir
+        let displayValue = item[displayKey];
+        if (!displayValue) {
+            if (item.name) displayValue = item.name;
+            else if (item.nome) displayValue = item.nome;
+            else if (item.title) displayValue = item.title;
+            else if (item.titulo) displayValue = item.titulo;
+            else if (item.texto) displayValue = item.texto;
+            else if (item.albumName) displayValue = item.albumName;
+            else displayValue = 'Item sem título';
+        }
+        
+        // Trunca textos longos
+        if (typeof displayValue === 'string' && displayValue.length > 60) {
+            displayValue = displayValue.substring(0, 60) + '...';
+        }
+
         html += '<div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">' +
                     '<div class="flex items-center overflow-hidden pr-4 w-full">' +
                         imgHtml +
                         '<div class="truncate flex-1">' +
                             '<div class="flex items-center">' +
-                                '<span class="font-bold text-white block truncate">' + (item[displayKey] || 'Item sem título') + '</span>' +
+                                '<span class="font-bold text-white block truncate">' + displayValue + '</span>' +
                                 statusBadge +
                             '</div>' +
                             '<span class="text-xs text-gray-400">' + Object.keys(item).length + ' campos</span>' +
@@ -614,7 +662,7 @@ window.saveConfig = async () => {
 };
 
 // ============================================================
-// MODAL DE EDIÇÃO DE ITEM (com todos os tipos de campo)
+// MODAL DE EDIÇÃO DE ITEM
 // ============================================================
 window.openEditModal = (mode, index) => {
     const modal = document.getElementById('edit-item-modal');
@@ -631,8 +679,12 @@ window.openEditModal = (mode, index) => {
     let itemData = {};
     if (mode === 'edit' && index !== null && index !== undefined) {
         itemData = window.adminState.currentData[index];
-        btn.dataset.originalId = Object.values(itemData)[0];
+        if (itemData) {
+            btn.dataset.originalId = Object.values(itemData)[0];
+        }
     }
+    
+    console.log('✏️ Abrindo modal para', mode, 'com dados:', itemData);
     
     btn.dataset.mode = mode;
     btn.dataset.index = index;
@@ -645,320 +697,4 @@ window.openEditModal = (mode, index) => {
         label.className = 'text-xs text-gray-400 font-bold uppercase';
         label.textContent = field.label;
         
-        let input;
-        
-        // Textarea
-        if (field.type === 'textarea') {
-            input = document.createElement('textarea');
-            input.rows = 3;
-        } 
-        // Select
-        else if (field.type === 'select') {
-            input = document.createElement('select');
-            (field.options || []).forEach(opt => {
-                const option = document.createElement('option');
-                option.value = opt;
-                option.textContent = opt;
-                if (itemData[field.key] === opt || (!itemData[field.key] && field.default === opt)) {
-                    option.selected = true;
-                }
-                input.appendChild(option);
-            });
-        } 
-        // Color picker
-        else if (field.type === 'color') {
-            input = document.createElement('input');
-            input.type = 'color';
-            if (!itemData[field.key] && field.default) {
-                input.value = field.default;
-            }
-        } 
-        // Number
-        else if (field.type === 'number') {
-            input = document.createElement('input');
-            input.type = 'number';
-            if (!itemData[field.key] && field.default !== undefined) {
-                input.value = field.default;
-            }
-        } 
-        // Text/Outros
-        else {
-            input = document.createElement('input');
-            input.type = field.type;
-        }
-        
-        input.className = 'admin-field';
-        input.id = 'field-' + field.key;
-        
-        // Preenche valor
-        let val = itemData[field.key];
-        if (val === undefined || val === null) {
-            val = field.default !== undefined ? field.default : '';
-        }
-        
-        if (field.type === 'datetime-local' && val) {
-            try {
-                const d = new Date(val);
-                d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-                val = d.toISOString().slice(0, 16);
-            } catch(e) {}
-        }
-        
-        if (field.type !== 'color' || val) {
-            input.value = val;
-        }
-        
-        wrapper.appendChild(label);
-        wrapper.appendChild(input);
-        
-        // Hint (dica abaixo do campo)
-        if (field.hint) {
-            const hint = document.createElement('p');
-            hint.className = 'text-[10px] text-gray-500 italic mt-1';
-            hint.textContent = field.hint;
-            wrapper.appendChild(hint);
-        }
-
-        // Preview de imagem
-        if (['coverUrl', 'capa', 'coverImageUrl', 'imageUrl'].indexOf(field.key) !== -1) {
-            const preview = document.createElement('img');
-            preview.className = 'w-full h-40 object-contain bg-black/20 rounded mt-2 border border-white/5 hidden';
-            preview.onerror = () => { preview.classList.add('hidden'); };
-            
-            const updatePreview = (url) => {
-                if (url && url.trim()) {
-                    preview.src = window.optimizeImage ? window.optimizeImage(url, 600) : url;
-                    preview.classList.remove('hidden');
-                } else {
-                    preview.classList.add('hidden');
-                }
-            };
-
-            updatePreview(input.value);
-            input.addEventListener('input', (e) => updatePreview(e.target.value));
-            wrapper.appendChild(preview);
-        }
-
-        container.appendChild(wrapper);
-    });
-    
-    // Adiciona preview do aviso se for a aba "avisos"
-    if (tab === 'avisos') {
-        const previewSection = document.createElement('div');
-        previewSection.className = 'mt-6 pt-6 border-t border-white/10';
-        previewSection.innerHTML = 
-            '<h4 class="text-sm font-bold text-brand-yellow mb-3">' +
-                '<i class="fas fa-eye mr-2"></i> Preview do Aviso' +
-            '</h4>' +
-            '<div class="preview-aviso-box" id="preview-aviso-box">' +
-                '<div class="preview-aviso-content" id="preview-aviso-content">' +
-                    '<div class="preview-aviso-subtitle" id="preview-aviso-subtitle"></div>' +
-                    '<div class="preview-aviso-title" id="preview-aviso-title">Título do Aviso</div>' +
-                    '<div class="preview-aviso-desc" id="preview-aviso-desc"></div>' +
-                '</div>' +
-            '</div>';
-        container.appendChild(previewSection);
-        
-        // Estilo inline para o preview
-        const style = document.createElement('style');
-        style.textContent = 
-            '.preview-aviso-box {' +
-                'position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: #0f172a; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.1); margin-top: 8px;' +
-            '}' +
-            '.preview-aviso-content {' +
-                'position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 20px;' +
-            '}' +
-            '.preview-aviso-content.pos-left { align-items: flex-start; text-align: left; padding-left: 24px; }' +
-            '.preview-aviso-content.pos-center { align-items: center; text-align: center; }' +
-            '.preview-aviso-content.pos-right { align-items: flex-end; text-align: right; padding-right: 24px; }' +
-            '.preview-aviso-subtitle { font-size: 10px; color: #EEBC5A; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }' +
-            '.preview-aviso-title { font-size: 20px; font-weight: 900; color: #fff; line-height: 1.1; text-transform: uppercase; margin-bottom: 6px; }' +
-            '.preview-aviso-desc { font-size: 11px; color: rgba(255,255,255,0.9); line-height: 1.4; max-width: 90%; }' +
-            '.preview-aviso-box::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, transparent 100%); pointer-events: none; }';
-        container.appendChild(style);
-        
-        // Atualiza preview em tempo real
-        const updateAvisoPreview = () => {
-            const bg = document.getElementById('preview-aviso-box');
-            const content = document.getElementById('preview-aviso-content');
-            const subtitleEl = document.getElementById('preview-aviso-subtitle');
-            const titleEl = document.getElementById('preview-aviso-title');
-            const descEl = document.getElementById('preview-aviso-desc');
-            
-            const imageUrl = document.getElementById('field-imageUrl')?.value || '';
-            const bgColor = document.getElementById('field-bgColor')?.value || '#0f172a';
-            const textColor = document.getElementById('field-textColor')?.value || '#ffffff';
-            const position = document.getElementById('field-position')?.value || 'center';
-            const subtitle = document.getElementById('field-subtitle')?.value || '';
-            const title = document.getElementById('field-title')?.value || 'Título do Aviso';
-            const desc = document.getElementById('field-description')?.value || '';
-            
-            if (imageUrl && imageUrl.trim()) {
-                const imgUrl = window.optimizeImage ? window.optimizeImage(imageUrl, 1200) : imageUrl;
-                bg.style.backgroundImage = 'url(' + imgUrl + ')';
-            } else {
-                bg.style.backgroundImage = 'none';
-                bg.style.background = bgColor;
-            }
-            
-            content.className = 'preview-aviso-content pos-' + position;
-            
-            subtitleEl.textContent = subtitle;
-            subtitleEl.style.display = subtitle ? 'block' : 'none';
-            titleEl.textContent = title;
-            titleEl.style.color = textColor;
-            descEl.textContent = desc;
-            descEl.style.color = textColor;
-            descEl.style.display = desc ? 'block' : 'none';
-        };
-        
-        // Adiciona listeners em todos os campos
-        ['field-imageUrl', 'field-bgColor', 'field-textColor', 'field-position', 'field-subtitle', 'field-title', 'field-description'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.addEventListener('input', updateAvisoPreview);
-                el.addEventListener('change', updateAvisoPreview);
-            }
-        });
-        
-        // Roda uma vez para inicializar
-        setTimeout(updateAvisoPreview, 100);
-    }
-    
-    modal.classList.remove('hidden');
-};
-
-window.closeEditModal = () => {
-    document.getElementById('edit-item-modal').classList.add('hidden');
-};
-
-// ============================================================
-// SALVAR ITEM
-// ============================================================
-window.saveAdminItem = async () => {
-    const btn = document.getElementById('btn-save-item');
-    const mode = btn.dataset.mode;
-    const tab = window.adminState.currentTab;
-    const schema = window.SCHEMAS[tab];
-    const index = btn.dataset.index;
-    
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-    
-    const newData = {};
-    schema.forEach(field => {
-        const el = document.getElementById('field-' + field.key);
-        if (el) {
-            newData[field.key] = el.value;
-        }
-    });
-    
-    const payload = {
-        sheet: tab,
-        action: mode,
-        password: window.adminState.password,
-        data: newData
-    };
-    
-    if (mode === 'edit') {
-        payload.originalId = btn.dataset.originalId;
-    }
-    
-    try {
-        const res = await fetch(window.CONFIG.scriptUrl, {
-            method: 'POST',
-            body: JSON.stringify(payload)
-        });
-        const result = await res.json();
-        
-        if (window.handleServerAuthError(result)) {
-            btn.disabled = false;
-            btn.textContent = 'Salvar';
-            return;
-        }
-        
-        if (result.success) {
-            if (mode === 'edit' && index !== null && index !== undefined) {
-                window.adminState.currentData[index] = newData;
-            } else {
-                window.adminState.currentData.push(newData);
-            }
-
-            try {
-                localStorage.setItem('admin_' + tab, JSON.stringify({ 
-                    timestamp: Date.now(), 
-                    content: window.adminState.currentData 
-                }));
-                localStorage.setItem('cache_' + tab + '_v2', JSON.stringify({ 
-                    timestamp: Date.now(), 
-                    content: window.adminState.currentData 
-                }));
-            } catch(e) {}
-
-            window.renderAdminTable(window.adminState.currentData, tab);
-            if (typeof window.loadData === 'function') window.loadData();
-
-            alert('Salvo com sucesso!');
-            window.closeEditModal();
-        } else {
-            alert('Erro: ' + result.message);
-        }
-    } catch(e) {
-        alert('Erro de conexão: ' + e.message);
-    } finally {
-        btn.disabled = false;
-        btn.textContent = 'Salvar';
-    }
-};
-
-// ============================================================
-// DELETAR ITEM
-// ============================================================
-window.deleteAdminItem = async (index) => {
-    if (!confirm('Tem certeza que deseja excluir este item?')) return;
-    
-    const tab = window.adminState.currentTab;
-    const item = window.adminState.currentData[index];
-    const originalId = Object.values(item)[0];
-    
-    try {
-        const res = await fetch(window.CONFIG.scriptUrl, {
-            method: 'POST',
-            body: JSON.stringify({
-                sheet: tab, 
-                action: 'delete', 
-                password: window.adminState.password,
-                originalId: originalId, 
-                data: {}
-            })
-        });
-        const result = await res.json();
-        
-        if (window.handleServerAuthError(result)) return;
-        
-        if (result.success) {
-            alert('Excluído com sucesso!');
-            window.adminState.currentData.splice(index, 1);
-            
-            // Atualiza cache
-            try {
-                localStorage.setItem('cache_' + tab + '_v2', JSON.stringify({ 
-                    timestamp: Date.now(), 
-                    content: window.adminState.currentData 
-                }));
-            } catch(e) {}
-            
-            window.renderAdminTable(window.adminState.currentData, tab);
-            if (typeof window.loadData === 'function') window.loadData();
-        } else {
-            alert('Erro: ' + result.message);
-        }
-    } catch(e) {
-        alert('Erro: ' + e.message);
-    }
-};
-
-// ============================================================
-// LOG
-// ============================================================
-console.log('🔐 admin.js carregado (com suporte a avisos em carrossel)');
+        let input
