@@ -193,7 +193,6 @@ window.loadData = async (force) => {
     force = force === true;
 
     try {
-        // ✅ UMA ÚNICA REQUISIÇÃO
         const response = await fetch(
             window.CONFIG.scriptUrl + '?action=all&cacheBust=' + Date.now()
         );
@@ -201,18 +200,15 @@ window.loadData = async (force) => {
         if (!response.ok) throw new Error('Network error');
         const data = await response.json();
 
-        // Guarda o hash atual
         if (data && data._hash) {
             window.__lastDataHash = String(data._hash);
         }
 
-        // Aplica config PRIMEIRO (rápido)
         const config = Array.isArray(data.config) ? data.config : [];
         if (typeof window.applyConfigImages === 'function') {
             window.applyConfigImages(config.length > 0 ? config[0] : {});
         }
 
-        // Renderiza o resto
         if (typeof window.renderComponents === 'function') {
             window.renderComponents(
                 Array.isArray(data.eventos) ? data.eventos : [],
@@ -224,14 +220,24 @@ window.loadData = async (force) => {
                 null
             );
         }
+
+        // ✅ Esconde a tela de loading
+        if (typeof window.hideInitialLoading === 'function') {
+            window.hideInitialLoading();
+        }
+
     } catch (e) {
         console.error('Erro ao carregar dados:', e);
         if (typeof window.renderComponents === 'function') {
             window.renderComponents([], [], [], [], [], [], null);
         }
+
+        // ✅ Mesmo em caso de erro, esconde a tela de loading
+        if (typeof window.hideInitialLoading === 'function') {
+            window.hideInitialLoading();
+        }
     }
 };
-
 // ============================================================
 // RENDERIZAR COMPONENTES
 // ============================================================
