@@ -158,10 +158,17 @@ window.renderAvisosCarousel = (avisos) => {
         return;
     }
     
-    // Filtra apenas ativos
+    // ============================================================
+    // FILTRA APENAS ATIVOS
+    // ============================================================
+    // Um aviso é considerado válido se tiver:
+    // - Pelo menos 1 imagem válida, OU
+    // - Pelo menos 1 campo de texto (title/texto/subtitle/description)
+    // ============================================================
     const activeAvisos = (avisos || []).filter(a => {
         if (!a) return false;
         
+        // Respeita campo 'active'
         if (a.active !== undefined && a.active !== '' && a.active !== null) {
             const activeStr = String(a.active).toLowerCase();
             if (activeStr === 'false' || activeStr === '0' || activeStr === 'nao' || activeStr === 'não') {
@@ -169,10 +176,23 @@ window.renderAvisosCarousel = (avisos) => {
             }
         }
         
-        return a.title || a.texto || a.description;
+        // Verifica se tem imagem válida
+        const hasImage = isValidImageUrl(a.imageUrl);
+        
+        // Verifica se tem pelo menos um texto não vazio
+        const hasText = Boolean(
+            (a.title && String(a.title).trim()) ||
+            (a.texto && String(a.texto).trim()) ||
+            (a.subtitle && String(a.subtitle).trim()) ||
+            (a.description && String(a.description).trim()) ||
+            (a.buttonText && String(a.buttonText).trim())
+        );
+        
+        // Precisa ter pelo menos imagem OU texto
+        return hasImage || hasText;
     });
     
-    console.log('✅ Avisos ativos:', activeAvisos.length);
+    console.log('✅ Avisos válidos:', activeAvisos.length);
     
     if (activeAvisos.length === 0) {
         carousel.classList.add('hidden');
@@ -195,28 +215,20 @@ window.renderAvisosCarousel = (avisos) => {
         carousel.classList.remove('single');
     }
     
-    // Imagem otimizada: sempre 1920 de largura (16:9 é baixa resolução e o cache do wsrv.nl resolve)
+    // Imagem otimizada
     const imageWidth = 1920;
     
     // Limpa containers
     slidesContainer.innerHTML = '';
     dotsContainer.innerHTML = '';
     
-    // ============================================================
-    // PRÉ-CARREGA TODAS AS IMAGENS ANTES DE RENDERIZAR
-    // (Melhora muito o UX: nada de "carregando por partes")
-    // ============================================================
-    const imageUrls = activeAvisos.map(a => {
-        if (!isValidImageUrl(a.imageUrl)) return null;
-        const rawUrl = a.imageUrl.trim();
-        return window.optimizeImage ? window.optimizeImage(rawUrl, imageWidth) : rawUrl;
-    });
-    
-    // Inicia o pré-carregamento em paralelo
-    imageUrls.forEach(url => {
-        if (url) {
+    // Pré-carrega imagens
+    activeAvisos.forEach(a => {
+        if (isValidImageUrl(a.imageUrl)) {
+            const rawUrl = a.imageUrl.trim();
+            const imgUrl = window.optimizeImage ? window.optimizeImage(rawUrl, imageWidth) : rawUrl;
             const img = new Image();
-            img.src = url;
+            img.src = imgUrl;
         }
     });
     
@@ -226,58 +238,93 @@ window.renderAvisosCarousel = (avisos) => {
         slide.className = 'aviso-slide';
         slide.dataset.index = index;
         
+        // ============================================================
+        // IMAGEM DE FUNDO (SE TIVER)
+        // ============================================================
         const bgColor = (aviso.bgColor && aviso.bgColor.trim()) ? aviso.bgColor : '#0f172a';
         slide.style.backgroundColor = bgColor;
         
-        if (isValidImageUrl(aviso.imageUrl)) {
+        const hasImage = isValidImageUrl(aviso.imageUrl);
+        
+        if (hasImage) {
             const rawUrl = aviso.imageUrl.trim();
             const imgUrl = window.optimizeImage ? window.optimizeImage(rawUrl, imageWidth) : rawUrl;
             
             slide.style.backgroundImage = 'url(' + imgUrl + ')';
             slide.style.backgroundSize = 'cover';
             slide.style.backgroundPosition = 'center';
+            
+            // Se tiver imagem MAS NÃO tiver texto, aplica overlay leve
+            // (para dar um contraste mínimo caso a imagem tenha texto claro)
+            const hasText = Boolean(
+                (aviso.title && String(aviso.title).trim()) ||
+                (aviso.texto && String(aviso.texto).trim()) ||
+                (aviso.subtitle && String(aviso.subtitle).trim()) ||
+                (aviso.description && String(aviso.description).trim()) ||
+                (aviso.buttonText && String(aviso.buttonText).trim())
+            );
+            
+            if (!hasText) {
+                slide.classList.add('image-only');
+            }
         } else {
             slide.classList.add('no-image');
         }
         
-        const content = document.createElement('div');
-        const position = aviso.position || 'center';
-        const align = aviso.align || 'center';
+        // ============================================================
+        // CONTEÚDO (SÓ SE TIVER ALGUM TEXTO)
+        // ============================================================
+        const hasTitle = aviso.title && String(aviso.title).trim();
+        const hasTexto = aviso.texto && String(aviso.texto).trim();
+        const hasSubtitle = aviso.subtitle && String(aviso.subtitle).trim();
+        const hasDescription = aviso.description && String(aviso.description).trim();
+        const hasButton = aviso.buttonText && String(aviso.buttonText).trim() && aviso.buttonUrl && String(aviso.buttonUrl).trim();
         
-        content.className = 'aviso-content pos-' + position;
+        const hasAnyText = hasTitle || hasTexto || hasSubtitle || hasDescription || hasButton;
         
-        if (position === 'custom') {
-            const posX = parseFloat(aviso.posX) || 50;
-            const posY = parseFloat(aviso.posY) || 50;
-            content.style.setProperty('--aviso-x', posX + '%');
-            content.style.setProperty('--aviso-y', posY + '%');
-            content.style.setProperty('--aviso-align', align);
+        if (hasAnyText) {
+            const content = document.createElement('div');
+            const position = aviso.position || 'center';
+            const align = aviso.align || 'center';
+            
+            content.className = 'aviso-content pos-' + position;
+            
+            if (position === 'custom') {
+                const posX = parseFloat(aviso.posX) || 50;
+                const posY = parseFloat(aviso.posY) || 50;
+                content.style.setProperty('--aviso-x', posX + '%');
+                content.style.setProperty('--aviso-y', posY + '%');
+                content.style.setProperty('--aviso-align', align);
+            }
+            
+            const textColor = (aviso.textColor && aviso.textColor.trim()) ? aviso.textColor : '#ffffff';
+            content.style.color = textColor;
+            
+            let contentHTML = '';
+            
+            if (hasSubtitle) {
+                contentHTML += '<div class="aviso-subtitle">' + escapeHtml(String(aviso.subtitle).trim()) + '</div>';
+            }
+            
+            if (hasTitle || hasTexto) {
+                const title = hasTitle ? aviso.title : aviso.texto;
+                contentHTML += '<h2 class="aviso-title" style="color: ' + textColor + '">' + escapeHtml(String(title).trim()) + '</h2>';
+            }
+            
+            if (hasDescription) {
+                contentHTML += '<p class="aviso-description" style="color: ' + textColor + '">' + escapeHtml(String(aviso.description).trim()) + '</p>';
+            }
+            
+            if (hasButton) {
+                contentHTML += '<a href="' + escapeHtml(String(aviso.buttonUrl).trim()) + '" class="aviso-button"' +
+                    (String(aviso.buttonUrl).trim().startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '') +
+                    '>' + escapeHtml(String(aviso.buttonText).trim()) + ' <i class="fas fa-arrow-right"></i></a>';
+            }
+            
+            content.innerHTML = contentHTML;
+            slide.appendChild(content);
         }
         
-        const textColor = (aviso.textColor && aviso.textColor.trim()) ? aviso.textColor : '#ffffff';
-        content.style.color = textColor;
-        
-        let contentHTML = '';
-        
-        if (aviso.subtitle && aviso.subtitle.trim()) {
-            contentHTML += '<div class="aviso-subtitle">' + escapeHtml(aviso.subtitle.trim()) + '</div>';
-        }
-        
-        const title = aviso.title || aviso.texto || 'Aviso';
-        contentHTML += '<h2 class="aviso-title" style="color: ' + textColor + '">' + escapeHtml(title) + '</h2>';
-        
-        if (aviso.description && aviso.description.trim()) {
-            contentHTML += '<p class="aviso-description" style="color: ' + textColor + '">' + escapeHtml(aviso.description.trim()) + '</p>';
-        }
-        
-        if (aviso.buttonText && aviso.buttonText.trim() && aviso.buttonUrl && aviso.buttonUrl.trim()) {
-            contentHTML += '<a href="' + escapeHtml(aviso.buttonUrl.trim()) + '" class="aviso-button"' +
-                (aviso.buttonUrl.trim().startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '') +
-                '>' + escapeHtml(aviso.buttonText.trim()) + ' <i class="fas fa-arrow-right"></i></a>';
-        }
-        
-        content.innerHTML = contentHTML;
-        slide.appendChild(content);
         slidesContainer.appendChild(slide);
         
         // Dot
@@ -289,7 +336,9 @@ window.renderAvisosCarousel = (avisos) => {
         dotsContainer.appendChild(dot);
     });
     
-    // Estado
+    // ============================================================
+    // ESTADO DO CARROSSEL
+    // ============================================================
     let currentIndex = 0;
     let autoplayTimer = null;
     let progressTimer = null;
