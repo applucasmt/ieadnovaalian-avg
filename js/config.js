@@ -8,7 +8,7 @@
 window.CONFIG = {
     scriptUrl: 'https://script.google.com/macros/s/AKfycbzm6Tpwxlxs4Mlm2_VtYRXhw27qahnTrWWnrXkLTCyDbxKL964I_HOvChiru2JcSOY/exec',
     youtubeKey: 'AIzaSyBIPVFix4B_5SNzaJfPw2x6jfbvitdJ7Kc',
-    youtubeChannel: 'UCEhO2WiTY8qy_cBoQpwoJjQ',
+    youtubeChannel: 'UCq6BgIDwgMj90hzL2UiSzYg',
     cacheTime: 3600000, // 1 hora em milissegundos
 
     // ✅ CORREÇÃO: URL do endpoint de upload do ImgBB (server-side no Apps Script)
