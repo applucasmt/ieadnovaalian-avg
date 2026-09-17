@@ -99,7 +99,7 @@ window.renderRadioContent = () => {
     console.log('📻 Renderizando. Programas:', programasArr.length, '| Atual:', currentProgram ? currentProgram.programa : 'nenhum', '| Ao vivo:', isLive);
 
     // ---------------------------------------------
-    // 1. Status no topo (badge)
+    // 1. Badge no topo
     // ---------------------------------------------
     const statusLabelEl = document.getElementById('radio-status-label');
     if (statusLabelEl) {
@@ -113,7 +113,7 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 2. Programa atual (SEMPRE, tanto ao vivo quanto rádio)
+    // 2. Programa atual (destaque)
     // ---------------------------------------------
     const programInfoEl = document.getElementById('radio-program-info');
     const programNameEl = document.getElementById('radio-program-name');
@@ -128,7 +128,7 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 3. Player
+    // 3. Player (Facebook ou card offline)
     // ---------------------------------------------
     const playerContent = document.getElementById('radio-player-content');
     if (playerContent) {
@@ -151,14 +151,13 @@ window.renderRadioContent = () => {
                 playerContent.innerHTML = '<p class="text-red-400 text-center p-4">URL/HTML inválido.</p>';
             }
         } else {
-            // Não está ao vivo → card "offline"
             playerContent.innerHTML =
                 '<div class="radio-offline-card">' +
                     '<div class="radio-offline-icon">' +
                         '<i class="fas fa-broadcast-tower"></i>' +
                     '</div>' +
                     '<h3 class="radio-offline-title">A Rádio está fora do ar</h3>' +
-                    '<p class="radio-offline-text">Nenhuma transmissão no momento. Acompanhe as programações ou abra o Facebook da rádio.</p>' +
+                    '<p class="radio-offline-text">Nenhuma transmissão no momento. Confira a programação abaixo ou abra o Facebook da rádio.</p>' +
                     '<div class="radio-offline-buttons">' +
                         '<a href="https://www.facebook.com/nazarenofm107.9" target="_blank" rel="noopener" class="radio-offline-btn radio-offline-btn-facebook">' +
                             '<i class="fab fa-facebook-f"></i> Abrir Facebook da Rádio' +
@@ -181,7 +180,7 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 5. WhatsApp (SEMPRE, tanto ao vivo quanto rádio)
+    // 5. WhatsApp
     // ---------------------------------------------
     const whatsappBtn = document.getElementById('radio-whatsapp-btn');
     const whatsappLabel = document.getElementById('radio-whatsapp-label');
@@ -196,6 +195,56 @@ window.renderRadioContent = () => {
             whatsappLabel.textContent = 'via WhatsApp';
         }
     }
+
+    // ---------------------------------------------
+    // 6. Grade de programação (COM DESTAQUE)
+    // ---------------------------------------------
+    window.renderRadioGrade(currentProgram);
+};
+
+// ============================================================
+// RENDERIZAR GRADE COM DESTAQUE
+// ============================================================
+window.renderRadioGrade = (currentProgram) => {
+    const container = document.getElementById('radio-grade-container');
+    const list = document.getElementById('radio-grade-list');
+    if (!container || !list) return;
+
+    const programas = (window.__radioState.programas || [])
+        .filter(p => String(p.ativo).toLowerCase() !== 'false')
+        .sort((a, b) => {
+            const ai = parseTimeToMinutes(a.inicio);
+            const bi = parseTimeToMinutes(b.inicio);
+            return (ai === null ? 9999 : ai) - (bi === null ? 9999 : bi);
+        });
+
+    if (programas.length === 0) {
+        container.classList.add('hidden');
+        return;
+    }
+
+    container.classList.remove('hidden');
+
+    list.innerHTML = programas.map(p => {
+        const isCurrent = currentProgram && p.id && currentProgram.id && p.id === currentProgram.id;
+        const hora = formatHora(p.inicio) + ' — ' + formatHora(p.fim);
+
+        return '<div class="radio-grade-item ' + (isCurrent ? 'radio-grade-item-active' : '') + '">' +
+                    '<div class="radio-grade-time">' +
+                        '<i class="far fa-clock"></i>' +
+                        '<span>' + hora + '</span>' +
+                    '</div>' +
+                    '<div class="radio-grade-info">' +
+                        '<span class="radio-grade-name">' + (p.programa || 'Programa') + '</span>' +
+                        (isCurrent ?
+                            '<span class="radio-grade-now-badge">' +
+                                '<span class="radio-grade-now-dot"></span>' +
+                                'NO AR AGORA' +
+                            '</span>'
+                            : '') +
+                    '</div>' +
+                '</div>';
+    }).join('');
 };
 
 // ============================================================
