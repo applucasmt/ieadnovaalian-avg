@@ -6,9 +6,27 @@ window.__radioState = {
     programas: [],
     liveConfig: { facebookLiveUrl: '', isLive: 'false' },
     currentProgram: null,
+    diaSelecionado: null, // 'dom' | 'seg' | ... | 'sab'
     userChoseRadio: false,
     carregado: false
 };
+
+// ============================================================
+// DIAS DA SEMANA
+// ============================================================
+const DIAS_SEMANA = [
+    { key: 'dom', short: 'Dom', full: 'Domingo' },
+    { key: 'seg', short: 'Seg', full: 'Segunda' },
+    { key: 'ter', short: 'Ter', full: 'Terça' },
+    { key: 'qua', short: 'Qua', full: 'Quarta' },
+    { key: 'qui', short: 'Qui', full: 'Quinta' },
+    { key: 'sex', short: 'Sex', full: 'Sexta' },
+    { key: 'sab', short: 'Sáb', full: 'Sábado' }
+];
+
+function getDiaHojeKey() {
+    return DIAS_SEMANA[new Date().getDay()].key;
+}
 
 // ============================================================
 // HELPERS
@@ -37,79 +55,32 @@ function parseTimeToMinutes(str) {
     return parseInt(match[1]) * 60 + parseInt(match[2]);
 }
 
-// ============================================================
-// ✅ NOVO: VERIFICAR SE O PROGRAMA PASSA HOJE
-// ============================================================
-function getDiaSemanaAtual() {
-    const dias = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
-    return dias[new Date().getDay()];
-}
-
-function programaPassaHoje(dias) {
+// ✅ Verifica se um programa passa no dia especificado
+function programaPassaNoDia(dias, diaKey) {
     if (!dias || String(dias).trim() === '' || String(dias).toLowerCase().trim() === 'todos') {
         return true;
     }
 
-    const hoje = getDiaSemanaAtual();
     const lista = String(dias)
         .toLowerCase()
         .replace(/\s/g, '')
+        .replace(/sáb/g, 'sab')
         .split(',')
         .filter(d => d);
 
-    return lista.indexOf(hoje) !== -1;
+    return lista.indexOf(diaKey) !== -1;
 }
 
-// ✅ NOVO: formata os dias para exibição amigável
-function formatDias(dias) {
-    if (!dias || String(dias).trim() === '' || String(dias).toLowerCase().trim() === 'todos') {
-        return 'Todos os dias';
-    }
-
-    const mapa = {
-        'dom': 'Dom',
-        'seg': 'Seg',
-        'ter': 'Ter',
-        'qua': 'Qua',
-        'qui': 'Qui',
-        'sex': 'Sex',
-        'sab': 'Sáb',
-        'sáb': 'Sáb'
-    };
-
-    const lista = String(dias)
-        .toLowerCase()
-        .replace(/\s/g, '')
-        .split(',')
-        .filter(d => d);
-
-    // Caso especial: seg-sex
-    const uteis = ['seg', 'ter', 'qua', 'qui', 'sex'];
-    const fimSemana = ['sab', 'dom'];
-    const ordenado = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
-    const sorted = [...lista].sort((a, b) => ordenado.indexOf(a) - ordenado.indexOf(b));
-
-    if (sorted.length === 5 && uteis.every(d => sorted.indexOf(d) !== -1)) {
-        return 'Seg a Sex';
-    }
-    if (sorted.length === 2 && fimSemana.every(d => sorted.indexOf(d) !== -1)) {
-        return 'Sáb e Dom';
-    }
-
-    return sorted.map(d => mapa[d] || d).join(', ');
-}
-
-// ============================================================
-// DETECTAR PROGRAMA ATUAL (considerando o dia da semana)
-// ============================================================
+// ✅ Detecta o programa que está no ar AGORA (considerando dia e hora)
 window.getCurrentRadioProgram = (programas) => {
     if (!Array.isArray(programas) || programas.length === 0) return null;
     const now = new Date();
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const hoje = getDiaHojeKey();
     const active = programas.filter(p => String(p.ativo).toLowerCase() !== 'false');
 
     for (const p of active) {
-        if (!programaPassaHoje(p.dias)) continue;
+        if (!programaPassaNoDia(p.dias, hoje)) continue;
 
         const ini = parseTimeToMinutes(p.inicio);
         const fim = parseTimeToMinutes(p.fim);
@@ -143,6 +114,12 @@ window.renderRadioPage = async () => {
             window.__radioState.carregado = true;
         }
     }
+
+    // Define o dia selecionado como HOJE (só na primeira vez)
+    if (!window.__radioState.diaSelecionado) {
+        window.__radioState.diaSelecionado = getDiaHojeKey();
+    }
+
     window.renderRadioContent();
 };
 
@@ -155,7 +132,9 @@ window.renderRadioContent = () => {
     const currentProgram = window.getCurrentRadioProgram(programasArr);
     state.currentProgram = currentProgram;
 
-    // Badge no topo
+    // ---------------------------------------------
+    // 1. Badge no topo
+    // ---------------------------------------------
     const statusLabelEl = document.getElementById('radio-status-label');
     if (statusLabelEl) {
         if (isLive) statusLabelEl.textContent = 'Transmissão ao Vivo';
@@ -163,7 +142,9 @@ window.renderRadioContent = () => {
         else statusLabelEl.textContent = 'No Ar Agora';
     }
 
-    // Player
+    // ---------------------------------------------
+    // 2. Player
+    // ---------------------------------------------
     const playerContent = document.getElementById('radio-player-content');
     if (playerContent) {
         const showFacebook = isLive && !state.userChoseRadio;
@@ -208,7 +189,9 @@ window.renderRadioContent = () => {
         }
     }
 
-    // WhatsApp
+    // ---------------------------------------------
+    // 3. WhatsApp
+    // ---------------------------------------------
     const whatsappBtn = document.getElementById('radio-whatsapp-btn');
     const whatsappLabel = document.getElementById('radio-whatsapp-label');
 
@@ -223,76 +206,122 @@ window.renderRadioContent = () => {
         }
     }
 
-    // Grade
-    window.renderRadioGrid(currentProgram);
+    // ---------------------------------------------
+    // 4. Abas de dias + Grade do dia selecionado
+    // ---------------------------------------------
+    window.renderRadioDayTabs();
+    window.renderRadioGridForDay(state.diaSelecionado, currentProgram);
 };
 
 // ============================================================
-// RENDERIZAR GRADE
+// RENDERIZAR ABAS DE DIAS
 // ============================================================
-window.renderRadioGrid = (currentProgram) => {
-    const container = document.getElementById('radio-grid-container');
-    const colLeft = document.getElementById('radio-grid-left');
-    const colRight = document.getElementById('radio-grid-right');
-    const highlight = document.getElementById('radio-now-highlight');
-    if (!container || !colLeft || !colRight) return;
+window.renderRadioDayTabs = () => {
+    const container = document.getElementById('radio-days-tabs');
+    if (!container) return;
 
-    // Ordena por dia (hoje primeiro) e depois por hora
-    const hoje = getDiaSemanaAtual();
+    const state = window.__radioState;
+    const diaHoje = getDiaHojeKey();
+
+    container.innerHTML = DIAS_SEMANA.map(d => {
+        const isSelected = d.key === state.diaSelecionado;
+        const isHoje = d.key === diaHoje;
+        return '<button ' +
+                    'class="radio-day-tab ' + (isSelected ? 'radio-day-tab-active' : '') + ' ' + (isHoje ? 'radio-day-tab-hoje' : '') + '" ' +
+                    'onclick="window.selectRadioDay(\'' + d.key + '\')" ' +
+                '>' +
+                    '<span class="radio-day-tab-short">' + d.short + '</span>' +
+                    (isHoje ? '<span class="radio-day-tab-hoje-dot"></span>' : '') +
+                '</button>';
+    }).join('');
+};
+
+// ============================================================
+// SELECIONAR DIA
+// ============================================================
+window.selectRadioDay = (diaKey) => {
+    window.__radioState.diaSelecionado = diaKey;
+    window.renderRadioContent();
+};
+
+// ============================================================
+// RENDERIZAR GRADE DO DIA SELECIONADO
+// ============================================================
+window.renderRadioGridForDay = (diaKey, currentProgram) => {
+    const container = document.getElementById('radio-grid-container');
+    const gridList = document.getElementById('radio-grid-list');
+    const emptyMsg = document.getElementById('radio-grid-empty');
+    const titleEl = document.getElementById('radio-grid-title');
+    const highlight = document.getElementById('radio-now-highlight');
+
+    if (!container || !gridList) return;
+
+    // Nome do dia selecionado
+    const diaInfo = DIAS_SEMANA.find(d => d.key === diaKey);
+    if (titleEl && diaInfo) {
+        const diaHoje = getDiaHojeKey();
+        titleEl.innerHTML = '📅 ' + diaInfo.full + (diaKey === diaHoje ? ' <span class="radio-grid-today">(hoje)</span>' : '');
+    }
+
+    // Filtra programas daquele dia
     const programas = (window.__radioState.programas || [])
         .filter(p => String(p.ativo).toLowerCase() !== 'false')
+        .filter(p => programaPassaNoDia(p.dias, diaKey))
         .sort((a, b) => {
-            const aHoje = programaPassaHoje(a.dias) ? 0 : 1;
-            const bHoje = programaPassaHoje(b.dias) ? 0 : 1;
-            if (aHoje !== bHoje) return aHoje - bHoje;
-
             const ai = parseTimeToMinutes(a.inicio);
             const bi = parseTimeToMinutes(b.inicio);
             return (ai === null ? 9999 : ai) - (bi === null ? 9999 : bi);
         });
 
-    if (programas.length < 2) { container.classList.add('hidden'); return; }
+    // Se não tem programas nesse dia
+    if (programas.length === 0) {
+        container.classList.remove('hidden');
+        gridList.innerHTML = '';
+        if (emptyMsg) emptyMsg.classList.remove('hidden');
+        if (highlight) {
+            highlight.classList.add('hidden');
+            highlight.innerHTML = '';
+        }
+        return;
+    }
+
     container.classList.remove('hidden');
+    if (emptyMsg) emptyMsg.classList.add('hidden');
 
-    const metade = Math.ceil(programas.length / 2);
-    const esquerda = programas.slice(0, metade);
-    const direita = programas.slice(metade);
-
+    // Renderiza os programas
     const renderItem = (p) => {
         const isCurrent = currentProgram && p.id && currentProgram.id && p.id === currentProgram.id;
-        const passaHoje = programaPassaHoje(p.dias);
         const hora = formatHora(p.inicio) + ' — ' + formatHora(p.fim);
-        const diasLabel = formatDias(p.dias);
 
-        return '<div class="radio-schedule-item ' + (isCurrent ? 'radio-schedule-item-active' : '') + ' ' + (!passaHoje ? 'radio-schedule-item-offday' : '') + '">' +
+        return '<div class="radio-schedule-item ' + (isCurrent ? 'radio-schedule-item-active' : '') + '">' +
                     '<div class="radio-schedule-time">' +
                         '<i class="far fa-clock"></i><span>' + hora + '</span>' +
                     '</div>' +
                     '<div class="radio-schedule-body">' +
                         '<div class="radio-schedule-name">' + (p.programa || 'Programa') + '</div>' +
-                        '<div class="radio-schedule-days">' +
-                            '<i class="far fa-calendar-alt"></i> ' + diasLabel +
-                        '</div>' +
-                        (isCurrent ? '<div class="radio-schedule-now-badge"><span class="radio-schedule-now-dot"></span>NO AR AGORA</div>' : '') +
+                        (isCurrent ? '<div class="radio-schedule-now-badge"><span class="radio-schedule-now-dot"></span>AO VIVO</div>' : '') +
                     '</div>' +
                     (isCurrent ? '<div class="radio-schedule-pulse"></div>' : '') +
                 '</div>';
     };
 
-    colLeft.innerHTML = esquerda.map(renderItem).join('');
-    colRight.innerHTML = direita.map(renderItem).join('');
+    gridList.innerHTML = programas.map(renderItem).join('');
 
+    // ---------------------------------------------
+    // DESTAQUE (só se o programa atual está no dia selecionado)
+    // ---------------------------------------------
     if (highlight) {
-        if (currentProgram) {
+        const currentIsInSelectedDay = currentProgram && programaPassaNoDia(currentProgram.dias, diaKey);
+
+        if (currentIsInSelectedDay) {
             highlight.classList.remove('hidden');
             highlight.innerHTML =
                 '<div class="radio-now-highlight-card">' +
                     '<div class="radio-now-highlight-glow"></div>' +
                     '<div class="radio-now-highlight-inner">' +
-                        '<div class="radio-now-highlight-badge"><span class="radio-now-highlight-dot"></span>NO AR AGORA</div>' +
+                        '<div class="radio-now-highlight-badge"><span class="radio-now-highlight-dot"></span>AO VIVO AGORA</div>' +
                         '<h3 class="radio-now-highlight-title">' + (currentProgram.programa || 'Programa') + '</h3>' +
                         '<p class="radio-now-highlight-time"><i class="far fa-clock"></i>' + formatHora(currentProgram.inicio) + ' — ' + formatHora(currentProgram.fim) + '</p>' +
-                        '<p class="radio-now-highlight-days"><i class="far fa-calendar-alt"></i> ' + formatDias(currentProgram.dias) + '</p>' +
                         (currentProgram.whatsapp ?
                             '<a href="https://wa.me/55' + String(currentProgram.whatsapp).replace(/\D/g, '') + '?text=' + encodeURIComponent('Olá! Gostaria de pedir um louvor.') + '" target="_blank" class="radio-now-highlight-btn">' +
                                 '<i class="fab fa-whatsapp"></i> Pedir Louvor' +
