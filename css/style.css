@@ -1742,7 +1742,36 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   ✅ CARDS DE TALENTO COM VÍDEO EM BACKGROUND
+   ✅ GRADE DE TALENTOS — COMPACTA
+   ============================================================ */
+
+/* Reduz o tamanho geral da grade */
+#talentos-container {
+    gap: 1rem !important; /* reduzido (antes 1.5rem) */
+}
+
+@media (min-width: 640px) {
+    #talentos-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 1.25rem !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    #talentos-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 1.25rem !important;
+    }
+}
+
+@media (min-width: 1280px) {
+    #talentos-container {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+}
+
+/* ============================================================
+   ✅ CARDS DE TALENTO COM VÍDEO
    ============================================================ */
 
 .talent-video-card {
@@ -1769,20 +1798,12 @@ behold-widget a { text-decoration: none; }
     transition: transform 0.3s ease;
 }
 
-/* ✅ Zoom padrão para vídeo horizontal em card horizontal */
 .talent-video-iframe.zoom-horizontal {
     transform: scale(1.35);
 }
 
-/* ✅ Zoom para vídeo vertical (short) em card vertical */
 .talent-video-iframe.zoom-vertical {
     transform: scale(1.05);
-}
-
-/* ✅ Zoom MUITO maior se um dia precisar forçar short em card horizontal */
-.talent-video-wrap[style*="16 / 9"] .talent-video-iframe.zoom-vertical,
-.talent-video-wrap[style*="16/9"] .talent-video-iframe.zoom-vertical {
-    transform: scale(2.2);
 }
 
 .talent-video-wrap:hover .talent-video-iframe {
@@ -1795,7 +1816,7 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   ✅ CARDS DE TALENTO COM IMAGEM (SEM CORTES)
+   ✅ CARDS DE TALENTO COM IMAGEM (compacto, sem cortar o rosto)
    ============================================================ */
 
 .talent-image-card {
@@ -1805,21 +1826,23 @@ behold-widget a { text-decoration: none; }
 .talent-image-wrap {
     position: relative;
     width: 100%;
+    aspect-ratio: 1 / 1;      /* ✅ quadrado — compacto e uniforme */
     background: #0a0a0a;
     overflow: hidden;
 }
 
-/* ✅ A imagem dita a altura do card — sem cortes, sem object-cover */
+/* ✅ Imagem preenche o quadrado, focando no topo (rosto) */
 .talent-image-el {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
-    object-fit: contain;
+    object-fit: cover;
+    object-position: center 25%;
     transition: transform 0.5s ease;
 }
 
 .talent-image-card:hover .talent-image-el {
-    transform: scale(1.03);
+    transform: scale(1.05);
 }
 
 /* ============================================================
@@ -1852,5 +1875,9 @@ behold-widget a { text-decoration: none; }
     .talent-video-wrap .group-hover\:opacity-100 {
         opacity: 0.85 !important;
         background: transparent !important;
+    }
+
+    #talentos-container {
+        gap: 0.75rem !important;
     }
 }
