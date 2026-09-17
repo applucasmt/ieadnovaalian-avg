@@ -45,7 +45,6 @@ window.SCHEMAS = {
         { key: 'capa', label: 'URL da Foto', type: 'text', upload: true }
     ],
 
-    // ✅ CORREÇÃO: tipo "time" em vez de "text" para inicio/fim
     radio: [
         { key: 'programa', label: '📻 Nome do Programa', type: 'text' },
         { key: 'inicio', label: '⏰ Horário de Início', type: 'time' },
@@ -288,45 +287,49 @@ window.renderAdminTable = (data, tab) => {
 
 // ============================================================
 // RENDERIZAR ADMIN DA RÁDIO
-// ✅ NOVO LAYOUT: Campo da URL da live em destaque
+// ✅ AGORA COM TEXTAREA PARA CÓDIGO DE INCORPORAÇÃO
 // ============================================================
 window.renderRadioAdmin = () => {
     const container = document.getElementById('admin-content-area');
     const liveConfig = window.adminState.currentLiveConfig || { facebookLiveUrl: '', isLive: 'false' };
     const isLive = String(liveConfig.isLive).toLowerCase() === 'true';
+    const liveCode = liveConfig.facebookLiveUrl || '';
 
     container.innerHTML =
         '<div class="max-w-4xl mx-auto py-4">' +
 
             // ============================================================
-            // BLOCO 1: URL DA LIVE (DESTAQUE)
+            // BLOCO 1: CÓDIGO DE INCORPORAÇÃO DO FACEBOOK
             // ============================================================
-            '<div class="bg-red-500/5 p-6 rounded-xl border-2 border-red-500/30 mb-6">' +
+            '<div class="bg-blue-500/5 p-6 rounded-xl border-2 border-blue-500/30 mb-6">' +
                 '<div class="flex items-start gap-3 mb-4">' +
-                    '<div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">' +
-                        '<i class="fas fa-broadcast-tower text-red-400 text-xl"></i>' +
+                    '<div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">' +
+                        '<i class="fab fa-facebook-f text-blue-400 text-xl"></i>' +
                     '</div>' +
                     '<div>' +
                         '<h3 class="text-xl font-bold text-white">Transmissão ao Vivo</h3>' +
-                        '<p class="text-sm text-gray-400 mt-1">Cole o link da live do Facebook quando estiver transmitindo. O site vai exibir o player automaticamente.</p>' +
+                        '<p class="text-sm text-gray-400 mt-1">Cole o <strong>código de incorporação</strong> da live do Facebook. Quando ativado, o site exibe o player automaticamente.</p>' +
                     '</div>' +
                 '</div>' +
 
-                '<label class="block text-xs uppercase text-red-400 font-bold mb-2">' +
-                    '<i class="fas fa-link mr-1"></i> URL da Live do Facebook' +
+                '<label class="block text-xs uppercase text-blue-400 font-bold mb-2">' +
+                    '<i class="fas fa-code mr-1"></i> Código de Incorporação do Facebook' +
                 '</label>' +
-                '<input ' +
-                    'type="text" ' +
+                '<textarea ' +
                     'id="radio-live-url" ' +
-                    'class="admin-field text-base" ' +
-                    'placeholder="https://www.facebook.com/ieadnovaalianca/videos/1234567890" ' +
-                    'value="' + (liveConfig.facebookLiveUrl || '') + '" ' +
-                    'style="font-size: 0.95rem; padding: 0.85rem 1rem;" ' +
-                '>' +
-                '<p class="text-[11px] text-gray-500 mt-2 italic">' +
-                    '<i class="fas fa-info-circle mr-1"></i>' +
-                    'Pegue o link da postagem da live (aquele que aparece quando você clica em "Compartilhar" no Facebook).' +
-                '</p>' +
+                    'class="admin-field font-mono" ' +
+                    'rows="6" ' +
+                    'placeholder="Cole aqui o código completo do Facebook, começando com &lt;iframe src=&quot;https://www.facebook.com/plugins/video.php?...&quot;&gt;&lt;/iframe&gt;" ' +
+                    'style="font-size: 0.8rem; padding: 0.85rem 1rem; line-height: 1.4; resize: vertical;" ' +
+                '>' + liveCode.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</textarea>' +
+
+                '<div class="mt-3 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">' +
+                    '<p class="text-xs text-blue-300 leading-relaxed">' +
+                        '<i class="fas fa-info-circle mr-1"></i>' +
+                        '<strong>Como pegar o código:</strong> No Facebook, abra a live, clique em <strong>"Compartilhar" → "Incorporar"</strong>, copie o código inteiro e cole aqui. ' +
+                        'O código começa com <code class="bg-black/30 px-1 rounded">&lt;iframe src="https://www.facebook.com/plugins/video.php..."&gt;</code>.' +
+                    '</p>' +
+                '</div>' +
 
                 '<div class="mt-5 flex items-center gap-3 flex-wrap">' +
                     (isLive ?
@@ -378,7 +381,6 @@ window.renderRadioGrade = () => {
         const realIndex = data.length - 1 - index;
         const ativo = String(item.ativo).toLowerCase() !== 'false';
 
-        // ✅ Formata o horário: se vier "1899-12-30T17:44:20.000Z", extrai "17:44"
         const formatHora = (h) => {
             if (!h) return '?';
             const s = String(h);
@@ -386,7 +388,7 @@ window.renderRadioGrade = () => {
                 const t = s.split('T')[1];
                 return t ? t.substring(0, 5) : '?';
             }
-            return s;
+            return s.substring(0, 5);
         };
 
         html += '<div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">' +
@@ -423,7 +425,7 @@ window.startRadioLive = async () => {
     const url = urlInput ? urlInput.value.trim() : '';
 
     if (!url) {
-        alert('Cole a URL da live do Facebook antes de ativar.');
+        alert('Cole o código de incorporação do Facebook antes de ativar.');
         return;
     }
 
@@ -490,7 +492,7 @@ window.stopRadioLive = async () => {
 };
 
 // ============================================================
-// CONFIG FORM (idêntico ao anterior)
+// RENDERIZAR FORM DE CONFIG
 // ============================================================
 window.renderConfigForm = (config) => {
     const container = document.getElementById('admin-content-area');
@@ -713,7 +715,6 @@ window.openEditModal = (mode, index) => {
         let val = itemData[field.key];
         if (val === undefined || val === null) val = field.default !== undefined ? field.default : '';
 
-        // ✅ CORREÇÃO: se for type="time" e o valor tiver "T" (ISO datetime), extrai só HH:MM
         if (field.type === 'time' && val && String(val).indexOf('T') !== -1) {
             const parts = String(val).split('T');
             if (parts[1]) val = parts[1].substring(0, 5);
@@ -833,7 +834,6 @@ window.saveAdminItem = async () => {
             }
 
             if (tab === 'radio') {
-                // Recarrega a aba inteira (pra pegar IDs gerados)
                 await window.loadAdminTab('radio');
             } else {
                 window.renderAdminTable(window.adminState.currentData, tab);
