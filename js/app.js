@@ -26,11 +26,13 @@ window.switchPage = (pageId) => {
 
     if (mobileMenu) mobileMenu.classList.add('hidden');
 
+    // ✅ Ações por página
     if (pageId === 'aovivo' && typeof window.checkLive === 'function') {
         window.checkLive();
     }
 
     if (pageId === 'radio' && typeof window.renderRadioPage === 'function') {
+        console.log('📻 Chamando renderRadioPage()');
         window.renderRadioPage();
     }
 
