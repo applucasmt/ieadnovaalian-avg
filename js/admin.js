@@ -2,15 +2,14 @@
 // IEAD NOVA ALIANÇA - PAINEL ADMIN
 // ============================================================
 
-window.SCHEMAS = {
-    eventos: [
-        { key: 'name', label: 'Nome do Evento', type: 'text' },
-        { key: 'date', label: 'Data Início', type: 'datetime-local' },
-        { key: 'endDate', label: 'Data Fim (Opcional)', type: 'datetime-local' },
-        { key: 'description', label: 'Descrição', type: 'textarea' },
-        { key: 'coverUrl', label: 'URL da Capa', type: 'text', upload: true }
-    ],
-
+talentos: [
+    { key: 'nome', label: 'Nome', type: 'text' },
+    { key: 'descricao', label: 'Descrição', type: 'textarea' },
+    { key: 'telefone', label: 'Whatsapp', type: 'text' },
+    { key: 'video', label: 'Link YouTube', type: 'text' },
+    { key: 'videoFormat', label: '📐 Formato do Vídeo', type: 'select', options: ['auto', 'horizontal', 'vertical'], default: 'auto', hint: 'Escolha "vertical" para Shorts, "horizontal" para vídeos normais, ou "auto" para o sistema detectar.' },
+    { key: 'capa', label: 'URL da Foto', type: 'text', upload: true }
+],
     avisos: [
         { key: 'title', label: '📝 Título do Aviso', type: 'text', required: true },
         { key: 'subtitle', label: 'Subtítulo (linha acima do título)', type: 'text' },
