@@ -585,4 +585,31 @@ window.detectYouTubeAspect = (videoId) => {
     });
 };
 
-console.log('📦 data.js carregado');
+// ============================================================
+// ✅ CHECKER DE VERSÃO — força reload se a versão do SW mudou
+// ============================================================
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+        console.warn('🔄 Novo Service Worker ativo. Recarregando a página...');
+        window.location.reload();
+    });
+}
+
+// Checa se há um novo SW esperando
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistration().then(function(reg) {
+        if (!reg) return;
+        reg.addEventListener('updatefound', function() {
+            const newWorker = reg.installing;
+            if (!newWorker) return;
+            newWorker.addEventListener('statechange', function() {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    console.log('🆕 Nova versão do site disponível. Aplicando...');
+                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                }
+            });
+        });
+    });
+}
+
+console.log('📦 data.js carregado (com SW checker)');
