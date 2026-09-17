@@ -92,7 +92,7 @@ window.renderRadioContent = () => {
     state.currentProgram = currentProgram;
 
     // ---------------------------------------------
-    // 1. Tag "Programa no ar" (SUBSTITUI a lista)
+    // 1. Status no topo (badge)
     // ---------------------------------------------
     const statusLabelEl = document.getElementById('radio-status-label');
     if (statusLabelEl) {
@@ -106,7 +106,7 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 2. Programa atual (linha abaixo do título)
+    // 2. Programa atual (nome + horário)
     // ---------------------------------------------
     const programInfoEl = document.getElementById('radio-program-info');
     const programNameEl = document.getElementById('radio-program-name');
@@ -121,13 +121,12 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 3. Player (Facebook ou rádio)
+    // 3. Player (Facebook Live OU card "offline")
     // ---------------------------------------------
     const playerContent = document.getElementById('radio-player-content');
     if (playerContent) {
-        const shouldShowFacebook = isLive && !state.userChoseRadio;
-
-        if (shouldShowFacebook) {
+        if (isLive) {
+            // Está ao vivo → iframe do Facebook
             const fbUrl = encodeURIComponent(liveCfg.facebookLiveUrl);
             playerContent.innerHTML =
                 '<iframe ' +
@@ -138,34 +137,37 @@ window.renderRadioContent = () => {
                     'allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">' +
                 '</iframe>';
         } else {
+            // Não está ao vivo → card bonito com botão
             playerContent.innerHTML =
-                '<iframe ' +
-                    'id="radio-iframe" ' +
-                    'src="https://nazarenofm.com/" ' +
-                    'title="Rádio Nazareno FM" ' +
-                    'style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;" ' +
-                    'allow="autoplay">' +
-                '</iframe>';
+                '<div class="radio-offline-card">' +
+                    '<div class="radio-offline-icon">' +
+                        '<i class="fas fa-broadcast-tower"></i>' +
+                    '</div>' +
+                    '<h3 class="radio-offline-title">A Rádio está fora do ar</h3>' +
+                    '<p class="radio-offline-text">Nenhuma transmissão no momento. Acompanhe as programações abaixo ou abra o Facebook da rádio.</p>' +
+                    '<div class="radio-offline-buttons">' +
+                        '<a href="https://www.facebook.com/nazarenofm107.9" target="_blank" rel="noopener" class="radio-offline-btn radio-offline-btn-facebook">' +
+                            '<i class="fab fa-facebook-f"></i> Abrir Facebook da Rádio' +
+                        '</a>' +
+                        '<a href="https://nazarenofm.com" target="_blank" rel="noopener" class="radio-offline-btn radio-offline-btn-site">' +
+                            '<i class="fas fa-globe"></i> Acessar nazarenofm.com' +
+                        '</a>' +
+                    '</div>' +
+                '</div>';
         }
     }
 
     // ---------------------------------------------
-    // 4. Toggle (só quando ao vivo)
+    // 4. Toggle (só aparece quando está ao vivo)
     // ---------------------------------------------
     const toggleWrapper = document.getElementById('radio-toggle-wrapper');
-    const toggleText = document.getElementById('radio-toggle-text');
-
     if (toggleWrapper) {
-        if (isLive) {
-            toggleWrapper.classList.remove('hidden');
-            if (toggleText) toggleText.textContent = state.userChoseRadio ? 'Assistir Transmissão ao Vivo' : 'Ouvir somente a Rádio';
-        } else {
-            toggleWrapper.classList.add('hidden');
-        }
+        if (isLive) toggleWrapper.classList.remove('hidden');
+        else toggleWrapper.classList.add('hidden');
     }
 
     // ---------------------------------------------
-    // 5. WhatsApp
+    // 5. WhatsApp (número do programa atual)
     // ---------------------------------------------
     const whatsappBtn = document.getElementById('radio-whatsapp-btn');
     const whatsappLabel = document.getElementById('radio-whatsapp-label');
