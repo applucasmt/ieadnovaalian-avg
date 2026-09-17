@@ -96,7 +96,7 @@ window.renderRadioContent = () => {
     const currentProgram = window.getCurrentRadioProgram(programasArr);
     state.currentProgram = currentProgram;
 
-    console.log('📻 Renderizando. Programas:', programasArr.length, '| Atual:', currentProgram ? currentProgram.programa : 'nenhum');
+    console.log('📻 Renderizando. Programas:', programasArr.length, '| Atual:', currentProgram ? currentProgram.programa : 'nenhum', '| Ao vivo:', isLive);
 
     // ---------------------------------------------
     // 1. Status no topo (badge)
@@ -113,7 +113,7 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 2. Programa atual (nome + horário)
+    // 2. Programa atual (SEMPRE, tanto ao vivo quanto rádio)
     // ---------------------------------------------
     const programInfoEl = document.getElementById('radio-program-info');
     const programNameEl = document.getElementById('radio-program-name');
@@ -128,20 +128,16 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 3. Player (Facebook Live OU card "offline")
-    // ✅ AGORA RECEBE O CÓDIGO DE INCORPORAÇÃO COMPLETO
+    // 3. Player
     // ---------------------------------------------
     const playerContent = document.getElementById('radio-player-content');
     if (playerContent) {
         if (isLive && liveCfg.facebookLiveUrl) {
-            // Se for HTML completo (iframe), injeta direto
             const raw = String(liveCfg.facebookLiveUrl).trim();
 
             if (raw.indexOf('<iframe') !== -1) {
-                // É código de incorporação completo
                 playerContent.innerHTML = raw;
             } else if (raw.indexOf('http') === 0) {
-                // É URL crua → converte para embed
                 const fbUrl = encodeURIComponent(raw);
                 playerContent.innerHTML =
                     '<iframe ' +
@@ -152,17 +148,17 @@ window.renderRadioContent = () => {
                         'allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">' +
                     '</iframe>';
             } else {
-                playerContent.innerHTML = '<p class="text-red-400">URL/HTML inválido.</p>';
+                playerContent.innerHTML = '<p class="text-red-400 text-center p-4">URL/HTML inválido.</p>';
             }
         } else {
-            // Não está ao vivo → card bonito com botão
+            // Não está ao vivo → card "offline"
             playerContent.innerHTML =
                 '<div class="radio-offline-card">' +
                     '<div class="radio-offline-icon">' +
                         '<i class="fas fa-broadcast-tower"></i>' +
                     '</div>' +
                     '<h3 class="radio-offline-title">A Rádio está fora do ar</h3>' +
-                    '<p class="radio-offline-text">Nenhuma transmissão no momento. Acompanhe as programações abaixo ou abra o Facebook da rádio.</p>' +
+                    '<p class="radio-offline-text">Nenhuma transmissão no momento. Acompanhe as programações ou abra o Facebook da rádio.</p>' +
                     '<div class="radio-offline-buttons">' +
                         '<a href="https://www.facebook.com/nazarenofm107.9" target="_blank" rel="noopener" class="radio-offline-btn radio-offline-btn-facebook">' +
                             '<i class="fab fa-facebook-f"></i> Abrir Facebook da Rádio' +
@@ -185,7 +181,7 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 5. WhatsApp
+    // 5. WhatsApp (SEMPRE, tanto ao vivo quanto rádio)
     // ---------------------------------------------
     const whatsappBtn = document.getElementById('radio-whatsapp-btn');
     const whatsappLabel = document.getElementById('radio-whatsapp-label');
