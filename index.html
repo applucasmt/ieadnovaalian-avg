@@ -510,7 +510,7 @@
                 <div id="albums-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
             </div>
 
-            <!-- ✅ RÁDIO -->
+            <!-- ✅ RÁDIO — COM GRADE DE PROGRAMAÇÃO -->
             <div id="radio-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="max-w-4xl mx-auto text-center">
                     <div class="inline-block px-4 py-1 rounded-full border border-brand-yellow/30 bg-brand-yellow/10 backdrop-blur-sm mb-6">
@@ -528,7 +528,7 @@
                         <p id="radio-program-time" class="text-sm text-gray-400"></p>
                     </div>
 
-                    <!-- PLAYER (dinâmico: Facebook Live ou "offline" com botão) -->
+                    <!-- PLAYER -->
                     <div class="glass-panel p-2 rounded-2xl shadow-[0_0_50px_rgba(73,73,133,0.2)] mb-8">
                         <div id="radio-player-wrapper" class="radio-player-wrap rounded-xl overflow-hidden bg-black relative">
                             <div id="radio-player-content" class="absolute inset-0 z-20 w-full h-full"></div>
@@ -544,7 +544,7 @@
                     </div>
 
                     <!-- BOTÕES DE CONTATO -->
-                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <div class="flex flex-col sm:flex-row justify-center gap-4 mb-10">
                         <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-3">
                             <i class="fas fa-globe text-brand-yellow text-2xl"></i>
                             <div class="text-left">
@@ -559,6 +559,19 @@
                                 <span id="radio-whatsapp-label" class="font-bold text-white">via WhatsApp</span>
                             </div>
                         </a>
+                    </div>
+
+                    <!-- ✅ GRADE DE PROGRAMAÇÃO -->
+                    <div id="radio-grade-container" class="mt-4 hidden">
+                        <div class="flex items-center justify-center gap-3 mb-6">
+                            <div class="h-px bg-white/10 flex-1 max-w-[100px]"></div>
+                            <h2 class="text-2xl font-bold text-white">
+                                <i class="fas fa-list text-brand-yellow mr-2"></i>
+                                Programação
+                            </h2>
+                            <div class="h-px bg-white/10 flex-1 max-w-[100px]"></div>
+                        </div>
+                        <div id="radio-grade-list" class="space-y-2"></div>
                     </div>
                 </div>
             </div>
