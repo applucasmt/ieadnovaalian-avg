@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>IEAD Setor Nova Aliança</title>
-    <link rel="shortcut icon" href="https://i.ibb.co/vCw82LjW/Logo-IEAD.webp" type="image/webp">
-    <link rel="icon" href="https://i.ibb.co/vCw82LjW/Logo-IEAD.webp" type="image/webp">
+    <link rel="shortcut icon" href="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp" type="image/webp">
+    <link rel="icon" href="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp" type="image/webp">
 
     <meta name="description" content="Site oficial da Igreja Evangélica Assembleia de Deus, Setor Jardim Nova Aliança.">
     <meta property="og:title" content="IEAD Setor Nova Aliança">
     <meta property="og:description" content="Fazendo discípulos, cuidando de vidas e impactando a nossa geração.">
-    <meta property="og:image" content="https://i.ibb.co/vCw82LjW/Logo-IEAD.webp">
+    <meta property="og:image" content="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
 
@@ -28,7 +28,6 @@
     <link rel="preconnect" href="https://wsrv.nl">
     <link rel="preconnect" href="https://ig-feed-hazel.vercel.app">
 
-    <!-- ✅ CSS com versão (cache busting) -->
     <link rel="stylesheet" href="css/style.css?v=1">
 
     <script>
@@ -60,12 +59,11 @@
 </head>
 <body class="antialiased selection:bg-brand-yellow/30 selection:text-brand-yellow">
 
-    <!-- TELA DE LOADING INICIAL -->
     <div id="initial-loading" class="initial-loading">
         <div class="initial-loading-content">
             <div class="initial-loading-logo-wrap">
                 <img
-                    src="https://i.ibb.co/vCw82LjW/Logo-IEAD.webp"
+                    src="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp"
                     alt="IEAD Nova Aliança"
                     class="initial-loading-logo"
                     onerror="this.style.display='none'"
@@ -187,6 +185,7 @@
                     <h2 class="text-xl font-bold text-white"><i class="fas fa-cog text-brand-yellow mr-2"></i> Painel de Controle</h2>
                     <button onclick="window.closeAdmin()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
                 </div>
+
                 <div class="flex overflow-x-auto p-2 bg-white/5 gap-2 border-b border-white/5 shrink-0">
                     <button onclick="loadAdminTab('eventos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab active whitespace-nowrap" data-tab="eventos">Eventos/Agenda</button>
                     <button onclick="loadAdminTab('avisos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="avisos">Avisos Home</button>
@@ -194,11 +193,14 @@
                     <button onclick="loadAdminTab('talentos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="talentos">Talentos</button>
                     <button onclick="loadAdminTab('albuns')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="albuns">Galeria</button>
                     <button onclick="loadAdminTab('pastor')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="pastor">Pastor/Sobre</button>
+                    <button onclick="loadAdminTab('radio')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="radio"><i class="fas fa-broadcast-tower mr-1"></i> Rádio</button>
                     <button onclick="loadAdminTab('config')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="config"><i class="fas fa-palette mr-1"></i> Site/Config</button>
                 </div>
+
                 <div class="flex-1 overflow-y-auto overflow-x-hidden p-4" id="admin-content-area" style="min-height: 0;">
                     <div class="text-center py-10 text-gray-500">Selecione uma aba acima para editar.</div>
                 </div>
+
                 <div class="p-4 border-t border-white/10 bg-black/20 flex justify-between items-center shrink-0">
                     <span class="text-xs text-gray-500">As alterações podem levar alguns segundos.</span>
                     <button onclick="window.openEditModal('add')" id="btn-new-item" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 shadow-lg"><i class="fas fa-plus"></i> Novo Item</button>
@@ -232,7 +234,7 @@
             <nav class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
                 <a href="#" data-page="igreja" class="nav-link flex items-center gap-3 group active:scale-95 transition-transform">
                     <div class="relative">
-                        <img id="site-logo" src="https://i.ibb.co/vCw82LjW/Logo-IEAD.webp" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300">
+                        <img id="site-logo" src="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300">
                         <div class="absolute inset-0 bg-brand-yellow blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
                     </div>
                     <div class="flex flex-col">
@@ -509,28 +511,16 @@
             </div>
 
             <div id="radio-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
-                <div class="max-w-4xl mx-auto text-center">
-                    <div class="inline-block px-4 py-1 rounded-full border border-brand-yellow/30 bg-brand-yellow/10 backdrop-blur-sm mb-6">
-                        <span class="text-brand-yellow font-semibold tracking-widest text-xs sm:text-sm uppercase flex items-center gap-2 justify-center"><i class="fas fa-signal"></i> No Ar Agora</span>
-                    </div>
-                    <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Rádio Nazareno FM</h1>
-                    <p class="text-gray-400 mb-8 max-w-2xl mx-auto text-sm sm:text-base">Louvor, adoração e a palavra de Deus 24 horas por dia.</p>
-                    <div class="glass-panel p-2 rounded-2xl shadow-[0_0_50px_rgba(73,73,133,0.2)] mb-8">
-                        <div class="video-wrapper rounded-xl overflow-hidden bg-black relative group">
-                             <div class="absolute inset-0 bg-brand-blue/20 animate-pulse pointer-events-none z-10 opacity-20"></div>
-                             <iframe src="https://nazarenofm.com/" title="Rádio" style="border:0;" class="relative z-20"></iframe>
+                <div class="max-w-5xl mx-auto">
+                    <div class="text-center mb-10 sm:mb-12">
+                        <div class="inline-block px-4 py-1 rounded-full border border-brand-yellow/30 bg-brand-yellow/10 backdrop-blur-sm mb-6">
+                            <span class="text-brand-yellow font-semibold tracking-widest text-xs sm:text-sm uppercase flex items-center gap-2 justify-center"><i class="fas fa-signal"></i> Rádio Nazareno FM</span>
                         </div>
+                        <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Rádio Nazareno FM</h1>
+                        <p class="text-gray-400 mb-8 max-w-2xl mx-auto text-sm sm:text-base">Louvor, adoração e a palavra de Deus 24 horas por dia.</p>
                     </div>
-                    <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-3">
-                            <i class="fas fa-globe text-brand-yellow text-2xl"></i>
-                            <div class="text-left"><span class="block text-xs text-gray-400">Acesse o site</span><a href="https://nazarenofm.com/" target="_blank" class="font-bold text-white hover:text-brand-yellow transition-colors">nazarenofm.com</a></div>
-                        </div>
-                        <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-3">
-                            <i class="fab fa-whatsapp text-[#25D366] text-2xl"></i>
-                            <div class="text-left"><span class="block text-xs text-gray-400">Peça seu louvor</span><span class="font-bold text-white">via WhatsApp</span></div>
-                        </div>
-                    </div>
+
+                    <div id="radio-content-area"></div>
                 </div>
             </div>
 
@@ -565,7 +555,7 @@
             <div class="container mx-auto px-4 sm:px-6">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
                     <div class="text-center md:text-left">
-                        <img id="footer-logo" src="https://i.ibb.co/vCw82LjW/Logo-IEAD.webp" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all">
+                        <img id="footer-logo" src="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all">
                         <h3 class="font-bold text-white text-lg">IEAD Jardim Nova Aliança</h3>
                         <p class="text-gray-500 text-sm mt-2 max-w-xs mx-auto md:mx-0">Levando a palavra de Deus e transformando vidas através do amor de Cristo.</p>
                     </div>
@@ -585,56 +575,17 @@
         </footer>
     </div>
 
-    <!-- ✅ Scripts com versão (cache busting) -->
     <script src="js/config.js?v=1"></script>
     <script src="js/data.js?v=1"></script>
     <script src="js/events.js?v=1"></script>
     <script src="js/marketing.js?v=1"></script>
     <script src="js/live.js?v=1"></script>
     <script src="js/ebd.js?v=1"></script>
+    <script src="js/radio.js?v=1"></script>
     <script src="js/admin.js?v=1"></script>
     <script src="js/app.js?v=1"></script>
     <script src="js/scroll-reveal.js?v=1"></script>
 
-    <!-- Widget do Instagram Feed (próprio) -->
     <script src="https://ig-feed-hazel.vercel.app/widget.js"></script>
-
-    <!-- ✅ Registro do Service Worker -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('sw.js?v=1', { scope: './' })
-                    .then(function(reg) {
-                        console.log('✅ Service Worker registrado. Escopo:', reg.scope);
-                    })
-                    .catch(function(err) {
-                        console.warn('⚠️ Service Worker falhou:', err);
-                    });
-            });
-        }
-    </script>
-
-    <!-- ✅ Cache-busting checker: força reload se a versão do app mudou -->
-    <script>
-        (function() {
-            var APP_VERSION = '1';
-            try {
-                var savedVersion = localStorage.getItem('__iead_app_version');
-                if (savedVersion && savedVersion !== APP_VERSION) {
-                    console.log('🔄 Nova versão detectada (' + savedVersion + ' → ' + APP_VERSION + '). Recarregando...');
-                    localStorage.setItem('__iead_app_version', APP_VERSION);
-                    localStorage.removeItem('__iead_data_changed');
-                    if ('caches' in window) {
-                        caches.keys().then(function(names) {
-                            names.forEach(function(n) { caches.delete(n); });
-                        });
-                    }
-                    setTimeout(function() { location.reload(true); }, 100);
-                } else if (!savedVersion) {
-                    localStorage.setItem('__iead_app_version', APP_VERSION);
-                }
-            } catch(e) {}
-        })();
-    </script>
 </body>
 </html>
