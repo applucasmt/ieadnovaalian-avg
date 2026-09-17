@@ -6,6 +6,7 @@ window.__radioState = {
     programas: [],
     liveConfig: { facebookLiveUrl: '', isLive: 'false' },
     currentProgram: null,
+    userChoseRadio: false,
     carregado: false
 };
 
@@ -38,10 +39,8 @@ function parseTimeToMinutes(str) {
 
 window.getCurrentRadioProgram = (programas) => {
     if (!Array.isArray(programas) || programas.length === 0) return null;
-
     const now = new Date();
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
-
     const active = programas.filter(p => String(p.ativo).toLowerCase() !== 'false');
 
     for (const p of active) {
@@ -62,17 +61,12 @@ window.getCurrentRadioProgram = (programas) => {
 // RENDERIZAR PÁGINA
 // ============================================================
 window.renderRadioPage = async () => {
-    console.log('📻 renderRadioPage chamado');
-
     if (!window.__radioState.carregado) {
         try {
             const [programas, liveConfig] = await Promise.all([
                 window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=radio', 'cache_radio_v2', true),
                 window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=config_radio', 'cache_config_radio_v2', true)
             ]);
-
-            console.log('📻 Programas recebidos:', programas);
-            console.log('📻 Live config recebido:', liveConfig);
 
             window.__radioState.programas = Array.isArray(programas) ? programas : [];
             window.__radioState.liveConfig = (Array.isArray(liveConfig) && liveConfig[0]) ? liveConfig[0] : { facebookLiveUrl: '', isLive: 'false' };
@@ -95,35 +89,32 @@ window.renderRadioContent = () => {
     const currentProgram = window.getCurrentRadioProgram(programasArr);
     state.currentProgram = currentProgram;
 
-    console.log('📻 Renderizando. Programas:', programasArr.length, '| Atual:', currentProgram ? currentProgram.programa : 'nenhum', '| Ao vivo:', isLive);
-
     // ---------------------------------------------
     // 1. Badge no topo
     // ---------------------------------------------
     const statusLabelEl = document.getElementById('radio-status-label');
     if (statusLabelEl) {
-        if (isLive) {
-            statusLabelEl.textContent = 'Transmissão ao Vivo';
-        } else if (currentProgram) {
-            statusLabelEl.textContent = 'No Ar: ' + (currentProgram.programa || 'Programa');
-        } else {
-            statusLabelEl.textContent = 'No Ar Agora';
-        }
+        if (isLive) statusLabelEl.textContent = 'Transmissão ao Vivo';
+        else if (currentProgram) statusLabelEl.textContent = 'No Ar: ' + (currentProgram.programa || 'Programa');
+        else statusLabelEl.textContent = 'No Ar Agora';
     }
 
     // ---------------------------------------------
-    // 2. Player (Facebook ou card offline)
+    // 2. Player (Facebook OU Rádio OU card offline)
+    // ✅ CORREÇÃO: botão "Ouvir Rádio" + botão "Voltar pra Live"
     // ---------------------------------------------
     const playerContent = document.getElementById('radio-player-content');
     if (playerContent) {
-        if (isLive && liveCfg.facebookLiveUrl) {
+        if (isLive && !state.userChoseRadio) {
+            // Está ao vivo E usuário NÃO escolheu ouvir rádio → Facebook
             const raw = String(liveCfg.facebookLiveUrl).trim();
+            let fbHtml = '';
 
             if (raw.indexOf('<iframe') !== -1) {
-                playerContent.innerHTML = raw;
+                fbHtml = raw;
             } else if (raw.indexOf('http') === 0) {
                 const fbUrl = encodeURIComponent(raw);
-                playerContent.innerHTML =
+                fbHtml =
                     '<iframe ' +
                         'src="https://www.facebook.com/plugins/video.php?href=' + fbUrl + '&show_text=false&width=560&height=315" ' +
                         'style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;" ' +
@@ -131,15 +122,32 @@ window.renderRadioContent = () => {
                         'allowfullscreen="true" ' +
                         'allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">' +
                     '</iframe>';
-            } else {
-                playerContent.innerHTML = '<p class="text-red-400 text-center p-4">URL/HTML inválido.</p>';
             }
+
+            playerContent.innerHTML =
+                fbHtml +
+                '<button id="radio-toggle-live-btn" class="radio-toggle-live-btn" onclick="window.toggleRadioPlayer()">' +
+                    '<i class="fas fa-radio"></i> Ouvir somente a Rádio' +
+                '</button>';
+        } else if (isLive && state.userChoseRadio) {
+            // Está ao vivo, mas usuário escolheu ouvir rádio → player da rádio
+            playerContent.innerHTML =
+                '<div class="radio-audio-player">' +
+                    '<div class="radio-audio-icon"><i class="fas fa-broadcast-tower"></i></div>' +
+                    '<h3 class="radio-audio-title">Rádio Nazareno FM</h3>' +
+                    '<p class="radio-audio-text">Você está ouvindo apenas a rádio. A transmissão ao vivo continua disponível.</p>' +
+                    '<a href="https://nazarenofm.com" target="_blank" rel="noopener" class="radio-audio-play-btn">' +
+                        '<i class="fas fa-play"></i> Abrir Player da Rádio' +
+                    '</a>' +
+                    '<button class="radio-toggle-live-btn" onclick="window.toggleRadioPlayer()">' +
+                        '<i class="fas fa-tv"></i> Voltar para a Transmissão ao Vivo' +
+                    '</button>' +
+                '</div>';
         } else {
+            // Não está ao vivo → card offline
             playerContent.innerHTML =
                 '<div class="radio-offline-card">' +
-                    '<div class="radio-offline-icon">' +
-                        '<i class="fas fa-broadcast-tower"></i>' +
-                    '</div>' +
+                    '<div class="radio-offline-icon"><i class="fas fa-broadcast-tower"></i></div>' +
                     '<h3 class="radio-offline-title">A Rádio está fora do ar</h3>' +
                     '<p class="radio-offline-text">Nenhuma transmissão no momento. Confira a programação abaixo ou abra o Facebook da rádio.</p>' +
                     '<div class="radio-offline-buttons">' +
@@ -172,23 +180,21 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 4. Grade em 2 colunas + DESTAQUE
+    // 4. Grade em 2 colunas
     // ---------------------------------------------
     window.renderRadioGrid(currentProgram);
 };
 
 // ============================================================
-// RENDERIZAR GRADE (2 COLUNAS + DESTAQUE DO PROGRAMA ATUAL)
+// RENDERIZAR GRADE
 // ============================================================
 window.renderRadioGrid = (currentProgram) => {
     const container = document.getElementById('radio-grid-container');
     const colLeft = document.getElementById('radio-grid-left');
     const colRight = document.getElementById('radio-grid-right');
     const highlight = document.getElementById('radio-now-highlight');
-
     if (!container || !colLeft || !colRight) return;
 
-    // Filtra e ordena os programas
     const programas = (window.__radioState.programas || [])
         .filter(p => String(p.ativo).toLowerCase() !== 'false')
         .sort((a, b) => {
@@ -197,15 +203,9 @@ window.renderRadioGrid = (currentProgram) => {
             return (ai === null ? 9999 : ai) - (bi === null ? 9999 : bi);
         });
 
-    // Só mostra a grade se tiver 2+ programas
-    if (programas.length < 2) {
-        container.classList.add('hidden');
-        return;
-    }
-
+    if (programas.length < 2) { container.classList.add('hidden'); return; }
     container.classList.remove('hidden');
 
-    // Divide em 2 colunas (alternando)
     const metade = Math.ceil(programas.length / 2);
     const esquerda = programas.slice(0, metade);
     const direita = programas.slice(metade);
@@ -216,30 +216,19 @@ window.renderRadioGrid = (currentProgram) => {
 
         return '<div class="radio-schedule-item ' + (isCurrent ? 'radio-schedule-item-active' : '') + '">' +
                     '<div class="radio-schedule-time">' +
-                        '<i class="far fa-clock"></i>' +
-                        '<span>' + hora + '</span>' +
+                        '<i class="far fa-clock"></i><span>' + hora + '</span>' +
                     '</div>' +
                     '<div class="radio-schedule-body">' +
                         '<div class="radio-schedule-name">' + (p.programa || 'Programa') + '</div>' +
-                        (isCurrent ?
-                            '<div class="radio-schedule-now-badge">' +
-                                '<span class="radio-schedule-now-dot"></span>' +
-                                'NO AR AGORA' +
-                            '</div>'
-                            : '') +
+                        (isCurrent ? '<div class="radio-schedule-now-badge"><span class="radio-schedule-now-dot"></span>NO AR AGORA</div>' : '') +
                     '</div>' +
-                    (isCurrent ?
-                        '<div class="radio-schedule-pulse"></div>'
-                        : '') +
+                    (isCurrent ? '<div class="radio-schedule-pulse"></div>' : '') +
                 '</div>';
     };
 
     colLeft.innerHTML = esquerda.map(renderItem).join('');
     colRight.innerHTML = direita.map(renderItem).join('');
 
-    // ---------------------------------------------
-    // DESTAQUE: card grande do programa atual
-    // ---------------------------------------------
     if (highlight) {
         if (currentProgram) {
             highlight.classList.remove('hidden');
@@ -247,15 +236,9 @@ window.renderRadioGrid = (currentProgram) => {
                 '<div class="radio-now-highlight-card">' +
                     '<div class="radio-now-highlight-glow"></div>' +
                     '<div class="radio-now-highlight-inner">' +
-                        '<div class="radio-now-highlight-badge">' +
-                            '<span class="radio-now-highlight-dot"></span>' +
-                            'NO AR AGORA' +
-                        '</div>' +
+                        '<div class="radio-now-highlight-badge"><span class="radio-now-highlight-dot"></span>NO AR AGORA</div>' +
                         '<h3 class="radio-now-highlight-title">' + (currentProgram.programa || 'Programa') + '</h3>' +
-                        '<p class="radio-now-highlight-time">' +
-                            '<i class="far fa-clock"></i>' +
-                            formatHora(currentProgram.inicio) + ' — ' + formatHora(currentProgram.fim) +
-                        '</p>' +
+                        '<p class="radio-now-highlight-time"><i class="far fa-clock"></i>' + formatHora(currentProgram.inicio) + ' — ' + formatHora(currentProgram.fim) + '</p>' +
                         (currentProgram.whatsapp ?
                             '<a href="https://wa.me/55' + String(currentProgram.whatsapp).replace(/\D/g, '') + '?text=' + encodeURIComponent('Olá! Gostaria de pedir um louvor.') + '" target="_blank" class="radio-now-highlight-btn">' +
                                 '<i class="fab fa-whatsapp"></i> Pedir Louvor' +
@@ -271,6 +254,14 @@ window.renderRadioGrid = (currentProgram) => {
 };
 
 // ============================================================
+// TOGGLE
+// ============================================================
+window.toggleRadioPlayer = () => {
+    window.__radioState.userChoseRadio = !window.__radioState.userChoseRadio;
+    window.renderRadioContent();
+};
+
+// ============================================================
 // ATUALIZAÇÃO A CADA 60s
 // ============================================================
 setInterval(() => {
@@ -279,10 +270,7 @@ setInterval(() => {
         const novo = window.getCurrentRadioProgram(window.__radioState.programas);
         const atual = window.__radioState.currentProgram;
         const mudou = (!atual && novo) || (atual && !novo) || (atual && novo && atual.id !== novo.id);
-        if (mudou) {
-            console.log('📻 Programa mudou. Atualizando...');
-            window.renderRadioContent();
-        }
+        if (mudou) window.renderRadioContent();
     }
 }, 60000);
 
@@ -293,21 +281,17 @@ window.addEventListener('storage', (event) => {
     if (event && event.key === '__iead_data_changed') {
         window.__radioState.carregado = false;
         const radioPage = document.getElementById('radio-page');
-        if (radioPage && !radioPage.classList.contains('hidden')) {
-            window.renderRadioPage();
-        }
+        if (radioPage && !radioPage.classList.contains('hidden')) window.renderRadioPage();
     }
 });
 
 // ============================================================
-// AUTO-INICIALIZA QUANDO A PÁGINA CARREGA
+// AUTO-INICIALIZA
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         const radioPage = document.getElementById('radio-page');
-        if (radioPage && !radioPage.classList.contains('hidden')) {
-            window.renderRadioPage();
-        }
+        if (radioPage && !radioPage.classList.contains('hidden')) window.renderRadioPage();
     }, 500);
 });
 
