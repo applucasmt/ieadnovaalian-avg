@@ -14,6 +14,10 @@
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
 
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +28,8 @@
     <link rel="preconnect" href="https://wsrv.nl">
     <link rel="preconnect" href="https://ig-feed-hazel.vercel.app">
 
-    <link rel="stylesheet" href="css/style.css">
+    <!-- ✅ CSS com versão (cache busting) -->
+    <link rel="stylesheet" href="css/style.css?v=1">
 
     <script>
         tailwind.config = {
@@ -121,31 +126,26 @@
         </div>
     </div>
 
-    <!-- MODAL DO MARKETING (Popup de Detalhes) -->
+    <!-- MODAL DO MARKETING -->
     <div id="marketing-modal" class="fixed inset-0 z-[75] hidden items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="window.closeMarketingModal()"></div>
         <div class="marketing-modal-content" id="marketing-modal-box">
-
             <button onclick="window.closeMarketingModal()" class="marketing-modal-close">
                 <i class="fas fa-times"></i>
             </button>
-
             <div class="marketing-modal-scroll">
                 <div class="marketing-modal-image">
                     <img id="marketing-modal-img" src="" alt="Cartaz do evento">
                 </div>
-
                 <div class="marketing-modal-info">
                     <div class="marketing-modal-category">EVENTO ESPECIAL</div>
                     <h2 id="marketing-modal-title" class="marketing-modal-title"></h2>
                     <p id="marketing-modal-desc" class="marketing-modal-desc"></p>
-
                     <a id="marketing-modal-whatsapp" href="#" target="_blank" class="marketing-modal-whatsapp-btn">
                         <i class="fab fa-whatsapp text-xl"></i> Solicitar Cartaz via WhatsApp
                     </a>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -166,7 +166,6 @@
     <div id="admin-modal" class="fixed inset-0 z-[70] hidden opacity-0 transition-opacity duration-300" aria-modal="true" role="dialog">
         <div class="absolute inset-0 admin-modal-bg transition-opacity" onclick="window.closeAdmin()"></div>
         <div class="absolute inset-0 flex items-center justify-center p-4">
-
             <div id="admin-login-screen" class="bg-[#1e293b] w-full max-w-md p-8 rounded-2xl shadow-2xl border border-white/10 transform scale-95 transition-all">
                 <h2 class="text-2xl font-bold text-white mb-6 text-center"><i class="fas fa-user-lock text-brand-yellow mr-2"></i> Acesso Administrativo</h2>
                 <div class="space-y-4">
@@ -188,7 +187,6 @@
                     <h2 class="text-xl font-bold text-white"><i class="fas fa-cog text-brand-yellow mr-2"></i> Painel de Controle</h2>
                     <button onclick="window.closeAdmin()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
                 </div>
-
                 <div class="flex overflow-x-auto p-2 bg-white/5 gap-2 border-b border-white/5 shrink-0">
                     <button onclick="loadAdminTab('eventos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab active whitespace-nowrap" data-tab="eventos">Eventos/Agenda</button>
                     <button onclick="loadAdminTab('avisos')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="avisos">Avisos Home</button>
@@ -198,11 +196,9 @@
                     <button onclick="loadAdminTab('pastor')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="pastor">Pastor/Sobre</button>
                     <button onclick="loadAdminTab('config')" class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 text-gray-300 admin-tab whitespace-nowrap" data-tab="config"><i class="fas fa-palette mr-1"></i> Site/Config</button>
                 </div>
-
                 <div class="flex-1 overflow-y-auto overflow-x-hidden p-4" id="admin-content-area" style="min-height: 0;">
                     <div class="text-center py-10 text-gray-500">Selecione uma aba acima para editar.</div>
                 </div>
-
                 <div class="p-4 border-t border-white/10 bg-black/20 flex justify-between items-center shrink-0">
                     <span class="text-xs text-gray-500">As alterações podem levar alguns segundos.</span>
                     <button onclick="window.openEditModal('add')" id="btn-new-item" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 shadow-lg"><i class="fas fa-plus"></i> Novo Item</button>
@@ -312,18 +308,14 @@
                 </section>
 
                 <div id="main-content-wrapper" class="container mx-auto px-4 sm:px-6 pt-6 pb-10 sm:py-16">
-
                     <div id="avisos-carousel" class="avisos-carousel hidden">
-                        <div class="avisos-slides" id="avisos-slides">
-                        </div>
-
+                        <div class="avisos-slides" id="avisos-slides"></div>
                         <button id="aviso-prev" class="aviso-nav aviso-prev" aria-label="Aviso anterior">
                             <i class="fas fa-chevron-left"></i>
                         </button>
                         <button id="aviso-next" class="aviso-nav aviso-next" aria-label="Próximo aviso">
                             <i class="fas fa-chevron-right"></i>
                         </button>
-
                         <div id="aviso-dots" class="aviso-dots"></div>
                     </div>
 
@@ -356,22 +348,18 @@
                                 <i class="fab fa-instagram text-lg"></i> Seguir Perfil
                             </a>
                         </div>
-
                         <div class="glass-panel rounded-2xl overflow-hidden p-2 sm:p-4 border border-white/10">
                             <div id="instagram-feed"></div>
                         </div>
                     </section>
-
                 </div>
             </div>
 
             <div id="marketing-page" class="page-content hidden w-full h-full animate-fade-in">
                 <div class="marketing-container-v2">
-
                     <div class="marketing-left">
                         <div class="marketing-category-label">EVENTO ESPECIAL</div>
-                        <h1 id="marketing-title-v2" class="marketing-title-v2">
-                        </h1>
+                        <h1 id="marketing-title-v2" class="marketing-title-v2"></h1>
                         <div class="marketing-buttons-v2">
                             <button id="marketing-details-btn" class="btn-primary-v2">
                                 <i class="fas fa-info-circle"></i> Ver Detalhes
@@ -381,11 +369,9 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="marketing-right">
                         <div id="marketing-bg-blob" class="marketing-bg-blob"></div>
                         <div id="product-queue" class="product-queue-container"></div>
-
                         <div class="marketing-controls">
                             <button id="prev-marketing" class="marketing-nav-btn">
                                 <i class="fas fa-chevron-left"></i>
@@ -395,7 +381,6 @@
                             </button>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -476,7 +461,6 @@
                         <span class="inline-block px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm font-bold mb-4 animate-pulse">EM TEMPO REAL</span>
                         <h1 class="text-3xl sm:text-5xl font-bold text-white">Culto Online</h1>
                     </div>
-
                     <div id="live-container" class="glass-panel p-2 sm:p-4 rounded-2xl shadow-2xl bg-black/50 min-h-[300px] flex items-center justify-center border border-white/10">
                         <div class="text-center animate-pulse">
                             <i class="fas fa-circle-notch fa-spin text-4xl text-brand-yellow mb-4"></i>
@@ -505,7 +489,6 @@
                             <i class="fab fa-youtube text-lg"></i> Inscrever-se
                         </a>
                     </div>
-
                     <div id="youtube-recent-container" class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
                         <div class="yt-skeleton"></div>
                         <div class="yt-skeleton"></div>
@@ -602,18 +585,56 @@
         </footer>
     </div>
 
-    <!-- Scripts do site -->
-    <script src="js/config.js"></script>
-    <script src="js/data.js"></script>
-    <script src="js/events.js"></script>
-    <script src="js/marketing.js"></script>
-    <script src="js/live.js"></script>
-    <script src="js/ebd.js"></script>
-    <script src="js/admin.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/scroll-reveal.js"></script>
+    <!-- ✅ Scripts com versão (cache busting) -->
+    <script src="js/config.js?v=1"></script>
+    <script src="js/data.js?v=1"></script>
+    <script src="js/events.js?v=1"></script>
+    <script src="js/marketing.js?v=1"></script>
+    <script src="js/live.js?v=1"></script>
+    <script src="js/ebd.js?v=1"></script>
+    <script src="js/admin.js?v=1"></script>
+    <script src="js/app.js?v=1"></script>
+    <script src="js/scroll-reveal.js?v=1"></script>
 
     <!-- Widget do Instagram Feed (próprio) -->
     <script src="https://ig-feed-hazel.vercel.app/widget.js"></script>
+
+    <!-- ✅ Registro do Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js?v=1', { scope: './' })
+                    .then(function(reg) {
+                        console.log('✅ Service Worker registrado. Escopo:', reg.scope);
+                    })
+                    .catch(function(err) {
+                        console.warn('⚠️ Service Worker falhou:', err);
+                    });
+            });
+        }
+    </script>
+
+    <!-- ✅ Cache-busting checker: força reload se a versão do app mudou -->
+    <script>
+        (function() {
+            var APP_VERSION = '1';
+            try {
+                var savedVersion = localStorage.getItem('__iead_app_version');
+                if (savedVersion && savedVersion !== APP_VERSION) {
+                    console.log('🔄 Nova versão detectada (' + savedVersion + ' → ' + APP_VERSION + '). Recarregando...');
+                    localStorage.setItem('__iead_app_version', APP_VERSION);
+                    localStorage.removeItem('__iead_data_changed');
+                    if ('caches' in window) {
+                        caches.keys().then(function(names) {
+                            names.forEach(function(n) { caches.delete(n); });
+                        });
+                    }
+                    setTimeout(function() { location.reload(true); }, 100);
+                } else if (!savedVersion) {
+                    localStorage.setItem('__iead_app_version', APP_VERSION);
+                }
+            } catch(e) {}
+        })();
+    </script>
 </body>
 </html>
