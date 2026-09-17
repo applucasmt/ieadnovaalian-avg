@@ -510,7 +510,7 @@
                 <div id="albums-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
             </div>
 
-            <!-- ✅ RÁDIO — LAYOUT ORIGINAL COM PLAYER CORRIGIDO -->
+            <!-- ✅ RÁDIO — SEM GRADE, SÓ TAG + PLAYER -->
             <div id="radio-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="max-w-4xl mx-auto text-center">
                     <div class="inline-block px-4 py-1 rounded-full border border-brand-yellow/30 bg-brand-yellow/10 backdrop-blur-sm mb-6">
@@ -522,13 +522,13 @@
                     <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Rádio Nazareno FM</h1>
                     <p class="text-gray-400 mb-8 max-w-2xl mx-auto text-sm sm:text-base">Louvor, adoração e a palavra de Deus 24 horas por dia.</p>
 
-                    <!-- PROGRAMA ATUAL (dinâmico — só aparece se tiver programa no ar) -->
+                    <!-- PROGRAMA ATUAL (dinâmico) -->
                     <div id="radio-program-info" class="hidden mb-6">
                         <h2 id="radio-program-name" class="text-xl sm:text-2xl font-bold text-brand-yellow mb-1"></h2>
                         <p id="radio-program-time" class="text-sm text-gray-400"></p>
                     </div>
 
-                    <!-- PLAYER — iframe com position absolute para preencher o video-wrapper -->
+                    <!-- PLAYER -->
                     <div class="glass-panel p-2 rounded-2xl shadow-[0_0_50px_rgba(73,73,133,0.2)] mb-8">
                         <div id="radio-player-wrapper" class="video-wrapper rounded-xl overflow-hidden bg-black relative group">
                             <div class="absolute inset-0 bg-brand-blue/20 animate-pulse pointer-events-none z-10 opacity-20"></div>
@@ -544,7 +544,7 @@
                         </div>
                     </div>
 
-                    <!-- BOTÃO DE ALTERNÂNCIA (só aparece quando estiver ao vivo) -->
+                    <!-- BOTÃO DE ALTERNÂNCIA -->
                     <div id="radio-toggle-wrapper" class="hidden mb-6">
                         <button onclick="window.toggleRadioPlayer()" class="inline-flex items-center gap-2 bg-brand-yellow/10 hover:bg-brand-yellow/20 text-brand-yellow border border-brand-yellow/30 px-5 py-3 rounded-full font-bold text-sm transition-all">
                             <i class="fas fa-radio"></i>
@@ -552,7 +552,7 @@
                         </button>
                     </div>
 
-                    <!-- BOTÕES DE CONTATO (mantidos do layout original) -->
+                    <!-- BOTÕES DE CONTATO -->
                     <div class="flex flex-col sm:flex-row justify-center gap-4">
                         <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-3">
                             <i class="fas fa-globe text-brand-yellow text-2xl"></i>
@@ -568,12 +568,6 @@
                                 <span id="radio-whatsapp-label" class="font-bold text-white">via WhatsApp</span>
                             </div>
                         </a>
-                    </div>
-
-                    <!-- GRADE DE PROGRAMAÇÃO -->
-                    <div id="radio-grade-container" class="mt-10 hidden">
-                        <h2 class="text-2xl font-bold text-white mb-6 text-center">Programação</h2>
-                        <div id="radio-grade-list" class="glass-panel rounded-2xl p-4 text-left"></div>
                     </div>
                 </div>
             </div>
