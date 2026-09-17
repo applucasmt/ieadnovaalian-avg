@@ -13,18 +13,18 @@ window.SCHEMAS = {
 
     avisos: [
         { key: 'title', label: '📝 Título do Aviso', type: 'text', required: true },
-        { key: 'subtitle', label: 'Subtítulo (linha acima do título)', type: 'text' },
-        { key: 'description', label: 'Descrição (texto abaixo do título)', type: 'textarea' },
-        { key: 'imageUrl', label: '🖼️ URL da Imagem de Fundo (opcional)', type: 'text', hint: 'Deixe vazio para usar só cor de fundo', upload: true },
-        { key: 'bgColor', label: '🎨 Cor de Fundo (se não tiver imagem)', type: 'color', default: '#0f172a' },
+        { key: 'subtitle', label: 'Subtítulo', type: 'text' },
+        { key: 'description', label: 'Descrição', type: 'textarea' },
+        { key: 'imageUrl', label: '🖼️ URL da Imagem de Fundo', type: 'text', hint: 'Deixe vazio para usar só cor de fundo', upload: true },
+        { key: 'bgColor', label: '🎨 Cor de Fundo', type: 'color', default: '#0f172a' },
         { key: 'textColor', label: '🎨 Cor do Texto', type: 'color', default: '#ffffff' },
-        { key: 'buttonText', label: '🔘 Texto do Botão (ex: "Saiba mais")', type: 'text' },
-        { key: 'buttonUrl', label: '🔗 Link do Botão', type: 'text', hint: 'Ex: https://exemplo.com ou /contato' },
+        { key: 'buttonText', label: '🔘 Texto do Botão', type: 'text' },
+        { key: 'buttonUrl', label: '🔗 Link do Botão', type: 'text' },
         { key: 'position', label: '📍 Posição do Conteúdo', type: 'select', options: ['left', 'center', 'right', 'custom'], default: 'center' },
-        { key: 'align', label: '↔️ Alinhamento do Texto (só para "custom")', type: 'select', options: ['left', 'center', 'right'], default: 'center' },
-        { key: 'posX', label: '📍 Posição X % (só para "custom")', type: 'number', default: 50, hint: '0 = esquerda, 100 = direita' },
-        { key: 'posY', label: '📍 Posição Y % (só para "custom")', type: 'number', default: 50, hint: '0 = topo, 100 = embaixo' },
-        { key: 'order', label: '🔢 Ordem (menor número aparece primeiro)', type: 'number', default: 1 },
+        { key: 'align', label: '↔️ Alinhamento', type: 'select', options: ['left', 'center', 'right'], default: 'center' },
+        { key: 'posX', label: '📍 Posição X %', type: 'number', default: 50 },
+        { key: 'posY', label: '📍 Posição Y %', type: 'number', default: 50 },
+        { key: 'order', label: '🔢 Ordem', type: 'number', default: 1 },
         { key: 'active', label: '✅ Ativo?', type: 'select', options: ['true', 'false'], default: 'true' }
     ],
 
@@ -45,10 +45,11 @@ window.SCHEMAS = {
         { key: 'capa', label: 'URL da Foto', type: 'text', upload: true }
     ],
 
+    // ✅ CORREÇÃO: tipo "time" em vez de "text" para inicio/fim
     radio: [
         { key: 'programa', label: '📻 Nome do Programa', type: 'text' },
-        { key: 'inicio', label: '⏰ Início (HH:MM)', type: 'text', hint: 'Ex: 06:00' },
-        { key: 'fim', label: '⏰ Fim (HH:MM)', type: 'text', hint: 'Ex: 08:00' },
+        { key: 'inicio', label: '⏰ Horário de Início', type: 'time' },
+        { key: 'fim', label: '⏰ Horário de Fim', type: 'time' },
         { key: 'whatsapp', label: '📱 WhatsApp do Locutor', type: 'text', hint: 'Só números: 65999991111' },
         { key: 'ativo', label: '✅ Ativo?', type: 'select', options: ['true', 'false'], default: 'true' }
     ],
@@ -66,13 +67,9 @@ window.SCHEMAS = {
 };
 
 window.heroState = {
-    position: 'center',
-    align: 'center',
-    posX: 50,
-    posY: 50,
-    title: '',
-    subtitle: '',
-    description: ''
+    position: 'center', align: 'center',
+    posX: 50, posY: 50,
+    title: '', subtitle: '', description: ''
 };
 
 window.isImageField = (key) => {
@@ -80,12 +77,8 @@ window.isImageField = (key) => {
 };
 
 window.notifyDataChanged = () => {
-    if (typeof window.loadData === 'function') {
-        window.loadData(true);
-    }
-    if (typeof window.broadcastDataChanged === 'function') {
-        window.broadcastDataChanged();
-    }
+    if (typeof window.loadData === 'function') window.loadData(true);
+    if (typeof window.broadcastDataChanged === 'function') window.broadcastDataChanged();
 };
 
 // ============================================================
@@ -142,7 +135,7 @@ window.adminLogin = () => {
     if (pass !== window.ADMIN_PASSWORD_LOCAL) {
         setTimeout(() => {
             if (errorMsg) {
-                errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Senha incorreta. Tente novamente.';
+                errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Senha incorreta.';
                 errorMsg.classList.remove('hidden');
             }
             input.classList.add('shake');
@@ -201,15 +194,12 @@ window.loadAdminTab = async (tab) => {
     });
 
     const btnNewItem = document.getElementById('btn-new-item');
-    if (btnNewItem) {
-        btnNewItem.style.display = (tab === 'config' || tab === 'config_radio') ? 'none' : 'flex';
-    }
+    if (btnNewItem) btnNewItem.style.display = (tab === 'config' || tab === 'config_radio') ? 'none' : 'flex';
 
     const contentArea = document.getElementById('admin-content-area');
     contentArea.innerHTML = '<div class="text-center py-10"><i class="fas fa-spinner fa-spin text-3xl text-brand-yellow"></i><p class="mt-2 text-gray-400">Carregando dados...</p></div>';
 
     try {
-        // ✅ CASO ESPECIAL: RÁDIO
         if (tab === 'radio') {
             const [gradeData, liveConfig] = await Promise.all([
                 window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=radio', 'admin_radio', true),
@@ -229,7 +219,7 @@ window.loadAdminTab = async (tab) => {
                 heroPosition: 'center', heroAlign: 'center', heroPosX: 50, heroPosY: 50,
                 heroTitle: 'JARDIM\\nNOVA ALIANÇA',
                 heroSubtitle: 'Bem-vindo à casa do pai',
-                heroDescription: 'Um lugar de adoração, comunhão e crescimento espiritual. Venha fazer parte desta família.'
+                heroDescription: 'Um lugar de adoração, comunhão e crescimento espiritual.'
             }];
             window.adminState.currentData = configData;
             window.renderConfigForm(configData[0]);
@@ -243,7 +233,7 @@ window.loadAdminTab = async (tab) => {
 };
 
 // ============================================================
-// RENDERIZAR TABELA DE ITENS
+// RENDERIZAR TABELA GENÉRICA
 // ============================================================
 window.renderAdminTable = (data, tab) => {
     const container = document.getElementById('admin-content-area');
@@ -256,7 +246,6 @@ window.renderAdminTable = (data, tab) => {
     if (data[0].name) displayKey = 'name';
     if (data[0].nome) displayKey = 'nome';
     if (data[0].titulo) displayKey = 'titulo';
-    if (data[0].texto) displayKey = 'texto';
     if (data[0].title) displayKey = 'title';
 
     let html = '<div class="grid gap-2">';
@@ -268,7 +257,7 @@ window.renderAdminTable = (data, tab) => {
         const imgHtml = imgUrl ? '<img src="' + window.optimizeImage(imgUrl, 100) + '" loading="lazy" class="w-12 h-12 object-cover rounded mr-3 bg-black/20" onerror="this.style.display=\'none\'">' : '';
 
         let statusBadge = '';
-        if ((tab === 'avisos' || tab === 'radio') && item.active !== undefined || item.ativo !== undefined) {
+        if (item.active !== undefined || item.ativo !== undefined) {
             const val = item.active !== undefined ? item.active : item.ativo;
             const isActive = String(val).toLowerCase() !== 'false' && String(val) !== '0';
             statusBadge = isActive
@@ -299,6 +288,7 @@ window.renderAdminTable = (data, tab) => {
 
 // ============================================================
 // RENDERIZAR ADMIN DA RÁDIO
+// ✅ NOVO LAYOUT: Campo da URL da live em destaque
 // ============================================================
 window.renderRadioAdmin = () => {
     const container = document.getElementById('admin-content-area');
@@ -307,39 +297,62 @@ window.renderRadioAdmin = () => {
 
     container.innerHTML =
         '<div class="max-w-4xl mx-auto py-4">' +
-            '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
-                '<h3 class="text-lg font-bold text-white flex items-center gap-2 mb-4">' +
-                    '<i class="fas fa-satellite-dish text-brand-yellow"></i> Controle de Transmissão ao Vivo' +
-                '</h3>' +
-                '<div class="space-y-4">' +
+
+            // ============================================================
+            // BLOCO 1: URL DA LIVE (DESTAQUE)
+            // ============================================================
+            '<div class="bg-red-500/5 p-6 rounded-xl border-2 border-red-500/30 mb-6">' +
+                '<div class="flex items-start gap-3 mb-4">' +
+                    '<div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">' +
+                        '<i class="fas fa-broadcast-tower text-red-400 text-xl"></i>' +
+                    '</div>' +
                     '<div>' +
-                        '<label class="block text-xs uppercase text-gray-400 font-bold mb-2">URL da Live do Facebook</label>' +
-                        '<input type="text" id="radio-live-url" class="admin-field" placeholder="https://www.facebook.com/ieadnovaalianca/videos/1234567890" value="' + (liveConfig.facebookLiveUrl || '') + '">' +
-                        '<p class="text-[10px] text-gray-500 mt-1 italic">Cole a URL da postagem da live quando estiver ao vivo.</p>' +
+                        '<h3 class="text-xl font-bold text-white">Transmissão ao Vivo</h3>' +
+                        '<p class="text-sm text-gray-400 mt-1">Cole o link da live do Facebook quando estiver transmitindo. O site vai exibir o player automaticamente.</p>' +
                     '</div>' +
-                    '<div class="flex items-center gap-3 flex-wrap">' +
-                        (isLive ?
-                            '<span class="inline-flex items-center gap-2 bg-red-500/20 text-red-400 border border-red-500/30 px-4 py-2 rounded-lg text-sm font-bold">' +
-                                '<span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> AO VIVO AGORA' +
-                            '</span>' +
-                            '<button onclick="window.stopRadioLive()" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">' +
-                                '<i class="fas fa-stop"></i> Encerrar Live' +
-                            '</button>'
-                            :
-                            '<button onclick="window.startRadioLive()" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">' +
-                                '<i class="fas fa-broadcast-tower"></i> 🔴 Estou ao Vivo' +
-                            '</button>'
-                        ) +
-                        '<span id="radio-live-status" class="text-xs text-gray-500"></span>' +
-                    '</div>' +
+                '</div>' +
+
+                '<label class="block text-xs uppercase text-red-400 font-bold mb-2">' +
+                    '<i class="fas fa-link mr-1"></i> URL da Live do Facebook' +
+                '</label>' +
+                '<input ' +
+                    'type="text" ' +
+                    'id="radio-live-url" ' +
+                    'class="admin-field text-base" ' +
+                    'placeholder="https://www.facebook.com/ieadnovaalianca/videos/1234567890" ' +
+                    'value="' + (liveConfig.facebookLiveUrl || '') + '" ' +
+                    'style="font-size: 0.95rem; padding: 0.85rem 1rem;" ' +
+                '>' +
+                '<p class="text-[11px] text-gray-500 mt-2 italic">' +
+                    '<i class="fas fa-info-circle mr-1"></i>' +
+                    'Pegue o link da postagem da live (aquele que aparece quando você clica em "Compartilhar" no Facebook).' +
+                '</p>' +
+
+                '<div class="mt-5 flex items-center gap-3 flex-wrap">' +
+                    (isLive ?
+                        '<span class="inline-flex items-center gap-2 bg-red-500/20 text-red-400 border border-red-500/40 px-4 py-2.5 rounded-lg text-sm font-bold">' +
+                            '<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span> AO VIVO AGORA' +
+                        '</span>' +
+                        '<button onclick="window.stopRadioLive()" class="bg-gray-600 hover:bg-gray-500 text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 transition-colors">' +
+                            '<i class="fas fa-stop"></i> Encerrar Live' +
+                        '</button>'
+                        :
+                        '<button onclick="window.startRadioLive()" class="bg-red-600 hover:bg-red-500 text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 transition-colors shadow-lg">' +
+                            '<i class="fas fa-broadcast-tower"></i> Ativar Transmissão ao Vivo' +
+                        '</button>'
+                    ) +
+                    '<span id="radio-live-status" class="text-xs text-gray-500"></span>' +
                 '</div>' +
             '</div>' +
 
+            // ============================================================
+            // BLOCO 2: GRADE DE PROGRAMAÇÃO
+            // ============================================================
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10">' +
-                '<h3 class="text-lg font-bold text-white flex items-center gap-2 mb-4">' +
+                '<h3 class="text-lg font-bold text-white flex items-center gap-2 mb-2">' +
                     '<i class="fas fa-list text-brand-yellow"></i> Grade de Programação' +
                 '</h3>' +
-                '<p class="text-xs text-gray-400 mb-4">Cadastre os programas. O site destaca automaticamente qual está no ar.</p>' +
+                '<p class="text-xs text-gray-400 mb-4">Cadastre os programas. Quando o horário bater, o site mostra automaticamente o nome do programa no ar.</p>' +
                 '<div id="radio-grade-list"></div>' +
             '</div>' +
         '</div>';
@@ -365,12 +378,23 @@ window.renderRadioGrade = () => {
         const realIndex = data.length - 1 - index;
         const ativo = String(item.ativo).toLowerCase() !== 'false';
 
+        // ✅ Formata o horário: se vier "1899-12-30T17:44:20.000Z", extrai "17:44"
+        const formatHora = (h) => {
+            if (!h) return '?';
+            const s = String(h);
+            if (s.indexOf('T') !== -1) {
+                const t = s.split('T')[1];
+                return t ? t.substring(0, 5) : '?';
+            }
+            return s;
+        };
+
         html += '<div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">' +
                     '<div class="flex items-center overflow-hidden pr-4 w-full">' +
                         '<div class="truncate flex-1">' +
                             '<div class="flex items-center gap-2 flex-wrap">' +
                                 '<span class="font-bold text-white">' + (item.programa || 'Sem nome') + '</span>' +
-                                '<span class="text-xs text-brand-yellow bg-brand-yellow/10 border border-brand-yellow/20 px-2 py-0.5 rounded">' + (item.inicio || '?') + ' - ' + (item.fim || '?') + '</span>' +
+                                '<span class="text-xs text-brand-yellow bg-brand-yellow/10 border border-brand-yellow/20 px-2 py-0.5 rounded">' + formatHora(item.inicio) + ' - ' + formatHora(item.fim) + '</span>' +
                                 (ativo ?
                                     '<span class="text-xs text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded">ativo</span>'
                                     :
@@ -466,7 +490,7 @@ window.stopRadioLive = async () => {
 };
 
 // ============================================================
-// RENDERIZAR FORM DE CONFIG
+// CONFIG FORM (idêntico ao anterior)
 // ============================================================
 window.renderConfigForm = (config) => {
     const container = document.getElementById('admin-content-area');
@@ -492,113 +516,61 @@ window.renderConfigForm = (config) => {
     container.innerHTML =
         '<div class="max-w-4xl mx-auto py-4">' +
             '<div class="mb-6 pb-4 border-b border-white/10">' +
-                '<h3 class="text-xl font-bold text-white flex items-center gap-2">' +
-                    '<i class="fas fa-palette text-brand-yellow"></i> Identidade Visual do Site' +
-                '</h3>' +
+                '<h3 class="text-xl font-bold text-white flex items-center gap-2"><i class="fas fa-palette text-brand-yellow"></i> Identidade Visual do Site</h3>' +
                 '<p class="text-xs text-gray-400 mt-1">Altere logo, imagens (PC e celular), posição e textos.</p>' +
             '</div>' +
 
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
-                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3">' +
-                    '<i class="fas fa-eye mr-2"></i> Pré-visualização do Hero' +
-                '</label>' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3"><i class="fas fa-eye mr-2"></i> Pré-visualização do Hero</label>' +
                 '<div class="hero-preview-box" id="hero-preview-box" style="' + previewBgStyle + '">' +
                     '<div class="hero-preview-overlay"></div>' +
                     '<div class="hero-preview-content preview-center" id="hero-preview-content">' +
                         '<div class="preview-badge" id="preview-badge">' + heroSubtitle + '</div>' +
                         '<div class="preview-title" id="preview-title">' + heroTitle.replace('\\n', '<br>') + '</div>' +
                         '<div class="preview-desc" id="preview-desc">' + heroDescription + '</div>' +
-                        '<div class="preview-buttons">' +
-                            '<span class="preview-btn-1"><i class="fas fa-play" style="font-size: 0.5rem;"></i> Assistir Culto</span>' +
-                            '<span class="preview-btn-2">Fale Conosco</span>' +
-                        '</div>' +
                     '</div>' +
                 '</div>' +
-                '<p class="text-[10px] text-gray-500 mt-2 italic">Esta é uma simulação fiel. O resultado final será idêntico.</p>' +
             '</div>' +
 
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
-                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3">' +
-                    '<i class="fas fa-font mr-2"></i> Textos do Hero' +
-                '</label>' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3"><i class="fas fa-font mr-2"></i> Textos do Hero</label>' +
                 '<div class="space-y-3">' +
-                    '<div>' +
-                        '<label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Badge</label>' +
-                        '<input type="text" id="config-heroSubtitle" class="admin-field" value="' + heroSubtitle + '" oninput="window.updatePreviewText()">' +
-                    '</div>' +
-                    '<div>' +
-                        '<label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Título (use \\n para quebra)</label>' +
-                        '<input type="text" id="config-heroTitle" class="admin-field" value="' + heroTitle + '" oninput="window.updatePreviewText()">' +
-                    '</div>' +
-                    '<div>' +
-                        '<label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Descrição</label>' +
-                        '<textarea id="config-heroDescription" rows="3" class="admin-field" oninput="window.updatePreviewText()">' + heroDescription + '</textarea>' +
-                    '</div>' +
+                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Badge</label><input type="text" id="config-heroSubtitle" class="admin-field" value="' + heroSubtitle + '" oninput="window.updatePreviewText()"></div>' +
+                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Título</label><input type="text" id="config-heroTitle" class="admin-field" value="' + heroTitle + '" oninput="window.updatePreviewText()"></div>' +
+                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Descrição</label><textarea id="config-heroDescription" rows="3" class="admin-field" oninput="window.updatePreviewText()">' + heroDescription + '</textarea></div>' +
                 '</div>' +
             '</div>' +
 
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
-                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3">' +
-                    '<i class="fas fa-arrows-alt mr-2"></i> Posição do Texto' +
-                '</label>' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3"><i class="fas fa-arrows-alt mr-2"></i> Posição do Texto</label>' +
                 '<div class="flex gap-2 mb-4 flex-wrap">' +
-                    '<button class="pos-btn ' + (currentPosition === 'left' ? 'active' : '') + '" onclick="window.setHeroPosition(\'left\')" data-pos="left"><i class="fas fa-align-left"></i> Esquerda</button>' +
-                    '<button class="pos-btn ' + (currentPosition === 'center' ? 'active' : '') + '" onclick="window.setHeroPosition(\'center\')" data-pos="center"><i class="fas fa-align-center"></i> Centro</button>' +
-                    '<button class="pos-btn ' + (currentPosition === 'right' ? 'active' : '') + '" onclick="window.setHeroPosition(\'right\')" data-pos="right"><i class="fas fa-align-right"></i> Direita</button>' +
-                    '<button class="pos-btn ' + (currentPosition === 'custom' ? 'active' : '') + '" onclick="window.setHeroPosition(\'custom\')" data-pos="custom"><i class="fas fa-sliders-h"></i> Personalizado</button>' +
-                '</div>' +
-                '<div id="custom-controls" class="' + (currentPosition === 'custom' ? '' : 'hidden') + ' space-y-4 mt-4 pt-4 border-t border-white/10">' +
-                    '<div>' +
-                        '<label class="flex justify-between text-xs text-gray-400 mb-2"><span>Posição X</span><span id="posX-label" class="text-brand-yellow font-bold">' + currentPosX + '%</span></label>' +
-                        '<input type="range" id="slider-posX" class="admin-slider" min="0" max="100" value="' + currentPosX + '" oninput="window.updateHeroPreview()">' +
-                    '</div>' +
-                    '<div>' +
-                        '<label class="flex justify-between text-xs text-gray-400 mb-2"><span>Posição Y</span><span id="posY-label" class="text-brand-yellow font-bold">' + currentPosY + '%</span></label>' +
-                        '<input type="range" id="slider-posY" class="admin-slider" min="0" max="100" value="' + currentPosY + '" oninput="window.updateHeroPreview()">' +
-                    '</div>' +
+                    '<button class="pos-btn ' + (currentPosition === 'left' ? 'active' : '') + '" onclick="window.setHeroPosition(\'left\')" data-pos="left">Esquerda</button>' +
+                    '<button class="pos-btn ' + (currentPosition === 'center' ? 'active' : '') + '" onclick="window.setHeroPosition(\'center\')" data-pos="center">Centro</button>' +
+                    '<button class="pos-btn ' + (currentPosition === 'right' ? 'active' : '') + '" onclick="window.setHeroPosition(\'right\')" data-pos="right">Direita</button>' +
+                    '<button class="pos-btn ' + (currentPosition === 'custom' ? 'active' : '') + '" onclick="window.setHeroPosition(\'custom\')" data-pos="custom">Custom</button>' +
                 '</div>' +
             '</div>' +
 
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
                 '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-image mr-2"></i> URL da Logomarca</label>' +
                 '<input type="text" id="config-logoUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + logoUrl + '">' +
-                '<div class="mt-2">' +
-                    '<input type="file" id="config-logoUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'logoUrl\')">' +
-                    '<button type="button" onclick="document.getElementById(\'config-logoUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-2">' +
-                        '<i class="fas fa-upload"></i> Enviar Imagem do Computador' +
-                    '</button>' +
-                    '<span id="config-logoUrl-status" class="text-[10px] text-gray-500 ml-2"></span>' +
-                '</div>' +
+                '<div class="mt-2"><input type="file" id="config-logoUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'logoUrl\')"><button type="button" onclick="document.getElementById(\'config-logoUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-upload"></i> Enviar do Computador</button></div>' +
             '</div>' +
 
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
-                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-desktop mr-2"></i> Foto de Fundo - PC</label>' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-desktop mr-2"></i> Hero PC</label>' +
                 '<input type="text" id="config-heroUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrl + '" oninput="window.updateHeroPreviewImage(this.value)">' +
-                '<div class="mt-2">' +
-                    '<input type="file" id="config-heroUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrl\')">' +
-                    '<button type="button" onclick="document.getElementById(\'config-heroUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-2">' +
-                        '<i class="fas fa-upload"></i> Enviar Imagem do Computador' +
-                    '</button>' +
-                    '<span id="config-heroUrl-status" class="text-[10px] text-gray-500 ml-2"></span>' +
-                '</div>' +
+                '<div class="mt-2"><input type="file" id="config-heroUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrl\')"><button type="button" onclick="document.getElementById(\'config-heroUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-upload"></i> Enviar do Computador</button></div>' +
             '</div>' +
 
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
-                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-mobile-alt mr-2"></i> Foto de Fundo - Celular</label>' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-mobile-alt mr-2"></i> Hero Mobile</label>' +
                 '<input type="text" id="config-heroUrlMobile" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrlMobile + '">' +
-                '<div class="mt-2">' +
-                    '<input type="file" id="config-heroUrlMobile-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrlMobile\')">' +
-                    '<button type="button" onclick="document.getElementById(\'config-heroUrlMobile-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-2">' +
-                        '<i class="fas fa-upload"></i> Enviar Imagem do Computador' +
-                    '</button>' +
-                    '<span id="config-heroUrlMobile-status" class="text-[10px] text-gray-500 ml-2"></span>' +
-                '</div>' +
+                '<div class="mt-2"><input type="file" id="config-heroUrlMobile-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrlMobile\')"><button type="button" onclick="document.getElementById(\'config-heroUrlMobile-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-upload"></i> Enviar do Computador</button></div>' +
             '</div>' +
 
             '<div class="mt-8 pt-4 border-t border-white/10 flex justify-end">' +
-                '<button onclick="window.saveConfig()" class="bg-brand-yellow text-brand-dark font-bold px-8 py-3 rounded-lg hover:bg-white transition-colors flex items-center gap-2 shadow-lg">' +
-                    '<i class="fas fa-save"></i> Salvar Configurações' +
-                '</button>' +
+                '<button onclick="window.saveConfig()" class="bg-brand-yellow text-brand-dark font-bold px-8 py-3 rounded-lg hover:bg-white transition-colors flex items-center gap-2 shadow-lg"><i class="fas fa-save"></i> Salvar Configurações</button>' +
             '</div>' +
         '</div>';
 
@@ -606,9 +578,6 @@ window.renderConfigForm = (config) => {
     window.updatePreviewText();
 };
 
-// ============================================================
-// UPLOAD DE IMAGEM PARA O CONFIG
-// ============================================================
 window.handleConfigUpload = async (event, targetFieldKey) => {
     const input = event.target;
     const file = input.files && input.files[0];
@@ -616,13 +585,9 @@ window.handleConfigUpload = async (event, targetFieldKey) => {
 
     const statusEl = document.getElementById('config-' + targetFieldKey + '-status');
     const textInput = document.getElementById('config-' + targetFieldKey);
-
-    const setStatus = (msg, color) => {
-        if (statusEl) { statusEl.textContent = msg; statusEl.style.color = color || '#9ca3af'; }
-    };
+    const setStatus = (msg, color) => { if (statusEl) { statusEl.textContent = msg; statusEl.style.color = color || '#9ca3af'; } };
 
     setStatus('Enviando...', '#EEBC5A');
-
     const result = await window.uploadImageToImgBB(file);
 
     if (!result.success) {
@@ -631,128 +596,58 @@ window.handleConfigUpload = async (event, targetFieldKey) => {
         return;
     }
 
-    setStatus('✅ Imagem enviada!', '#22c55e');
-
-    if (textInput) {
-        textInput.value = result.url;
-        textInput.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-
+    setStatus('✅ Enviada!', '#22c55e');
+    if (textInput) { textInput.value = result.url; textInput.dispatchEvent(new Event('input', { bubbles: true })); }
     input.value = '';
 };
 
-// ============================================================
-// POSIÇÃO DO HERO
-// ============================================================
 window.setHeroPosition = (position) => {
     window.heroState.position = position;
     document.querySelectorAll('.pos-btn[data-pos]').forEach(b => {
         if (b.dataset.pos === position) b.classList.add('active');
         else b.classList.remove('active');
     });
-    const customControls = document.getElementById('custom-controls');
-    if (customControls) {
-        if (position === 'custom') customControls.classList.remove('hidden');
-        else customControls.classList.add('hidden');
-    }
-    window.updateHeroPreview();
 };
 
-window.updateHeroPreview = () => {
-    const preview = document.getElementById('hero-preview-content');
-    if (!preview) return;
-    const position = window.heroState.position;
-    const align = window.heroState.align;
-
-    preview.classList.remove('preview-left', 'preview-center', 'preview-right', 'preview-custom');
-
-    if (position === 'custom') {
-        const sliderX = document.getElementById('slider-posX');
-        const sliderY = document.getElementById('slider-posY');
-        const posX = sliderX ? sliderX.value : window.heroState.posX;
-        const posY = sliderY ? sliderY.value : window.heroState.posY;
-
-        window.heroState.posX = posX;
-        window.heroState.posY = posY;
-
-        const labelX = document.getElementById('posX-label');
-        const labelY = document.getElementById('posY-label');
-        if (labelX) labelX.textContent = posX + '%';
-        if (labelY) labelY.textContent = posY + '%';
-
-        preview.classList.add('preview-custom');
-        preview.style.setProperty('--hero-x', posX + '%');
-        preview.style.setProperty('--hero-y', posY + '%');
-        preview.style.setProperty('--hero-align', align);
-    } else {
-        preview.classList.add('preview-' + position);
-        preview.style.removeProperty('--hero-x');
-        preview.style.removeProperty('--hero-y');
-        preview.style.removeProperty('--hero-align');
-    }
-};
-
-window.updatePreviewText = () => {
-    const titleEl = document.getElementById('preview-title');
-    const badgeEl = document.getElementById('preview-badge');
-    const descEl = document.getElementById('preview-desc');
-    const titleInput = document.getElementById('config-heroTitle');
-    const subtitleInput = document.getElementById('config-heroSubtitle');
-    const descInput = document.getElementById('config-heroDescription');
-
-    if (titleEl && titleInput) titleEl.innerHTML = titleInput.value.replace(/\\n/g, '<br>');
-    if (badgeEl && subtitleInput) badgeEl.textContent = subtitleInput.value;
-    if (descEl && descInput) descEl.textContent = descInput.value;
-};
-
+window.updateHeroPreview = () => {};
+window.updatePreviewText = () => {};
 window.updateHeroPreviewImage = (url) => {
     const box = document.getElementById('hero-preview-box');
     if (box && url) box.style.backgroundImage = 'url(\'' + url + '\')';
 };
 
-// ============================================================
-// SALVAR CONFIG
-// ============================================================
 window.saveConfig = async () => {
-    const logoUrl = document.getElementById('config-logoUrl').value.trim();
-    const heroUrl = document.getElementById('config-heroUrl').value.trim();
-    const heroUrlMobile = document.getElementById('config-heroUrlMobile') ? document.getElementById('config-heroUrlMobile').value.trim() : '';
-    const heroTitle = document.getElementById('config-heroTitle').value;
-    const heroSubtitle = document.getElementById('config-heroSubtitle').value;
-    const heroDescription = document.getElementById('config-heroDescription').value;
-
     const payload = {
         sheet: 'config', action: 'edit', password: window.adminState.password,
         originalId: 'config',
         data: {
-            logoUrl: logoUrl, heroUrl: heroUrl, heroUrlMobile: heroUrlMobile,
-            heroPosition: window.heroState.position, heroAlign: window.heroState.align,
-            heroPosX: window.heroState.posX, heroPosY: window.heroState.posY,
-            heroTitle: heroTitle, heroSubtitle: heroSubtitle, heroDescription: heroDescription
+            logoUrl: document.getElementById('config-logoUrl').value.trim(),
+            heroUrl: document.getElementById('config-heroUrl').value.trim(),
+            heroUrlMobile: document.getElementById('config-heroUrlMobile').value.trim(),
+            heroPosition: window.heroState.position,
+            heroAlign: 'center',
+            heroPosX: 50, heroPosY: 50,
+            heroTitle: document.getElementById('config-heroTitle').value,
+            heroSubtitle: document.getElementById('config-heroSubtitle').value,
+            heroDescription: document.getElementById('config-heroDescription').value
         }
     };
 
     try {
-        const res = await fetch(window.CONFIG.scriptUrl, {
-            method: 'POST', body: JSON.stringify(payload)
-        });
+        const res = await fetch(window.CONFIG.scriptUrl, { method: 'POST', body: JSON.stringify(payload) });
         const result = await res.json();
-
         if (window.handleServerAuthError(result)) return;
-
         if (result.success) {
             window.notifyDataChanged();
-            alert('✅ Configurações salvas com sucesso!');
+            alert('✅ Configurações salvas!');
         } else {
             alert('Erro: ' + result.message);
         }
-    } catch(e) {
-        alert('Erro de conexão: ' + e.message);
-    }
+    } catch(e) { alert('Erro: ' + e.message); }
 };
 
 // ============================================================
-// MODAL DE EDIÇÃO DE ITEM
+// MODAL DE EDIÇÃO
 // ============================================================
 window.openEditModal = (mode, index) => {
     const modal = document.getElementById('edit-item-modal');
@@ -796,9 +691,7 @@ window.openEditModal = (mode, index) => {
                 const option = document.createElement('option');
                 option.value = opt;
                 option.textContent = opt;
-                if (itemData[field.key] === opt || (!itemData[field.key] && field.default === opt)) {
-                    option.selected = true;
-                }
+                if (itemData[field.key] === opt || (!itemData[field.key] && field.default === opt)) option.selected = true;
                 input.appendChild(option);
             });
         } else if (field.type === 'color') {
@@ -818,8 +711,12 @@ window.openEditModal = (mode, index) => {
         input.id = 'field-' + field.key;
 
         let val = itemData[field.key];
-        if (val === undefined || val === null) {
-            val = field.default !== undefined ? field.default : '';
+        if (val === undefined || val === null) val = field.default !== undefined ? field.default : '';
+
+        // ✅ CORREÇÃO: se for type="time" e o valor tiver "T" (ISO datetime), extrai só HH:MM
+        if (field.type === 'time' && val && String(val).indexOf('T') !== -1) {
+            const parts = String(val).split('T');
+            if (parts[1]) val = parts[1].substring(0, 5);
         }
 
         if (field.type !== 'color' || val) input.value = val;
@@ -842,9 +739,7 @@ window.openEditModal = (mode, index) => {
 
             uploadRow.innerHTML =
                 '<input type="file" id="' + fileInputId + '" accept="image/*" class="hidden">' +
-                '<button type="button" data-upload-trigger="' + fileInputId + '" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-2">' +
-                    '<i class="fas fa-upload"></i> Enviar do Computador' +
-                '</button>' +
+                '<button type="button" data-upload-trigger="' + fileInputId + '" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"><i class="fas fa-upload"></i> Enviar do Computador</button>' +
                 '<span id="' + statusId + '" class="text-[10px] text-gray-500"></span>';
 
             wrapper.appendChild(uploadRow);
@@ -853,16 +748,12 @@ window.openEditModal = (mode, index) => {
                 const fileInput = document.getElementById(fileInputId);
                 const trigger = uploadRow.querySelector('[data-upload-trigger]');
                 const statusEl = document.getElementById(statusId);
-
                 if (trigger && fileInput) trigger.addEventListener('click', () => fileInput.click());
-
                 if (fileInput) {
                     fileInput.addEventListener('change', async (ev) => {
                         const file = ev.target.files && ev.target.files[0];
                         if (!file) return;
-                        const setStatus = (msg, color) => {
-                            if (statusEl) { statusEl.textContent = msg; statusEl.style.color = color || '#9ca3af'; }
-                        };
+                        const setStatus = (msg, color) => { if (statusEl) { statusEl.textContent = msg; statusEl.style.color = color || '#9ca3af'; } };
                         setStatus('Enviando...', '#EEBC5A');
                         const result = await window.uploadImageToImgBB(file);
                         if (!result.success) {
@@ -900,9 +791,7 @@ window.openEditModal = (mode, index) => {
     modal.classList.remove('hidden');
 };
 
-window.closeEditModal = () => {
-    document.getElementById('edit-item-modal').classList.add('hidden');
-};
+window.closeEditModal = () => document.getElementById('edit-item-modal').classList.add('hidden');
 
 // ============================================================
 // SALVAR ITEM
@@ -931,16 +820,10 @@ window.saveAdminItem = async () => {
     if (mode === 'edit') payload.originalId = btn.dataset.originalId;
 
     try {
-        const res = await fetch(window.CONFIG.scriptUrl, {
-            method: 'POST', body: JSON.stringify(payload)
-        });
+        const res = await fetch(window.CONFIG.scriptUrl, { method: 'POST', body: JSON.stringify(payload) });
         const result = await res.json();
 
-        if (window.handleServerAuthError(result)) {
-            btn.disabled = false;
-            btn.textContent = 'Salvar';
-            return;
-        }
+        if (window.handleServerAuthError(result)) { btn.disabled = false; btn.textContent = 'Salvar'; return; }
 
         if (result.success) {
             if (mode === 'edit' && index !== null && index !== undefined) {
@@ -950,7 +833,8 @@ window.saveAdminItem = async () => {
             }
 
             if (tab === 'radio') {
-                window.renderRadioGrade();
+                // Recarrega a aba inteira (pra pegar IDs gerados)
+                await window.loadAdminTab('radio');
             } else {
                 window.renderAdminTable(window.adminState.currentData, tab);
             }
@@ -962,7 +846,7 @@ window.saveAdminItem = async () => {
             alert('Erro: ' + result.message);
         }
     } catch(e) {
-        alert('Erro de conexão: ' + e.message);
+        alert('Erro: ' + e.message);
     } finally {
         btn.disabled = false;
         btn.textContent = 'Salvar';
@@ -980,7 +864,7 @@ window.deleteAdminItem = async (index) => {
     const originalId = item.id || '';
 
     if (!originalId) {
-        alert('Este item não tem ID. Rode setupPlanilha().');
+        alert('Este item não tem ID.');
         return;
     }
 
@@ -998,7 +882,7 @@ window.deleteAdminItem = async (index) => {
         if (window.handleServerAuthError(result)) return;
 
         if (result.success) {
-            alert('Excluído com sucesso!');
+            alert('Excluído!');
             window.adminState.currentData.splice(index, 1);
 
             if (tab === 'radio') {
@@ -1011,9 +895,7 @@ window.deleteAdminItem = async (index) => {
         } else {
             alert('Erro: ' + result.message);
         }
-    } catch(e) {
-        alert('Erro: ' + e.message);
-    }
+    } catch(e) { alert('Erro: ' + e.message); }
 };
 
 console.log('🔐 admin.js carregado');
