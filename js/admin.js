@@ -46,12 +46,13 @@ window.SCHEMAS = {
     ],
 
     radio: [
-        { key: 'programa', label: '📻 Nome do Programa', type: 'text' },
-        { key: 'inicio', label: '⏰ Horário de Início', type: 'time' },
-        { key: 'fim', label: '⏰ Horário de Fim', type: 'time' },
-        { key: 'whatsapp', label: '📱 WhatsApp do Locutor', type: 'text', hint: 'Só números: 65999991111' },
-        { key: 'ativo', label: '✅ Ativo?', type: 'select', options: ['true', 'false'], default: 'true' }
-    ],
+    { key: 'programa', label: '📻 Nome do Programa', type: 'text' },
+    { key: 'inicio', label: '⏰ Horário de Início', type: 'time' },
+    { key: 'fim', label: '⏰ Horário de Fim', type: 'time' },
+    { key: 'dias', label: '📅 Dias da Semana', type: 'text', hint: 'Use: todos | seg,ter,qua,qui,sex | sab,dom | seg,qua,sex. Separe por vírgula.' },
+    { key: 'whatsapp', label: '📱 WhatsApp do Locutor', type: 'text', hint: 'Só números: 65999991111' },
+    { key: 'ativo', label: '✅ Ativo?', type: 'select', options: ['true', 'false'], default: 'true' }
+],
 
     albuns: [
         { key: 'albumName', label: 'Nome do Álbum', type: 'text' },
@@ -383,26 +384,29 @@ window.renderRadioGrade = () => {
             return s.substring(0, 5);
         };
 
-        html += '<div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">' +
-                    '<div class="flex items-center overflow-hidden pr-4 w-full">' +
-                        '<div class="truncate flex-1">' +
-                            '<div class="flex items-center gap-2 flex-wrap">' +
-                                '<span class="font-bold text-white">' + (item.programa || 'Sem nome') + '</span>' +
-                                '<span class="text-xs text-brand-yellow bg-brand-yellow/10 border border-brand-yellow/20 px-2 py-0.5 rounded">' + formatHora(item.inicio) + ' - ' + formatHora(item.fim) + '</span>' +
-                                (ativo ?
-                                    '<span class="text-xs text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded">ativo</span>'
-                                    :
-                                    '<span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded">inativo</span>'
-                                ) +
-                            '</div>' +
-                            '<span class="text-xs text-gray-400">📱 ' + (item.whatsapp || 'sem whatsapp') + '</span>' +
-                        '</div>' +
+        const diasLabel = item.dias ? String(item.dias).trim() : 'todos';
+
+html += '<div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">' +
+            '<div class="flex items-center overflow-hidden pr-4 w-full">' +
+                '<div class="truncate flex-1">' +
+                    '<div class="flex items-center gap-2 flex-wrap">' +
+                        '<span class="font-bold text-white">' + (item.programa || 'Sem nome') + '</span>' +
+                        '<span class="text-xs text-brand-yellow bg-brand-yellow/10 border border-brand-yellow/20 px-2 py-0.5 rounded">' + formatHora(item.inicio) + ' - ' + formatHora(item.fim) + '</span>' +
+                        '<span class="text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded">📅 ' + diasLabel + '</span>' +
+                        (ativo ?
+                            '<span class="text-xs text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded">ativo</span>'
+                            :
+                            '<span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded">inativo</span>'
+                        ) +
                     '</div>' +
-                    '<div class="flex gap-2 shrink-0">' +
-                        '<button onclick="window.openEditModal(\'edit\', ' + realIndex + ')" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded text-xs"><i class="fas fa-edit"></i></button>' +
-                        '<button onclick="window.deleteAdminItem(' + realIndex + ')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded text-xs"><i class="fas fa-trash"></i></button>' +
-                    '</div>' +
-                '</div>';
+                    '<span class="text-xs text-gray-400">📱 ' + (item.whatsapp || 'sem whatsapp') + '</span>' +
+                '</div>' +
+            '</div>' +
+            '<div class="flex gap-2 shrink-0">' +
+                '<button onclick="window.openEditModal(\'edit\', ' + realIndex + ')" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded text-xs"><i class="fas fa-edit"></i></button>' +
+                '<button onclick="window.deleteAdminItem(' + realIndex + ')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded text-xs"><i class="fas fa-trash"></i></button>' +
+            '</div>' +
+        '</div>';
     });
     html += '</div>';
     list.innerHTML = html;
