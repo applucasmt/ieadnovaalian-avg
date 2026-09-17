@@ -10,9 +10,6 @@ window.AUTO_REFRESH_CONFIG = {
     enabled: true
 };
 
-// ============================================================
-// LIMPA TODO O CACHE
-// ============================================================
 window.clearAppCache = () => {
     const keysToRemove = [
         'cache_eventos_v2', 'cache_avisos_v2', 'cache_ministerios_v2',
@@ -29,12 +26,8 @@ window.clearAppCache = () => {
     console.log('🧹 clearAppCache: cache limpo.');
 };
 
-// ============================================================
-// FETCH — SEM CACHE
-// ============================================================
 window.fetchWithCache = async (url, key, force) => {
     force = force || false;
-
     try {
         const response = await fetch(url + '&cacheBust=' + Date.now());
         if (!response.ok) throw new Error('Network error');
@@ -45,9 +38,6 @@ window.fetchWithCache = async (url, key, force) => {
     }
 };
 
-// ============================================================
-// PRÉ-CARREGAR IMAGEM
-// ============================================================
 window.preloadImage = (url, timeoutMs) => {
     timeoutMs = timeoutMs || 4000;
     return new Promise((resolve) => {
@@ -72,9 +62,6 @@ window.preloadImage = (url, timeoutMs) => {
     });
 };
 
-// ============================================================
-// OTIMIZAÇÃO DE IMAGENS
-// ============================================================
 window.optimizeImage = (url, width) => {
     width = width || 800;
     if (!url || typeof url !== 'string') return url;
@@ -87,9 +74,6 @@ window.optimizeImage = (url, width) => {
     return url;
 };
 
-// ============================================================
-// PARSER DE DATAS
-// ============================================================
 window.parseDate = (dateStr) => {
     if(!dateStr) return new Date();
     if(dateStr instanceof Date) return dateStr;
@@ -106,9 +90,6 @@ window.parseDate = (dateStr) => {
     return new Date();
 };
 
-// ============================================================
-// APLICAR CONFIG
-// ============================================================
 window.applyConfigImages = (config) => {
     console.log('🎨 applyConfigImages:', config);
     if (!config) return;
@@ -129,10 +110,8 @@ window.applyConfigImages = (config) => {
 
     if (isMobile && config.heroUrlMobile && typeof config.heroUrlMobile === 'string' && config.heroUrlMobile.trim() !== '') {
         heroUrlToUse = config.heroUrlMobile.trim();
-        console.log('📱 Usando imagem MOBILE:', heroUrlToUse);
     } else if (config.heroUrl && typeof config.heroUrl === 'string' && config.heroUrl.trim() !== '') {
         heroUrlToUse = config.heroUrl.trim();
-        console.log('💻 Usando imagem DESKTOP:', heroUrlToUse);
     }
 
     if (heroUrlToUse) {
@@ -194,9 +173,6 @@ window.applyConfigImages = (config) => {
     }
 };
 
-// ============================================================
-// RESIZE
-// ============================================================
 let lastIsMobile = window.innerWidth <= 768;
 window.addEventListener('resize', () => {
     const currentIsMobile = window.innerWidth <= 768;
@@ -208,9 +184,6 @@ window.addEventListener('resize', () => {
     }
 });
 
-// ============================================================
-// CARREGAR DADOS — 1 REQUISIÇÃO (?action=all)
-// ============================================================
 window.loadData = async (force) => {
     force = force === true;
 
@@ -262,9 +235,6 @@ window.loadData = async (force) => {
     }
 };
 
-// ============================================================
-// RENDERIZAR COMPONENTES
-// ============================================================
 window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor, config) => {
     events = Array.isArray(events) ? events : [];
     avisos = Array.isArray(avisos) ? avisos : [];
@@ -325,7 +295,6 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
 
     const carousel = document.getElementById('avisos-carousel');
     if (avisos.length > 0) {
-        console.log('📢 Renderizando carrossel de avisos:', avisos.length, 'itens');
         if (typeof window.renderAvisosCarousel === 'function') {
             window.renderAvisosCarousel(avisos);
         }
@@ -377,9 +346,6 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
     }
 };
 
-// ============================================================
-// CHECAR ATUALIZAÇÕES VIA HASH
-// ============================================================
 window.__lastDataHash = null;
 
 window.checkForUpdates = async () => {
@@ -406,7 +372,6 @@ window.checkForUpdates = async () => {
         }
 
         if (hash !== window.__lastDataHash) {
-            console.log('🔄 Hash mudou. Recarregando dados...');
             window.__lastDataHash = hash;
             return true;
         }
@@ -417,9 +382,6 @@ window.checkForUpdates = async () => {
     }
 };
 
-// ============================================================
-// POLLING AUTOMÁTICO (15s)
-// ============================================================
 window.initAutoRefresh = () => {
     if (!window.AUTO_REFRESH_CONFIG.enabled) return;
     if (window.__autoRefreshStarted) return;
@@ -465,7 +427,6 @@ window.initAutoRefresh = () => {
             const bc = new BroadcastChannel('iead_data_changes');
             bc.addEventListener('message', (event) => {
                 if (event && event.data && event.data.type === 'data_changed') {
-                    console.log('📡 BroadcastChannel: dados mudaram. Recarregando...');
                     if (typeof window.loadData === 'function') {
                         window.loadData(true);
                     }
@@ -477,7 +438,6 @@ window.initAutoRefresh = () => {
 
     window.addEventListener('storage', (event) => {
         if (event && event.key === '__iead_data_changed') {
-            console.log('💾 storage event: dados mudaram. Recarregando...');
             if (typeof window.loadData === 'function') {
                 window.loadData(true);
             }
@@ -487,9 +447,6 @@ window.initAutoRefresh = () => {
     console.log('🔁 Polling iniciado (15s)');
 };
 
-// ============================================================
-// NOTIFICAR OUTRAS ABAS
-// ============================================================
 window.broadcastDataChanged = () => {
     try {
         localStorage.setItem('__iead_data_changed', String(Date.now()));
@@ -508,9 +465,6 @@ window.broadcastDataChanged = () => {
     window.checkForUpdates();
 };
 
-// ============================================================
-// TELA DE LOADING
-// ============================================================
 window.hideInitialLoading = () => {
     const el = document.getElementById('initial-loading');
     if (!el) return;
@@ -529,15 +483,12 @@ window.hideInitialLoading = () => {
 };
 
 window.__initialLoadingWatchdog = setTimeout(() => {
-    console.warn('⏱️ Watchdog do loading acionado (10s)');
     window.hideInitialLoading();
 }, 10000);
 
 // ============================================================
-// ✅ HELPERS DE YOUTUBE
+// HELPERS DE YOUTUBE
 // ============================================================
-
-// Extrai o ID do vídeo de qualquer URL do YouTube
 window.extractYouTubeId = (url) => {
     if (!url || typeof url !== 'string') return null;
     const patterns = [
@@ -556,7 +507,6 @@ window.extractYouTubeId = (url) => {
     return null;
 };
 
-// Monta URL do embed com autoplay + mute + loop + playsinline
 window.buildYouTubeEmbed = (videoId, options) => {
     options = options || {};
     const autoplay = options.autoplay !== false ? 1 : 0;
@@ -577,17 +527,22 @@ window.buildYouTubeEmbed = (videoId, options) => {
 };
 
 // ============================================================
-// ✅ DETECÇÃO DE PROPORÇÃO DO YOUTUBE
-// ------------------------------------------------------------
-// Estratégia:
-//   1. Tenta carregar "maxresdefault.jpg" (1280x720)
-//   2. Se carregar E tiver largura >= 1000px → é 16:9 (horizontal)
-//   3. Se carregar com largura menor (é o "hq720.jpg" de shorts,
-//      que fica 720x1280 mas o YouTube às vezes devolve 480x360)
-//      → checa a proporção real
-//   4. Se NÃO carregar (maxres não existe para shorts) →
-//      tenta "oar2.jpg" (que é específica de shorts 9:16)
-//   5. Se nada funcionar → assume 16:9
+// ✅ RESOLVER FORMATO DO VÍDEO (manual + fallback auto)
+// Ordem de prioridade:
+//   1. Campo manual "videoFormat" ("horizontal"/"vertical")
+//   2. Detecção automática se for "auto" ou vazio
+// ============================================================
+window.resolveVideoAspect = (videoFormat, videoId) => {
+    // Manual tem prioridade
+    if (videoFormat === 'vertical') return Promise.resolve('9 / 16');
+    if (videoFormat === 'horizontal') return Promise.resolve('16 / 9');
+
+    // "auto" ou vazio → detecta
+    return window.detectYouTubeAspect(videoId);
+};
+
+// ============================================================
+// DETECÇÃO AUTOMÁTICA (fallback)
 // ============================================================
 window.detectYouTubeAspect = (videoId) => {
     return new Promise((resolve) => {
@@ -598,85 +553,36 @@ window.detectYouTubeAspect = (videoId) => {
             resolve(ratio);
         };
 
-        // Timeout de segurança
         setTimeout(() => finish('16 / 9'), 3000);
 
-        // Tentativa 1: maxresdefault (1280x720) — só existe para vídeos horizontais
+        // Tenta maxresdefault
         const img1 = new Image();
         img1.onload = () => {
             if (img1.naturalWidth >= 1000) {
-                // Maxres real → horizontal 16:9
                 finish('16 / 9');
             } else {
-                // Maxres não é real (é fallback) → tenta oar2.jpg
                 tryOar2();
             }
         };
-        img1.onerror = () => {
-            // maxres não existe → pode ser short
-            tryOar2();
-        };
+        img1.onerror = () => tryOar2();
         img1.src = 'https://i.ytimg.com/vi/' + videoId + '/maxresdefault.jpg';
 
-        // Tentativa 2: oar2.jpg — específica de shorts verticais (1080x1920)
+        // Tenta oar2 (shorts)
         const tryOar2 = () => {
             const img2 = new Image();
             img2.onload = () => {
                 const w = img2.naturalWidth;
                 const h = img2.naturalHeight;
                 if (w && h && h > w) {
-                    // Vertical (short) → 9:16
                     finish('9 / 16');
                 } else {
-                    // Horizontal
                     finish('16 / 9');
                 }
             };
-            img2.onerror = () => {
-                // Não tem oar2 → provavelmente horizontal normal
-                finish('16 / 9');
-            };
+            img2.onerror = () => finish('16 / 9');
             img2.src = 'https://i.ytimg.com/vi/' + videoId + '/oar2.jpg';
         };
     });
 };
 
-// ============================================================
-// ✅ DETECÇÃO DE PROPORÇÃO DE IMAGEM QUALQUER (para talentos com capa)
-// Retorna Promise que resolve com "W / H" da imagem.
-// ============================================================
-window.detectImageAspect = (url) => {
-    return new Promise((resolve) => {
-        if (!url || typeof url !== 'string' || !url.trim()) {
-            resolve(null);
-            return;
-        }
-
-        let done = false;
-        const finish = (ratio) => {
-            if (done) return;
-            done = true;
-            resolve(ratio);
-        };
-
-        // Timeout de segurança
-        setTimeout(() => finish(null), 4000);
-
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => {
-            if (img.naturalWidth && img.naturalHeight) {
-                finish(img.naturalWidth + ' / ' + img.naturalHeight);
-            } else {
-                finish(null);
-            }
-        };
-        img.onerror = () => finish(null);
-        img.src = url;
-    });
-};
-
-// ============================================================
-// LOG
-// ============================================================
 console.log('📦 data.js carregado');
