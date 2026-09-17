@@ -2,9 +2,6 @@
 // IEAD NOVA ALIANÇA - EVENTOS E COMPONENTES DE CARD
 // ============================================================
 
-// ============================================================
-// BADGE DE STATUS DO EVENTO
-// ============================================================
 window.getEventStatusBadge = (start, end) => {
     const now = new Date();
     const startDate = window.parseDate(start);
@@ -18,9 +15,6 @@ window.getEventStatusBadge = (start, end) => {
     return '<span class="bg-gray-500/20 text-gray-400 text-xs font-bold px-2 py-1 rounded border border-gray-500/30 flex items-center gap-1"><i class="fas fa-check"></i> Encerrado</span>';
 };
 
-// ============================================================
-// HELPER: ESCAPAR HTML
-// ============================================================
 function escapeHtml(text) {
     if (text === undefined || text === null) return '';
     const div = document.createElement('div');
@@ -28,9 +22,6 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// ============================================================
-// HELPER: VERIFICAR SE É URL VÁLIDA
-// ============================================================
 function isValidImageUrl(url) {
     if (!url || typeof url !== 'string') return false;
     const trimmed = url.trim();
@@ -38,9 +29,6 @@ function isValidImageUrl(url) {
     return /^https?:\/\/.+\..+/i.test(trimmed);
 }
 
-// ============================================================
-// CRIAR CARDS
-// ============================================================
 window.createCard = (data, type) => {
     if (!data) return '';
 
@@ -96,44 +84,58 @@ window.createCard = (data, type) => {
         const safeTelefone = String(data.telefone || '').replace(/\D/g, '');
 
         return '<div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95">' +
-                    '<div class="relative h-56 bg-brand-dark/50">' +
+                    '<div class="relative h-48 bg-brand-dark/50">' +
                         '<img src="' + optimizedCapa + '" loading="lazy" decoding="async" onerror="this.src=\'https://placehold.co/600x400/1e293b/FFFFFF?text=Ministerio\'" class="w-full h-full object-cover">' +
                         '<div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>' +
-                        '<div class="absolute bottom-4 left-4"><h3 class="text-2xl font-bold text-white">' + safeNome + '</h3></div>' +
+                        '<div class="absolute bottom-4 left-4"><h3 class="text-xl font-bold text-white">' + safeNome + '</h3></div>' +
                     '</div>' +
-                    '<div class="p-6">' +
-                        '<div class="space-y-4 mb-6">' +
+                    '<div class="p-4">' +
+                        '<div class="space-y-3 mb-4">' +
                             '<div class="flex items-start gap-3">' +
-                                '<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-crown text-brand-yellow"></i></div>' +
-                                '<div><p class="text-xs text-gray-500 uppercase font-bold">Liderança</p><p class="text-sm text-gray-200">' + safeLideres + '</p></div>' +
+                                '<div class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-crown text-brand-yellow"></i></div>' +
+                                '<div><p class="text-[0.65rem] text-gray-500 uppercase font-bold">Liderança</p><p class="text-sm text-gray-200">' + safeLideres + '</p></div>' +
                             '</div>' +
-                            (data.regentes ? '<div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-users text-blue-400"></i></div><div><p class="text-xs text-gray-500 uppercase font-bold">Regentes</p><p class="text-sm text-gray-200">' + safeRegentes + '</p></div></div>' : '') +
+                            (data.regentes ? '<div class="flex items-start gap-3"><div class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs mt-1 shrink-0"><i class="fas fa-users text-blue-400"></i></div><div><p class="text-[0.65rem] text-gray-500 uppercase font-bold">Regentes</p><p class="text-sm text-gray-200">' + safeRegentes + '</p></div></div>' : '') +
                         '</div>' +
-                        (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Entrar em Contato</a>' : '') +
+                        (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-2.5 rounded-lg font-bold text-sm transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
                     '</div>' +
                 '</div>';
     }
 
     // ============================================================
-    // TALENTO
+    // TALENTO — versão COMPACTA
     // ============================================================
     if (type === 'talento') {
         const safeNome = escapeHtml(data.nome || '');
         const safeDescricao = escapeHtml(data.descricao || 'Sem descrição.');
         const safeTelefone = String(data.telefone || '').replace(/\D/g, '');
         const videoId = window.extractYouTubeId(data.video);
+        const videoFormat = (data.videoFormat || data.videoformat || 'auto').toString().toLowerCase().trim();
 
         // ============================================================
-        // COM VÍDEO DO YOUTUBE
+        // COM VÍDEO
         // ============================================================
         if (videoId) {
             const embedUrl = window.buildYouTubeEmbed(videoId, {
                 autoplay: true, mute: true, loop: true, controls: false
             });
 
+            // ✅ Aplica a proporção manual IMEDIATAMENTE se for horizontal/vertical
+            let initialRatio = '16 / 9';
+            let initialClass = 'talent-video-wrap-horizontal';
+            if (videoFormat === 'vertical') {
+                initialRatio = '9 / 16';
+                initialClass = 'talent-video-wrap-vertical';
+            } else if (videoFormat === 'horizontal') {
+                initialRatio = '16 / 9';
+                initialClass = 'talent-video-wrap-horizontal';
+            }
+
             return '<div class="talent-video-card glass-panel rounded-2xl overflow-hidden group active:scale-95 transition-all flex flex-col h-full relative" ' +
-                        'data-video-id="' + videoId + '">' +
-                        '<div class="talent-video-wrap relative w-full overflow-hidden bg-black cursor-pointer" ' +
+                        'data-video-id="' + videoId + '" ' +
+                        'data-video-format="' + videoFormat + '">' +
+                        '<div class="talent-video-wrap ' + initialClass + ' relative w-full overflow-hidden bg-black cursor-pointer" ' +
+                            'style="aspect-ratio: ' + initialRatio + ';" ' +
                             'onclick="window.openTalentVideoModal(\'' + videoId + '\', \'' + safeNome.replace(/'/g, "\\'") + '\')">' +
                             '<iframe ' +
                                 'class="talent-video-iframe absolute inset-0 w-full h-full pointer-events-none" ' +
@@ -144,68 +146,65 @@ window.createCard = (data, type) => {
                             '</iframe>' +
                             '<div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent pointer-events-none"></div>' +
                             '<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">' +
-                                '<div class="bg-brand-yellow text-brand-dark px-5 py-3 rounded-full font-bold flex items-center gap-2 shadow-2xl transform scale-95 group-hover:scale-100 transition-transform">' +
-                                    '<i class="fas fa-play"></i> Assistir com Som' +
+                                '<div class="bg-brand-yellow text-brand-dark px-4 py-2 rounded-full font-bold flex items-center gap-2 shadow-2xl transform scale-95 group-hover:scale-100 transition-transform text-sm">' +
+                                    '<i class="fas fa-play"></i> Assistir' +
                                 '</div>' +
                             '</div>' +
-                            '<div class="absolute bottom-4 left-4 right-4 z-10 pointer-events-none">' +
-                                '<h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">' + safeNome + '</h3>' +
-                                '<div class="h-1 w-12 bg-brand-yellow rounded-full"></div>' +
+                            '<div class="absolute bottom-3 left-3 right-3 z-10 pointer-events-none">' +
+                                '<h3 class="text-lg font-bold text-white mb-1 drop-shadow-lg">' + safeNome + '</h3>' +
+                                '<div class="h-0.5 w-10 bg-brand-yellow rounded-full"></div>' +
                             '</div>' +
                         '</div>' +
-                        '<div class="p-6 flex flex-col flex-grow">' +
-                            '<p class="text-gray-300 text-sm mb-6 flex-grow leading-relaxed">' + safeDescricao + '</p>' +
-                            '<div class="flex flex-col gap-3">' +
+                        '<div class="p-4 flex flex-col flex-grow">' +
+                            '<p class="text-gray-300 text-xs mb-4 flex-grow leading-relaxed line-clamp-3">' + safeDescricao + '</p>' +
+                            '<div class="flex flex-col gap-2">' +
                                 '<button onclick="window.openTalentVideoModal(\'' + videoId + '\', \'' + safeNome.replace(/'/g, "\\'") + '\')" ' +
-                                    'class="flex items-center justify-center gap-2 w-full bg-red-600/10 text-red-500 hover:bg-red-600 hover:text-white border border-red-600/20 py-3 rounded-xl font-bold transition-all duration-300">' +
+                                    'class="flex items-center justify-center gap-2 w-full bg-red-600/10 text-red-500 hover:bg-red-600 hover:text-white border border-red-600/20 py-2 rounded-lg font-bold text-xs transition-all duration-300">' +
                                     '<i class="fab fa-youtube"></i> Ver Vídeo' +
                                 '</button>' +
-                                (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
+                                (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-2 rounded-lg font-bold text-xs transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
                             '</div>' +
                         '</div>' +
                     '</div>';
         }
 
         // ============================================================
-        // SEM VÍDEO — card se adapta à proporção natural da imagem
-        // (sem cortes, sem object-cover)
+        // SEM VÍDEO — imagem com altura limitada
         // ============================================================
         const optimizedCapa = window.optimizeImage(data.capa, 800);
 
         if (optimizedCapa) {
-            return '<div class="talent-image-card glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full" ' +
-                        'data-image-url="' + optimizedCapa + '">' +
-                        // Imagem com proporção natural (sem cortes)
+            return '<div class="talent-image-card glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">' +
                         '<div class="talent-image-wrap relative w-full bg-brand-dark/50 overflow-hidden">' +
                             '<img src="' + optimizedCapa + '" ' +
                                 'alt="' + safeNome + '" ' +
                                 'loading="lazy" ' +
                                 'decoding="async" ' +
                                 'onerror="this.src=\'https://placehold.co/600x600/1e293b/FFFFFF?text=Talento\'" ' +
-                                'class="talent-image-el w-full h-auto block">' +
+                                'class="talent-image-el w-full h-full object-cover object-center">' +
                             '<div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>' +
-                            '<div class="absolute bottom-4 left-4 right-4">' +
-                                '<h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">' + safeNome + '</h3>' +
-                                '<div class="h-1 w-12 bg-brand-yellow rounded-full"></div>' +
+                            '<div class="absolute bottom-3 left-3 right-3">' +
+                                '<h3 class="text-lg font-bold text-white mb-1 drop-shadow-lg">' + safeNome + '</h3>' +
+                                '<div class="h-0.5 w-10 bg-brand-yellow rounded-full"></div>' +
                             '</div>' +
                         '</div>' +
-                        '<div class="p-6 flex flex-col flex-grow">' +
-                            '<p class="text-gray-300 text-sm mb-6 flex-grow leading-relaxed">' + safeDescricao + '</p>' +
-                            '<div class="flex flex-col gap-3">' +
-                                (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
+                        '<div class="p-4 flex flex-col flex-grow">' +
+                            '<p class="text-gray-300 text-xs mb-4 flex-grow leading-relaxed line-clamp-3">' + safeDescricao + '</p>' +
+                            '<div class="flex flex-col gap-2">' +
+                                (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-2 rounded-lg font-bold text-xs transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
                             '</div>' +
                         '</div>' +
                     '</div>';
         }
 
-        // Sem imagem e sem vídeo → card mínimo
+        // Sem imagem e sem vídeo
         return '<div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">' +
-                    '<div class="p-6 flex flex-col flex-grow">' +
-                        '<h3 class="text-2xl font-bold text-white mb-1">' + safeNome + '</h3>' +
-                        '<div class="h-1 w-12 bg-brand-yellow rounded-full mb-4"></div>' +
-                        '<p class="text-gray-300 text-sm mb-6 flex-grow leading-relaxed">' + safeDescricao + '</p>' +
-                        '<div class="flex flex-col gap-3">' +
-                            (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
+                    '<div class="p-4 flex flex-col flex-grow">' +
+                        '<h3 class="text-lg font-bold text-white mb-1">' + safeNome + '</h3>' +
+                        '<div class="h-0.5 w-10 bg-brand-yellow rounded-full mb-3"></div>' +
+                        '<p class="text-gray-300 text-xs mb-4 flex-grow leading-relaxed line-clamp-3">' + safeDescricao + '</p>' +
+                        '<div class="flex flex-col gap-2">' +
+                            (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-2 rounded-lg font-bold text-xs transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
                         '</div>' +
                     '</div>' +
                 '</div>';
@@ -232,7 +231,7 @@ window.createCard = (data, type) => {
 };
 
 // ============================================================
-// ABRIR MODAL DE VÍDEO DO TALENTO
+// MODAL DE VÍDEO DO TALENTO
 // ============================================================
 window.openTalentVideoModal = (videoId, name) => {
     const modal = document.getElementById('talent-video-modal');
@@ -259,7 +258,11 @@ window.openTalentVideoModal = (videoId, name) => {
 
     if (nameEl) nameEl.textContent = name || '';
 
-    window.detectYouTubeAspect(videoId).then((ratio) => {
+    // Tenta descobrir o formato pelo card correspondente
+    const card = document.querySelector('.talent-video-card[data-video-id="' + videoId + '"]');
+    const manualFormat = card ? card.getAttribute('data-video-format') : 'auto';
+
+    window.resolveVideoAspect(manualFormat, videoId).then((ratio) => {
         if (box) {
             box.style.aspectRatio = ratio;
             if (ratio === '9 / 16') {
@@ -302,32 +305,29 @@ window.closeTalentVideoModal = () => {
 };
 
 // ============================================================
-// AJUSTAR PROPORÇÃO DOS CARDS DE TALENTO COM VÍDEO
-// ✅ Detecta corretamente shorts (9:16) e aplica zoom adequado
+// AJUSTAR CARDS DE TALENTO COM VÍDEO
 // ============================================================
 window.adjustTalentVideoCards = () => {
     const cards = document.querySelectorAll('.talent-video-card[data-video-id]');
     cards.forEach(card => {
         const videoId = card.getAttribute('data-video-id');
+        const manualFormat = card.getAttribute('data-video-format') || 'auto';
         const wrap = card.querySelector('.talent-video-wrap');
         if (!wrap || !videoId) return;
 
         if (wrap.dataset.adjusted === '1') return;
         wrap.dataset.adjusted = '1';
 
-        window.detectYouTubeAspect(videoId).then((ratio) => {
+        window.resolveVideoAspect(manualFormat, videoId).then((ratio) => {
             wrap.style.aspectRatio = ratio;
             wrap.dataset.ratio = ratio;
             wrap.classList.add('talent-video-ready');
 
-            // ✅ CORREÇÃO: adiciona classe de zoom adequada
             const iframe = wrap.querySelector('.talent-video-iframe');
             if (iframe) {
                 if (ratio === '9 / 16') {
-                    // Card vertical 9:16, vídeo 9:16 → zoom leve
                     iframe.classList.add('zoom-vertical');
                 } else {
-                    // Card horizontal 16:9, vídeo 16:9 → zoom padrão
                     iframe.classList.add('zoom-horizontal');
                 }
             }
@@ -336,28 +336,14 @@ window.adjustTalentVideoCards = () => {
 };
 
 // ============================================================
-// AJUSTAR CARDS DE TALENTO COM IMAGEM (sem vídeo)
-// ✅ Garante que a proporção natural da imagem seja respeitada
-// ============================================================
-window.adjustTalentImageCards = () => {
-    // Não precisa fazer nada — o CSS já usa `height: auto` na img.
-    // Mantido como gancho para futuras customizações.
-};
-
-// ============================================================
 // RENDERIZAR CARROSSEL DE AVISOS
 // ============================================================
 window.renderAvisosCarousel = (avisos) => {
-    console.log('🎬 renderAvisosCarousel chamado com:', avisos);
-
     const carousel = document.getElementById('avisos-carousel');
     const slidesContainer = document.getElementById('avisos-slides');
     const dotsContainer = document.getElementById('aviso-dots');
 
-    if (!carousel || !slidesContainer || !dotsContainer) {
-        console.warn('❌ Elementos do carrossel não encontrados no DOM');
-        return;
-    }
+    if (!carousel || !slidesContainer || !dotsContainer) return;
 
     if (window.__avisoAutoplayTimer) {
         clearInterval(window.__avisoAutoplayTimer);
@@ -386,8 +372,6 @@ window.renderAvisosCarousel = (avisos) => {
         );
         return hasImage || hasText;
     });
-
-    console.log('✅ Avisos válidos:', activeAvisos.length);
 
     if (activeAvisos.length === 0) {
         carousel.classList.add('hidden');
@@ -745,9 +729,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// ============================================================
-// OBSERVER
-// ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         if (typeof window.adjustTalentVideoCards === 'function') {
