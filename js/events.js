@@ -115,7 +115,7 @@ window.createCard = (data, type) => {
     }
 
     // ============================================================
-    // TALENTO — com vídeo em background quando tiver link
+    // TALENTO
     // ============================================================
     if (type === 'talento') {
         const safeNome = escapeHtml(data.nome || '');
@@ -123,6 +123,9 @@ window.createCard = (data, type) => {
         const safeTelefone = String(data.telefone || '').replace(/\D/g, '');
         const videoId = window.extractYouTubeId(data.video);
 
+        // ============================================================
+        // COM VÍDEO DO YOUTUBE
+        // ============================================================
         if (videoId) {
             const embedUrl = window.buildYouTubeEmbed(videoId, {
                 autoplay: true, mute: true, loop: true, controls: false
@@ -163,17 +166,43 @@ window.createCard = (data, type) => {
                     '</div>';
         }
 
-        const optimizedCapa = window.optimizeImage(data.capa, 600);
-        return '<div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">' +
-                    '<div class="relative h-64 sm:h-72 bg-brand-dark/50">' +
-                        '<img src="' + optimizedCapa + '" loading="lazy" decoding="async" onerror="this.src=\'https://placehold.co/600x400/1e293b/FFFFFF?text=Talento\'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">' +
-                        '<div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>' +
-                        '<div class="absolute bottom-4 left-4 right-4">' +
-                            '<h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">' + safeNome + '</h3>' +
-                            '<div class="h-1 w-12 bg-brand-yellow rounded-full"></div>' +
+        // ============================================================
+        // SEM VÍDEO — card se adapta à proporção natural da imagem
+        // (sem cortes, sem object-cover)
+        // ============================================================
+        const optimizedCapa = window.optimizeImage(data.capa, 800);
+
+        if (optimizedCapa) {
+            return '<div class="talent-image-card glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full" ' +
+                        'data-image-url="' + optimizedCapa + '">' +
+                        // Imagem com proporção natural (sem cortes)
+                        '<div class="talent-image-wrap relative w-full bg-brand-dark/50 overflow-hidden">' +
+                            '<img src="' + optimizedCapa + '" ' +
+                                'alt="' + safeNome + '" ' +
+                                'loading="lazy" ' +
+                                'decoding="async" ' +
+                                'onerror="this.src=\'https://placehold.co/600x600/1e293b/FFFFFF?text=Talento\'" ' +
+                                'class="talent-image-el w-full h-auto block">' +
+                            '<div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>' +
+                            '<div class="absolute bottom-4 left-4 right-4">' +
+                                '<h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">' + safeNome + '</h3>' +
+                                '<div class="h-1 w-12 bg-brand-yellow rounded-full"></div>' +
+                            '</div>' +
                         '</div>' +
-                    '</div>' +
+                        '<div class="p-6 flex flex-col flex-grow">' +
+                            '<p class="text-gray-300 text-sm mb-6 flex-grow leading-relaxed">' + safeDescricao + '</p>' +
+                            '<div class="flex flex-col gap-3">' +
+                                (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';
+        }
+
+        // Sem imagem e sem vídeo → card mínimo
+        return '<div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">' +
                     '<div class="p-6 flex flex-col flex-grow">' +
+                        '<h3 class="text-2xl font-bold text-white mb-1">' + safeNome + '</h3>' +
+                        '<div class="h-1 w-12 bg-brand-yellow rounded-full mb-4"></div>' +
                         '<p class="text-gray-300 text-sm mb-6 flex-grow leading-relaxed">' + safeDescricao + '</p>' +
                         '<div class="flex flex-col gap-3">' +
                             (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
@@ -274,6 +303,7 @@ window.closeTalentVideoModal = () => {
 
 // ============================================================
 // AJUSTAR PROPORÇÃO DOS CARDS DE TALENTO COM VÍDEO
+// ✅ Detecta corretamente shorts (9:16) e aplica zoom adequado
 // ============================================================
 window.adjustTalentVideoCards = () => {
     const cards = document.querySelectorAll('.talent-video-card[data-video-id]');
@@ -287,9 +317,31 @@ window.adjustTalentVideoCards = () => {
 
         window.detectYouTubeAspect(videoId).then((ratio) => {
             wrap.style.aspectRatio = ratio;
+            wrap.dataset.ratio = ratio;
             wrap.classList.add('talent-video-ready');
+
+            // ✅ CORREÇÃO: adiciona classe de zoom adequada
+            const iframe = wrap.querySelector('.talent-video-iframe');
+            if (iframe) {
+                if (ratio === '9 / 16') {
+                    // Card vertical 9:16, vídeo 9:16 → zoom leve
+                    iframe.classList.add('zoom-vertical');
+                } else {
+                    // Card horizontal 16:9, vídeo 16:9 → zoom padrão
+                    iframe.classList.add('zoom-horizontal');
+                }
+            }
         });
     });
+};
+
+// ============================================================
+// AJUSTAR CARDS DE TALENTO COM IMAGEM (sem vídeo)
+// ✅ Garante que a proporção natural da imagem seja respeitada
+// ============================================================
+window.adjustTalentImageCards = () => {
+    // Não precisa fazer nada — o CSS já usa `height: auto` na img.
+    // Mantido como gancho para futuras customizações.
 };
 
 // ============================================================
@@ -694,7 +746,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ============================================================
-// OBSERVER: ajusta cards de talento quando entram na tela
+// OBSERVER
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
