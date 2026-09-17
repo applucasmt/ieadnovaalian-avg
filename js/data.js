@@ -1,16 +1,16 @@
 // ============================================================
 // IEAD NOVA ALIANÇA - SISTEMA DE DADOS E CACHE
-// ✅ Otimizado: 1 endpoint ?action=all (em vez de 7 requisições)
-// ✅ Ping instantâneo via PropertiesService
-// ✅ Polling de 15s
-// ✅ Renderização progressiva
+// ✅ Cache desligado para conteúdo.
+// ✅ Config com pré-carregamento de imagem.
+// ✅ Polling adaptativo por hash (?action=ping) a cada 15s.
+// ✅ Helpers de YouTube (extrair ID, montar embed, detectar proporção).
 // ============================================================
 
 window.CACHE_ENABLED_KEYS = [];
 
 window.AUTO_REFRESH_CONFIG = {
-    intervalMs: 15000,       // ✅ 15s (antes era 45s)
-    pingTimeout: 8000,       // timeout do ping
+    intervalMs: 15000,
+    pingTimeout: 8000,
     enabled: true
 };
 
@@ -77,13 +77,46 @@ window.preloadImage = (url, timeoutMs) => {
 };
 
 // ============================================================
+// OTIMIZAÇÃO DE IMAGENS
+// ============================================================
+window.optimizeImage = (url, width) => {
+    width = width || 800;
+    if (!url || typeof url !== 'string') return url;
+    if (url.indexOf('wsrv.nl') !== -1) return url;
+    if (url.indexOf('.webp') !== -1) return url;
+    if (url.indexOf('http') === 0) {
+        const encoded = encodeURIComponent(url.replace(/^https?:\/\//, ''));
+        return 'https://wsrv.nl/?url=' + encoded + '&w=' + width + '&q=75&output=webp&we=1&il';
+    }
+    return url;
+};
+
+// ============================================================
+// PARSER DE DATAS
+// ============================================================
+window.parseDate = (dateStr) => {
+    if(!dateStr) return new Date();
+    if(dateStr instanceof Date) return dateStr;
+
+    let d = new Date(dateStr);
+    if(!isNaN(d.getTime())) return d;
+
+    if (typeof dateStr === 'string') {
+        const parts = dateStr.split('/');
+        if(parts.length === 3) {
+            return new Date(parts[2] + '-' + parts[1] + '-' + parts[0]);
+        }
+    }
+    return new Date();
+};
+
+// ============================================================
 // APLICAR CONFIG
 // ============================================================
 window.applyConfigImages = (config) => {
     console.log('🎨 applyConfigImages:', config);
     if (!config) return;
 
-    // LOGO
     if (config.logoUrl && typeof config.logoUrl === 'string' && config.logoUrl.trim()) {
         const logoUrl = config.logoUrl.trim();
         const logoHeader = document.getElementById('site-logo');
@@ -95,7 +128,6 @@ window.applyConfigImages = (config) => {
         faviconLinks.forEach(link => link.href = logoUrl);
     }
 
-    // HERO IMAGEM
     const isMobile = window.innerWidth <= 768;
     let heroUrlToUse = '';
 
@@ -112,11 +144,9 @@ window.applyConfigImages = (config) => {
         if (hero) {
             hero.src = heroUrlToUse;
             hero.setAttribute('data-hero-url', heroUrlToUse);
-            console.log('🖼️ Hero aplicado:', heroUrlToUse);
         }
     }
 
-    // TEXTOS DO HERO
     const badgeEl = document.getElementById('hero-badge');
     const titleEl = document.getElementById('hero-title');
     const descEl = document.getElementById('hero-description');
@@ -145,7 +175,6 @@ window.applyConfigImages = (config) => {
         descEl.textContent = (config.heroDescription && config.heroDescription.trim()) ? config.heroDescription.trim() : '';
     }
 
-    // POSIÇÃO DO HERO
     const heroContent = document.getElementById('hero-content');
     if (heroContent) {
         heroContent.classList.remove('pos-left', 'pos-center', 'pos-right', 'pos-custom');
@@ -170,7 +199,7 @@ window.applyConfigImages = (config) => {
 };
 
 // ============================================================
-// RESIZE — re-aplica config
+// RESIZE
 // ============================================================
 let lastIsMobile = window.innerWidth <= 768;
 window.addEventListener('resize', () => {
@@ -184,10 +213,7 @@ window.addEventListener('resize', () => {
 });
 
 // ============================================================
-// ✅ CARREGAR DADOS — 1 REQUISIÇÃO (?action=all)
-// ------------------------------------------------------------
-// FASE 1: busca tudo em 1 request e renderiza.
-// FASE 2: nada. (Antes eram 7 requests.)
+// CARREGAR DADOS — 1 REQUISIÇÃO (?action=all)
 // ============================================================
 window.loadData = async (force) => {
     force = force === true;
@@ -221,7 +247,11 @@ window.loadData = async (force) => {
             );
         }
 
-        // ✅ Esconde a tela de loading (agora com delay interno)
+        // Ajusta proporção dos cards de talento (se houver)
+        if (typeof window.adjustTalentVideoCards === 'function') {
+            setTimeout(() => window.adjustTalentVideoCards(), 100);
+        }
+
         if (typeof window.hideInitialLoading === 'function') {
             window.hideInitialLoading();
         }
@@ -231,12 +261,12 @@ window.loadData = async (force) => {
         if (typeof window.renderComponents === 'function') {
             window.renderComponents([], [], [], [], [], [], null);
         }
-
         if (typeof window.hideInitialLoading === 'function') {
             window.hideInitialLoading();
         }
     }
 };
+
 // ============================================================
 // RENDERIZAR COMPONENTES
 // ============================================================
@@ -261,7 +291,6 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         window.applyConfigImages(config[0]);
     }
 
-    // PASTOR
     const pastorContainer = document.getElementById('pastor-img-container');
     if (pastorContainer) {
         if (pastor.length > 0 && pastor[0].capa) {
@@ -271,7 +300,6 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         }
     }
 
-    // EVENTOS
     const normalizedEvents = events.map((e, i) => {
         const getVal = (keys) => {
             for(var k=0; k<keys.length; k++) {
@@ -300,7 +328,6 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         window.initMarketingSlider(window.globalEvents);
     }
 
-    // AVISOS
     const carousel = document.getElementById('avisos-carousel');
     if (avisos.length > 0) {
         console.log('📢 Renderizando carrossel de avisos:', avisos.length, 'itens');
@@ -317,7 +344,6 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         }
     }
 
-    // EVENTOS FUTUROS
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -337,21 +363,18 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
             : '<div class="col-span-full text-center text-gray-400 py-10">Nenhum evento agendado.</div>';
     }
 
-    // MINISTÉRIOS
     if (containers.ministerios) {
         containers.ministerios.innerHTML = ministerios.length > 0
             ? ministerios.map(m => window.createCard(m, 'ministerio')).join('')
             : '';
     }
 
-    // TALENTOS
     if (containers.talentos) {
         containers.talentos.innerHTML = talentos.length > 0
             ? talentos.map(t => window.createCard(t, 'talento')).join('')
             : '';
     }
 
-    // ÁLBUNS
     if (containers.albums) {
         containers.albums.innerHTML = albums.length > 0
             ? albums.map(a => window.createCard(a, 'album')).join('')
@@ -360,8 +383,7 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
 };
 
 // ============================================================
-// CHECAR ATUALIZAÇÕES VIA HASH (?action=ping)
-// ✅ Agora o ping lê só uma string (instantâneo)
+// CHECAR ATUALIZAÇÕES VIA HASH
 // ============================================================
 window.__lastDataHash = null;
 
@@ -492,23 +514,17 @@ window.broadcastDataChanged = () => {
 };
 
 // ============================================================
-// ✅ TELA DE LOADING — esconder quando o site está pronto
+// TELA DE LOADING — esconder quando o site está pronto
 // ============================================================
 window.hideInitialLoading = () => {
     const el = document.getElementById('initial-loading');
     if (!el) return;
     if (el.classList.contains('is-hiding') || el.classList.contains('is-hidden')) return;
 
-    // ✅ Espera o próximo frame de renderização (garante que o
-    //    navegador já pintou os cards/avisos na tela antes de esconder)
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            // Pequeno delay extra para garantir que imagens em lazy-load
-            // já começaram a aparecer
             setTimeout(() => {
                 el.classList.add('is-hiding');
-
-                // Depois da transição, marca como hidden (remove do fluxo)
                 setTimeout(() => {
                     el.classList.add('is-hidden');
                 }, 600);
@@ -517,12 +533,72 @@ window.hideInitialLoading = () => {
     });
 };
 
-// ✅ Watchdog: se nada esconder em 10s, esconde de qualquer forma
 window.__initialLoadingWatchdog = setTimeout(() => {
     console.warn('⏱️ Watchdog do loading acionado (10s)');
     window.hideInitialLoading();
 }, 10000);
+
+// ============================================================
+// ✅ HELPERS DE YOUTUBE
+// ============================================================
+
+// Extrai o ID do vídeo de qualquer URL do YouTube
+window.extractYouTubeId = (url) => {
+    if (!url || typeof url !== 'string') return null;
+    const patterns = [
+        /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/,
+        /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+        /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+        /(?:youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+        /(?:youtube\.com\/v\/)([a-zA-Z0-9_-]{11})/,
+        /(?:youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/
+    ];
+    for (let i = 0; i < patterns.length; i++) {
+        const match = url.match(patterns[i]);
+        if (match && match[1]) return match[1];
+    }
+    if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) return url.trim();
+    return null;
+};
+
+// Monta URL do embed com autoplay + mute + loop + playsinline
+window.buildYouTubeEmbed = (videoId, options) => {
+    options = options || {};
+    const autoplay = options.autoplay !== false ? 1 : 0;
+    const mute = options.mute !== false ? 1 : 0;
+    const loop = options.loop !== false ? 1 : 0;
+    const controls = options.controls !== false ? 1 : 0;
+    const params = [
+        'autoplay=' + autoplay,
+        'mute=' + mute,
+        'loop=' + loop,
+        'playlist=' + videoId,
+        'controls=' + controls,
+        'playsinline=1',
+        'rel=0',
+        'modestbranding=1'
+    ];
+    return 'https://www.youtube.com/embed/' + videoId + '?' + params.join('&');
+};
+
+// Detecta a proporção (16:9 ou 9:16) de uma thumbnail do YouTube
+window.detectYouTubeAspect = (videoId) => {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+            const ratio = img.naturalWidth / img.naturalHeight;
+            if (ratio < 1) resolve('9 / 16');
+            else resolve('16 / 9');
+        };
+        img.onerror = () => {
+            resolve('9 / 16');
+        };
+        img.src = 'https://i.ytimg.com/vi/' + videoId + '/maxresdefault.jpg';
+    });
+};
+
 // ============================================================
 // LOG
 // ============================================================
-console.log('📦 data.js carregado (1 endpoint + ping rápido + polling 15s)');
+console.log('📦 data.js carregado');
