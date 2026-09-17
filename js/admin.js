@@ -2,14 +2,15 @@
 // IEAD NOVA ALIANÇA - PAINEL ADMIN
 // ============================================================
 
-talentos: [
-    { key: 'nome', label: 'Nome', type: 'text' },
-    { key: 'descricao', label: 'Descrição', type: 'textarea' },
-    { key: 'telefone', label: 'Whatsapp', type: 'text' },
-    { key: 'video', label: 'Link YouTube', type: 'text' },
-    { key: 'videoFormat', label: '📐 Formato do Vídeo', type: 'select', options: ['auto', 'horizontal', 'vertical'], default: 'auto', hint: 'Escolha "vertical" para Shorts, "horizontal" para vídeos normais, ou "auto" para o sistema detectar.' },
-    { key: 'capa', label: 'URL da Foto', type: 'text', upload: true }
-],
+window.SCHEMAS = {
+    eventos: [
+        { key: 'name', label: 'Nome do Evento', type: 'text' },
+        { key: 'date', label: 'Data Início', type: 'datetime-local' },
+        { key: 'endDate', label: 'Data Fim (Opcional)', type: 'datetime-local' },
+        { key: 'description', label: 'Descrição', type: 'textarea' },
+        { key: 'coverUrl', label: 'URL da Capa', type: 'text', upload: true }
+    ],
+
     avisos: [
         { key: 'title', label: '📝 Título do Aviso', type: 'text', required: true },
         { key: 'subtitle', label: 'Subtítulo (linha acima do título)', type: 'text' },
@@ -34,18 +35,22 @@ talentos: [
         { key: 'telefone', label: 'Whatsapp', type: 'text' },
         { key: 'capa', label: 'URL da Foto', type: 'text', upload: true }
     ],
+
     talentos: [
         { key: 'nome', label: 'Nome', type: 'text' },
         { key: 'descricao', label: 'Descrição', type: 'textarea' },
         { key: 'telefone', label: 'Whatsapp', type: 'text' },
         { key: 'video', label: 'Link YouTube', type: 'text' },
+        { key: 'videoFormat', label: '📐 Formato do Vídeo', type: 'select', options: ['auto', 'horizontal', 'vertical'], default: 'auto', hint: 'Escolha "vertical" para Shorts, "horizontal" para vídeos normais, ou "auto" para o sistema detectar.' },
         { key: 'capa', label: 'URL da Foto', type: 'text', upload: true }
     ],
+
     albuns: [
         { key: 'albumName', label: 'Nome do Álbum', type: 'text' },
         { key: 'coverImageUrl', label: 'URL da Capa', type: 'text', upload: true },
         { key: 'albumUrl', label: 'Link do Álbum', type: 'text' }
     ],
+
     pastor: [
         { key: 'nome', label: 'Nome', type: 'text' },
         { key: 'capa', label: 'URL da Foto', type: 'text', upload: true }
@@ -70,16 +75,13 @@ window.isImageField = (key) => {
 };
 
 // ============================================================
-// ✅ NOVO: helper para notificar outras abas + forçar reload
-// Chamado após qualquer save/delete bem-sucedido.
+// NOTIFICAR OUTRAS ABAS + FORÇAR RELOAD
 // ============================================================
 window.notifyDataChanged = () => {
-    // 1. Recarrega os dados localmente
     if (typeof window.loadData === 'function') {
         window.loadData(true);
     }
 
-    // 2. Notifica outras abas (mesmo navegador) + BroadcastChannel
     if (typeof window.broadcastDataChanged === 'function') {
         window.broadcastDataChanged();
     }
@@ -495,7 +497,7 @@ window.renderConfigForm = (config) => {
 };
 
 // ============================================================
-// UPLOAD DE IMAGEM PARA O CONFIG (logo/hero)
+// UPLOAD DE IMAGEM PARA O CONFIG
 // ============================================================
 window.handleConfigUpload = async (event, targetFieldKey) => {
     const input = event.target;
@@ -637,7 +639,6 @@ window.updateHeroPreviewImage = (url) => {
 
 // ============================================================
 // SALVAR CONFIG
-// ✅ Chama notifyDataChanged() ao final
 // ============================================================
 window.saveConfig = async () => {
     const logoUrl = document.getElementById('config-logoUrl').value.trim();
@@ -692,7 +693,6 @@ window.saveConfig = async () => {
 
             await window.applyConfigImages(newConfig[0]);
 
-            // ✅ Notifica outras abas + recarrega localmente
             window.notifyDataChanged();
 
             alert('✅ Configurações salvas com sucesso!');
@@ -722,7 +722,6 @@ window.openEditModal = (mode, index) => {
     let itemData = {};
     if (mode === 'edit' && index !== null && index !== undefined) {
         itemData = window.adminState.currentData[index] || {};
-        // ✅ Usa a coluna "id" real
         btn.dataset.originalId = itemData.id || '';
     } else {
         btn.dataset.originalId = '';
@@ -973,7 +972,6 @@ window.closeEditModal = () => {
 
 // ============================================================
 // SALVAR ITEM
-// ✅ Chama notifyDataChanged() ao final
 // ============================================================
 window.saveAdminItem = async () => {
     const btn = document.getElementById('btn-save-item');
@@ -1033,7 +1031,6 @@ window.saveAdminItem = async () => {
 
             window.renderAdminTable(window.adminState.currentData, tab);
 
-            // ✅ Notifica outras abas + recarrega localmente
             window.notifyDataChanged();
 
             alert('Salvo com sucesso!');
@@ -1051,14 +1048,12 @@ window.saveAdminItem = async () => {
 
 // ============================================================
 // DELETAR ITEM
-// ✅ Chama notifyDataChanged() ao final
 // ============================================================
 window.deleteAdminItem = async (index) => {
     if (!confirm('Tem certeza que deseja excluir este item?')) return;
 
     const tab = window.adminState.currentTab;
     const item = window.adminState.currentData[index];
-    // ✅ Usa a coluna "id" real
     const originalId = item.id || '';
 
     if (!originalId) {
@@ -1094,7 +1089,6 @@ window.deleteAdminItem = async (index) => {
 
             window.renderAdminTable(window.adminState.currentData, tab);
 
-            // ✅ Notifica outras abas + recarrega localmente
             window.notifyDataChanged();
         } else {
             alert('Erro: ' + result.message);
