@@ -851,18 +851,14 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   CARROSSEL DE AVISOS — CONTAINER ADAPTATIVO (PROPORÇÃO DA IMAGEM)
-   ============================================================
-   O JS define --aviso-ratio com base na imagem real (ex: "1 / 1",
-   "16 / 9", "4 / 5"). O container adota essa proporção exata.
-   background-size: cover preenche, sem tarja.
+   CARROSSEL DE AVISOS
    ============================================================ */
 
 .avisos-carousel {
     position: relative;
     width: 100%;
-    aspect-ratio: var(--aviso-ratio, 16 / 9);
-    max-height: 80vh;
+    aspect-ratio: var(--aviso-ratio, 4 / 5);
+    max-height: none;
     min-height: 0;
     border-radius: 16px;
     overflow: hidden;
@@ -872,14 +868,19 @@ behold-widget a { text-decoration: none; }
     background: #0f172a;
     box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
     contain: layout style;
-    transition: aspect-ratio 0.4s ease;
+    transition: aspect-ratio 0.3s ease;
+}
+
+@media (max-width: 1024px) {
+    .avisos-carousel {
+        border-radius: 14px;
+    }
 }
 
 @media (max-width: 768px) {
     .avisos-carousel {
         border-radius: 12px;
         margin-bottom: 1.5rem;
-        max-height: none;
     }
 }
 
@@ -987,38 +988,23 @@ behold-widget a { text-decoration: none; }
 }
 
 .aviso-content.pos-left {
-    left: 0;
-    right: auto;
-    top: 50%;
+    left: 0; right: auto; top: 50%;
     transform: translateY(-50%);
-    align-items: flex-start;
-    text-align: left;
-    max-width: 55%;
-    padding-left: 5%;
+    align-items: flex-start; text-align: left;
+    max-width: 55%; padding-left: 5%;
 }
-
 .aviso-content.pos-center {
-    left: 50%;
-    top: 50%;
+    left: 50%; top: 50%;
     transform: translate(-50%, -50%);
-    align-items: center;
-    text-align: center;
-    max-width: 65%;
-    padding-left: 5%;
-    padding-right: 5%;
+    align-items: center; text-align: center;
+    max-width: 65%; padding-left: 5%; padding-right: 5%;
 }
-
 .aviso-content.pos-right {
-    right: 0;
-    left: auto;
-    top: 50%;
+    right: 0; left: auto; top: 50%;
     transform: translateY(-50%);
-    align-items: flex-end;
-    text-align: right;
-    max-width: 55%;
-    padding-right: 5%;
+    align-items: flex-end; text-align: right;
+    max-width: 55%; padding-right: 5%;
 }
-
 .aviso-content.pos-custom {
     left: var(--aviso-x, 50%);
     top: var(--aviso-y, 50%);
@@ -1029,37 +1015,12 @@ behold-widget a { text-decoration: none; }
 }
 
 @media (max-width: 768px) {
-    .aviso-content {
-        padding: 1rem 1.25rem;
-    }
-
-    .aviso-content.pos-left {
-        max-width: 75%;
-        padding-left: 5%;
-        padding-right: 5%;
-    }
-
-    .aviso-content.pos-center {
-        max-width: 85%;
-        padding-left: 5%;
-        padding-right: 5%;
-    }
-
-    .aviso-content.pos-right {
-        max-width: 75%;
-        padding-right: 5%;
-        padding-left: 5%;
-    }
-
-    .aviso-content.pos-custom {
-        max-width: 85%;
-        padding: 1rem;
-    }
+    .aviso-content { padding: 1rem 1.25rem; }
+    .aviso-content.pos-left { max-width: 75%; padding: 0 5%; }
+    .aviso-content.pos-center { max-width: 85%; padding: 0 5%; }
+    .aviso-content.pos-right { max-width: 75%; padding: 0 5%; }
+    .aviso-content.pos-custom { max-width: 85%; padding: 1rem; }
 }
-
-/* ============================================================
-   TIPOGRAFIA
-   ============================================================ */
 
 .aviso-subtitle {
     font-size: clamp(0.6rem, 0.85vw, 0.85rem);
@@ -1070,7 +1031,6 @@ behold-widget a { text-decoration: none; }
     margin-bottom: 0.5rem;
     opacity: 0.95;
 }
-
 .aviso-title {
     font-size: clamp(1.25rem, 3vw, 2.5rem);
     font-weight: 900;
@@ -1081,7 +1041,6 @@ behold-widget a { text-decoration: none; }
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
     word-break: break-word;
 }
-
 .aviso-description {
     font-size: clamp(0.7rem, 0.95vw, 1rem);
     line-height: 1.4;
@@ -1090,7 +1049,6 @@ behold-widget a { text-decoration: none; }
     opacity: 0.9;
     text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
 }
-
 .aviso-button {
     display: inline-flex;
     align-items: center;
@@ -1110,49 +1068,25 @@ behold-widget a { text-decoration: none; }
     cursor: pointer;
     white-space: nowrap;
 }
-
 .aviso-button:hover {
     background: #EEBC5A;
     transform: scale(1.05);
     box-shadow: 0 6px 30px rgba(238, 188, 90, 0.4);
 }
-
-.aviso-button i {
-    font-size: 0.85em;
-}
+.aviso-button i { font-size: 0.85em; }
 
 @media (max-width: 768px) {
-    .aviso-subtitle {
-        font-size: 0.6rem;
-        margin-bottom: 0.3rem;
-    }
-
-    .aviso-title {
-        font-size: clamp(1rem, 5vw, 1.35rem);
-        margin-bottom: 0.4rem;
-    }
-
-    .aviso-description {
-        font-size: 0.7rem;
-        margin-bottom: 0.6rem;
-    }
-
-    .aviso-button {
-        padding: 0.45rem 1rem;
-        font-size: 0.6rem;
-    }
+    .aviso-subtitle { font-size: 0.6rem; margin-bottom: 0.3rem; }
+    .aviso-title { font-size: clamp(1rem, 5vw, 1.35rem); margin-bottom: 0.4rem; }
+    .aviso-description { font-size: 0.7rem; margin-bottom: 0.6rem; }
+    .aviso-button { padding: 0.45rem 1rem; font-size: 0.6rem; }
 }
-
-/* ============================================================
-   CONTROLES DE NAVEGAÇÃO
-   ============================================================ */
 
 .aviso-nav {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 44px;
-    height: 44px;
+    width: 44px; height: 44px;
     border-radius: 50%;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(10px);
@@ -1161,52 +1095,31 @@ behold-widget a { text-decoration: none; }
     color: #fff;
     cursor: pointer;
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     font-size: 1rem;
     z-index: 20;
     opacity: 0;
 }
-
-.avisos-carousel:hover .aviso-nav {
-    opacity: 1;
-}
-
+.avisos-carousel:hover .aviso-nav { opacity: 1; }
 .aviso-nav:hover {
     background: #EEBC5A;
     color: #0f172a;
     border-color: #EEBC5A;
     transform: translateY(-50%) scale(1.1);
 }
-
 .aviso-prev { left: 1rem; }
 .aviso-next { right: 1rem; }
 
 @media (max-width: 768px) {
-    .aviso-nav {
-        width: 30px;
-        height: 30px;
-        font-size: 0.7rem;
-        opacity: 1;
-    }
+    .aviso-nav { width: 30px; height: 30px; font-size: 0.7rem; opacity: 1; }
     .aviso-prev { left: 0.4rem; }
     .aviso-next { right: 0.4rem; }
 }
-
 @media (max-width: 400px) {
-    .aviso-nav {
-        width: 26px;
-        height: 26px;
-        font-size: 0.65rem;
-    }
+    .aviso-nav { width: 26px; height: 26px; font-size: 0.65rem; }
     .aviso-prev { left: 0.3rem; }
     .aviso-next { right: 0.3rem; }
 }
-
-/* ============================================================
-   INDICADORES (DOTS)
-   ============================================================ */
 
 .aviso-dots {
     position: absolute;
@@ -1217,17 +1130,11 @@ behold-widget a { text-decoration: none; }
     gap: 0.35rem;
     z-index: 15;
 }
-
 @media (max-width: 768px) {
-    .aviso-dots {
-        bottom: 0.4rem;
-        gap: 0.25rem;
-    }
+    .aviso-dots { bottom: 0.4rem; gap: 0.25rem; }
 }
-
 .aviso-dot {
-    width: 8px;
-    height: 8px;
+    width: 8px; height: 8px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.4);
     border: none;
@@ -1235,30 +1142,18 @@ behold-widget a { text-decoration: none; }
     transition: all 0.3s ease;
     padding: 0;
 }
-
 @media (max-width: 768px) {
-    .aviso-dot {
-        width: 5px;
-        height: 5px;
-    }
+    .aviso-dot { width: 5px; height: 5px; }
 }
-
-.aviso-dot:hover {
-    background: rgba(255, 255, 255, 0.7);
-}
-
+.aviso-dot:hover { background: rgba(255, 255, 255, 0.7); }
 .aviso-dot.active {
     background: #ffffff;
     width: 24px;
     border-radius: 4px;
 }
-
 @media (max-width: 768px) {
-    .aviso-dot.active {
-        width: 16px;
-    }
+    .aviso-dot.active { width: 16px; }
 }
-
 .aviso-dot.active::after {
     content: '';
     display: block;
@@ -1267,918 +1162,8 @@ behold-widget a { text-decoration: none; }
     border-radius: inherit;
     background: linear-gradient(to right, #EEBC5A var(--progress, 0%), transparent var(--progress, 0%));
 }
-
 .avisos-carousel.single .aviso-nav,
-.avisos-carousel.single .aviso-dots {
-    display: none;
-}
-
-/* ============================================================
-   ✅ CORREÇÃO: FALLBACK DO HERO VAZIO
-   ============================================================
-   Enquanto o JS não aplica o config, o hero fica com fundo
-   escuro e sem conteúdo visível. Sem flash, sem "salto".
-   ============================================================ */
-
-#site-hero[src=""] {
-    background: #0f172a;
-}
-
-#hero-badge:empty,
-#hero-title:empty,
-#hero-description:empty {
-    display: none;
-}
-
-#hero-content:not(.pos-left):not(.pos-center):not(.pos-right):not(.pos-custom) {
-    /* Sem posição definida: esconde até o JS aplicar */
-    opacity: 0;
-}
-
-#hero-content.pos-left,
-#hero-content.pos-center,
-#hero-content.pos-right,
-#hero-content.pos-custom {
-    opacity: 1;
-    transition: opacity 0.2s ease-in;
-}
-
-/* ============================================================
-   ✅ TELA DE LOADING INICIAL
-   ============================================================
-   Aparece antes do site carregar. Some suavemente quando os
-   dados chegam (ou depois de 5s de segurança).
-   ============================================================ */
-
-.initial-loading {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: #0f172a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
-    pointer-events: auto;
-}
-
-/* Estado de "saindo" (fade out) */
-.initial-loading.is-hiding {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-}
-
-/* Já escondido (display: none para liberar a memória) */
-.initial-loading.is-hidden {
-    display: none;
-}
-
-.initial-loading-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.25rem;
-    padding: 2rem;
-    text-align: center;
-}
-
-/* ---------- Logo + anel giratório ---------- */
-.initial-loading-logo-wrap {
-    position: relative;
-    width: 110px;
-    height: 110px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 0.5rem;
-}
-
-.initial-loading-logo {
-    width: 72px;
-    height: 72px;
-    object-fit: contain;
-    filter: drop-shadow(0 0 20px rgba(238, 188, 90, 0.35));
-    animation: initialLogoPulse 2s ease-in-out infinite;
-    z-index: 2;
-}
-
-/* Anel dourado girando ao redor da logo */
-.initial-loading-ring {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 2px solid rgba(238, 188, 90, 0.15);
-    border-top-color: #EEBC5A;
-    animation: initialRingSpin 1.1s linear infinite;
-    z-index: 1;
-}
-
-/* Segundo anel, mais lento e no sentido contrário */
-.initial-loading-ring::after {
-    content: '';
-    position: absolute;
-    inset: 10px;
-    border-radius: 50%;
-    border: 2px solid rgba(73, 73, 133, 0.35);
-    border-bottom-color: #494985;
-    animation: initialRingSpinReverse 1.8s linear infinite;
-}
-
-/* ---------- Texto ---------- */
-.initial-loading-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.initial-loading-title {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #ffffff;
-    letter-spacing: 0.05em;
-}
-
-.initial-loading-subtitle {
-    font-size: 0.8rem;
-    color: #94a3b8;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    font-weight: 500;
-}
-
-/* ---------- Pontinhos animados ---------- */
-.initial-loading-dots {
-    display: flex;
-    gap: 0.4rem;
-    margin-top: 0.5rem;
-}
-
-.initial-loading-dots span {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #EEBC5A;
-    animation: initialDotBounce 1.4s ease-in-out infinite;
-    opacity: 0.6;
-}
-
-.initial-loading-dots span:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.initial-loading-dots span:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-/* ---------- Animações ---------- */
-@keyframes initialRingSpin {
-    to { transform: rotate(360deg); }
-}
-
-@keyframes initialRingSpinReverse {
-    to { transform: rotate(-360deg); }
-}
-
-@keyframes initialLogoPulse {
-    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(238, 188, 90, 0.35)); }
-    50% { transform: scale(1.06); filter: drop-shadow(0 0 30px rgba(238, 188, 90, 0.6)); }
-}
-
-@keyframes initialDotBounce {
-    0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
-    40% { transform: translateY(-8px); opacity: 1; }
-}
-
-/* ---------- Reduz movimento (acessibilidade) ---------- */
-@media (prefers-reduced-motion: reduce) {
-    .initial-loading-logo,
-    .initial-loading-ring,
-    .initial-loading-ring::after,
-    .initial-loading-dots span {
-        animation: none;
-    }
-}
-
-/* ============================================================
-   ✅ GRADE DE VÍDEOS DO YOUTUBE (aba Ao Vivo)
-   ============================================================ */
-
-#youtube-recent-section.hidden {
-    display: none;
-}
-
-/* ---------- Cards de vídeo ---------- */
-.yt-card {
-    display: flex;
-    flex-direction: column;
-    background: rgba(30, 41, 59, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 14px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    backdrop-filter: blur(8px);
-}
-
-.yt-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(238, 188, 90, 0.3);
-    box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
-}
-
-.yt-card:active {
-    transform: scale(0.98);
-}
-
-/* ---------- Thumbnail ---------- */
-.yt-card-thumb {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #0a0a0a;
-    overflow: hidden;
-}
-
-.yt-card-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s ease;
-}
-
-.yt-card:hover .yt-card-thumb img {
-    transform: scale(1.05);
-}
-
-/* Overlay + ícone de play */
-.yt-card-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.yt-card:hover .yt-card-overlay {
-    opacity: 1;
-}
-
-.yt-card-play {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: #ff0000;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    box-shadow: 0 4px 20px rgba(255, 0, 0, 0.5);
-    transform: scale(0.8);
-    transition: transform 0.3s ease;
-}
-
-.yt-card:hover .yt-card-play {
-    transform: scale(1);
-}
-
-/* ---------- Informações ---------- */
-.yt-card-info {
-    padding: 0.75rem 0.9rem 0.9rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    flex-grow: 1;
-}
-
-.yt-card-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #fff;
-    line-height: 1.3;
-    margin: 0;
-    /* Limita a 2 linhas */
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-@media (min-width: 768px) {
-    .yt-card-title {
-        font-size: 0.95rem;
-    }
-}
-
-.yt-card-meta {
-    font-size: 0.7rem;
-    color: #94a3b8;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    flex-wrap: wrap;
-}
-
-/* ---------- Skeleton (loading) ---------- */
-.yt-skeleton {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0.03) 0%,
-        rgba(255, 255, 255, 0.08) 50%,
-        rgba(255, 255, 255, 0.03) 100%
-    );
-    background-size: 200% 100%;
-    border-radius: 14px;
-    animation: ytSkeletonPulse 1.5s ease-in-out infinite;
-}
-
-@keyframes ytSkeletonPulse {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
-
-/* ============================================================
-   ✅ TELA DE LOADING INICIAL
-   ============================================================ */
-
-.initial-loading {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: #0f172a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
-    pointer-events: auto;
-}
-
-.initial-loading.is-hiding {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-}
-
-.initial-loading.is-hidden {
-    display: none;
-}
-
-.initial-loading-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.25rem;
-    padding: 2rem;
-    text-align: center;
-}
-
-.initial-loading-logo-wrap {
-    position: relative;
-    width: 110px;
-    height: 110px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 0.5rem;
-}
-
-.initial-loading-logo {
-    width: 72px;
-    height: 72px;
-    object-fit: contain;
-    filter: drop-shadow(0 0 20px rgba(238, 188, 90, 0.35));
-    animation: initialLogoPulse 2s ease-in-out infinite;
-    z-index: 2;
-}
-
-.initial-loading-ring {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 2px solid rgba(238, 188, 90, 0.15);
-    border-top-color: #EEBC5A;
-    animation: initialRingSpin 1.1s linear infinite;
-    z-index: 1;
-}
-
-.initial-loading-ring::after {
-    content: '';
-    position: absolute;
-    inset: 10px;
-    border-radius: 50%;
-    border: 2px solid rgba(73, 73, 133, 0.35);
-    border-bottom-color: #494985;
-    animation: initialRingSpinReverse 1.8s linear infinite;
-}
-
-.initial-loading-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.initial-loading-title {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #ffffff;
-    letter-spacing: 0.05em;
-}
-
-.initial-loading-subtitle {
-    font-size: 0.8rem;
-    color: #94a3b8;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    font-weight: 500;
-}
-
-.initial-loading-dots {
-    display: flex;
-    gap: 0.4rem;
-    margin-top: 0.5rem;
-}
-
-.initial-loading-dots span {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #EEBC5A;
-    animation: initialDotBounce 1.4s ease-in-out infinite;
-    opacity: 0.6;
-}
-
-.initial-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-.initial-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes initialRingSpin { to { transform: rotate(360deg); } }
-@keyframes initialRingSpinReverse { to { transform: rotate(-360deg); } }
-@keyframes initialLogoPulse {
-    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(238, 188, 90, 0.35)); }
-    50% { transform: scale(1.06); filter: drop-shadow(0 0 30px rgba(238, 188, 90, 0.6)); }
-}
-@keyframes initialDotBounce {
-    0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
-    40% { transform: translateY(-8px); opacity: 1; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .initial-loading-logo,
-    .initial-loading-ring,
-    .initial-loading-ring::after,
-    .initial-loading-dots span { animation: none; }
-}
-
-/* ============================================================
-   ✅ GRADE DE TALENTOS — COMPACTA
-   ============================================================ */
-
-/* Reduz o tamanho geral da grade */
-#talentos-container {
-    gap: 1rem !important; /* reduzido (antes 1.5rem) */
-}
-
-@media (min-width: 640px) {
-    #talentos-container {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 1.25rem !important;
-    }
-}
-
-@media (min-width: 1024px) {
-    #talentos-container {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 1.25rem !important;
-    }
-}
-
-@media (min-width: 1280px) {
-    #talentos-container {
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    }
-}
-
-/* ============================================================
-   ✅ CARDS DE TALENTO COM VÍDEO
-   ============================================================ */
-
-.talent-video-card {
-    position: relative;
-}
-
-.talent-video-wrap {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #000;
-    overflow: hidden;
-    transition: aspect-ratio 0.3s ease;
-}
-
-.talent-video-iframe {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-    pointer-events: none;
-    transform-origin: center center;
-    transition: transform 0.3s ease;
-}
-
-.talent-video-iframe.zoom-horizontal {
-    transform: scale(1.35);
-}
-
-.talent-video-iframe.zoom-vertical {
-    transform: scale(1.05);
-}
-
-.talent-video-wrap:hover .talent-video-iframe {
-    transform: scale(1.4);
-}
-
-.talent-video-wrap[style*="9 / 16"]:hover .talent-video-iframe,
-.talent-video-wrap[style*="9/16"]:hover .talent-video-iframe {
-    transform: scale(1.1);
-}
-
-/* ============================================================
-   ✅ CARDS DE TALENTO COM IMAGEM (compacto, sem cortar o rosto)
-   ============================================================ */
-
-.talent-image-card {
-    position: relative;
-}
-
-.talent-image-wrap {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1 / 1;      /* ✅ quadrado — compacto e uniforme */
-    background: #0a0a0a;
-    overflow: hidden;
-}
-
-/* ✅ Imagem preenche o quadrado, focando no topo (rosto) */
-.talent-image-el {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-    object-position: center 25%;
-    transition: transform 0.5s ease;
-}
-
-.talent-image-card:hover .talent-image-el {
-    transform: scale(1.05);
-}
-
-/* ============================================================
-   ✅ MODAL DE VÍDEO
-   ============================================================ */
-
-#talent-video-modal.hidden {
-    display: none;
-}
-
-#talent-video-modal {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#talent-video-box {
-    transition: transform 0.3s ease, aspect-ratio 0.3s ease, max-width 0.3s ease;
-}
-
-#talent-video-container iframe {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-}
-
-@media (max-width: 640px) {
-    .talent-video-wrap .group-hover\:opacity-100 {
-        opacity: 0.85 !important;
-        background: transparent !important;
-    }
-
-
-   /* ============================================================
-   RÁDIO — PÁGINA
-   ============================================================ */
-.radio-page-inner {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-/* BLOCO 1: Programa atual */
-.radio-now-block {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    background: rgba(30, 41, 59, 0.6);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px;
-    padding: 1.5rem;
-    backdrop-filter: blur(10px);
-}
-
-@media (min-width: 768px) {
-    .radio-now-block {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-    }
-}
-
-.radio-now-playing {
-    flex: 1;
-}
-
-.radio-live-badge,
-.radio-off-air-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 0.3rem 0.8rem;
-    border-radius: 999px;
-    margin-bottom: 0.75rem;
-}
-
-.radio-live-badge {
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #f87171;
-}
-
-.radio-off-air-badge {
-    background: rgba(148, 163, 184, 0.15);
-    border: 1px solid rgba(148, 163, 184, 0.3);
-    color: #94a3b8;
-}
-
-.radio-live-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #ef4444;
-    animation: radioPulse 1.5s ease-in-out infinite;
-}
-
-@keyframes radioPulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.3); }
-}
-
-.radio-program-name {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #fff;
-    margin: 0 0 0.25rem 0;
-    line-height: 1.2;
-}
-
-.radio-program-time {
-    font-size: 0.85rem;
-    color: #94a3b8;
-    margin: 0;
-}
-
-.radio-whatsapp-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: #25D366;
-    color: #fff;
-    padding: 0.85rem 1.25rem;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
-    white-space: nowrap;
-}
-
-.radio-whatsapp-btn:hover {
-    background: #20bd5a;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
-}
-
-.radio-whatsapp-label {
-    display: block;
-    font-size: 0.7rem;
-    opacity: 0.9;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-}
-
-.radio-whatsapp-number {
-    display: block;
-    font-size: 0.9rem;
-}
-
-/* BLOCO 2: Player */
-.radio-player-wrapper {
-    background: rgba(30, 41, 59, 0.6);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-}
-
-.radio-player-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background: rgba(15, 23, 42, 0.7);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: #cbd5e1;
-}
-
-.radio-player-live {
-    background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
-    border-bottom-color: rgba(239, 68, 68, 0.2);
-}
-
-.radio-player-container {
-    position: relative;
-    width: 100%;
-    background: #000;
-}
-
-.radio-player-container.radio-player-online {
-    aspect-ratio: 16 / 9;
-}
-
-.radio-player-container.radio-player-online iframe {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-}
-
-.radio-player-container.radio-player-fb {
-    aspect-ratio: 16 / 9;
-    max-height: 70vh;
-}
-
-.radio-player-container.radio-player-fb iframe {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-.radio-player-footer {
-    padding: 0.75rem 1rem;
-    background: rgba(15, 23, 42, 0.5);
-    border-top: 1px solid rgba(255,255,255,0.05);
-    text-align: center;
-}
-
-.radio-player-toggle {
-    background: rgba(238, 188, 90, 0.15);
-    color: #EEBC5A;
-    border: 1px solid rgba(238, 188, 90, 0.3);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.radio-player-toggle:hover {
-    background: #EEBC5A;
-    color: #0f172a;
-}
-
-/* BLOCO 3: Grade */
-.radio-grade {
-    background: rgba(30, 41, 59, 0.6);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px;
-    padding: 1.5rem;
-    backdrop-filter: blur(10px);
-}
-
-.radio-grade-title {
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: #fff;
-    margin: 0 0 1rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.radio-grade-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.radio-grade-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.75rem 1rem;
-    background: rgba(15, 23, 42, 0.5);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 10px;
-    transition: all 0.3s ease;
-}
-
-.radio-grade-item.radio-grade-current {
-    background: rgba(238, 188, 90, 0.1);
-    border-color: rgba(238, 188, 90, 0.4);
-    box-shadow: 0 0 20px rgba(238, 188, 90, 0.15);
-}
-
-.radio-grade-time {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #EEBC5A;
-    min-width: 130px;
-    white-space: nowrap;
-}
-
-.radio-grade-sep {
-    opacity: 0.4;
-}
-
-.radio-grade-info {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex: 1;
-    min-width: 0;
-}
-
-.radio-grade-name {
-    color: #e2e8f0;
-    font-weight: 600;
-    font-size: 0.9rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.radio-grade-now {
-    color: #EEBC5A;
-    font-size: 0.7rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    animation: radioPulse 1.5s ease-in-out infinite;
-    white-space: nowrap;
-}
-
-@media (max-width: 640px) {
-    .radio-now-block { padding: 1rem; }
-    .radio-program-name { font-size: 1.2rem; }
-    .radio-grade-time { min-width: 100px; font-size: 0.75rem; }
-    .radio-grade-name { font-size: 0.8rem; }
-    .radio-whatsapp-btn { padding: 0.7rem 1rem; }
-}
-
-    #talentos-container {
-        gap: 0.75rem !important;
-    }
-}
-
+.avisos-carousel.single .aviso-dots { display: none; }
 
 /* ============================================================
    RADIO — PLAYER
@@ -2196,6 +1181,7 @@ behold-widget a { text-decoration: none; }
     display: block;
     width: 100%;
     height: 100%;
+    border: 0;
 }
 
 /* ============================================================
@@ -2305,26 +1291,482 @@ behold-widget a { text-decoration: none; }
         flex-direction: row;
         max-width: 600px;
     }
-    .radio-offline-btn {
-        flex: 1;
-    }
+    .radio-offline-btn { flex: 1; }
 }
 
 @media (max-width: 640px) {
-    .radio-offline-title {
-        font-size: 1.2rem;
+    .radio-offline-title { font-size: 1.2rem; }
+    .radio-offline-text { font-size: 0.85rem; }
+    .radio-offline-icon { width: 64px; height: 64px; font-size: 1.6rem; margin-bottom: 1rem; }
+    .radio-player-wrap { aspect-ratio: 4 / 3; min-height: 280px; }
+}
+
+/* ============================================================
+   RADIO — GRADE DE PROGRAMAÇÃO COM DESTAQUE
+   ============================================================ */
+
+.radio-grade-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.radio-grade-item:hover {
+    background: rgba(15, 23, 42, 0.75);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.radio-grade-item-active {
+    background: linear-gradient(90deg, rgba(238, 188, 90, 0.12) 0%, rgba(238, 188, 90, 0.04) 100%);
+    border-color: rgba(238, 188, 90, 0.5);
+    box-shadow: 0 0 24px -6px rgba(238, 188, 90, 0.4), inset 0 0 0 1px rgba(238, 188, 90, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.radio-grade-item-active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #EEBC5A;
+    box-shadow: 0 0 12px rgba(238, 188, 90, 0.8);
+}
+
+.radio-grade-time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #EEBC5A;
+    min-width: 140px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.radio-grade-time i {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.radio-grade-item-active .radio-grade-time {
+    color: #fff;
+}
+
+.radio-grade-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.radio-grade-name {
+    color: #e2e8f0;
+    font-weight: 600;
+    font-size: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.radio-grade-item-active .radio-grade-name {
+    color: #fff;
+    font-weight: 800;
+}
+
+.radio-grade-now-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #0f172a;
+    background: #EEBC5A;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    animation: radioNowPulse 1.8s ease-in-out infinite;
+    white-space: nowrap;
+}
+
+.radio-grade-now-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #0f172a;
+    animation: radioNowDot 1.2s ease-in-out infinite;
+}
+
+@keyframes radioNowPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(238, 188, 90, 0.6); }
+    50% { box-shadow: 0 0 0 8px rgba(238, 188, 90, 0); }
+}
+
+@keyframes radioNowDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
+}
+
+@media (max-width: 640px) {
+    .radio-grade-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.9rem 1rem;
     }
-    .radio-offline-text {
-        font-size: 0.85rem;
+    .radio-grade-time { min-width: auto; font-size: 0.8rem; }
+    .radio-grade-name { font-size: 0.95rem; white-space: normal; }
+    .radio-grade-now-badge { font-size: 0.6rem; padding: 0.25rem 0.6rem; }
+}
+
+/* ============================================================
+   TELA DE LOADING INICIAL
+   ============================================================ */
+
+.initial-loading {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    pointer-events: auto;
+}
+
+.initial-loading.is-hiding { opacity: 0; visibility: hidden; pointer-events: none; }
+.initial-loading.is-hidden { display: none; }
+
+.initial-loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 2rem;
+    text-align: center;
+}
+
+.initial-loading-logo-wrap {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.initial-loading-logo {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(238, 188, 90, 0.35));
+    animation: initialLogoPulse 2s ease-in-out infinite;
+    z-index: 2;
+}
+
+.initial-loading-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(238, 188, 90, 0.15);
+    border-top-color: #EEBC5A;
+    animation: initialRingSpin 1.1s linear infinite;
+    z-index: 1;
+}
+
+.initial-loading-ring::after {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border-radius: 50%;
+    border: 2px solid rgba(73, 73, 133, 0.35);
+    border-bottom-color: #494985;
+    animation: initialRingSpinReverse 1.8s linear infinite;
+}
+
+.initial-loading-text { display: flex; flex-direction: column; gap: 0.25rem; }
+
+.initial-loading-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.05em;
+}
+
+.initial-loading-subtitle {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.initial-loading-dots { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
+
+.initial-loading-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #EEBC5A;
+    animation: initialDotBounce 1.4s ease-in-out infinite;
+    opacity: 0.6;
+}
+
+.initial-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.initial-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes initialRingSpin { to { transform: rotate(360deg); } }
+@keyframes initialRingSpinReverse { to { transform: rotate(-360deg); } }
+@keyframes initialLogoPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(238, 188, 90, 0.35)); }
+    50% { transform: scale(1.06); filter: drop-shadow(0 0 30px rgba(238, 188, 90, 0.6)); }
+}
+@keyframes initialDotBounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+    40% { transform: translateY(-8px); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .initial-loading-logo,
+    .initial-loading-ring,
+    .initial-loading-ring::after,
+    .initial-loading-dots span { animation: none; }
+}
+
+/* ============================================================
+   TALENTOS — CARDS COM VÍDEO E IMAGEM
+   ============================================================ */
+
+.talent-video-card { position: relative; }
+
+.talent-video-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    overflow: hidden;
+    transition: aspect-ratio 0.3s ease;
+}
+
+.talent-video-iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    pointer-events: none;
+    transform-origin: center center;
+    transition: transform 0.3s ease;
+}
+
+.talent-video-iframe.zoom-horizontal { transform: scale(1.35); }
+.talent-video-iframe.zoom-vertical { transform: scale(1.05); }
+
+.talent-video-wrap:hover .talent-video-iframe { transform: scale(1.4); }
+
+.talent-video-wrap[style*="9 / 16"]:hover .talent-video-iframe,
+.talent-video-wrap[style*="9/16"]:hover .talent-video-iframe { transform: scale(1.1); }
+
+.talent-image-card { position: relative; }
+
+.talent-image-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #0a0a0a;
+    overflow: hidden;
+}
+
+.talent-image-el {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center 25%;
+    transition: transform 0.5s ease;
+}
+
+.talent-image-card:hover .talent-image-el { transform: scale(1.05); }
+
+#talent-video-modal.hidden { display: none; }
+#talent-video-modal { display: flex; align-items: center; justify-content: center; }
+
+#talent-video-box { transition: transform 0.3s ease, aspect-ratio 0.3s ease, max-width 0.3s ease; }
+
+#talent-video-container iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+@media (max-width: 640px) {
+    .talent-video-wrap .group-hover\:opacity-100 {
+        opacity: 0.85 !important;
+        background: transparent !important;
     }
-    .radio-offline-icon {
-        width: 64px;
-        height: 64px;
-        font-size: 1.6rem;
-        margin-bottom: 1rem;
-    }
-    .radio-player-wrap {
-        aspect-ratio: 4 / 3;
-        min-height: 280px;
-    }
+}
+
+/* ============================================================
+   YOUTUBE — GRADE DE VÍDEOS RECENTES
+   ============================================================ */
+
+#youtube-recent-section.hidden { display: none; }
+
+.yt-card {
+    display: flex;
+    flex-direction: column;
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+}
+
+.yt-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(238, 188, 90, 0.3);
+    box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+}
+
+.yt-card:active { transform: scale(0.98); }
+
+.yt-card-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #0a0a0a;
+    overflow: hidden;
+}
+
+.yt-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.yt-card:hover .yt-card-thumb img { transform: scale(1.05); }
+
+.yt-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.yt-card:hover .yt-card-overlay { opacity: 1; }
+
+.yt-card-play {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #ff0000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 20px rgba(255, 0, 0, 0.5);
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.yt-card:hover .yt-card-play { transform: scale(1); }
+
+.yt-card-info {
+    padding: 0.75rem 0.9rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex-grow: 1;
+}
+
+.yt-card-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.3;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (min-width: 768px) {
+    .yt-card-title { font-size: 0.95rem; }
+}
+
+.yt-card-meta {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.yt-skeleton {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.03) 100%
+    );
+    background-size: 200% 100%;
+    border-radius: 14px;
+    animation: ytSkeletonPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes ytSkeletonPulse {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ============================================================
+   HERO — FALLBACK VAZIO
+   ============================================================ */
+
+#site-hero[src=""] { background: #0f172a; }
+
+#hero-badge:empty,
+#hero-title:empty,
+#hero-description:empty { display: none; }
+
+#hero-content:not(.pos-left):not(.pos-center):not(.pos-right):not(.pos-custom) { opacity: 0; }
+
+#hero-content.pos-left,
+#hero-content.pos-center,
+#hero-content.pos-right,
+#hero-content.pos-custom {
+    opacity: 1;
+    transition: opacity 0.2s ease-in;
 }
