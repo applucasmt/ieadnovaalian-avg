@@ -76,7 +76,6 @@ window.renderRadioPage = async () => {
             window.__radioState.carregado = true;
         }
     }
-
     window.renderRadioContent();
 };
 
@@ -100,13 +99,16 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 2. Player (Facebook OU Rádio OU card offline)
-    // ✅ CORREÇÃO: botão "Ouvir Rádio" + botão "Voltar pra Live"
+    // 2. Player
+    // ✅ REGRA:
+    //   - Se está ao vivo E o usuário NÃO escolheu rádio → Facebook Live
+    //   - Caso contrário → player da rádio (nazarenofm.com) SEMPRE
     // ---------------------------------------------
     const playerContent = document.getElementById('radio-player-content');
     if (playerContent) {
-        if (isLive && !state.userChoseRadio) {
-            // Está ao vivo E usuário NÃO escolheu ouvir rádio → Facebook
+        const showFacebook = isLive && !state.userChoseRadio;
+
+        if (showFacebook) {
             const raw = String(liveCfg.facebookLiveUrl).trim();
             let fbHtml = '';
 
@@ -126,39 +128,24 @@ window.renderRadioContent = () => {
 
             playerContent.innerHTML =
                 fbHtml +
-                '<button id="radio-toggle-live-btn" class="radio-toggle-live-btn" onclick="window.toggleRadioPlayer()">' +
+                '<button class="radio-toggle-live-btn" onclick="window.toggleRadioPlayer()">' +
                     '<i class="fas fa-radio"></i> Ouvir somente a Rádio' +
                 '</button>';
-        } else if (isLive && state.userChoseRadio) {
-            // Está ao vivo, mas usuário escolheu ouvir rádio → player da rádio
+        } else {
+            // ✅ Player da rádio (nazarenofm.com) — SEMPRE disponível
             playerContent.innerHTML =
-                '<div class="radio-audio-player">' +
-                    '<div class="radio-audio-icon"><i class="fas fa-broadcast-tower"></i></div>' +
-                    '<h3 class="radio-audio-title">Rádio Nazareno FM</h3>' +
-                    '<p class="radio-audio-text">Você está ouvindo apenas a rádio. A transmissão ao vivo continua disponível.</p>' +
-                    '<a href="https://nazarenofm.com" target="_blank" rel="noopener" class="radio-audio-play-btn">' +
-                        '<i class="fas fa-play"></i> Abrir Player da Rádio' +
-                    '</a>' +
+                '<iframe ' +
+                    'id="radio-iframe" ' +
+                    'src="https://nazarenofm.com/" ' +
+                    'title="Rádio Nazareno FM" ' +
+                    'style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;" ' +
+                    'allow="autoplay">' +
+                '</iframe>' +
+                (isLive ?
                     '<button class="radio-toggle-live-btn" onclick="window.toggleRadioPlayer()">' +
                         '<i class="fas fa-tv"></i> Voltar para a Transmissão ao Vivo' +
-                    '</button>' +
-                '</div>';
-        } else {
-            // Não está ao vivo → card offline
-            playerContent.innerHTML =
-                '<div class="radio-offline-card">' +
-                    '<div class="radio-offline-icon"><i class="fas fa-broadcast-tower"></i></div>' +
-                    '<h3 class="radio-offline-title">A Rádio está fora do ar</h3>' +
-                    '<p class="radio-offline-text">Nenhuma transmissão no momento. Confira a programação abaixo ou abra o Facebook da rádio.</p>' +
-                    '<div class="radio-offline-buttons">' +
-                        '<a href="https://www.facebook.com/nazarenofm107.9" target="_blank" rel="noopener" class="radio-offline-btn radio-offline-btn-facebook">' +
-                            '<i class="fab fa-facebook-f"></i> Abrir Facebook da Rádio' +
-                        '</a>' +
-                        '<a href="https://nazarenofm.com" target="_blank" rel="noopener" class="radio-offline-btn radio-offline-btn-site">' +
-                            '<i class="fas fa-globe"></i> Acessar nazarenofm.com' +
-                        '</a>' +
-                    '</div>' +
-                '</div>';
+                    '</button>'
+                    : '');
         }
     }
 
