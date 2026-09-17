@@ -1110,93 +1110,46 @@ behold-widget a { text-decoration: none; }
     border: 0;
 }
 
-/* ============================================================
-   RADIO — CARD "OFFLINE"
-   ============================================================ */
-
-.radio-offline-card {
+/* ✅ BOTÃO DE ALTERNÂNCIA (Live ↔ Rádio) */
+.radio-toggle-live-btn {
     position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    text-align: center;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-}
-
-.radio-offline-icon {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: rgba(238, 188, 90, 0.15);
-    border: 2px solid rgba(238, 188, 90, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    color: #EEBC5A;
-    margin-bottom: 1.5rem;
-    animation: radioOfflinePulse 2s ease-in-out infinite;
-}
-
-@keyframes radioOfflinePulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(238, 188, 90, 0.4); }
-    50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(238, 188, 90, 0); }
-}
-
-.radio-offline-title { font-size: 1.5rem; font-weight: 800; color: #fff; margin: 0 0 0.75rem 0; }
-.radio-offline-text { font-size: 0.95rem; color: #94a3b8; max-width: 480px; margin: 0 0 2rem 0; line-height: 1.6; }
-.radio-offline-buttons { display: flex; flex-direction: column; gap: 0.75rem; width: 100%; max-width: 320px; }
-
-.radio-offline-btn {
+    bottom: 1rem;
+    right: 1rem;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    padding: 0.9rem 1.25rem;
-    border-radius: 12px;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: rgba(238, 188, 90, 0.9);
+    backdrop-filter: blur(10px);
+    color: #0f172a;
     font-weight: 700;
-    font-size: 0.9rem;
-    text-decoration: none;
-    transition: all 0.3s ease;
+    font-size: 0.8rem;
+    border-radius: 999px;
+    border: none;
     cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(238, 188, 90, 0.4);
+    z-index: 30;
+    white-space: nowrap;
 }
 
-.radio-offline-btn-facebook {
-    background: #1877F2;
-    color: #fff;
-    box-shadow: 0 4px 20px rgba(24, 119, 242, 0.3);
-}
-.radio-offline-btn-facebook:hover {
-    background: #166fe5;
+.radio-toggle-live-btn:hover {
+    background: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(24, 119, 242, 0.5);
-}
-.radio-offline-btn-site {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-}
-.radio-offline-btn-site:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(238, 188, 90, 0.6);
 }
 
-@media (min-width: 640px) {
-    .radio-offline-buttons { flex-direction: row; max-width: 600px; }
-    .radio-offline-btn { flex: 1; }
-}
 @media (max-width: 640px) {
-    .radio-offline-title { font-size: 1.2rem; }
-    .radio-offline-text { font-size: 0.85rem; }
-    .radio-offline-icon { width: 64px; height: 64px; font-size: 1.6rem; margin-bottom: 1rem; }
-    .radio-player-wrap { aspect-ratio: 4 / 3; min-height: 280px; }
+    .radio-toggle-live-btn {
+        bottom: 0.5rem;
+        right: 0.5rem;
+        padding: 0.5rem 0.85rem;
+        font-size: 0.7rem;
+    }
 }
 
 /* ============================================================
-   RADIO — GRADE EM 2 COLUNAS COM DESTAQUE
+   RADIO — GRID 2 COLUNAS
    ============================================================ */
 
 .radio-grid {
@@ -1321,7 +1274,7 @@ behold-widget a { text-decoration: none; }
 }
 
 /* ============================================================
-   DESTAQUE — CARD GRANDE DO PROGRAMA ATUAL
+   DESTAQUE
    ============================================================ */
 
 .radio-now-highlight-card {
