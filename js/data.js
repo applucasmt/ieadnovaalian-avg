@@ -1,9 +1,5 @@
 // ============================================================
 // IEAD NOVA ALIANÇA - SISTEMA DE DADOS E CACHE
-// ✅ Cache desligado para conteúdo.
-// ✅ Config com pré-carregamento de imagem.
-// ✅ Polling adaptativo por hash (?action=ping) a cada 15s.
-// ✅ Helpers de YouTube (extrair ID, montar embed, detectar proporção).
 // ============================================================
 
 window.CACHE_ENABLED_KEYS = [];
@@ -247,7 +243,6 @@ window.loadData = async (force) => {
             );
         }
 
-        // Ajusta proporção dos cards de talento (se houver)
         if (typeof window.adjustTalentVideoCards === 'function') {
             setTimeout(() => window.adjustTalentVideoCards(), 100);
         }
@@ -514,7 +509,7 @@ window.broadcastDataChanged = () => {
 };
 
 // ============================================================
-// TELA DE LOADING — esconder quando o site está pronto
+// TELA DE LOADING
 // ============================================================
 window.hideInitialLoading = () => {
     const el = document.getElementById('initial-loading');
@@ -581,20 +576,103 @@ window.buildYouTubeEmbed = (videoId, options) => {
     return 'https://www.youtube.com/embed/' + videoId + '?' + params.join('&');
 };
 
-// Detecta a proporção (16:9 ou 9:16) de uma thumbnail do YouTube
+// ============================================================
+// ✅ DETECÇÃO DE PROPORÇÃO DO YOUTUBE
+// ------------------------------------------------------------
+// Estratégia:
+//   1. Tenta carregar "maxresdefault.jpg" (1280x720)
+//   2. Se carregar E tiver largura >= 1000px → é 16:9 (horizontal)
+//   3. Se carregar com largura menor (é o "hq720.jpg" de shorts,
+//      que fica 720x1280 mas o YouTube às vezes devolve 480x360)
+//      → checa a proporção real
+//   4. Se NÃO carregar (maxres não existe para shorts) →
+//      tenta "oar2.jpg" (que é específica de shorts 9:16)
+//   5. Se nada funcionar → assume 16:9
+// ============================================================
 window.detectYouTubeAspect = (videoId) => {
     return new Promise((resolve) => {
+        let resolved = false;
+        const finish = (ratio) => {
+            if (resolved) return;
+            resolved = true;
+            resolve(ratio);
+        };
+
+        // Timeout de segurança
+        setTimeout(() => finish('16 / 9'), 3000);
+
+        // Tentativa 1: maxresdefault (1280x720) — só existe para vídeos horizontais
+        const img1 = new Image();
+        img1.onload = () => {
+            if (img1.naturalWidth >= 1000) {
+                // Maxres real → horizontal 16:9
+                finish('16 / 9');
+            } else {
+                // Maxres não é real (é fallback) → tenta oar2.jpg
+                tryOar2();
+            }
+        };
+        img1.onerror = () => {
+            // maxres não existe → pode ser short
+            tryOar2();
+        };
+        img1.src = 'https://i.ytimg.com/vi/' + videoId + '/maxresdefault.jpg';
+
+        // Tentativa 2: oar2.jpg — específica de shorts verticais (1080x1920)
+        const tryOar2 = () => {
+            const img2 = new Image();
+            img2.onload = () => {
+                const w = img2.naturalWidth;
+                const h = img2.naturalHeight;
+                if (w && h && h > w) {
+                    // Vertical (short) → 9:16
+                    finish('9 / 16');
+                } else {
+                    // Horizontal
+                    finish('16 / 9');
+                }
+            };
+            img2.onerror = () => {
+                // Não tem oar2 → provavelmente horizontal normal
+                finish('16 / 9');
+            };
+            img2.src = 'https://i.ytimg.com/vi/' + videoId + '/oar2.jpg';
+        };
+    });
+};
+
+// ============================================================
+// ✅ DETECÇÃO DE PROPORÇÃO DE IMAGEM QUALQUER (para talentos com capa)
+// Retorna Promise que resolve com "W / H" da imagem.
+// ============================================================
+window.detectImageAspect = (url) => {
+    return new Promise((resolve) => {
+        if (!url || typeof url !== 'string' || !url.trim()) {
+            resolve(null);
+            return;
+        }
+
+        let done = false;
+        const finish = (ratio) => {
+            if (done) return;
+            done = true;
+            resolve(ratio);
+        };
+
+        // Timeout de segurança
+        setTimeout(() => finish(null), 4000);
+
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.onload = () => {
-            const ratio = img.naturalWidth / img.naturalHeight;
-            if (ratio < 1) resolve('9 / 16');
-            else resolve('16 / 9');
+            if (img.naturalWidth && img.naturalHeight) {
+                finish(img.naturalWidth + ' / ' + img.naturalHeight);
+            } else {
+                finish(null);
+            }
         };
-        img.onerror = () => {
-            resolve('9 / 16');
-        };
-        img.src = 'https://i.ytimg.com/vi/' + videoId + '/maxresdefault.jpg';
+        img.onerror = () => finish(null);
+        img.src = url;
     });
 };
 
