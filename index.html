@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>IEAD Setor Nova Aliança</title>
-    <link rel="shortcut icon" href="https://i.ibb.co/vCw82LjW/Logo-IEAD.webp" type="image/webp">
-    <link rel="icon" href="https://i.ibb.co/vCw82LjW/Logo-IEAD.webp" type="image/webp">
+    <link rel="shortcut icon" href="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp" type="image/webp">
+    <link rel="icon" href="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp" type="image/webp">
 
     <meta name="description" content="Site oficial da Igreja Evangélica Assembleia de Deus, Setor Jardim Nova Aliança.">
     <meta property="og:title" content="IEAD Setor Nova Aliança">
     <meta property="og:description" content="Fazendo discípulos, cuidando de vidas e impactando a nossa geração.">
-    <meta property="og:image" content="https://i.ibb.co/vCw82LjW/Logo-IEAD.webp">
+    <meta property="og:image" content="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="pt_BR">
 
@@ -55,32 +55,28 @@
 </head>
 <body class="antialiased selection:bg-brand-yellow/30 selection:text-brand-yellow">
 
-<!-- ============================================================
-     TELA DE LOADING INICIAL
-     Aparece enquanto os dados carregam. Some quando o site
-     está pronto (ou depois de 5s de segurança).
-     ============================================================ -->
-<div id="initial-loading" class="initial-loading">
-    <div class="initial-loading-content">
-        <div class="initial-loading-logo-wrap">
-            <img
-                src="https://i.ibb.co/vCw82LjW/Logo-IEAD.webp"
-                alt="IEAD Nova Aliança"
-                class="initial-loading-logo"
-                onerror="this.style.display='none'"
-            >
-            <div class="initial-loading-ring"></div>
-        </div>
-        <div class="initial-loading-text">
-            <span class="initial-loading-title">IEAD Nova Aliança</span>
-            <span class="initial-loading-subtitle">Carregando...</span>
-        </div>
-        <div class="initial-loading-dots">
-            <span></span><span></span><span></span>
+    <!-- TELA DE LOADING INICIAL -->
+    <div id="initial-loading" class="initial-loading">
+        <div class="initial-loading-content">
+            <div class="initial-loading-logo-wrap">
+                <img
+                    src="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp"
+                    alt="IEAD Nova Aliança"
+                    class="initial-loading-logo"
+                    onerror="this.style.display='none'"
+                >
+                <div class="initial-loading-ring"></div>
+            </div>
+            <div class="initial-loading-text">
+                <span class="initial-loading-title">IEAD Nova Aliança</span>
+                <span class="initial-loading-subtitle">Carregando...</span>
+            </div>
+            <div class="initial-loading-dots">
+                <span></span><span></span><span></span>
+            </div>
         </div>
     </div>
-</div>
-    
+
     <!-- MODAL DE DETALHES DO EVENTO -->
     <div id="event-modal" class="fixed inset-0 z-[60] hidden opacity-0 transition-opacity duration-300" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="window.closeEventModal()"></div>
@@ -106,30 +102,44 @@
         </div>
     </div>
 
+    <!-- MODAL DE VÍDEO DO TALENTO -->
+    <div id="talent-video-modal" class="fixed inset-0 z-[85] hidden opacity-0 transition-opacity duration-300" aria-modal="true" role="dialog">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-sm" onclick="window.closeTalentVideoModal()"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
+            <div id="talent-video-box" class="relative w-full max-w-5xl bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10 pointer-events-auto transform scale-95 transition-all duration-300"
+                 style="aspect-ratio: 16 / 9; max-height: 90vh;">
+                <button onclick="window.closeTalentVideoModal()"
+                        class="absolute top-4 right-4 z-20 bg-black/70 hover:bg-red-600 text-white w-11 h-11 rounded-full flex items-center justify-center transition-all backdrop-blur-md border border-white/20 shadow-lg">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+                <div id="talent-video-container" class="w-full h-full"></div>
+                <div id="talent-video-title" class="absolute bottom-0 left-0 right-0 p-4 sm:p-6 bg-gradient-to-t from-black/90 to-transparent text-white pointer-events-none">
+                    <div class="text-xs text-brand-yellow font-bold tracking-widest uppercase mb-1">TALENTO</div>
+                    <div id="talent-video-name" class="text-lg sm:text-2xl font-bold"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DO MARKETING (Popup de Detalhes) -->
     <div id="marketing-modal" class="fixed inset-0 z-[75] hidden items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="window.closeMarketingModal()"></div>
         <div class="marketing-modal-content" id="marketing-modal-box">
 
-            <!-- Botão Fechar -->
             <button onclick="window.closeMarketingModal()" class="marketing-modal-close">
                 <i class="fas fa-times"></i>
             </button>
 
-            <!-- Conteúdo com scroll -->
             <div class="marketing-modal-scroll">
-                <!-- Imagem -->
                 <div class="marketing-modal-image">
                     <img id="marketing-modal-img" src="" alt="Cartaz do evento">
                 </div>
 
-                <!-- Informações -->
                 <div class="marketing-modal-info">
                     <div class="marketing-modal-category">EVENTO ESPECIAL</div>
                     <h2 id="marketing-modal-title" class="marketing-modal-title"></h2>
                     <p id="marketing-modal-desc" class="marketing-modal-desc"></p>
 
-                    <!-- Botão Whatsapp -->
                     <a id="marketing-modal-whatsapp" href="#" target="_blank" class="marketing-modal-whatsapp-btn">
                         <i class="fab fa-whatsapp text-xl"></i> Solicitar Cartaz via WhatsApp
                     </a>
@@ -226,7 +236,7 @@
             <nav class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
                 <a href="#" data-page="igreja" class="nav-link flex items-center gap-3 group active:scale-95 transition-transform">
                     <div class="relative">
-                        <img id="site-logo" src="https://i.ibb.co/vCw82LjW/Logo-IEAD.webp" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300">
+                        <img id="site-logo" src="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-lg transition-transform group-hover:scale-110 duration-300">
                         <div class="absolute inset-0 bg-brand-yellow blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
                     </div>
                     <div class="flex flex-col">
@@ -283,16 +293,12 @@
             <div id="igreja-page" class="page-content">
                 <section class="hero-section relative flex items-center justify-center overflow-hidden">
                     <div class="absolute inset-0 z-0">
-                        <!-- ✅ CORREÇÃO: src vazio. JS aplica a imagem correta. -->
-                        <img id="site-hero" src="" alt="Deus Seja Louvado">
+                        <img id="site-hero" src="" alt="Interior da Igreja">
                         <div class="absolute inset-0 bg-[#0f172a]/50"></div>
                     </div>
                     <div id="hero-content" class="hero-content">
-                        <!-- ✅ CORREÇÃO: badge vazio -->
                         <div class="preview-badge" id="hero-badge" style="background: rgba(238,188,90,0.15); border: 1px solid rgba(238,188,90,0.3); color: #EEBC5A; padding: 0.25rem 1rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; backdrop-filter: blur(8px); display: none;"></div>
-                        <!-- ✅ CORREÇÃO: título vazio -->
                         <h1 class="text-4xl xs:text-5xl sm:text-7xl md:text-8xl font-bold text-white tracking-tight mb-4 sm:mb-6 leading-tight drop-shadow-lg" id="hero-title"></h1>
-                        <!-- ✅ CORREÇÃO: descrição vazia -->
                         <p class="text-base sm:text-xl text-gray-300 font-light max-w-2xl mb-8 sm:mb-10 leading-relaxed" id="hero-description"></p>
                         <div class="flex flex-col sm:flex-row gap-4">
                             <button onclick="window.switchPage('aovivo')" class="bg-brand-yellow text-brand-dark font-bold py-3 sm:py-4 px-8 rounded-full active:scale-95 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(238,188,90,0.4)] flex justify-center items-center gap-2">
@@ -307,15 +313,10 @@
 
                 <div id="main-content-wrapper" class="container mx-auto px-4 sm:px-6 pt-6 pb-10 sm:py-16">
 
-                    <!-- ============================================================ -->
-                    <!-- CARROSSEL DE AVISOS (estilo Disney/Netflix)                  -->
-                    <!-- ============================================================ -->
                     <div id="avisos-carousel" class="avisos-carousel hidden">
                         <div class="avisos-slides" id="avisos-slides">
-                            <!-- Slides injetados via JS -->
                         </div>
 
-                        <!-- Controles (só aparecem se tiver 2+ avisos) -->
                         <button id="aviso-prev" class="aviso-nav aviso-prev" aria-label="Aviso anterior">
                             <i class="fas fa-chevron-left"></i>
                         </button>
@@ -323,10 +324,8 @@
                             <i class="fas fa-chevron-right"></i>
                         </button>
 
-                        <!-- Indicadores -->
                         <div id="aviso-dots" class="aviso-dots"></div>
                     </div>
-                    <!-- ============================================================ -->
 
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4 mt-16 sm:mt-20">
                         <div>
@@ -337,9 +336,6 @@
                     </div>
                     <div id="upcoming-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-16 sm:mb-24"></div>
 
-                    <!-- ============================================================ -->
-                    <!-- SEÇÃO INSTAGRAM - WIDGET PRÓPRIO                             -->
-                    <!-- ============================================================ -->
                     <section id="instagram-section" class="mt-12 sm:mt-16">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
                             <div>
@@ -365,12 +361,10 @@
                             <div id="instagram-feed"></div>
                         </div>
                     </section>
-                    <!-- ============================================================ -->
 
                 </div>
             </div>
 
-            <!-- PÁGINA MARKETING -->
             <div id="marketing-page" class="page-content hidden w-full h-full animate-fade-in">
                 <div class="marketing-container-v2">
 
@@ -476,59 +470,52 @@
                 </div>
             </div>
 
-         <div id="aovivo-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
-    <div class="max-w-5xl mx-auto">
-        <div class="text-center mb-10 sm:mb-12">
-            <span class="inline-block px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm font-bold mb-4 animate-pulse">EM TEMPO REAL</span>
-            <h1 class="text-3xl sm:text-5xl font-bold text-white">Culto Online</h1>
-        </div>
-
-        <!-- PLAYER AO VIVO -->
-        <div id="live-container" class="glass-panel p-2 sm:p-4 rounded-2xl shadow-2xl bg-black/50 min-h-[300px] flex items-center justify-center border border-white/10">
-            <div class="text-center animate-pulse">
-                <i class="fas fa-circle-notch fa-spin text-4xl text-brand-yellow mb-4"></i>
-                <p class="text-gray-400">Verificando status da transmissão...</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================================
-         VÍDEOS RECENTES DO YOUTUBE
-         Buscados via YouTube Data API v3.
-         ============================================================ -->
-    <section id="youtube-recent-section" class="max-w-5xl mx-auto mt-12 sm:mt-16 hidden">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
-            <div>
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-red-600 flex items-center justify-center shadow-lg">
-                        <i class="fab fa-youtube text-white text-xl sm:text-2xl"></i>
+            <div id="aovivo-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
+                <div class="max-w-5xl mx-auto">
+                    <div class="text-center mb-10 sm:mb-12">
+                        <span class="inline-block px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm font-bold mb-4 animate-pulse">EM TEMPO REAL</span>
+                        <h1 class="text-3xl sm:text-5xl font-bold text-white">Culto Online</h1>
                     </div>
-                    <div>
-                        <h2 class="text-2xl sm:text-3xl font-bold text-white leading-tight">Últimos Cultos</h2>
-                        <a href="https://www.youtube.com/@ieadsetornovaalianca" target="_blank" class="text-brand-yellow hover:text-white transition-colors text-sm font-medium flex items-center gap-1">
-                            Ver canal completo <i class="fas fa-external-link-alt text-xs"></i>
-                        </a>
+
+                    <div id="live-container" class="glass-panel p-2 sm:p-4 rounded-2xl shadow-2xl bg-black/50 min-h-[300px] flex items-center justify-center border border-white/10">
+                        <div class="text-center animate-pulse">
+                            <i class="fas fa-circle-notch fa-spin text-4xl text-brand-yellow mb-4"></i>
+                            <p class="text-gray-400">Verificando status da transmissão...</p>
+                        </div>
                     </div>
                 </div>
-                <div class="h-1 w-20 bg-brand-yellow rounded-full mt-2"></div>
-            </div>
-            <a href="https://www.youtube.com/@ieadsetornovaalianca?sub_confirmation=1" target="_blank" class="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-bold px-5 py-2.5 rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg text-sm">
-                <i class="fab fa-youtube text-lg"></i> Inscrever-se
-            </a>
-        </div>
 
-        <!-- Container onde os vídeos são injetados pelo JS -->
-        <div id="youtube-recent-container" class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
-            <!-- Loading skeleton (substituído pelo JS) -->
-            <div class="yt-skeleton"></div>
-            <div class="yt-skeleton"></div>
-            <div class="yt-skeleton"></div>
-            <div class="yt-skeleton"></div>
-            <div class="yt-skeleton"></div>
-            <div class="yt-skeleton"></div>
-        </div>
-    </section>
-</div>
+                <section id="youtube-recent-section" class="max-w-5xl mx-auto mt-12 sm:mt-16 hidden">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
+                        <div>
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-red-600 flex items-center justify-center shadow-lg">
+                                    <i class="fab fa-youtube text-white text-xl sm:text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-2xl sm:text-3xl font-bold text-white leading-tight">Últimos Cultos</h2>
+                                    <a href="https://www.youtube.com/@ieadsetornovaalianca" target="_blank" class="text-brand-yellow hover:text-white transition-colors text-sm font-medium flex items-center gap-1">
+                                        Ver canal completo <i class="fas fa-external-link-alt text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="h-1 w-20 bg-brand-yellow rounded-full mt-2"></div>
+                        </div>
+                        <a href="https://www.youtube.com/@ieadsetornovaalianca?sub_confirmation=1" target="_blank" class="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-bold px-5 py-2.5 rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg text-sm">
+                            <i class="fab fa-youtube text-lg"></i> Inscrever-se
+                        </a>
+                    </div>
+
+                    <div id="youtube-recent-container" class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
+                        <div class="yt-skeleton"></div>
+                        <div class="yt-skeleton"></div>
+                        <div class="yt-skeleton"></div>
+                        <div class="yt-skeleton"></div>
+                        <div class="yt-skeleton"></div>
+                        <div class="yt-skeleton"></div>
+                    </div>
+                </section>
+            </div>
 
             <div id="gallery-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="text-center mb-10 sm:mb-12">
@@ -595,7 +582,7 @@
             <div class="container mx-auto px-4 sm:px-6">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
                     <div class="text-center md:text-left">
-                        <img id="footer-logo" src="https://i.ibb.co/vCw82LjW/Logo-IEAD.webp" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all">
+                        <img id="footer-logo" src="https://i.ibb.co/tTdPYKbq/imgi-23-LOGO-OFICIAL.webp" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto md:mx-0 mb-4 opacity-80 grayscale hover:grayscale-0 transition-all">
                         <h3 class="font-bold text-white text-lg">IEAD Jardim Nova Aliança</h3>
                         <p class="text-gray-500 text-sm mt-2 max-w-xs mx-auto md:mx-0">Levando a palavra de Deus e transformando vidas através do amor de Cristo.</p>
                     </div>
