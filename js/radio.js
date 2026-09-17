@@ -63,12 +63,17 @@ window.getCurrentRadioProgram = (programas) => {
 // RENDERIZAR PÁGINA
 // ============================================================
 window.renderRadioPage = async () => {
+    console.log('📻 renderRadioPage chamado');
+
     if (!window.__radioState.carregado) {
         try {
             const [programas, liveConfig] = await Promise.all([
                 window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=radio', 'cache_radio_v2', true),
                 window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=config_radio', 'cache_config_radio_v2', true)
             ]);
+
+            console.log('📻 Programas recebidos:', programas);
+            console.log('📻 Live config recebido:', liveConfig);
 
             window.__radioState.programas = Array.isArray(programas) ? programas : [];
             window.__radioState.liveConfig = (Array.isArray(liveConfig) && liveConfig[0]) ? liveConfig[0] : { facebookLiveUrl: '', isLive: 'false' };
@@ -90,6 +95,8 @@ window.renderRadioContent = () => {
 
     const currentProgram = window.getCurrentRadioProgram(programasArr);
     state.currentProgram = currentProgram;
+
+    console.log('📻 Renderizando. Programas:', programasArr.length, '| Atual:', currentProgram ? currentProgram.programa : 'nenhum');
 
     // ---------------------------------------------
     // 1. Status no topo (badge)
@@ -122,20 +129,31 @@ window.renderRadioContent = () => {
 
     // ---------------------------------------------
     // 3. Player (Facebook Live OU card "offline")
+    // ✅ AGORA RECEBE O CÓDIGO DE INCORPORAÇÃO COMPLETO
     // ---------------------------------------------
     const playerContent = document.getElementById('radio-player-content');
     if (playerContent) {
-        if (isLive) {
-            // Está ao vivo → iframe do Facebook
-            const fbUrl = encodeURIComponent(liveCfg.facebookLiveUrl);
-            playerContent.innerHTML =
-                '<iframe ' +
-                    'src="https://www.facebook.com/plugins/video.php?href=' + fbUrl + '&show_text=false&width=560&height=315" ' +
-                    'style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;" ' +
-                    'scrolling="no" frameborder="0" ' +
-                    'allowfullscreen="true" ' +
-                    'allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">' +
-                '</iframe>';
+        if (isLive && liveCfg.facebookLiveUrl) {
+            // Se for HTML completo (iframe), injeta direto
+            const raw = String(liveCfg.facebookLiveUrl).trim();
+
+            if (raw.indexOf('<iframe') !== -1) {
+                // É código de incorporação completo
+                playerContent.innerHTML = raw;
+            } else if (raw.indexOf('http') === 0) {
+                // É URL crua → converte para embed
+                const fbUrl = encodeURIComponent(raw);
+                playerContent.innerHTML =
+                    '<iframe ' +
+                        'src="https://www.facebook.com/plugins/video.php?href=' + fbUrl + '&show_text=false&width=560&height=315" ' +
+                        'style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;" ' +
+                        'scrolling="no" frameborder="0" ' +
+                        'allowfullscreen="true" ' +
+                        'allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">' +
+                    '</iframe>';
+            } else {
+                playerContent.innerHTML = '<p class="text-red-400">URL/HTML inválido.</p>';
+            }
         } else {
             // Não está ao vivo → card bonito com botão
             playerContent.innerHTML =
@@ -158,7 +176,7 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 4. Toggle (só aparece quando está ao vivo)
+    // 4. Toggle
     // ---------------------------------------------
     const toggleWrapper = document.getElementById('radio-toggle-wrapper');
     if (toggleWrapper) {
@@ -167,7 +185,7 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 5. WhatsApp (número do programa atual)
+    // 5. WhatsApp
     // ---------------------------------------------
     const whatsappBtn = document.getElementById('radio-whatsapp-btn');
     const whatsappLabel = document.getElementById('radio-whatsapp-label');
@@ -219,6 +237,18 @@ window.addEventListener('storage', (event) => {
             window.renderRadioPage();
         }
     }
+});
+
+// ============================================================
+// AUTO-INICIALIZA QUANDO A PÁGINA CARREGA
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const radioPage = document.getElementById('radio-page');
+        if (radioPage && !radioPage.classList.contains('hidden')) {
+            window.renderRadioPage();
+        }
+    }, 500);
 });
 
 console.log('📻 radio.js carregado');
