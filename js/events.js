@@ -114,13 +114,56 @@ window.createCard = (data, type) => {
                 '</div>';
     }
 
+    // ============================================================
+    // TALENTO — com vídeo em background quando tiver link
+    // ============================================================
     if (type === 'talento') {
-        const optimizedCapa = window.optimizeImage(data.capa, 600);
         const safeNome = escapeHtml(data.nome || '');
         const safeDescricao = escapeHtml(data.descricao || 'Sem descrição.');
         const safeTelefone = String(data.telefone || '').replace(/\D/g, '');
-        const safeVideo = escapeHtml(data.video || '');
+        const videoId = window.extractYouTubeId(data.video);
 
+        if (videoId) {
+            const embedUrl = window.buildYouTubeEmbed(videoId, {
+                autoplay: true, mute: true, loop: true, controls: false
+            });
+
+            return '<div class="talent-video-card glass-panel rounded-2xl overflow-hidden group active:scale-95 transition-all flex flex-col h-full relative" ' +
+                        'data-video-id="' + videoId + '">' +
+                        '<div class="talent-video-wrap relative w-full overflow-hidden bg-black cursor-pointer" ' +
+                            'onclick="window.openTalentVideoModal(\'' + videoId + '\', \'' + safeNome.replace(/'/g, "\\'") + '\')">' +
+                            '<iframe ' +
+                                'class="talent-video-iframe absolute inset-0 w-full h-full pointer-events-none" ' +
+                                'src="' + embedUrl + '" ' +
+                                'frameborder="0" ' +
+                                'allow="autoplay; encrypted-media; picture-in-picture" ' +
+                                'allowfullscreen>' +
+                            '</iframe>' +
+                            '<div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent pointer-events-none"></div>' +
+                            '<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">' +
+                                '<div class="bg-brand-yellow text-brand-dark px-5 py-3 rounded-full font-bold flex items-center gap-2 shadow-2xl transform scale-95 group-hover:scale-100 transition-transform">' +
+                                    '<i class="fas fa-play"></i> Assistir com Som' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="absolute bottom-4 left-4 right-4 z-10 pointer-events-none">' +
+                                '<h3 class="text-2xl font-bold text-white mb-1 drop-shadow-lg">' + safeNome + '</h3>' +
+                                '<div class="h-1 w-12 bg-brand-yellow rounded-full"></div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="p-6 flex flex-col flex-grow">' +
+                            '<p class="text-gray-300 text-sm mb-6 flex-grow leading-relaxed">' + safeDescricao + '</p>' +
+                            '<div class="flex flex-col gap-3">' +
+                                '<button onclick="window.openTalentVideoModal(\'' + videoId + '\', \'' + safeNome.replace(/'/g, "\\'") + '\')" ' +
+                                    'class="flex items-center justify-center gap-2 w-full bg-red-600/10 text-red-500 hover:bg-red-600 hover:text-white border border-red-600/20 py-3 rounded-xl font-bold transition-all duration-300">' +
+                                    '<i class="fab fa-youtube"></i> Ver Vídeo' +
+                                '</button>' +
+                                (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';
+        }
+
+        const optimizedCapa = window.optimizeImage(data.capa, 600);
         return '<div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">' +
                     '<div class="relative h-64 sm:h-72 bg-brand-dark/50">' +
                         '<img src="' + optimizedCapa + '" loading="lazy" decoding="async" onerror="this.src=\'https://placehold.co/600x400/1e293b/FFFFFF?text=Talento\'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">' +
@@ -133,7 +176,6 @@ window.createCard = (data, type) => {
                     '<div class="p-6 flex flex-col flex-grow">' +
                         '<p class="text-gray-300 text-sm mb-6 flex-grow leading-relaxed">' + safeDescricao + '</p>' +
                         '<div class="flex flex-col gap-3">' +
-                            (data.video ? '<a href="' + safeVideo + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-red-600/10 text-red-500 hover:bg-red-600 hover:text-white border border-red-600/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-youtube"></i> Ver Vídeo</a>' : '') +
                             (data.telefone ? '<a href="https://wa.me/55' + safeTelefone + '" target="_blank" class="flex items-center justify-center gap-2 w-full bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 py-3 rounded-xl font-bold transition-all duration-300"><i class="fab fa-whatsapp"></i> Contato</a>' : '') +
                         '</div>' +
                     '</div>' +
@@ -161,8 +203,97 @@ window.createCard = (data, type) => {
 };
 
 // ============================================================
+// ABRIR MODAL DE VÍDEO DO TALENTO
+// ============================================================
+window.openTalentVideoModal = (videoId, name) => {
+    const modal = document.getElementById('talent-video-modal');
+    const container = document.getElementById('talent-video-container');
+    const box = document.getElementById('talent-video-box');
+    const nameEl = document.getElementById('talent-video-name');
+    if (!modal || !container) return;
+
+    const embedUrl = window.buildYouTubeEmbed(videoId, {
+        autoplay: true,
+        mute: false,
+        loop: true,
+        controls: true
+    });
+
+    container.innerHTML =
+        '<iframe ' +
+            'src="' + embedUrl + '" ' +
+            'class="absolute inset-0 w-full h-full" ' +
+            'frameborder="0" ' +
+            'allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+            'allowfullscreen>' +
+        '</iframe>';
+
+    if (nameEl) nameEl.textContent = name || '';
+
+    window.detectYouTubeAspect(videoId).then((ratio) => {
+        if (box) {
+            box.style.aspectRatio = ratio;
+            if (ratio === '9 / 16') {
+                box.style.maxWidth = 'min(90vw, 500px)';
+            } else {
+                box.style.maxWidth = '1280px';
+            }
+        }
+    });
+
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        if (box) {
+            box.classList.remove('scale-95');
+            box.classList.add('scale-100');
+        }
+    }, 10);
+
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeTalentVideoModal = () => {
+    const modal = document.getElementById('talent-video-modal');
+    const container = document.getElementById('talent-video-container');
+    const box = document.getElementById('talent-video-box');
+    if (!modal) return;
+
+    modal.classList.add('opacity-0');
+    if (box) {
+        box.classList.add('scale-95');
+        box.classList.remove('scale-100');
+    }
+
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        if (container) container.innerHTML = '';
+        document.body.style.overflow = '';
+    }, 300);
+};
+
+// ============================================================
+// AJUSTAR PROPORÇÃO DOS CARDS DE TALENTO COM VÍDEO
+// ============================================================
+window.adjustTalentVideoCards = () => {
+    const cards = document.querySelectorAll('.talent-video-card[data-video-id]');
+    cards.forEach(card => {
+        const videoId = card.getAttribute('data-video-id');
+        const wrap = card.querySelector('.talent-video-wrap');
+        if (!wrap || !videoId) return;
+
+        if (wrap.dataset.adjusted === '1') return;
+        wrap.dataset.adjusted = '1';
+
+        window.detectYouTubeAspect(videoId).then((ratio) => {
+            wrap.style.aspectRatio = ratio;
+            wrap.classList.add('talent-video-ready');
+        });
+    });
+};
+
+// ============================================================
 // RENDERIZAR CARROSSEL DE AVISOS
-// ✅ Container se adapta à proporção real da imagem (--aviso-ratio)
 // ============================================================
 window.renderAvisosCarousel = (avisos) => {
     console.log('🎬 renderAvisosCarousel chamado com:', avisos);
@@ -176,7 +307,6 @@ window.renderAvisosCarousel = (avisos) => {
         return;
     }
 
-    // Limpa timers antigos (evita autoplay duplicado)
     if (window.__avisoAutoplayTimer) {
         clearInterval(window.__avisoAutoplayTimer);
         window.__avisoAutoplayTimer = null;
@@ -186,7 +316,6 @@ window.renderAvisosCarousel = (avisos) => {
         window.__avisoProgressTimer = null;
     }
 
-    // Filtra apenas ativos
     const activeAvisos = (avisos || []).filter(a => {
         if (!a) return false;
         if (a.active !== undefined && a.active !== '' && a.active !== null) {
@@ -234,21 +363,16 @@ window.renderAvisosCarousel = (avisos) => {
     slidesContainer.innerHTML = '';
     dotsContainer.innerHTML = '';
 
-    // ============================================================
-    // DETECÇÃO DE PROPORÇÃO POR SLIDE
-    // ============================================================
     const FALLBACK_RATIO = '16 / 9';
-    const ratiosCache = {};              // index -> "W / H"
-    const currentIndexRef = { value: 0 }; // ref mutável do slide atual
+    const ratiosCache = {};
+    const currentIndexRef = { value: 0 };
 
     const applyRatioToCarousel = (ratio) => {
         carousel.style.setProperty('--aviso-ratio', ratio || FALLBACK_RATIO);
     };
 
-    // Fallback inicial
     applyRatioToCarousel(FALLBACK_RATIO);
 
-    // Pré-carrega imagens e captura proporção natural
     activeAvisos.forEach((a, index) => {
         if (isValidImageUrl(a.imageUrl)) {
             const rawUrl = a.imageUrl.trim();
@@ -258,7 +382,6 @@ window.renderAvisosCarousel = (avisos) => {
                 if (img.naturalWidth && img.naturalHeight) {
                     const ratio = img.naturalWidth + ' / ' + img.naturalHeight;
                     ratiosCache[index] = ratio;
-                    // Se for o slide atual, aplica agora
                     if (index === currentIndexRef.value) {
                         applyRatioToCarousel(ratio);
                     }
@@ -268,7 +391,6 @@ window.renderAvisosCarousel = (avisos) => {
         }
     });
 
-    // Renderiza cada slide
     activeAvisos.forEach((aviso, index) => {
         const slide = document.createElement('div');
         slide.className = 'aviso-slide';
@@ -290,7 +412,6 @@ window.renderAvisosCarousel = (avisos) => {
             slide.style.backgroundColor = '#0f172a';
             slide.classList.add('has-image');
 
-            // Guarda a proporção no dataset (pode já ter vindo do cache)
             if (ratiosCache[index]) {
                 slide.dataset.ratio = ratiosCache[index];
             } else {
@@ -377,9 +498,6 @@ window.renderAvisosCarousel = (avisos) => {
         dotsContainer.appendChild(dot);
     });
 
-    // ============================================================
-    // ESTADO DO CARROSSEL
-    // ============================================================
     let currentIndex = 0;
     const AUTOPLAY_DELAY = 6000;
 
@@ -388,7 +506,6 @@ window.renderAvisosCarousel = (avisos) => {
 
     if (slides.length > 0) {
         slides[0].classList.add('active');
-        // Aplica a proporção do primeiro slide (se já detectada)
         const firstRatio = slides[0].dataset.ratio || ratiosCache[0];
         if (firstRatio) applyRatioToCarousel(firstRatio);
     }
@@ -403,7 +520,6 @@ window.renderAvisosCarousel = (avisos) => {
         currentIndex = index;
         currentIndexRef.value = index;
 
-        // Aplica a proporção do slide atual
         const targetSlide = slides[index];
         const ratio = (targetSlide && targetSlide.dataset.ratio) || ratiosCache[index];
         if (ratio) applyRatioToCarousel(ratio);
@@ -478,7 +594,6 @@ window.renderAvisosCarousel = (avisos) => {
         };
     }
 
-    // Swipe
     let touchStartX = 0;
     let touchEndX = 0;
 
@@ -560,6 +675,9 @@ document.addEventListener('keydown', (e) => {
         if (!document.getElementById('event-modal').classList.contains('hidden')) {
             window.closeEventModal();
         }
+        if (document.getElementById('talent-video-modal') && !document.getElementById('talent-video-modal').classList.contains('hidden')) {
+            window.closeTalentVideoModal();
+        }
         if (!document.getElementById('admin-modal').classList.contains('hidden')) {
             window.closeAdmin();
         }
@@ -575,4 +693,26 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-console.log('📅 events.js carregado (com carrossel de avisos adaptativo)');
+// ============================================================
+// OBSERVER: ajusta cards de talento quando entram na tela
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        if (typeof window.adjustTalentVideoCards === 'function') {
+            window.adjustTalentVideoCards();
+        }
+    }, 500);
+
+    const observer = new MutationObserver(() => {
+        if (typeof window.adjustTalentVideoCards === 'function') {
+            window.adjustTalentVideoCards();
+        }
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+});
+
+console.log('📅 events.js carregado');
