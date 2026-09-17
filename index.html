@@ -510,7 +510,7 @@
                 <div id="albums-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
             </div>
 
-            <!-- ✅ RÁDIO — SEM GRADE, SÓ TAG + PLAYER -->
+            <!-- ✅ RÁDIO -->
             <div id="radio-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="max-w-4xl mx-auto text-center">
                     <div class="inline-block px-4 py-1 rounded-full border border-brand-yellow/30 bg-brand-yellow/10 backdrop-blur-sm mb-6">
@@ -522,25 +522,16 @@
                     <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Rádio Nazareno FM</h1>
                     <p class="text-gray-400 mb-8 max-w-2xl mx-auto text-sm sm:text-base">Louvor, adoração e a palavra de Deus 24 horas por dia.</p>
 
-                    <!-- PROGRAMA ATUAL (dinâmico) -->
+                    <!-- PROGRAMA ATUAL -->
                     <div id="radio-program-info" class="hidden mb-6">
                         <h2 id="radio-program-name" class="text-xl sm:text-2xl font-bold text-brand-yellow mb-1"></h2>
                         <p id="radio-program-time" class="text-sm text-gray-400"></p>
                     </div>
 
-                    <!-- PLAYER -->
+                    <!-- PLAYER (dinâmico: Facebook Live ou "offline" com botão) -->
                     <div class="glass-panel p-2 rounded-2xl shadow-[0_0_50px_rgba(73,73,133,0.2)] mb-8">
-                        <div id="radio-player-wrapper" class="video-wrapper rounded-xl overflow-hidden bg-black relative group">
-                            <div class="absolute inset-0 bg-brand-blue/20 animate-pulse pointer-events-none z-10 opacity-20"></div>
-                            <div id="radio-player-content" class="absolute inset-0 z-20 w-full h-full">
-                                <iframe
-                                    id="radio-iframe"
-                                    src="https://nazarenofm.com/"
-                                    title="Rádio Nazareno FM"
-                                    style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;"
-                                    allow="autoplay">
-                                </iframe>
-                            </div>
+                        <div id="radio-player-wrapper" class="radio-player-wrap rounded-xl overflow-hidden bg-black relative">
+                            <div id="radio-player-content" class="absolute inset-0 z-20 w-full h-full"></div>
                         </div>
                     </div>
 
