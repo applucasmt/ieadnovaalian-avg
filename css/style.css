@@ -1783,3 +1783,57 @@ behold-widget a { text-decoration: none; }
     .radio-audio-text { font-size: 0.8rem; }
     .radio-audio-play-btn { padding: 0.75rem 1.4rem; font-size: 0.85rem; }
 }
+
+
+/* ============================================================
+   RADIO — DIAS DA SEMANA
+   ============================================================ */
+
+.radio-schedule-days {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-top: 0.15rem;
+    font-weight: 500;
+}
+
+.radio-schedule-days i {
+    font-size: 0.65rem;
+    opacity: 0.7;
+}
+
+.radio-schedule-item-active .radio-schedule-days {
+    color: #EEBC5A;
+    font-weight: 700;
+}
+
+/* ✅ Programa que NÃO passa hoje: fica mais apagado */
+.radio-schedule-item-offday {
+    opacity: 0.55;
+}
+
+.radio-schedule-item-offday:hover {
+    opacity: 0.85;
+}
+
+.radio-schedule-item-offday .radio-schedule-name {
+    color: #94a3b8;
+}
+
+/* Dias no card de destaque */
+.radio-now-highlight-days {
+    font-size: 0.85rem;
+    color: #cbd5e1;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.radio-now-highlight-days i {
+    font-size: 0.8rem;
+    color: #EEBC5A;
+}
