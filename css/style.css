@@ -1765,17 +1765,61 @@ behold-widget a { text-decoration: none; }
     height: 100%;
     border: 0;
     pointer-events: none;
-    transform: scale(1.35);
     transform-origin: center center;
+    transition: transform 0.3s ease;
 }
 
-.talent-video-wrap[style*="9 / 16"] .talent-video-iframe,
-.talent-video-wrap[style*="9/16"] .talent-video-iframe {
+/* ✅ Zoom padrão para vídeo horizontal em card horizontal */
+.talent-video-iframe.zoom-horizontal {
+    transform: scale(1.35);
+}
+
+/* ✅ Zoom para vídeo vertical (short) em card vertical */
+.talent-video-iframe.zoom-vertical {
     transform: scale(1.05);
+}
+
+/* ✅ Zoom MUITO maior se um dia precisar forçar short em card horizontal */
+.talent-video-wrap[style*="16 / 9"] .talent-video-iframe.zoom-vertical,
+.talent-video-wrap[style*="16/9"] .talent-video-iframe.zoom-vertical {
+    transform: scale(2.2);
 }
 
 .talent-video-wrap:hover .talent-video-iframe {
     transform: scale(1.4);
+}
+
+.talent-video-wrap[style*="9 / 16"]:hover .talent-video-iframe,
+.talent-video-wrap[style*="9/16"]:hover .talent-video-iframe {
+    transform: scale(1.1);
+}
+
+/* ============================================================
+   ✅ CARDS DE TALENTO COM IMAGEM (SEM CORTES)
+   ============================================================ */
+
+.talent-image-card {
+    position: relative;
+}
+
+.talent-image-wrap {
+    position: relative;
+    width: 100%;
+    background: #0a0a0a;
+    overflow: hidden;
+}
+
+/* ✅ A imagem dita a altura do card — sem cortes, sem object-cover */
+.talent-image-el {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+}
+
+.talent-image-card:hover .talent-image-el {
+    transform: scale(1.03);
 }
 
 /* ============================================================
