@@ -6,7 +6,6 @@ window.__radioState = {
     programas: [],
     liveConfig: { facebookLiveUrl: '', isLive: 'false' },
     currentProgram: null,
-    userChoseRadio: false,
     carregado: false
 };
 
@@ -113,22 +112,7 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 2. Programa atual (destaque)
-    // ---------------------------------------------
-    const programInfoEl = document.getElementById('radio-program-info');
-    const programNameEl = document.getElementById('radio-program-name');
-    const programTimeEl = document.getElementById('radio-program-time');
-
-    if (currentProgram) {
-        if (programNameEl) programNameEl.textContent = currentProgram.programa || 'Programa';
-        if (programTimeEl) programTimeEl.textContent = formatHora(currentProgram.inicio) + ' — ' + formatHora(currentProgram.fim);
-        if (programInfoEl) programInfoEl.classList.remove('hidden');
-    } else {
-        if (programInfoEl) programInfoEl.classList.add('hidden');
-    }
-
-    // ---------------------------------------------
-    // 3. Player (Facebook ou card offline)
+    // 2. Player (Facebook ou card offline)
     // ---------------------------------------------
     const playerContent = document.getElementById('radio-player-content');
     if (playerContent) {
@@ -171,16 +155,7 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 4. Toggle
-    // ---------------------------------------------
-    const toggleWrapper = document.getElementById('radio-toggle-wrapper');
-    if (toggleWrapper) {
-        if (isLive) toggleWrapper.classList.remove('hidden');
-        else toggleWrapper.classList.add('hidden');
-    }
-
-    // ---------------------------------------------
-    // 5. WhatsApp
+    // 3. WhatsApp
     // ---------------------------------------------
     const whatsappBtn = document.getElementById('radio-whatsapp-btn');
     const whatsappLabel = document.getElementById('radio-whatsapp-label');
@@ -197,19 +172,23 @@ window.renderRadioContent = () => {
     }
 
     // ---------------------------------------------
-    // 6. Grade de programação (COM DESTAQUE)
+    // 4. Grade em 2 colunas + DESTAQUE
     // ---------------------------------------------
-    window.renderRadioGrade(currentProgram);
+    window.renderRadioGrid(currentProgram);
 };
 
 // ============================================================
-// RENDERIZAR GRADE COM DESTAQUE
+// RENDERIZAR GRADE (2 COLUNAS + DESTAQUE DO PROGRAMA ATUAL)
 // ============================================================
-window.renderRadioGrade = (currentProgram) => {
-    const container = document.getElementById('radio-grade-container');
-    const list = document.getElementById('radio-grade-list');
-    if (!container || !list) return;
+window.renderRadioGrid = (currentProgram) => {
+    const container = document.getElementById('radio-grid-container');
+    const colLeft = document.getElementById('radio-grid-left');
+    const colRight = document.getElementById('radio-grid-right');
+    const highlight = document.getElementById('radio-now-highlight');
 
+    if (!container || !colLeft || !colRight) return;
+
+    // Filtra e ordena os programas
     const programas = (window.__radioState.programas || [])
         .filter(p => String(p.ativo).toLowerCase() !== 'false')
         .sort((a, b) => {
@@ -218,41 +197,77 @@ window.renderRadioGrade = (currentProgram) => {
             return (ai === null ? 9999 : ai) - (bi === null ? 9999 : bi);
         });
 
-    if (programas.length === 0) {
+    // Só mostra a grade se tiver 2+ programas
+    if (programas.length < 2) {
         container.classList.add('hidden');
         return;
     }
 
     container.classList.remove('hidden');
 
-    list.innerHTML = programas.map(p => {
+    // Divide em 2 colunas (alternando)
+    const metade = Math.ceil(programas.length / 2);
+    const esquerda = programas.slice(0, metade);
+    const direita = programas.slice(metade);
+
+    const renderItem = (p) => {
         const isCurrent = currentProgram && p.id && currentProgram.id && p.id === currentProgram.id;
         const hora = formatHora(p.inicio) + ' — ' + formatHora(p.fim);
 
-        return '<div class="radio-grade-item ' + (isCurrent ? 'radio-grade-item-active' : '') + '">' +
-                    '<div class="radio-grade-time">' +
+        return '<div class="radio-schedule-item ' + (isCurrent ? 'radio-schedule-item-active' : '') + '">' +
+                    '<div class="radio-schedule-time">' +
                         '<i class="far fa-clock"></i>' +
                         '<span>' + hora + '</span>' +
                     '</div>' +
-                    '<div class="radio-grade-info">' +
-                        '<span class="radio-grade-name">' + (p.programa || 'Programa') + '</span>' +
+                    '<div class="radio-schedule-body">' +
+                        '<div class="radio-schedule-name">' + (p.programa || 'Programa') + '</div>' +
                         (isCurrent ?
-                            '<span class="radio-grade-now-badge">' +
-                                '<span class="radio-grade-now-dot"></span>' +
+                            '<div class="radio-schedule-now-badge">' +
+                                '<span class="radio-schedule-now-dot"></span>' +
                                 'NO AR AGORA' +
-                            '</span>'
+                            '</div>'
+                            : '') +
+                    '</div>' +
+                    (isCurrent ?
+                        '<div class="radio-schedule-pulse"></div>'
+                        : '') +
+                '</div>';
+    };
+
+    colLeft.innerHTML = esquerda.map(renderItem).join('');
+    colRight.innerHTML = direita.map(renderItem).join('');
+
+    // ---------------------------------------------
+    // DESTAQUE: card grande do programa atual
+    // ---------------------------------------------
+    if (highlight) {
+        if (currentProgram) {
+            highlight.classList.remove('hidden');
+            highlight.innerHTML =
+                '<div class="radio-now-highlight-card">' +
+                    '<div class="radio-now-highlight-glow"></div>' +
+                    '<div class="radio-now-highlight-inner">' +
+                        '<div class="radio-now-highlight-badge">' +
+                            '<span class="radio-now-highlight-dot"></span>' +
+                            'NO AR AGORA' +
+                        '</div>' +
+                        '<h3 class="radio-now-highlight-title">' + (currentProgram.programa || 'Programa') + '</h3>' +
+                        '<p class="radio-now-highlight-time">' +
+                            '<i class="far fa-clock"></i>' +
+                            formatHora(currentProgram.inicio) + ' — ' + formatHora(currentProgram.fim) +
+                        '</p>' +
+                        (currentProgram.whatsapp ?
+                            '<a href="https://wa.me/55' + String(currentProgram.whatsapp).replace(/\D/g, '') + '?text=' + encodeURIComponent('Olá! Gostaria de pedir um louvor.') + '" target="_blank" class="radio-now-highlight-btn">' +
+                                '<i class="fab fa-whatsapp"></i> Pedir Louvor' +
+                            '</a>'
                             : '') +
                     '</div>' +
                 '</div>';
-    }).join('');
-};
-
-// ============================================================
-// TOGGLE
-// ============================================================
-window.toggleRadioPlayer = () => {
-    window.__radioState.userChoseRadio = !window.__radioState.userChoseRadio;
-    window.renderRadioContent();
+        } else {
+            highlight.classList.add('hidden');
+            highlight.innerHTML = '';
+        }
+    }
 };
 
 // ============================================================
