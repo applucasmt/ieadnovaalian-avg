@@ -3,32 +3,19 @@
 // ============================================================
 
 // ============================================================
-// DETECTAR PROGRAMA ATUAL
+// ESTADO GLOBAL
 // ============================================================
-window.getCurrentRadioProgram = (programas) => {
-    if (!Array.isArray(programas) || programas.length === 0) return null;
-    
-    const now = new Date();
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
-    
-    const active = programas.filter(p => String(p.ativo).toLowerCase() !== 'false');
-    
-    for (const p of active) {
-        const ini = parseTimeToMinutes(p.inicio);
-        const fim = parseTimeToMinutes(p.fim);
-        if (ini === null || fim === null) continue;
-        
-        // Trata programas que cruzam meia-noite (ex: 23:00 - 01:00)
-        if (fim > ini) {
-            if (currentMinutes >= ini && currentMinutes < fim) return p;
-        } else {
-            // Atravessa meia-noite
-            if (currentMinutes >= ini || currentMinutes < fim) return p;
-        }
-    }
-    return null;
+window.__radioState = {
+    programas: [],
+    liveConfig: { facebookLiveUrl: '', isLive: 'false' },
+    currentProgram: null,
+    showingLive: false, // true = mostrando Facebook; false = mostrando rádio
+    carregado: false
 };
 
+// ============================================================
+// HELPERS
+// ============================================================
 function parseTimeToMinutes(str) {
     if (!str) return null;
     const match = String(str).trim().match(/^(\d{1,2}):(\d{2})/);
@@ -39,156 +26,235 @@ function parseTimeToMinutes(str) {
     return h * 60 + m;
 }
 
+window.getCurrentRadioProgram = (programas) => {
+    if (!Array.isArray(programas) || programas.length === 0) return null;
+
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    const active = programas.filter(p => String(p.ativo).toLowerCase() !== 'false');
+
+    for (const p of active) {
+        const ini = parseTimeToMinutes(p.inicio);
+        const fim = parseTimeToMinutes(p.fim);
+        if (ini === null || fim === null) continue;
+
+        if (fim > ini) {
+            if (currentMinutes >= ini && currentMinutes < fim) return p;
+        } else {
+            if (currentMinutes >= ini || currentMinutes < fim) return p;
+        }
+    }
+    return null;
+};
+
 // ============================================================
-// RENDERIZAR ABA RÁDIO
+// RENDERIZAR PÁGINA DA RÁDIO
 // ============================================================
 window.renderRadioPage = async () => {
-    const container = document.getElementById('radio-content-area');
-    if (!container) return;
-    
-    container.innerHTML =
-        '<div class="text-center py-16">' +
-            '<i class="fas fa-circle-notch fa-spin text-4xl text-brand-yellow mb-4"></i>' +
-            '<p class="text-gray-400">Carregando programação...</p>' +
-        '</div>';
-    
-    try {
-        const [programas, liveConfig] = await Promise.all([
-            window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=radio', 'cache_radio_v2', true),
-            window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=config_radio', 'cache_config_radio_v2', true)
-        ]);
-        
-        const programasArr = Array.isArray(programas) ? programas : [];
-        const liveCfg = (Array.isArray(liveConfig) && liveConfig[0]) ? liveConfig[0] : { facebookLiveUrl: '', isLive: 'false' };
-        const isLive = String(liveCfg.isLive).toLowerCase() === 'true' && liveCfg.facebookLiveUrl;
-        const currentProgram = window.getCurrentRadioProgram(programasArr);
-        
-        // WhatsApp do programa atual (ou fallback)
-        const whatsappNumber = currentProgram && currentProgram.whatsapp
-            ? String(currentProgram.whatsapp).replace(/\D/g, '')
-            : '5565992977124'; // Fallback: Marketing
-        
-        const whatsappUrl = 'https://wa.me/' + whatsappNumber + '?text=' + encodeURIComponent('Olá! Gostaria de pedir um louvor.');
-        
-        // Programa atual ou próximo
-        let programInfoHTML = '';
-        if (currentProgram) {
-            programInfoHTML =
-                '<div class="radio-now-playing">' +
-                    '<div class="radio-live-badge"><span class="radio-live-dot"></span> NO AR AGORA</div>' +
-                    '<h3 class="radio-program-name">' + (currentProgram.programa || 'Programa') + '</h3>' +
-                    '<p class="radio-program-time">' + (currentProgram.inicio || '?') + ' — ' + (currentProgram.fim || '?') + '</p>' +
-                '</div>';
-        } else {
-            programInfoHTML =
-                '<div class="radio-now-playing radio-off-air">' +
-                    '<div class="radio-off-air-badge">FORA DO AR</div>' +
-                    '<h3 class="radio-program-name">Sem programação agora</h3>' +
-                    '<p class="radio-program-time">Confira a grade completa abaixo</p>' +
-                '</div>';
+    if (!window.__radioState.carregado) {
+        // Primeira vez: busca os dados
+        try {
+            const [programas, liveConfig] = await Promise.all([
+                window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=radio', 'cache_radio_v2', true),
+                window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=config_radio', 'cache_config_radio_v2', true)
+            ]);
+
+            window.__radioState.programas = Array.isArray(programas) ? programas : [];
+            window.__radioState.liveConfig = (Array.isArray(liveConfig) && liveConfig[0]) ? liveConfig[0] : { facebookLiveUrl: '', isLive: 'false' };
+            window.__radioState.carregado = true;
+        } catch (e) {
+            console.error('Erro ao carregar dados da rádio:', e);
+            window.__radioState.carregado = true;
         }
-        
-        // Player
-        let playerHTML = '';
-        if (isLive) {
-            // Facebook Live embed
+    }
+
+    window.renderRadioContent();
+};
+
+// ============================================================
+// RENDERIZAR CONTEÚDO (preenche os IDs específicos)
+// ============================================================
+window.renderRadioContent = () => {
+    const state = window.__radioState;
+    const programasArr = state.programas;
+    const liveCfg = state.liveConfig;
+    const isLive = String(liveCfg.isLive).toLowerCase() === 'true' && liveCfg.facebookLiveUrl;
+
+    // ---------------------------------------------
+    // 1. Programa atual
+    // ---------------------------------------------
+    const currentProgram = window.getCurrentRadioProgram(programasArr);
+    state.currentProgram = currentProgram;
+
+    const programInfoEl = document.getElementById('radio-program-info');
+    const programNameEl = document.getElementById('radio-program-name');
+    const programTimeEl = document.getElementById('radio-program-time');
+    const statusLabelEl = document.getElementById('radio-status-label');
+
+    if (currentProgram) {
+        if (programNameEl) programNameEl.textContent = currentProgram.programa || 'Programa';
+        if (programTimeEl) programTimeEl.textContent = (currentProgram.inicio || '?') + ' — ' + (currentProgram.fim || '?');
+        if (programInfoEl) programInfoEl.classList.remove('hidden');
+    } else {
+        if (programInfoEl) programInfoEl.classList.add('hidden');
+    }
+
+    if (statusLabelEl) {
+        statusLabelEl.textContent = isLive ? 'Transmissão ao Vivo' : 'No Ar Agora';
+    }
+
+    // ---------------------------------------------
+    // 2. Player (rádio ou Facebook)
+    // ---------------------------------------------
+    const playerContent = document.getElementById('radio-player-content');
+    if (playerContent) {
+        // Decide o que mostrar:
+        // - Se estiver ao vivo E o usuário NÃO clicou em "ouvir rádio" → Facebook
+        // - Senão → rádio online
+        const shouldShowFacebook = isLive && !state.userChoseRadio;
+
+        if (shouldShowFacebook) {
             const fbUrl = encodeURIComponent(liveCfg.facebookLiveUrl);
-            playerHTML =
-                '<div class="radio-player-wrapper">' +
-                    '<div class="radio-player-header radio-player-live">' +
-                        '<span class="radio-live-dot"></span> TRANSMISSÃO AO VIVO' +
-                    '</div>' +
-                    '<div class="radio-player-container radio-player-fb">' +
-                        '<iframe ' +
-                            'src="https://www.facebook.com/plugins/video.php?href=' + fbUrl + '&show_text=false&width=560&height=315" ' +
-                            'width="100%" height="100%" ' +
-                            'style="border:none;overflow:hidden;" ' +
-                            'scrolling="no" frameborder="0" ' +
-                            'allowfullscreen="true" ' +
-                            'allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">' +
-                        '</iframe>' +
-                    '</div>' +
-                    '<div class="radio-player-footer">' +
-                        '<button onclick="window.toggleRadioPlayer(\'radio\')" class="radio-player-toggle">' +
-                            '<i class="fas fa-radio"></i> Ouvir somente a Rádio' +
-                        '</button>' +
-                    '</div>' +
-                '</div>';
+            playerContent.innerHTML =
+                '<iframe ' +
+                    'src="https://www.facebook.com/plugins/video.php?href=' + fbUrl + '&show_text=false&width=560&height=315" ' +
+                    'style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;" ' +
+                    'scrolling="no" frameborder="0" ' +
+                    'allowfullscreen="true" ' +
+                    'allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">' +
+                '</iframe>';
         } else {
-            playerHTML =
-                '<div class="radio-player-wrapper">' +
-                    '<div class="radio-player-header">' +
-                        '<i class="fas fa-signal text-brand-yellow"></i> RÁDIO ONLINE' +
+            playerContent.innerHTML =
+                '<iframe ' +
+                    'id="radio-iframe" ' +
+                    'src="https://nazarenofm.com/" ' +
+                    'title="Rádio Nazareno FM" ' +
+                    'style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;" ' +
+                    'allow="autoplay">' +
+                '</iframe>';
+        }
+    }
+
+    // ---------------------------------------------
+    // 3. Botão de alternância (só quando ao vivo)
+    // ---------------------------------------------
+    const toggleWrapper = document.getElementById('radio-toggle-wrapper');
+    const toggleText = document.getElementById('radio-toggle-text');
+
+    if (toggleWrapper) {
+        if (isLive) {
+            toggleWrapper.classList.remove('hidden');
+            if (toggleText) {
+                toggleText.textContent = state.userChoseRadio ? 'Assistir Transmissão ao Vivo' : 'Ouvir somente a Rádio';
+            }
+        } else {
+            toggleWrapper.classList.add('hidden');
+        }
+    }
+
+    // ---------------------------------------------
+    // 4. WhatsApp (número do programa atual)
+    // ---------------------------------------------
+    const whatsappBtn = document.getElementById('radio-whatsapp-btn');
+    const whatsappLabel = document.getElementById('radio-whatsapp-label');
+
+    if (whatsappBtn && whatsappLabel) {
+        if (currentProgram && currentProgram.whatsapp) {
+            const num = String(currentProgram.whatsapp).replace(/\D/g, '');
+            whatsappBtn.href = 'https://wa.me/55' + num + '?text=' + encodeURIComponent('Olá! Gostaria de pedir um louvor.');
+            whatsappLabel.textContent = 'Pedir louvor para ' + (currentProgram.programa || 'a rádio');
+        } else {
+            whatsappBtn.href = 'https://wa.me/5565992977124';
+            whatsappLabel.textContent = 'via WhatsApp';
+        }
+    }
+
+    // ---------------------------------------------
+    // 5. Grade de programação
+    // ---------------------------------------------
+    const gradeContainer = document.getElementById('radio-grade-container');
+    const gradeList = document.getElementById('radio-grade-list');
+
+    if (gradeContainer && gradeList) {
+        const sorted = [...programasArr]
+            .filter(p => String(p.ativo).toLowerCase() !== 'false')
+            .sort((a, b) => {
+                const ai = parseTimeToMinutes(a.inicio) || 0;
+                const bi = parseTimeToMinutes(b.inicio) || 0;
+                return ai - bi;
+            });
+
+        if (sorted.length > 0) {
+            gradeContainer.classList.remove('hidden');
+            gradeList.innerHTML = sorted.map(p => {
+                const isCurrent = currentProgram && p.id === currentProgram.id;
+                return '<div class="radio-grade-item ' + (isCurrent ? 'radio-grade-current' : '') + '">' +
+                    '<div class="radio-grade-time">' +
+                        '<span class="radio-grade-hour">' + (p.inicio || '?') + '</span>' +
+                        '<span class="radio-grade-sep">—</span>' +
+                        '<span class="radio-grade-hour">' + (p.fim || '?') + '</span>' +
                     '</div>' +
-                    '<div class="radio-player-container radio-player-online">' +
-                        '<iframe src="https://nazarenofm.com/" title="Rádio Nazareno FM" style="border:0;" allowfullscreen></iframe>' +
+                    '<div class="radio-grade-info">' +
+                        '<span class="radio-grade-name">' + (p.programa || 'Programa') + '</span>' +
+                        (isCurrent ? '<span class="radio-grade-now">● NO AR</span>' : '') +
                     '</div>' +
                 '</div>';
+            }).join('');
+        } else {
+            gradeContainer.classList.add('hidden');
         }
-        
-        // Grade completa
-        let gradeHTML = '';
-        if (programasArr.length > 0) {
-            const sorted = [...programasArr].filter(p => String(p.ativo).toLowerCase() !== 'false')
-                .sort((a, b) => {
-                    const ai = parseTimeToMinutes(a.inicio) || 0;
-                    const bi = parseTimeToMinutes(b.inicio) || 0;
-                    return ai - bi;
-                });
-            
-            gradeHTML =
-                '<div class="radio-grade">' +
-                    '<h2 class="radio-grade-title"><i class="fas fa-list text-brand-yellow"></i> Programação</h2>' +
-                    '<div class="radio-grade-list">' +
-                        sorted.map(p => {
-                            const isCurrent = currentProgram && p.id === currentProgram.id;
-                            return '<div class="radio-grade-item ' + (isCurrent ? 'radio-grade-current' : '') + '">' +
-                                '<div class="radio-grade-time">' +
-                                    '<span class="radio-grade-hour">' + (p.inicio || '?') + '</span>' +
-                                    '<span class="radio-grade-sep">—</span>' +
-                                    '<span class="radio-grade-hour">' + (p.fim || '?') + '</span>' +
-                                '</div>' +
-                                '<div class="radio-grade-info">' +
-                                    '<span class="radio-grade-name">' + (p.programa || 'Programa') + '</span>' +
-                                    (isCurrent ? '<span class="radio-grade-now">● NO AR</span>' : '') +
-                                '</div>' +
-                            '</div>';
-                        }).join('') +
-                    '</div>' +
-                '</div>';
-        }
-        
-        container.innerHTML =
-            '<div class="radio-page-inner">' +
-                // BLOCO 1: Programa atual
-                '<div class="radio-now-block">' +
-                    programInfoHTML +
-                    '<a href="' + whatsappUrl + '" target="_blank" class="radio-whatsapp-btn">' +
-                        '<i class="fab fa-whatsapp text-xl"></i>' +
-                        '<div>' +
-                            '<span class="radio-whatsapp-label">Peça seu louvor</span>' +
-                            '<span class="radio-whatsapp-number">' + (currentProgram && currentProgram.programa ? currentProgram.programa : 'Rádio Nazareno') + '</span>' +
-                        '</div>' +
-                    '</a>' +
-                '</div>' +
-                // BLOCO 2: Player
-                playerHTML +
-                // BLOCO 3: Grade
-                gradeHTML +
-            '</div>';
-        
-    } catch (e) {
-        console.error('Erro ao carregar rádio:', e);
-        container.innerHTML = '<div class="text-center py-10 text-red-400">Erro ao carregar a rádio. Tente novamente.</div>';
     }
 };
 
 // ============================================================
 // TOGGLE PLAYER (Live ↔ Rádio)
 // ============================================================
-window.toggleRadioPlayer = (mode) => {
-    // Sempre recarrega a página da rádio (vai buscar de novo)
-    window.renderRadioPage();
+window.toggleRadioPlayer = () => {
+    window.__radioState.userChoseRadio = !window.__radioState.userChoseRadio;
+    window.renderRadioContent();
 };
+
+// ============================================================
+// ATUALIZAR A CADA MINUTO (detecta mudança de programa)
+// ============================================================
+let __radioUpdateTimer = null;
+function iniciarAtualizacaoRadio() {
+    if (__radioUpdateTimer) clearInterval(__radioUpdateTimer);
+    __radioUpdateTimer = setInterval(() => {
+        // Só re-renderiza se a página da rádio estiver visível
+        const radioPage = document.getElementById('radio-page');
+        if (radioPage && !radioPage.classList.contains('hidden')) {
+            // Re-checa se ainda é o mesmo programa
+            const novo = window.getCurrentRadioProgram(window.__radioState.programas);
+            const atual = window.__radioState.currentProgram;
+            const mudou = (!atual && novo) || (atual && !novo) || (atual && novo && atual.id !== novo.id);
+
+            if (mudou) {
+                console.log('📻 Programa mudou. Atualizando...');
+                window.renderRadioContent();
+            }
+        }
+    }, 60000); // a cada 60 segundos
+}
+
+// Inicia quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    iniciarAtualizacaoRadio();
+});
+
+// ============================================================
+// ESCUTA MUDANÇAS DO ADMIN (broadcast)
+// ============================================================
+window.addEventListener('storage', (event) => {
+    if (event && event.key === '__iead_data_changed') {
+        // Invalida o cache da rádio e re-renderiza se a página estiver visível
+        window.__radioState.carregado = false;
+        const radioPage = document.getElementById('radio-page');
+        if (radioPage && !radioPage.classList.contains('hidden')) {
+            window.renderRadioPage();
+        }
+    }
+});
 
 console.log('📻 radio.js carregado');
