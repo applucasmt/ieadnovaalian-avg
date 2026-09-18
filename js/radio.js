@@ -166,6 +166,9 @@ window.renderRadioContent = () => {
                         'allowfullscreen="true" ' +
                         'allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">' +
                     '</iframe>';
+            }
+
+            playerContent.innerHTML = fbHtml;
         } else {
             playerContent.innerHTML =
                 '<iframe ' +
