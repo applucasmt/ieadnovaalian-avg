@@ -46,14 +46,14 @@ window.SCHEMAS = {
     ],
 
     radio: [
-    { key: 'programa', label: '📻 Nome do Programa', type: 'text' },
-    { key: 'inicio', label: '⏰ Horário de Início', type: 'time' },
-    { key: 'fim', label: '⏰ Horário de Fim', type: 'time' },
-    { key: 'dias', label: '📅 Dias da Semana', type: 'text', hint: 'Use: todos | seg,ter,qua,qui,sex | sab,dom | seg,qua,sex. Separe por vírgula.' },
-    { key: 'whatsapp', label: '📱 WhatsApp do Locutor', type: 'text', hint: 'Só números: 65999991111' },
-    { key: 'textoBotao', label: '💬 Texto do Botão WhatsApp', type: 'text', hint: 'Deixe vazio para usar "Pedir louvor para [nome do programa]". Ex: "Pedir música", "Mande seu pedido", etc.' },
-    { key: 'ativo', label: '✅ Ativo?', type: 'select', options: ['true', 'false'], default: 'true' }
-],
+        { key: 'programa', label: '📻 Nome do Programa', type: 'text' },
+        { key: 'inicio', label: '⏰ Horário de Início', type: 'time' },
+        { key: 'fim', label: '⏰ Horário de Fim', type: 'time' },
+        { key: 'dias', label: '📅 Dias da Semana', type: 'text', hint: 'Use: todos | seg,ter,qua,qui,sex | sab,dom | seg,qua,sex. Separe por vírgula.' },
+        { key: 'whatsapp', label: '📱 WhatsApp do Locutor', type: 'text', hint: 'Só números: 65999991111' },
+        { key: 'textoBotao', label: '💬 Texto do Botão WhatsApp', type: 'text', hint: 'Deixe vazio para usar "Pedir louvor para [nome do programa]". Ex: "Pedir música", "Mande seu pedido", etc.' },
+        { key: 'ativo', label: '✅ Ativo?', type: 'select', options: ['true', 'false'], default: 'true' }
+    ],
 
     albuns: [
         { key: 'albumName', label: 'Nome do Álbum', type: 'text' },
@@ -317,7 +317,7 @@ window.renderRadioAdmin = () => {
                     'id="radio-live-url" ' +
                     'class="admin-field font-mono" ' +
                     'rows="6" ' +
-                    'placeholder="Cole aqui o código completo do Facebook, começando com <iframe src=&quot;https://www.facebook.com/plugins/video.php?...&quot;></iframe>" ' +
+                    'placeholder="Cole aqui o código completo do Facebook" ' +
                     'style="font-size: 0.8rem; padding: 0.85rem 1rem; line-height: 1.4; resize: vertical;" ' +
                 '>' + liveCode.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</textarea>' +
 
@@ -385,29 +385,33 @@ window.renderRadioGrade = () => {
             return s.substring(0, 5);
         };
 
-        const diasLabel = item.dias ? String(item.dias).trim() : 'todos';
-
-html += '<div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">' +
-            '<div class="flex items-center overflow-hidden pr-4 w-full">' +
-                '<div class="truncate flex-1">' +
-                    '<div class="flex items-center gap-2 flex-wrap">' +
-                        '<span class="font-bold text-white">' + (item.programa || 'Sem nome') + '</span>' +
-                        '<span class="text-xs text-brand-yellow bg-brand-yellow/10 border border-brand-yellow/20 px-2 py-0.5 rounded">' + formatHora(item.inicio) + ' - ' + formatHora(item.fim) + '</span>' +
-                        '<span class="text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded">📅 ' + diasLabel + '</span>' +
-                        (ativo ?
-                            '<span class="text-xs text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded">ativo</span>'
-                            :
-                            '<span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded">inativo</span>'
-                        ) +
+        html += '<div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">' +
+                    '<div class="flex items-center overflow-hidden pr-4 w-full">' +
+                        '<div class="truncate flex-1">' +
+                            '<div class="flex items-center gap-2 flex-wrap">' +
+                                '<span class="font-bold text-white">' + (item.programa || 'Sem nome') + '</span>' +
+                                '<span class="text-xs text-brand-yellow bg-brand-yellow/10 border border-brand-yellow/20 px-2 py-0.5 rounded">' + formatHora(item.inicio) + ' - ' + formatHora(item.fim) + '</span>' +
+                                (item.dias ?
+                                    '<span class="text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded">📅 ' + item.dias + '</span>'
+                                    : '<span class="text-xs text-gray-500 bg-white/5 border border-white/10 px-2 py-0.5 rounded">📅 todos</span>'
+                                ) +
+                                (ativo ?
+                                    '<span class="text-xs text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded">ativo</span>'
+                                    :
+                                    '<span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded">inativo</span>'
+                                ) +
+                            '</div>' +
+                            '<div class="text-xs text-gray-400 mt-1">' +
+                                '📱 ' + (item.whatsapp || 'sem whatsapp') +
+                                (item.textoBotao ? ' · 💬 ' + item.textoBotao : '') +
+                            '</div>' +
+                        '</div>' +
                     '</div>' +
-                    '<span class="text-xs text-gray-400">📱 ' + (item.whatsapp || 'sem whatsapp') + (item.textoBotao ? ' · 💬 ' + item.textoBotao : '') + '</span>' +
-                '</div>' +
-            '</div>' +
-            '<div class="flex gap-2 shrink-0">' +
-                '<button onclick="window.openEditModal(\'edit\', ' + realIndex + ')" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded text-xs"><i class="fas fa-edit"></i></button>' +
-                '<button onclick="window.deleteAdminItem(' + realIndex + ')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded text-xs"><i class="fas fa-trash"></i></button>' +
-            '</div>' +
-        '</div>';
+                    '<div class="flex gap-2 shrink-0">' +
+                        '<button onclick="window.openEditModal(\'edit\', ' + realIndex + ')" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded text-xs"><i class="fas fa-edit"></i></button>' +
+                        '<button onclick="window.deleteAdminItem(' + realIndex + ')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded text-xs"><i class="fas fa-trash"></i></button>' +
+                    '</div>' +
+                '</div>';
     });
     html += '</div>';
     list.innerHTML = html;
@@ -489,8 +493,7 @@ window.stopRadioLive = async () => {
 };
 
 // ============================================================
-// RENDERIZAR FORM DE CONFIG (SEM PREVIEWS)
-// ✅ CORREÇÃO: previews removidos
+// RENDERIZAR FORM DE CONFIG
 // ============================================================
 window.renderConfigForm = (config) => {
     const container = document.getElementById('admin-content-area');
@@ -500,14 +503,18 @@ window.renderConfigForm = (config) => {
     const heroUrlMobile = config.heroUrlMobile || '';
     const currentPosition = config.heroPosition || 'center';
     const currentAlign = config.heroAlign || 'center';
+    const currentPosX = parseFloat(config.heroPosX) || 50;
+    const currentPosY = parseFloat(config.heroPosY) || 50;
     const heroTitle = config.heroTitle || 'JARDIM\\nNOVA ALIANÇA';
     const heroSubtitle = config.heroSubtitle || 'Bem-vindo à casa do pai';
     const heroDescription = config.heroDescription || 'Um lugar de adoração, comunhão e crescimento espiritual.';
 
     window.heroState = {
         position: currentPosition, align: currentAlign,
-        posX: 50, posY: 50
+        posX: currentPosX, posY: currentPosY
     };
+
+    const previewBgStyle = heroUrl ? 'background-image: url(\'' + heroUrl + '\');' : 'background: #0f172a;';
 
     container.innerHTML =
         '<div class="max-w-4xl mx-auto py-4">' +
@@ -516,52 +523,62 @@ window.renderConfigForm = (config) => {
                 '<p class="text-xs text-gray-400 mt-1">Altere logo, imagens (PC e celular), posição e textos.</p>' +
             '</div>' +
 
-            // TEXTOS
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
-                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3"><i class="fas fa-font mr-2"></i> Textos do Hero</label>' +
-                '<div class="space-y-3">' +
-                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Badge</label><input type="text" id="config-heroSubtitle" class="admin-field" value="' + heroSubtitle + '"></div>' +
-                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Título</label><input type="text" id="config-heroTitle" class="admin-field" value="' + heroTitle + '"></div>' +
-                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Descrição</label><textarea id="config-heroDescription" rows="3" class="admin-field">' + heroDescription + '</textarea></div>' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3"><i class="fas fa-eye mr-2"></i> Pré-visualização do Hero</label>' +
+                '<div class="hero-preview-box" id="hero-preview-box" style="' + previewBgStyle + '">' +
+                    '<div class="hero-preview-overlay"></div>' +
+                    '<div class="hero-preview-content preview-center" id="hero-preview-content">' +
+                        '<div class="preview-badge" id="preview-badge">' + heroSubtitle + '</div>' +
+                        '<div class="preview-title" id="preview-title">' + heroTitle.replace('\\n', '<br>') + '</div>' +
+                        '<div class="preview-desc" id="preview-desc">' + heroDescription + '</div>' +
+                    '</div>' +
                 '</div>' +
             '</div>' +
 
-            // POSIÇÃO
+            '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3"><i class="fas fa-font mr-2"></i> Textos do Hero</label>' +
+                '<div class="space-y-3">' +
+                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Badge</label><input type="text" id="config-heroSubtitle" class="admin-field" value="' + heroSubtitle + '" oninput="window.updatePreviewText()"></div>' +
+                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Título</label><input type="text" id="config-heroTitle" class="admin-field" value="' + heroTitle + '" oninput="window.updatePreviewText()"></div>' +
+                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Descrição</label><textarea id="config-heroDescription" rows="3" class="admin-field" oninput="window.updatePreviewText()">' + heroDescription + '</textarea></div>' +
+                '</div>' +
+            '</div>' +
+
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
                 '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3"><i class="fas fa-arrows-alt mr-2"></i> Posição do Texto</label>' +
                 '<div class="flex gap-2 mb-4 flex-wrap">' +
                     '<button class="pos-btn ' + (currentPosition === 'left' ? 'active' : '') + '" onclick="window.setHeroPosition(\'left\')" data-pos="left">Esquerda</button>' +
                     '<button class="pos-btn ' + (currentPosition === 'center' ? 'active' : '') + '" onclick="window.setHeroPosition(\'center\')" data-pos="center">Centro</button>' +
                     '<button class="pos-btn ' + (currentPosition === 'right' ? 'active' : '') + '" onclick="window.setHeroPosition(\'right\')" data-pos="right">Direita</button>' +
+                    '<button class="pos-btn ' + (currentPosition === 'custom' ? 'active' : '') + '" onclick="window.setHeroPosition(\'custom\')" data-pos="custom">Custom</button>' +
                 '</div>' +
             '</div>' +
 
-            // LOGO
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
                 '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-image mr-2"></i> URL da Logomarca</label>' +
                 '<input type="text" id="config-logoUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + logoUrl + '">' +
-                '<div class="mt-2"><input type="file" id="config-logoUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'logoUrl\')"><button type="button" onclick="document.getElementById(\'config-logoUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-upload"></i> Enviar do Computador</button><span id="config-logoUrl-status" class="text-[10px] text-gray-500 ml-2"></span></div>' +
+                '<div class="mt-2"><input type="file" id="config-logoUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'logoUrl\')"><button type="button" onclick="document.getElementById(\'config-logoUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-upload"></i> Enviar do Computador</button></div>' +
             '</div>' +
 
-            // HERO PC
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
-                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-desktop mr-2"></i> Hero PC (Horizontal)</label>' +
-                '<input type="text" id="config-heroUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrl + '">' +
-                '<div class="mt-2"><input type="file" id="config-heroUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrl\')"><button type="button" onclick="document.getElementById(\'config-heroUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-upload"></i> Enviar do Computador</button><span id="config-heroUrl-status" class="text-[10px] text-gray-500 ml-2"></span></div>' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-desktop mr-2"></i> Hero PC</label>' +
+                '<input type="text" id="config-heroUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrl + '" oninput="window.updateHeroPreviewImage(this.value)">' +
+                '<div class="mt-2"><input type="file" id="config-heroUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrl\')"><button type="button" onclick="document.getElementById(\'config-heroUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-upload"></i> Enviar do Computador</button></div>' +
             '</div>' +
 
-            // HERO MOBILE
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
-                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-mobile-alt mr-2"></i> Hero Mobile (Vertical)</label>' +
+                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-mobile-alt mr-2"></i> Hero Mobile</label>' +
                 '<input type="text" id="config-heroUrlMobile" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrlMobile + '">' +
-                '<div class="mt-2"><input type="file" id="config-heroUrlMobile-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrlMobile\')"><button type="button" onclick="document.getElementById(\'config-heroUrlMobile-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-upload"></i> Enviar do Computador</button><span id="config-heroUrlMobile-status" class="text-[10px] text-gray-500 ml-2"></span></div>' +
+                '<div class="mt-2"><input type="file" id="config-heroUrlMobile-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrlMobile\')"><button type="button" onclick="document.getElementById(\'config-heroUrlMobile-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-upload"></i> Enviar do Computador</button></div>' +
             '</div>' +
 
-            // BOTÃO
             '<div class="mt-8 pt-4 border-t border-white/10 flex justify-end">' +
                 '<button onclick="window.saveConfig()" class="bg-brand-yellow text-brand-dark font-bold px-8 py-3 rounded-lg hover:bg-white transition-colors flex items-center gap-2 shadow-lg"><i class="fas fa-save"></i> Salvar Configurações</button>' +
             '</div>' +
         '</div>';
+
+    window.updateHeroPreview();
+    window.updatePreviewText();
 };
 
 window.handleConfigUpload = async (event, targetFieldKey) => {
@@ -593,6 +610,13 @@ window.setHeroPosition = (position) => {
         if (b.dataset.pos === position) b.classList.add('active');
         else b.classList.remove('active');
     });
+};
+
+window.updateHeroPreview = () => {};
+window.updatePreviewText = () => {};
+window.updateHeroPreviewImage = (url) => {
+    const box = document.getElementById('hero-preview-box');
+    if (box && url) box.style.backgroundImage = 'url(\'' + url + '\')';
 };
 
 window.saveConfig = async () => {
