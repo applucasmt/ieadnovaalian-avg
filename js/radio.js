@@ -338,10 +338,14 @@ window.renderRadioGridForDay = (diaKey, currentProgram) => {
                         '<h3 class="radio-now-highlight-title">' + (currentProgram.programa || 'Programa') + '</h3>' +
                         '<p class="radio-now-highlight-time"><i class="far fa-clock"></i>' + formatHora(currentProgram.inicio) + ' — ' + formatHora(currentProgram.fim) + '</p>' +
                         (currentProgram.whatsapp ?
-                            '<a href="https://wa.me/55' + String(currentProgram.whatsapp).replace(/\D/g, '') + '?text=' + encodeURIComponent('Olá! Gostaria de pedir um louvor.') + '" target="_blank" class="radio-now-highlight-btn">' +
-                                '<i class="fab fa-whatsapp"></i> Pedir Louvor' +
-                            '</a>'
-                            : '') +
+    '<a href="https://wa.me/55' + String(currentProgram.whatsapp).replace(/\D/g, '') + '?text=' + encodeURIComponent('Olá! Gostaria de pedir um louvor.') + '" target="_blank" class="radio-now-highlight-btn">' +
+        '<i class="fab fa-whatsapp"></i> ' + (
+            currentProgram.textoBotao && String(currentProgram.textoBotao).trim()
+                ? String(currentProgram.textoBotao).trim()
+                : 'Pedir Louvor'
+        ) +
+    '</a>'
+    : '') +
                     '</div>' +
                 '</div>';
         } else {
