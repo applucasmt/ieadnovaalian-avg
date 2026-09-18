@@ -123,8 +123,6 @@ window.renderRadioPage = async () => {
 
 // ============================================================
 // ✅ RENDERIZAR CONTEÚDO
-// - Só re-renderiza o PLAYER se o modo mudou (Live ↔ Rádio)
-// - Clicar no dia NÃO reinicia o player
 // ============================================================
 window.renderRadioContent = () => {
     const state = window.__radioState;
@@ -156,24 +154,39 @@ window.renderRadioContent = () => {
 
             if (raw.indexOf('<iframe') !== -1) {
                 // ✅ Limpa o iframe do Facebook:
-                // - remove width/height fixos
-                // - força width/height 100% via style
-                // - remove overflow/scroll
-                // - adiciona allowfullscreen
+                // - remove TODOS os atributos antigos (width, height, style, scrolling, frameborder, allow, allowfullscreen)
+                // - reescreve com os atributos corretos para mobile
                 fbHtml = raw
                     .replace(/\s+width="[^"]*"/gi, '')
                     .replace(/\s+height="[^"]*"/gi, '')
                     .replace(/\s+style="[^"]*"/gi, '')
-                    .replace(/<iframe/gi, '<iframe class="fb-live-iframe" style="border:0;position:absolute;top:0;left:0;width:100%;height:100%;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"');
+                    .replace(/\s+scrolling="[^"]*"/gi, '')
+                    .replace(/\s+frameborder="[^"]*"/gi, '')
+                    .replace(/\s+allow="[^"]*"/gi, '')
+                    .replace(/\s+allowfullscreen(=("true")?)?/gi, '')
+                    .replace(
+                        /<iframe/gi,
+                        '<iframe class="fb-live-iframe" ' +
+                        'style="border:0;position:absolute;top:0;left:0;width:100%;height:100%;" ' +
+                        'scrolling="no" ' +
+                        'frameborder="0" ' +
+                        'allowfullscreen="true" ' +
+                        'webkitallowfullscreen="true" ' +
+                        'mozallowfullscreen="true" ' +
+                        'allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share; fullscreen"'
+                    );
             } else if (raw.indexOf('http') === 0) {
                 const fbUrl = encodeURIComponent(raw);
                 fbHtml =
                     '<iframe class="fb-live-iframe" ' +
-                        'src="https://www.facebook.com/plugins/video.php?href=' + fbUrl + '&show_text=false" ' +
+                        'src="https://www.facebook.com/plugins/video.php?href=' + fbUrl + '&show_text=false&autoplay=1" ' +
                         'style="border:0;position:absolute;top:0;left:0;width:100%;height:100%;" ' +
-                        'scrolling="no" frameborder="0" ' +
+                        'scrolling="no" ' +
+                        'frameborder="0" ' +
                         'allowfullscreen="true" ' +
-                        'allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">' +
+                        'webkitallowfullscreen="true" ' +
+                        'mozallowfullscreen="true" ' +
+                        'allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share; fullscreen">' +
                     '</iframe>';
             }
 
@@ -192,14 +205,13 @@ window.renderRadioContent = () => {
         state.__modoPlayerRenderizado = modoAtual;
     }
 
-    // ✅ Botão de alternância — remove o antigo e adiciona o novo
+    // ✅ Botão de alternância
     if (playerContent) {
         const oldBtn = playerContent.querySelector('.radio-toggle-live-btn');
         if (oldBtn) oldBtn.remove();
 
         if (isLive) {
             const btn = document.createElement('button');
-            // ✅ Muda a classe: agora o botão fica no canto inferior esquerdo
             btn.className = 'radio-toggle-live-btn radio-toggle-live-btn-left';
             btn.onclick = window.toggleRadioPlayer;
             if (showFacebook) {
@@ -231,7 +243,7 @@ window.renderRadioContent = () => {
         }
     }
 
-    // Grade (abas + lista)
+    // Grade
     window.renderRadioDayTabs();
     window.renderRadioGridForDay(state.diaSelecionado, currentProgram);
 };
@@ -260,7 +272,7 @@ window.renderRadioDayTabs = () => {
 };
 
 // ============================================================
-// ✅ SELECIONAR DIA — só re-renderiza a GRADE, não o player
+// SELECIONAR DIA
 // ============================================================
 window.selectRadioDay = (diaKey) => {
     const state = window.__radioState;
@@ -360,7 +372,7 @@ window.renderRadioGridForDay = (diaKey, currentProgram) => {
 };
 
 // ============================================================
-// ✅ TOGGLE — força re-render do player (porque o modo mudou)
+// TOGGLE
 // ============================================================
 window.toggleRadioPlayer = () => {
     const state = window.__radioState;
@@ -372,7 +384,7 @@ window.toggleRadioPlayer = () => {
 };
 
 // ============================================================
-// ATUALIZAÇÃO A CADA 60s (detecta mudança de programa)
+// ATUALIZAÇÃO A CADA 60s
 // ============================================================
 setInterval(() => {
     const radioPage = document.getElementById('radio-page');
