@@ -1837,3 +1837,383 @@ behold-widget a { text-decoration: none; }
     font-size: 0.8rem;
     color: #EEBC5A;
 }
+
+
+
+/* ============================================================
+   RADIO — ABAS DE DIAS DA SEMANA
+   ============================================================ */
+
+.radio-days-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    padding: 0.4rem;
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.radio-day-tab {
+    position: relative;
+    flex: 1;
+    min-width: 60px;
+    padding: 0.75rem 0.5rem;
+    border-radius: 10px;
+    background: transparent;
+    border: 2px solid transparent;
+    color: #94a3b8;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.radio-day-tab:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.radio-day-tab-short {
+    display: inline-block;
+}
+
+/* ✅ ABA ATIVA (SELECIONADA) */
+.radio-day-tab-active {
+    background: linear-gradient(135deg, #EEBC5A 0%, #d4a445 100%);
+    color: #0f172a !important;
+    border-color: #EEBC5A;
+    box-shadow: 0 6px 20px -4px rgba(238, 188, 90, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.radio-day-tab-active:hover {
+    background: linear-gradient(135deg, #EEBC5A 0%, #d4a445 100%);
+    color: #0f172a !important;
+}
+
+/* ✅ PONTO DE "HOJE" */
+.radio-day-tab-hoje-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ef4444;
+    animation: radioDayHojeDot 1.5s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+.radio-day-tab-active .radio-day-tab-hoje-dot {
+    background: #0f172a;
+}
+
+@keyframes radioDayHojeDot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.7; }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+    .radio-days-tabs {
+        gap: 0.3rem;
+        padding: 0.3rem;
+        border-radius: 12px;
+    }
+    .radio-day-tab {
+        min-width: 40px;
+        padding: 0.6rem 0.3rem;
+        font-size: 0.7rem;
+        border-radius: 8px;
+    }
+}
+
+/* ============================================================
+   RADIO — TÍTULO DO DIA
+   ============================================================ */
+
+.radio-grid-title {
+    text-align: center;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.radio-grid-title .radio-grid-today {
+    display: inline-block;
+    margin-left: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #EEBC5A;
+    background: rgba(238, 188, 90, 0.15);
+    border: 1px solid rgba(238, 188, 90, 0.3);
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    vertical-align: middle;
+}
+
+/* ============================================================
+   RADIO — LISTA DE PROGRAMAS DO DIA
+   ============================================================ */
+
+.radio-grid-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Reutiliza os estilos de .radio-schedule-item que já existem */
+
+.radio-schedule-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.radio-schedule-item:hover {
+    background: rgba(15, 23, 42, 0.75);
+    border-color: rgba(255, 255, 255, 0.12);
+    transform: translateX(4px);
+}
+
+/* ✅ PROGRAMA NO AR — ESTILO "SELECIONADO" */
+.radio-schedule-item-active {
+    background: linear-gradient(135deg, rgba(238, 188, 90, 0.2) 0%, rgba(238, 188, 90, 0.06) 100%);
+    border: 2px solid #EEBC5A;
+    box-shadow: 0 0 30px -4px rgba(238, 188, 90, 0.6), inset 0 0 0 1px rgba(238, 188, 90, 0.25);
+    transform: none !important;
+    padding: calc(1rem - 1px) calc(1.25rem - 1px);
+}
+
+.radio-schedule-item-active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 5px;
+    background: #EEBC5A;
+    box-shadow: 0 0 16px rgba(238, 188, 90, 1);
+}
+
+.radio-schedule-pulse {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #EEBC5A;
+    animation: radioSchedulePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes radioSchedulePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(238, 188, 90, 0.7); transform: translateY(-50%) scale(1); }
+    50% { box-shadow: 0 0 0 12px rgba(238, 188, 90, 0); transform: translateY(-50%) scale(1.15); }
+}
+
+.radio-schedule-time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #EEBC5A;
+    min-width: 110px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.radio-schedule-time i { font-size: 0.8rem; opacity: 0.7; }
+.radio-schedule-item-active .radio-schedule-time { color: #fff; font-size: 0.9rem; }
+
+.radio-schedule-body { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 0; }
+
+.radio-schedule-name {
+    color: #e2e8f0;
+    font-weight: 600;
+    font-size: 0.95rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.radio-schedule-item-active .radio-schedule-name { color: #fff; font-weight: 800; font-size: 1rem; }
+
+.radio-schedule-now-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #0f172a;
+    background: #EEBC5A;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    width: fit-content;
+    animation: radioNowPulse 1.8s ease-in-out infinite;
+}
+
+.radio-schedule-now-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #0f172a;
+    animation: radioNowDot 1.2s ease-in-out infinite;
+}
+
+@keyframes radioNowPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(238, 188, 90, 0.6); }
+    50% { box-shadow: 0 0 0 6px rgba(238, 188, 90, 0); }
+}
+@keyframes radioNowDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
+}
+
+/* ============================================================
+   RADIO — MENSAGEM DE VAZIO
+   ============================================================ */
+
+.radio-grid-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #64748b;
+}
+
+.radio-grid-empty i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.4;
+}
+
+.radio-grid-empty p {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* ============================================================
+   DESTAQUE
+   ============================================================ */
+
+.radio-now-highlight-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(238, 188, 90, 0.15) 0%, rgba(30, 41, 59, 0.8) 50%, rgba(238, 188, 90, 0.1) 100%);
+    border: 2px solid rgba(238, 188, 90, 0.4);
+    box-shadow: 0 20px 60px -20px rgba(238, 188, 90, 0.5);
+    padding: 2rem;
+    text-align: center;
+}
+
+.radio-now-highlight-glow {
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(circle at center, rgba(238, 188, 90, 0.15) 0%, transparent 60%);
+    animation: radioHighlightGlow 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes radioHighlightGlow {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.1); opacity: 1; }
+}
+
+.radio-now-highlight-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.radio-now-highlight-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #0f172a;
+    background: #EEBC5A;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    animation: radioNowPulse 1.8s ease-in-out infinite;
+}
+
+.radio-now-highlight-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #0f172a;
+    animation: radioNowDot 1.2s ease-in-out infinite;
+}
+
+.radio-now-highlight-title {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 0;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+.radio-now-highlight-time {
+    font-size: 1rem;
+    color: #EEBC5A;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.radio-now-highlight-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    background: #25D366;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+}
+
+.radio-now-highlight-btn:hover {
+    background: #20bd5a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+}
+
+@media (max-width: 640px) {
+    .radio-schedule-item { padding: 0.85rem 1rem; gap: 0.75rem; }
+    .radio-schedule-time { min-width: 90px; font-size: 0.75rem; }
+    .radio-schedule-name { font-size: 0.9rem; }
+    .radio-schedule-item-active .radio-schedule-name { font-size: 0.95rem; }
+    .radio-now-highlight-card { padding: 1.5rem 1rem; }
+}
