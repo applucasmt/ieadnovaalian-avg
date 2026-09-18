@@ -10,6 +10,9 @@ window.AUTO_REFRESH_CONFIG = {
     enabled: true
 };
 
+// ============================================================
+// LIMPA TODO O CACHE
+// ============================================================
 window.clearAppCache = () => {
     const keysToRemove = [
         'cache_eventos_v2', 'cache_avisos_v2', 'cache_ministerios_v2',
@@ -26,6 +29,9 @@ window.clearAppCache = () => {
     console.log('🧹 clearAppCache: cache limpo.');
 };
 
+// ============================================================
+// FETCH — SEM CACHE
+// ============================================================
 window.fetchWithCache = async (url, key, force) => {
     force = force || false;
     try {
@@ -38,6 +44,9 @@ window.fetchWithCache = async (url, key, force) => {
     }
 };
 
+// ============================================================
+// PRÉ-CARREGAR IMAGEM
+// ============================================================
 window.preloadImage = (url, timeoutMs) => {
     timeoutMs = timeoutMs || 4000;
     return new Promise((resolve) => {
@@ -62,6 +71,9 @@ window.preloadImage = (url, timeoutMs) => {
     });
 };
 
+// ============================================================
+// OTIMIZAÇÃO DE IMAGENS
+// ============================================================
 window.optimizeImage = (url, width) => {
     width = width || 800;
     if (!url || typeof url !== 'string') return url;
@@ -74,6 +86,9 @@ window.optimizeImage = (url, width) => {
     return url;
 };
 
+// ============================================================
+// PARSER DE DATAS
+// ============================================================
 window.parseDate = (dateStr) => {
     if(!dateStr) return new Date();
     if(dateStr instanceof Date) return dateStr;
@@ -90,6 +105,9 @@ window.parseDate = (dateStr) => {
     return new Date();
 };
 
+// ============================================================
+// APLICAR CONFIG
+// ============================================================
 window.applyConfigImages = (config) => {
     console.log('🎨 applyConfigImages:', config);
     if (!config) return;
@@ -173,6 +191,9 @@ window.applyConfigImages = (config) => {
     }
 };
 
+// ============================================================
+// RESIZE
+// ============================================================
 let lastIsMobile = window.innerWidth <= 768;
 window.addEventListener('resize', () => {
     const currentIsMobile = window.innerWidth <= 768;
@@ -184,6 +205,9 @@ window.addEventListener('resize', () => {
     }
 });
 
+// ============================================================
+// CARREGAR DADOS
+// ============================================================
 window.loadData = async (force) => {
     force = force === true;
 
@@ -220,6 +244,17 @@ window.loadData = async (force) => {
             setTimeout(() => window.adjustTalentVideoCards(), 100);
         }
 
+        // ✅ Se a página da rádio estiver aberta, recarrega também
+        const radioPage = document.getElementById('radio-page');
+        if (radioPage && !radioPage.classList.contains('hidden')) {
+            if (typeof window.__radioState !== 'undefined') {
+                window.__radioState.carregado = false;
+            }
+            if (typeof window.renderRadioPage === 'function') {
+                window.renderRadioPage();
+            }
+        }
+
         if (typeof window.hideInitialLoading === 'function') {
             window.hideInitialLoading();
         }
@@ -235,6 +270,9 @@ window.loadData = async (force) => {
     }
 };
 
+// ============================================================
+// RENDERIZAR COMPONENTES
+// ============================================================
 window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor, config) => {
     events = Array.isArray(events) ? events : [];
     avisos = Array.isArray(avisos) ? avisos : [];
@@ -346,6 +384,9 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
     }
 };
 
+// ============================================================
+// CHECAR ATUALIZAÇÕES VIA HASH
+// ============================================================
 window.__lastDataHash = null;
 
 window.checkForUpdates = async () => {
@@ -372,6 +413,7 @@ window.checkForUpdates = async () => {
         }
 
         if (hash !== window.__lastDataHash) {
+            console.log('🔄 Hash mudou. Recarregando dados...');
             window.__lastDataHash = hash;
             return true;
         }
@@ -382,32 +424,55 @@ window.checkForUpdates = async () => {
     }
 };
 
+// ============================================================
+// ✅ CORREÇÃO: POLLING ROBUSTO (sobrevive ao freezing de mobile)
+// ============================================================
 window.initAutoRefresh = () => {
     if (!window.AUTO_REFRESH_CONFIG.enabled) return;
     if (window.__autoRefreshStarted) return;
     window.__autoRefreshStarted = true;
 
     let timer = null;
+    let isRunning = false;
 
     const doCheck = async () => {
-        const changed = await window.checkForUpdates();
-        if (changed && typeof window.loadData === 'function') {
-            window.loadData(true);
+        if (isRunning) return;
+        isRunning = true;
+        try {
+            const changed = await window.checkForUpdates();
+            if (changed && typeof window.loadData === 'function') {
+                window.loadData(true);
+            }
+        } catch (e) {
+            // silencioso
+        } finally {
+            isRunning = false;
         }
+    };
+
+    // ✅ usa setTimeout recursivo em vez de setInterval
+    // (sobrevive ao "freezing" de timers em navegadores mobile)
+    const scheduleNext = () => {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(async () => {
+            await doCheck();
+            scheduleNext();
+        }, window.AUTO_REFRESH_CONFIG.intervalMs);
     };
 
     const start = () => {
         stop();
-        timer = setInterval(doCheck, window.AUTO_REFRESH_CONFIG.intervalMs);
+        scheduleNext();
     };
 
     const stop = () => {
         if (timer) {
-            clearInterval(timer);
+            clearTimeout(timer);
             timer = null;
         }
     };
 
+    // ✅ Pausa/retoma conforme visibilidade da aba
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
             stop();
@@ -417,16 +482,42 @@ window.initAutoRefresh = () => {
         }
     });
 
+    // ✅ Quando a window volta ao foco (mobile), checa na hora
+    window.addEventListener('focus', () => {
+        if (!document.hidden) {
+            doCheck();
+            start();
+        }
+    });
+
+    // ✅ Quando o usuário toca na tela, checa na hora (não espera 15s)
+    let lastInteractionCheck = 0;
+    const onUserInteraction = () => {
+        const now = Date.now();
+        if (now - lastInteractionCheck > 5000) {
+            lastInteractionCheck = now;
+            doCheck();
+        }
+    };
+
+    document.addEventListener('touchstart', onUserInteraction, { passive: true });
+    document.addEventListener('click', onUserInteraction, { passive: true });
+
+    // ✅ Checagem imediata ao carregar (depois de 3s)
     if (!document.hidden) {
         setTimeout(doCheck, 3000);
         start();
     }
 
+    // ============================================================
+    // BroadcastChannel entre abas do mesmo navegador
+    // ============================================================
     try {
         if ('BroadcastChannel' in window) {
             const bc = new BroadcastChannel('iead_data_changes');
             bc.addEventListener('message', (event) => {
                 if (event && event.data && event.data.type === 'data_changed') {
+                    console.log('📡 BroadcastChannel: dados mudaram em outra aba. Recarregando...');
                     if (typeof window.loadData === 'function') {
                         window.loadData(true);
                     }
@@ -438,15 +529,19 @@ window.initAutoRefresh = () => {
 
     window.addEventListener('storage', (event) => {
         if (event && event.key === '__iead_data_changed') {
+            console.log('💾 storage event: dados mudaram em outra aba. Recarregando...');
             if (typeof window.loadData === 'function') {
                 window.loadData(true);
             }
         }
     });
 
-    console.log('🔁 Polling iniciado (15s)');
+    console.log('🔁 Polling iniciado (' + (window.AUTO_REFRESH_CONFIG.intervalMs / 1000) + 's) — modo robusto para mobile');
 };
 
+// ============================================================
+// NOTIFICAR OUTRAS ABAS
+// ============================================================
 window.broadcastDataChanged = () => {
     try {
         localStorage.setItem('__iead_data_changed', String(Date.now()));
@@ -465,6 +560,9 @@ window.broadcastDataChanged = () => {
     window.checkForUpdates();
 };
 
+// ============================================================
+// TELA DE LOADING
+// ============================================================
 window.hideInitialLoading = () => {
     const el = document.getElementById('initial-loading');
     if (!el) return;
@@ -483,6 +581,7 @@ window.hideInitialLoading = () => {
 };
 
 window.__initialLoadingWatchdog = setTimeout(() => {
+    console.warn('⏱️ Watchdog do loading acionado (10s)');
     window.hideInitialLoading();
 }, 10000);
 
@@ -526,24 +625,12 @@ window.buildYouTubeEmbed = (videoId, options) => {
     return 'https://www.youtube.com/embed/' + videoId + '?' + params.join('&');
 };
 
-// ============================================================
-// ✅ RESOLVER FORMATO DO VÍDEO (manual + fallback auto)
-// Ordem de prioridade:
-//   1. Campo manual "videoFormat" ("horizontal"/"vertical")
-//   2. Detecção automática se for "auto" ou vazio
-// ============================================================
 window.resolveVideoAspect = (videoFormat, videoId) => {
-    // Manual tem prioridade
     if (videoFormat === 'vertical') return Promise.resolve('9 / 16');
     if (videoFormat === 'horizontal') return Promise.resolve('16 / 9');
-
-    // "auto" ou vazio → detecta
     return window.detectYouTubeAspect(videoId);
 };
 
-// ============================================================
-// DETECÇÃO AUTOMÁTICA (fallback)
-// ============================================================
 window.detectYouTubeAspect = (videoId) => {
     return new Promise((resolve) => {
         let resolved = false;
@@ -555,7 +642,6 @@ window.detectYouTubeAspect = (videoId) => {
 
         setTimeout(() => finish('16 / 9'), 3000);
 
-        // Tenta maxresdefault
         const img1 = new Image();
         img1.onload = () => {
             if (img1.naturalWidth >= 1000) {
@@ -567,7 +653,6 @@ window.detectYouTubeAspect = (videoId) => {
         img1.onerror = () => tryOar2();
         img1.src = 'https://i.ytimg.com/vi/' + videoId + '/maxresdefault.jpg';
 
-        // Tenta oar2 (shorts)
         const tryOar2 = () => {
             const img2 = new Image();
             img2.onload = () => {
@@ -585,31 +670,4 @@ window.detectYouTubeAspect = (videoId) => {
     });
 };
 
-// ============================================================
-// ✅ CHECKER DE VERSÃO — força reload se a versão do SW mudou
-// ============================================================
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.addEventListener('controllerchange', function() {
-        console.warn('🔄 Novo Service Worker ativo. Recarregando a página...');
-        window.location.reload();
-    });
-}
-
-// Checa se há um novo SW esperando
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistration().then(function(reg) {
-        if (!reg) return;
-        reg.addEventListener('updatefound', function() {
-            const newWorker = reg.installing;
-            if (!newWorker) return;
-            newWorker.addEventListener('statechange', function() {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    console.log('🆕 Nova versão do site disponível. Aplicando...');
-                    newWorker.postMessage({ type: 'SKIP_WAITING' });
-                }
-            });
-        });
-    });
-}
-
-console.log('📦 data.js carregado (com SW checker)');
+console.log('📦 data.js carregado');
