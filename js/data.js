@@ -11,6 +11,20 @@ window.AUTO_REFRESH_CONFIG = {
 };
 
 // ============================================================
+// ✅ NOVO: Guarda a última versão de cada seção
+//    (usado para evitar re-render desnecessário e pausar a rádio)
+// ============================================================
+window.__lastDataSnapshot = {
+    eventos: '',
+    avisos: '',
+    ministerios: '',
+    albuns: '',
+    talentos: '',
+    pastor: '',
+    config: ''
+};
+
+// ============================================================
 // LIMPA TODO O CACHE
 // ============================================================
 window.clearAppCache = () => {
@@ -206,7 +220,10 @@ window.addEventListener('resize', () => {
 });
 
 // ============================================================
-// CARREGAR DADOS
+// ✅ LOAD DATA INTELIGENTE
+// - Compara dados novos com os antigos
+// - Só re-renderiza o que mudou
+// - Não pausa rádio/vídeos se nada relevante mudou
 // ============================================================
 window.loadData = async (force) => {
     force = force === true;
@@ -223,30 +240,68 @@ window.loadData = async (force) => {
             window.__lastDataHash = String(data._hash);
         }
 
-        const config = Array.isArray(data.config) ? data.config : [];
-        if (typeof window.applyConfigImages === 'function') {
-            window.applyConfigImages(config.length > 0 ? config[0] : {});
+        const sections = {
+            eventos: Array.isArray(data.eventos) ? data.eventos : [],
+            avisos: Array.isArray(data.avisos) ? data.avisos : [],
+            ministerios: Array.isArray(data.ministerios) ? data.ministerios : [],
+            albuns: Array.isArray(data.albuns) ? data.albuns : [],
+            talentos: Array.isArray(data.talentos) ? data.talentos : [],
+            pastor: Array.isArray(data.pastor) ? data.pastor : [],
+            config: Array.isArray(data.config) ? data.config : []
+        };
+
+        // Compara cada seção
+        const changed = {};
+        let anyChanged = false;
+        Object.keys(sections).forEach(key => {
+            const currentStr = JSON.stringify(sections[key]);
+            if (currentStr !== window.__lastDataSnapshot[key]) {
+                changed[key] = true;
+                window.__lastDataSnapshot[key] = currentStr;
+                anyChanged = true;
+            } else {
+                changed[key] = false;
+            }
+        });
+
+        // Se nada mudou e não foi forçado, pula
+        if (!anyChanged && !force) {
+            console.log('🟢 Nada mudou, pulando re-render.');
+            if (typeof window.hideInitialLoading === 'function') {
+                window.hideInitialLoading();
+            }
+            return;
         }
 
+        console.log('🔄 Seções que mudaram:', Object.keys(changed).filter(k => changed[k]));
+
+        // Aplica config só se mudou
+        if (changed.config && sections.config[0]) {
+            if (typeof window.applyConfigImages === 'function') {
+                window.applyConfigImages(sections.config[0]);
+            }
+        }
+
+        // Re-renderiza SÓ o que mudou
         if (typeof window.renderComponents === 'function') {
             window.renderComponents(
-                Array.isArray(data.eventos) ? data.eventos : [],
-                Array.isArray(data.avisos) ? data.avisos : [],
-                Array.isArray(data.ministerios) ? data.ministerios : [],
-                Array.isArray(data.albuns) ? data.albuns : [],
-                Array.isArray(data.talentos) ? data.talentos : [],
-                Array.isArray(data.pastor) ? data.pastor : [],
+                changed.eventos ? sections.eventos : null,
+                changed.avisos ? sections.avisos : null,
+                changed.ministerios ? sections.ministerios : null,
+                changed.albuns ? sections.albuns : null,
+                changed.talentos ? sections.talentos : null,
+                changed.pastor ? sections.pastor : null,
                 null
             );
         }
 
-        if (typeof window.adjustTalentVideoCards === 'function') {
+        if (changed.talentos && typeof window.adjustTalentVideoCards === 'function') {
             setTimeout(() => window.adjustTalentVideoCards(), 100);
         }
 
-        // ✅ Se a página da rádio estiver aberta, recarrega também
+        // Só recarrega a rádio se ela estiver aberta E se algo mudou
         const radioPage = document.getElementById('radio-page');
-        if (radioPage && !radioPage.classList.contains('hidden')) {
+        if (radioPage && !radioPage.classList.contains('hidden') && anyChanged) {
             if (typeof window.__radioState !== 'undefined') {
                 window.__radioState.carregado = false;
             }
@@ -271,17 +326,11 @@ window.loadData = async (force) => {
 };
 
 // ============================================================
-// RENDERIZAR COMPONENTES
+// ✅ RENDER COMPONENTS
+// - Aceita null = "não mexe nesse container"
+//   (evita destruir iframes/vídeos que estão rodando)
 // ============================================================
 window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor, config) => {
-    events = Array.isArray(events) ? events : [];
-    avisos = Array.isArray(avisos) ? avisos : [];
-    ministerios = Array.isArray(ministerios) ? ministerios : [];
-    albums = Array.isArray(albums) ? albums : [];
-    talentos = Array.isArray(talentos) ? talentos : [];
-    pastor = Array.isArray(pastor) ? pastor : [];
-    config = Array.isArray(config) ? config : [];
-
     const containers = {
         upcoming: document.getElementById('upcoming-events-container'),
         allEvents: document.getElementById('all-events-container'),
@@ -290,16 +339,34 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         albums: document.getElementById('albums-container')
     };
 
+    // null = não mexe nesse container
+    const shouldRenderEvents = events !== null;
+    const shouldRenderAvisos = avisos !== null;
+    const shouldRenderMinisterios = ministerios !== null;
+    const shouldRenderAlbums = albums !== null;
+    const shouldRenderTalentos = talentos !== null;
+    const shouldRenderPastor = pastor !== null;
+
+    events = Array.isArray(events) ? events : [];
+    avisos = Array.isArray(avisos) ? avisos : [];
+    ministerios = Array.isArray(ministerios) ? ministerios : [];
+    albums = Array.isArray(albums) ? albums : [];
+    talentos = Array.isArray(talentos) ? talentos : [];
+    pastor = Array.isArray(pastor) ? pastor : [];
+    config = Array.isArray(config) ? config : [];
+
     if (config.length > 0 && config[0]) {
         window.applyConfigImages(config[0]);
     }
 
-    const pastorContainer = document.getElementById('pastor-img-container');
-    if (pastorContainer) {
-        if (pastor.length > 0 && pastor[0].capa) {
-            pastorContainer.innerHTML = '<img src="' + window.optimizeImage(pastor[0].capa, 200) + '" loading="lazy" alt="Pastor" class="w-full h-full object-cover">';
-        } else {
-            pastorContainer.innerHTML = '<i class="fas fa-user-tie text-xl sm:text-2xl"></i>';
+    if (shouldRenderPastor) {
+        const pastorContainer = document.getElementById('pastor-img-container');
+        if (pastorContainer) {
+            if (pastor.length > 0 && pastor[0].capa) {
+                pastorContainer.innerHTML = '<img src="' + window.optimizeImage(pastor[0].capa, 200) + '" loading="lazy" alt="Pastor" class="w-full h-full object-cover">';
+            } else {
+                pastorContainer.innerHTML = '<i class="fas fa-user-tie text-xl sm:text-2xl"></i>';
+            }
         }
     }
 
@@ -325,59 +392,65 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         };
     });
 
-    window.globalEvents = normalizedEvents;
+    if (shouldRenderEvents) {
+        window.globalEvents = normalizedEvents;
+    }
 
-    if (typeof window.initMarketingSlider === 'function') {
+    if (shouldRenderEvents && typeof window.initMarketingSlider === 'function') {
         window.initMarketingSlider(window.globalEvents);
     }
 
     const carousel = document.getElementById('avisos-carousel');
-    if (avisos.length > 0) {
-        if (typeof window.renderAvisosCarousel === 'function') {
-            window.renderAvisosCarousel(avisos);
+    if (shouldRenderAvisos) {
+        if (avisos.length > 0) {
+            if (typeof window.renderAvisosCarousel === 'function') {
+                window.renderAvisosCarousel(avisos);
+            }
+        } else {
+            if (carousel) {
+                carousel.classList.add('hidden');
+                const slidesContainer = document.getElementById('avisos-slides');
+                const dotsContainer = document.getElementById('aviso-dots');
+                if (slidesContainer) slidesContainer.innerHTML = '';
+                if (dotsContainer) dotsContainer.innerHTML = '';
+            }
         }
-    } else {
-        if (carousel) {
-            carousel.classList.add('hidden');
-            const slidesContainer = document.getElementById('avisos-slides');
-            const dotsContainer = document.getElementById('aviso-dots');
-            if (slidesContainer) slidesContainer.innerHTML = '';
-            if (dotsContainer) dotsContainer.innerHTML = '';
+    }
+
+    if (shouldRenderEvents) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const sorted = window.globalEvents.slice().sort((a, b) => window.parseDate(a.date) - window.parseDate(b.date));
+        const future = sorted.filter(e => {
+            const eventDay = window.parseDate(e.date);
+            eventDay.setHours(0, 0, 0, 0);
+            return eventDay >= today;
+        });
+
+        if (containers.upcoming) {
+            containers.upcoming.innerHTML = future.slice(0, 3).map(e => window.createCard(e, 'evento')).join('');
+        }
+        if (containers.allEvents) {
+            containers.allEvents.innerHTML = future.length > 0
+                ? future.map(e => window.createCard(e, 'evento')).join('')
+                : '<div class="col-span-full text-center text-gray-400 py-10">Nenhum evento agendado.</div>';
         }
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const sorted = window.globalEvents.slice().sort((a, b) => window.parseDate(a.date) - window.parseDate(b.date));
-    const future = sorted.filter(e => {
-        const eventDay = window.parseDate(e.date);
-        eventDay.setHours(0, 0, 0, 0);
-        return eventDay >= today;
-    });
-
-    if (containers.upcoming) {
-        containers.upcoming.innerHTML = future.slice(0, 3).map(e => window.createCard(e, 'evento')).join('');
-    }
-    if (containers.allEvents) {
-        containers.allEvents.innerHTML = future.length > 0
-            ? future.map(e => window.createCard(e, 'evento')).join('')
-            : '<div class="col-span-full text-center text-gray-400 py-10">Nenhum evento agendado.</div>';
-    }
-
-    if (containers.ministerios) {
+    if (shouldRenderMinisterios && containers.ministerios) {
         containers.ministerios.innerHTML = ministerios.length > 0
             ? ministerios.map(m => window.createCard(m, 'ministerio')).join('')
             : '';
     }
 
-    if (containers.talentos) {
+    if (shouldRenderTalentos && containers.talentos) {
         containers.talentos.innerHTML = talentos.length > 0
             ? talentos.map(t => window.createCard(t, 'talento')).join('')
             : '';
     }
 
-    if (containers.albums) {
+    if (shouldRenderAlbums && containers.albums) {
         containers.albums.innerHTML = albums.length > 0
             ? albums.map(a => window.createCard(a, 'album')).join('')
             : '';
@@ -425,7 +498,7 @@ window.checkForUpdates = async () => {
 };
 
 // ============================================================
-// ✅ CORREÇÃO: POLLING ROBUSTO (sobrevive ao freezing de mobile)
+// ✅ POLLING ROBUSTO (sobrevive ao freezing de mobile)
 // ============================================================
 window.initAutoRefresh = () => {
     if (!window.AUTO_REFRESH_CONFIG.enabled) return;
@@ -450,8 +523,6 @@ window.initAutoRefresh = () => {
         }
     };
 
-    // ✅ usa setTimeout recursivo em vez de setInterval
-    // (sobrevive ao "freezing" de timers em navegadores mobile)
     const scheduleNext = () => {
         if (timer) clearTimeout(timer);
         timer = setTimeout(async () => {
@@ -472,7 +543,6 @@ window.initAutoRefresh = () => {
         }
     };
 
-    // ✅ Pausa/retoma conforme visibilidade da aba
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
             stop();
@@ -482,7 +552,6 @@ window.initAutoRefresh = () => {
         }
     });
 
-    // ✅ Quando a window volta ao foco (mobile), checa na hora
     window.addEventListener('focus', () => {
         if (!document.hidden) {
             doCheck();
@@ -490,7 +559,6 @@ window.initAutoRefresh = () => {
         }
     });
 
-    // ✅ Quando o usuário toca na tela, checa na hora (não espera 15s)
     let lastInteractionCheck = 0;
     const onUserInteraction = () => {
         const now = Date.now();
@@ -503,15 +571,11 @@ window.initAutoRefresh = () => {
     document.addEventListener('touchstart', onUserInteraction, { passive: true });
     document.addEventListener('click', onUserInteraction, { passive: true });
 
-    // ✅ Checagem imediata ao carregar (depois de 3s)
     if (!document.hidden) {
         setTimeout(doCheck, 3000);
         start();
     }
 
-    // ============================================================
-    // BroadcastChannel entre abas do mesmo navegador
-    // ============================================================
     try {
         if ('BroadcastChannel' in window) {
             const bc = new BroadcastChannel('iead_data_changes');
