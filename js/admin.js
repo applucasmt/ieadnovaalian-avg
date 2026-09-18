@@ -400,7 +400,7 @@ html += '<div class="bg-white/5 p-3 rounded-lg flex justify-between items-center
                             '<span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded">inativo</span>'
                         ) +
                     '</div>' +
-                    '<span class="text-xs text-gray-400">📱 ' + (item.whatsapp || 'sem whatsapp') + '</span>' +
+                    '<span class="text-xs text-gray-400">📱 ' + (item.whatsapp || 'sem whatsapp') + (item.textoBotao ? ' · 💬 ' + item.textoBotao : '') + '</span>' +
                 '</div>' +
             '</div>' +
             '<div class="flex gap-2 shrink-0">' +
