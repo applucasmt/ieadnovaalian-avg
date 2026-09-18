@@ -201,15 +201,21 @@ window.renderRadioContent = () => {
         }
     }
 
-    // WhatsApp
+        // WhatsApp
     const whatsappBtn = document.getElementById('radio-whatsapp-btn');
     const whatsappLabel = document.getElementById('radio-whatsapp-label');
 
     if (whatsappBtn && whatsappLabel) {
         if (currentProgram && currentProgram.whatsapp) {
             const num = String(currentProgram.whatsapp).replace(/\D/g, '');
+            // ✅ Usa o textoBotao personalizado, com fallback pro nome do programa
+            const textoCustom = currentProgram.textoBotao && String(currentProgram.textoBotao).trim();
+            const textoFinal = textoCustom
+                ? String(currentProgram.textoBotao).trim()
+                : 'Pedir louvor para ' + (currentProgram.programa || 'a rádio');
+
             whatsappBtn.href = 'https://wa.me/55' + num + '?text=' + encodeURIComponent('Olá! Gostaria de pedir um louvor.');
-            whatsappLabel.textContent = 'Pedir louvor para ' + (currentProgram.programa || 'a rádio');
+            whatsappLabel.textContent = textoFinal;
         } else {
             whatsappBtn.href = 'https://wa.me/5565992977124';
             whatsappLabel.textContent = 'via WhatsApp';
