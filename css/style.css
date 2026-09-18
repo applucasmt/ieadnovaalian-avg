@@ -1099,8 +1099,10 @@ behold-widget a { text-decoration: none; }
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    min-height: 300px;
+    max-height: 420px;   /* ✅ limita a altura */
+    min-height: 220px;   /* ✅ altura mínima menor */
     background: #0a0a0a;
+    margin: 0 auto;      /* ✅ centraliza */
 }
 
 .radio-player-wrap iframe {
@@ -1113,17 +1115,17 @@ behold-widget a { text-decoration: none; }
 /* ✅ BOTÃO DE ALTERNÂNCIA (Live ↔ Rádio) */
 .radio-toggle-live-btn {
     position: absolute;
-    bottom: 1rem;
-    right: 1rem;
+    bottom: 0.75rem;
+    right: 0.75rem;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.6rem 1rem;
-    background: rgba(238, 188, 90, 0.9);
+    padding: 0.5rem 0.9rem;
+    background: rgba(238, 188, 90, 0.95);
     backdrop-filter: blur(10px);
     color: #0f172a;
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     border-radius: 999px;
     border: none;
     cursor: pointer;
@@ -1139,12 +1141,25 @@ behold-widget a { text-decoration: none; }
     box-shadow: 0 8px 25px rgba(238, 188, 90, 0.6);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+    .radio-player-wrap {
+        aspect-ratio: 16 / 10;
+        max-height: 340px;
+        min-height: 200px;
+    }
     .radio-toggle-live-btn {
         bottom: 0.5rem;
         right: 0.5rem;
-        padding: 0.5rem 0.85rem;
+        padding: 0.4rem 0.75rem;
         font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .radio-player-wrap {
+        aspect-ratio: 4 / 3;
+        max-height: 300px;
+        min-height: 180px;
     }
 }
 
@@ -2216,4 +2231,32 @@ behold-widget a { text-decoration: none; }
     .radio-schedule-name { font-size: 0.9rem; }
     .radio-schedule-item-active .radio-schedule-name { font-size: 0.95rem; }
     .radio-now-highlight-card { padding: 1.5rem 1rem; }
+}
+
+
+/* ============================================================
+   RADIO — AJUSTE DA BARRA DE CONTROLES DO FACEBOOK
+   ============================================================ */
+
+/* O Facebook injeta uma barra de controles própria no topo.
+   Esse ajuste garante que ela não seja cortada pelo rounded/overflow. */
+#radio-player-content {
+    overflow: hidden;
+    border-radius: inherit;
+}
+
+#radio-player-content iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #000;
+}
+
+/* Quando é o player do nazarenofm.com, remove qualquer padding extra */
+#radio-player-content #radio-iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
 }
