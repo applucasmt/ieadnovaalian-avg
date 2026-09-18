@@ -51,6 +51,7 @@ window.SCHEMAS = {
     { key: 'fim', label: '⏰ Horário de Fim', type: 'time' },
     { key: 'dias', label: '📅 Dias da Semana', type: 'text', hint: 'Use: todos | seg,ter,qua,qui,sex | sab,dom | seg,qua,sex. Separe por vírgula.' },
     { key: 'whatsapp', label: '📱 WhatsApp do Locutor', type: 'text', hint: 'Só números: 65999991111' },
+    { key: 'textoBotao', label: '💬 Texto do Botão WhatsApp', type: 'text', hint: 'Deixe vazio para usar "Pedir louvor para [nome do programa]". Ex: "Pedir música", "Mande seu pedido", etc.' },
     { key: 'ativo', label: '✅ Ativo?', type: 'select', options: ['true', 'false'], default: 'true' }
 ],
 
