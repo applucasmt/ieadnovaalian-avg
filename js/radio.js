@@ -6,9 +6,10 @@ window.__radioState = {
     programas: [],
     liveConfig: { facebookLiveUrl: '', isLive: 'false' },
     currentProgram: null,
-    diaSelecionado: null, // 'dom' | 'seg' | ... | 'sab'
+    diaSelecionado: null,
     userChoseRadio: false,
-    carregado: false
+    carregado: false,
+    __modoPlayerRenderizado: ''
 };
 
 // ============================================================
@@ -55,7 +56,6 @@ function parseTimeToMinutes(str) {
     return parseInt(match[1]) * 60 + parseInt(match[2]);
 }
 
-// ✅ Verifica se um programa passa no dia especificado
 function programaPassaNoDia(dias, diaKey) {
     if (!dias || String(dias).trim() === '' || String(dias).toLowerCase().trim() === 'todos') {
         return true;
@@ -71,7 +71,6 @@ function programaPassaNoDia(dias, diaKey) {
     return lista.indexOf(diaKey) !== -1;
 }
 
-// ✅ Detecta o programa que está no ar AGORA (considerando dia e hora)
 window.getCurrentRadioProgram = (programas) => {
     if (!Array.isArray(programas) || programas.length === 0) return null;
     const now = new Date();
@@ -115,7 +114,6 @@ window.renderRadioPage = async () => {
         }
     }
 
-    // Define o dia selecionado como HOJE (só na primeira vez)
     if (!window.__radioState.diaSelecionado) {
         window.__radioState.diaSelecionado = getDiaHojeKey();
     }
@@ -123,18 +121,22 @@ window.renderRadioPage = async () => {
     window.renderRadioContent();
 };
 
+// ============================================================
+// ✅ RENDERIZAR CONTEÚDO
+// - Só re-renderiza o PLAYER se o modo mudou (Live ↔ Rádio)
+// - Clicar no dia NÃO reinicia o player
+// ============================================================
 window.renderRadioContent = () => {
     const state = window.__radioState;
     const programasArr = state.programas;
     const liveCfg = state.liveConfig;
     const isLive = String(liveCfg.isLive).toLowerCase() === 'true' && liveCfg.facebookLiveUrl;
+    const showFacebook = isLive && !state.userChoseRadio;
 
     const currentProgram = window.getCurrentRadioProgram(programasArr);
     state.currentProgram = currentProgram;
 
-    // ---------------------------------------------
-    // 1. Badge no topo
-    // ---------------------------------------------
+    // Badge no topo
     const statusLabelEl = document.getElementById('radio-status-label');
     if (statusLabelEl) {
         if (isLive) statusLabelEl.textContent = 'Transmissão ao Vivo';
@@ -142,13 +144,12 @@ window.renderRadioContent = () => {
         else statusLabelEl.textContent = 'No Ar Agora';
     }
 
-    // ---------------------------------------------
-    // 2. Player
-    // ---------------------------------------------
+    // ✅ PLAYER — só re-renderiza se o modo mudou (Live ↔ Rádio)
+    const modoAtual = showFacebook ? 'facebook' : 'radio';
+    const modoAnterior = state.__modoPlayerRenderizado || '';
     const playerContent = document.getElementById('radio-player-content');
-    if (playerContent) {
-        const showFacebook = isLive && !state.userChoseRadio;
 
+    if (modoAnterior !== modoAtual && playerContent) {
         if (showFacebook) {
             const raw = String(liveCfg.facebookLiveUrl).trim();
             let fbHtml = '';
@@ -165,13 +166,6 @@ window.renderRadioContent = () => {
                         'allowfullscreen="true" ' +
                         'allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">' +
                     '</iframe>';
-            }
-
-            playerContent.innerHTML =
-                fbHtml +
-                '<button class="radio-toggle-live-btn" onclick="window.toggleRadioPlayer()">' +
-                    '<i class="fas fa-radio"></i> Ouvir somente a Rádio' +
-                '</button>';
         } else {
             playerContent.innerHTML =
                 '<iframe ' +
@@ -180,18 +174,31 @@ window.renderRadioContent = () => {
                     'title="Rádio Nazareno FM" ' +
                     'style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;" ' +
                     'allow="autoplay">' +
-                '</iframe>' +
-                (isLive ?
-                    '<button class="radio-toggle-live-btn" onclick="window.toggleRadioPlayer()">' +
-                        '<i class="fas fa-tv"></i> Voltar para a Transmissão ao Vivo' +
-                    '</button>'
-                    : '');
+                '</iframe>';
+        }
+
+        state.__modoPlayerRenderizado = modoAtual;
+    }
+
+    // ✅ Botão de alternância — remove o antigo e adiciona o novo
+    if (playerContent) {
+        const oldBtn = playerContent.querySelector('.radio-toggle-live-btn');
+        if (oldBtn) oldBtn.remove();
+
+        if (isLive) {
+            const btn = document.createElement('button');
+            btn.className = 'radio-toggle-live-btn';
+            btn.onclick = window.toggleRadioPlayer;
+            if (showFacebook) {
+                btn.innerHTML = '<i class="fas fa-radio"></i> Ouvir somente a Rádio';
+            } else {
+                btn.innerHTML = '<i class="fas fa-tv"></i> Voltar para a Transmissão ao Vivo';
+            }
+            playerContent.appendChild(btn);
         }
     }
 
-    // ---------------------------------------------
-    // 3. WhatsApp
-    // ---------------------------------------------
+    // WhatsApp
     const whatsappBtn = document.getElementById('radio-whatsapp-btn');
     const whatsappLabel = document.getElementById('radio-whatsapp-label');
 
@@ -206,9 +213,7 @@ window.renderRadioContent = () => {
         }
     }
 
-    // ---------------------------------------------
-    // 4. Abas de dias + Grade do dia selecionado
-    // ---------------------------------------------
+    // Grade (abas + lista)
     window.renderRadioDayTabs();
     window.renderRadioGridForDay(state.diaSelecionado, currentProgram);
 };
@@ -237,11 +242,19 @@ window.renderRadioDayTabs = () => {
 };
 
 // ============================================================
-// SELECIONAR DIA
+// ✅ SELECIONAR DIA — só re-renderiza a GRADE, não o player
 // ============================================================
 window.selectRadioDay = (diaKey) => {
-    window.__radioState.diaSelecionado = diaKey;
-    window.renderRadioContent();
+    const state = window.__radioState;
+    state.diaSelecionado = diaKey;
+
+    // Só atualiza as abas (o botão clicado fica "active")
+    window.renderRadioDayTabs();
+
+    // Só atualiza a GRADE (lista de programas do dia)
+    window.renderRadioGridForDay(diaKey, state.currentProgram);
+
+    // ✅ NÃO chama renderRadioContent() — assim o player não é tocado
 };
 
 // ============================================================
@@ -256,14 +269,12 @@ window.renderRadioGridForDay = (diaKey, currentProgram) => {
 
     if (!container || !gridList) return;
 
-    // Nome do dia selecionado
     const diaInfo = DIAS_SEMANA.find(d => d.key === diaKey);
     if (titleEl && diaInfo) {
         const diaHoje = getDiaHojeKey();
         titleEl.innerHTML = '📅 ' + diaInfo.full + (diaKey === diaHoje ? ' <span class="radio-grid-today">(hoje)</span>' : '');
     }
 
-    // Filtra programas daquele dia
     const programas = (window.__radioState.programas || [])
         .filter(p => String(p.ativo).toLowerCase() !== 'false')
         .filter(p => programaPassaNoDia(p.dias, diaKey))
@@ -273,7 +284,6 @@ window.renderRadioGridForDay = (diaKey, currentProgram) => {
             return (ai === null ? 9999 : ai) - (bi === null ? 9999 : bi);
         });
 
-    // Se não tem programas nesse dia
     if (programas.length === 0) {
         container.classList.remove('hidden');
         gridList.innerHTML = '';
@@ -288,7 +298,6 @@ window.renderRadioGridForDay = (diaKey, currentProgram) => {
     container.classList.remove('hidden');
     if (emptyMsg) emptyMsg.classList.add('hidden');
 
-    // Renderiza os programas
     const renderItem = (p) => {
         const isCurrent = currentProgram && p.id && currentProgram.id && p.id === currentProgram.id;
         const hora = formatHora(p.inicio) + ' — ' + formatHora(p.fim);
@@ -307,9 +316,6 @@ window.renderRadioGridForDay = (diaKey, currentProgram) => {
 
     gridList.innerHTML = programas.map(renderItem).join('');
 
-    // ---------------------------------------------
-    // DESTAQUE (só se o programa atual está no dia selecionado)
-    // ---------------------------------------------
     if (highlight) {
         const currentIsInSelectedDay = currentProgram && programaPassaNoDia(currentProgram.dias, diaKey);
 
@@ -337,15 +343,20 @@ window.renderRadioGridForDay = (diaKey, currentProgram) => {
 };
 
 // ============================================================
-// TOGGLE
+// ✅ TOGGLE — força re-render do player (porque o modo mudou)
 // ============================================================
 window.toggleRadioPlayer = () => {
-    window.__radioState.userChoseRadio = !window.__radioState.userChoseRadio;
+    const state = window.__radioState;
+    state.userChoseRadio = !state.userChoseRadio;
+
+    // Força o player a re-renderizar (porque o modo mudou)
+    state.__modoPlayerRenderizado = '';
+
     window.renderRadioContent();
 };
 
 // ============================================================
-// ATUALIZAÇÃO A CADA 60s
+// ATUALIZAÇÃO A CADA 60s (detecta mudança de programa)
 // ============================================================
 setInterval(() => {
     const radioPage = document.getElementById('radio-page');
@@ -363,6 +374,7 @@ setInterval(() => {
 window.addEventListener('storage', (event) => {
     if (event && event.key === '__iead_data_changed') {
         window.__radioState.carregado = false;
+        window.__radioState.__modoPlayerRenderizado = '';
         const radioPage = document.getElementById('radio-page');
         if (radioPage && !radioPage.classList.contains('hidden')) window.renderRadioPage();
     }
