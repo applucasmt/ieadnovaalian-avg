@@ -155,13 +155,22 @@ window.renderRadioContent = () => {
             let fbHtml = '';
 
             if (raw.indexOf('<iframe') !== -1) {
-                fbHtml = raw;
+                // ✅ Limpa o iframe do Facebook:
+                // - remove width/height fixos
+                // - força width/height 100% via style
+                // - remove overflow/scroll
+                // - adiciona allowfullscreen
+                fbHtml = raw
+                    .replace(/\s+width="[^"]*"/gi, '')
+                    .replace(/\s+height="[^"]*"/gi, '')
+                    .replace(/\s+style="[^"]*"/gi, '')
+                    .replace(/<iframe/gi, '<iframe class="fb-live-iframe" style="border:0;position:absolute;top:0;left:0;width:100%;height:100%;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"');
             } else if (raw.indexOf('http') === 0) {
                 const fbUrl = encodeURIComponent(raw);
                 fbHtml =
-                    '<iframe ' +
-                        'src="https://www.facebook.com/plugins/video.php?href=' + fbUrl + '&show_text=false&width=560&height=315" ' +
-                        'style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;" ' +
+                    '<iframe class="fb-live-iframe" ' +
+                        'src="https://www.facebook.com/plugins/video.php?href=' + fbUrl + '&show_text=false" ' +
+                        'style="border:0;position:absolute;top:0;left:0;width:100%;height:100%;" ' +
                         'scrolling="no" frameborder="0" ' +
                         'allowfullscreen="true" ' +
                         'allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">' +
@@ -190,7 +199,8 @@ window.renderRadioContent = () => {
 
         if (isLive) {
             const btn = document.createElement('button');
-            btn.className = 'radio-toggle-live-btn';
+            // ✅ Muda a classe: agora o botão fica no canto inferior esquerdo
+            btn.className = 'radio-toggle-live-btn radio-toggle-live-btn-left';
             btn.onclick = window.toggleRadioPlayer;
             if (showFacebook) {
                 btn.innerHTML = '<i class="fas fa-radio"></i> Ouvir somente a Rádio';
@@ -201,7 +211,7 @@ window.renderRadioContent = () => {
         }
     }
 
-    // ✅ WhatsApp — usa textoBotao personalizado, com fallback pro nome do programa
+    // WhatsApp
     const whatsappBtn = document.getElementById('radio-whatsapp-btn');
     const whatsappLabel = document.getElementById('radio-whatsapp-label');
 
@@ -323,7 +333,6 @@ window.renderRadioGridForDay = (diaKey, currentProgram) => {
         const currentIsInSelectedDay = currentProgram && programaPassaNoDia(currentProgram.dias, diaKey);
 
         if (currentIsInSelectedDay) {
-            // ✅ Texto do botão no destaque — usa textoBotao personalizado
             const textoBotaoDestaque = (currentProgram.textoBotao && String(currentProgram.textoBotao).trim())
                 ? String(currentProgram.textoBotao).trim()
                 : 'Pedir Louvor';
