@@ -10,10 +10,7 @@ window.AUTO_REFRESH_CONFIG = {
     enabled: true
 };
 
-// ============================================================
-// ✅ NOVO: Guarda a última versão de cada seção
-//    (usado para evitar re-render desnecessário e pausar a rádio)
-// ============================================================
+// ✅ Guarda o snapshot de cada seção para evitar re-render desnecessário
 window.__lastDataSnapshot = {
     eventos: '',
     avisos: '',
@@ -250,7 +247,6 @@ window.loadData = async (force) => {
             config: Array.isArray(data.config) ? data.config : []
         };
 
-        // Compara cada seção
         const changed = {};
         let anyChanged = false;
         Object.keys(sections).forEach(key => {
@@ -264,7 +260,6 @@ window.loadData = async (force) => {
             }
         });
 
-        // Se nada mudou e não foi forçado, pula
         if (!anyChanged && !force) {
             console.log('🟢 Nada mudou, pulando re-render.');
             if (typeof window.hideInitialLoading === 'function') {
@@ -275,14 +270,12 @@ window.loadData = async (force) => {
 
         console.log('🔄 Seções que mudaram:', Object.keys(changed).filter(k => changed[k]));
 
-        // Aplica config só se mudou
         if (changed.config && sections.config[0]) {
             if (typeof window.applyConfigImages === 'function') {
                 window.applyConfigImages(sections.config[0]);
             }
         }
 
-        // Re-renderiza SÓ o que mudou
         if (typeof window.renderComponents === 'function') {
             window.renderComponents(
                 changed.eventos ? sections.eventos : null,
@@ -304,6 +297,7 @@ window.loadData = async (force) => {
         if (radioPage && !radioPage.classList.contains('hidden') && anyChanged) {
             if (typeof window.__radioState !== 'undefined') {
                 window.__radioState.carregado = false;
+                window.__radioState.__modoPlayerRenderizado = '';
             }
             if (typeof window.renderRadioPage === 'function') {
                 window.renderRadioPage();
@@ -328,7 +322,6 @@ window.loadData = async (force) => {
 // ============================================================
 // ✅ RENDER COMPONENTS
 // - Aceita null = "não mexe nesse container"
-//   (evita destruir iframes/vídeos que estão rodando)
 // ============================================================
 window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor, config) => {
     const containers = {
@@ -339,7 +332,6 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
         albums: document.getElementById('albums-container')
     };
 
-    // null = não mexe nesse container
     const shouldRenderEvents = events !== null;
     const shouldRenderAvisos = avisos !== null;
     const shouldRenderMinisterios = ministerios !== null;
@@ -458,7 +450,7 @@ window.renderComponents = (events, avisos, ministerios, albums, talentos, pastor
 };
 
 // ============================================================
-// CHECAR ATUALIZAÇÕES VIA HASH
+// ✅ CHECAR ATUALIZAÇÕES VIA HASH
 // ============================================================
 window.__lastDataHash = null;
 
@@ -480,11 +472,13 @@ window.checkForUpdates = async () => {
 
         if (!hash) return false;
 
+        // Se é a primeira vez, guarda o hash sem recarregar
         if (window.__lastDataHash === null) {
             window.__lastDataHash = hash;
             return false;
         }
 
+        // Se o hash mudou, marca como changed
         if (hash !== window.__lastDataHash) {
             console.log('🔄 Hash mudou. Recarregando dados...');
             window.__lastDataHash = hash;
@@ -493,6 +487,7 @@ window.checkForUpdates = async () => {
 
         return false;
     } catch (e) {
+        console.warn('Erro no checkForUpdates:', e);
         return false;
     }
 };
@@ -513,11 +508,12 @@ window.initAutoRefresh = () => {
         isRunning = true;
         try {
             const changed = await window.checkForUpdates();
+            console.log('🔍 checkForUpdates retornou:', changed);
             if (changed && typeof window.loadData === 'function') {
                 window.loadData(true);
             }
         } catch (e) {
-            // silencioso
+            console.error('Erro no doCheck:', e);
         } finally {
             isRunning = false;
         }
