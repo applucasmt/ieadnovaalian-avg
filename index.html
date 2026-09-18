@@ -510,7 +510,7 @@
                 <div id="albums-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
             </div>
 
-            <!-- ✅ RÁDIO — GRADE EM 2 COLUNAS -->
+            <!-- ✅ RÁDIO — COM ABAS DE DIAS -->
             <div id="radio-page" class="page-content hidden container mx-auto px-4 sm:px-6 py-10 sm:py-12 animate-fade-in">
                 <div class="max-w-6xl mx-auto">
                     <div class="text-center mb-10 sm:mb-12">
@@ -549,23 +549,34 @@
                         </a>
                     </div>
 
-                    <!-- ✅ GRID DE PROGRAMAÇÃO -->
+                    <!-- ✅ GRID DE PROGRAMAÇÃO COM ABAS DE DIAS -->
                     <div id="radio-grid-container" class="hidden">
-                        <div class="text-center mb-8">
+                        <div class="text-center mb-6">
                             <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">
                                 <i class="fas fa-list text-brand-yellow mr-2"></i>
                                 Programação
                             </h2>
                             <div class="h-1 w-20 bg-brand-yellow rounded-full mx-auto"></div>
-                            <p class="text-sm text-gray-400 mt-3">Confira os horários dos nossos programas</p>
+                            <p class="text-sm text-gray-400 mt-3">Clique em um dia para ver a programação</p>
                         </div>
 
-                        <div class="radio-grid">
-                            <div class="radio-grid-col" id="radio-grid-left"></div>
-                            <div class="radio-grid-col" id="radio-grid-right"></div>
+                        <!-- ✅ ABAS DE DIAS -->
+                        <div id="radio-days-tabs" class="radio-days-tabs"></div>
+
+                        <!-- ✅ TÍTULO DO DIA SELECIONADO -->
+                        <div id="radio-grid-title" class="radio-grid-title"></div>
+
+                        <!-- ✅ LISTA DE PROGRAMAS -->
+                        <div id="radio-grid-list" class="radio-grid-list"></div>
+
+                        <!-- ✅ MENSAGEM DE VAZIO -->
+                        <div id="radio-grid-empty" class="radio-grid-empty hidden">
+                            <i class="far fa-calendar-times"></i>
+                            <p>Nenhum programa neste dia</p>
                         </div>
 
-                        <div id="radio-now-highlight" class="hidden mt-8"></div>
+                        <!-- ✅ DESTAQUE DO PROGRAMA ATUAL -->
+                        <div id="radio-now-highlight" class="hidden mt-6"></div>
                     </div>
                 </div>
             </div>
