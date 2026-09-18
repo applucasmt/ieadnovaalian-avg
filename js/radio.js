@@ -144,7 +144,7 @@ window.renderRadioContent = () => {
         else statusLabelEl.textContent = 'No Ar Agora';
     }
 
-    // ✅ PLAYER — só re-renderiza se o modo mudou (Live ↔ Rádio)
+    // ✅ PLAYER — só re-renderiza se o modo mudou
     const modoAtual = showFacebook ? 'facebook' : 'radio';
     const modoAnterior = state.__modoPlayerRenderizado || '';
     const playerContent = document.getElementById('radio-player-content');
@@ -201,14 +201,13 @@ window.renderRadioContent = () => {
         }
     }
 
-        // WhatsApp
+    // ✅ WhatsApp — usa textoBotao personalizado, com fallback pro nome do programa
     const whatsappBtn = document.getElementById('radio-whatsapp-btn');
     const whatsappLabel = document.getElementById('radio-whatsapp-label');
 
     if (whatsappBtn && whatsappLabel) {
         if (currentProgram && currentProgram.whatsapp) {
             const num = String(currentProgram.whatsapp).replace(/\D/g, '');
-            // ✅ Usa o textoBotao personalizado, com fallback pro nome do programa
             const textoCustom = currentProgram.textoBotao && String(currentProgram.textoBotao).trim();
             const textoFinal = textoCustom
                 ? String(currentProgram.textoBotao).trim()
@@ -257,13 +256,8 @@ window.selectRadioDay = (diaKey) => {
     const state = window.__radioState;
     state.diaSelecionado = diaKey;
 
-    // Só atualiza as abas (o botão clicado fica "active")
     window.renderRadioDayTabs();
-
-    // Só atualiza a GRADE (lista de programas do dia)
     window.renderRadioGridForDay(diaKey, state.currentProgram);
-
-    // ✅ NÃO chama renderRadioContent() — assim o player não é tocado
 };
 
 // ============================================================
@@ -329,6 +323,11 @@ window.renderRadioGridForDay = (diaKey, currentProgram) => {
         const currentIsInSelectedDay = currentProgram && programaPassaNoDia(currentProgram.dias, diaKey);
 
         if (currentIsInSelectedDay) {
+            // ✅ Texto do botão no destaque — usa textoBotao personalizado
+            const textoBotaoDestaque = (currentProgram.textoBotao && String(currentProgram.textoBotao).trim())
+                ? String(currentProgram.textoBotao).trim()
+                : 'Pedir Louvor';
+
             highlight.classList.remove('hidden');
             highlight.innerHTML =
                 '<div class="radio-now-highlight-card">' +
@@ -338,14 +337,10 @@ window.renderRadioGridForDay = (diaKey, currentProgram) => {
                         '<h3 class="radio-now-highlight-title">' + (currentProgram.programa || 'Programa') + '</h3>' +
                         '<p class="radio-now-highlight-time"><i class="far fa-clock"></i>' + formatHora(currentProgram.inicio) + ' — ' + formatHora(currentProgram.fim) + '</p>' +
                         (currentProgram.whatsapp ?
-    '<a href="https://wa.me/55' + String(currentProgram.whatsapp).replace(/\D/g, '') + '?text=' + encodeURIComponent('Olá! Gostaria de pedir um louvor.') + '" target="_blank" class="radio-now-highlight-btn">' +
-        '<i class="fab fa-whatsapp"></i> ' + (
-            currentProgram.textoBotao && String(currentProgram.textoBotao).trim()
-                ? String(currentProgram.textoBotao).trim()
-                : 'Pedir Louvor'
-        ) +
-    '</a>'
-    : '') +
+                            '<a href="https://wa.me/55' + String(currentProgram.whatsapp).replace(/\D/g, '') + '?text=' + encodeURIComponent('Olá! Gostaria de pedir um louvor.') + '" target="_blank" class="radio-now-highlight-btn">' +
+                                '<i class="fab fa-whatsapp"></i> ' + textoBotaoDestaque +
+                            '</a>'
+                            : '') +
                     '</div>' +
                 '</div>';
         } else {
@@ -362,7 +357,6 @@ window.toggleRadioPlayer = () => {
     const state = window.__radioState;
     state.userChoseRadio = !state.userChoseRadio;
 
-    // Força o player a re-renderizar (porque o modo mudou)
     state.__modoPlayerRenderizado = '';
 
     window.renderRadioContent();
