@@ -758,7 +758,7 @@ window.saveAlbumEditor = async () => {
     const capaUrl = state.fotos[state.capaIndex] || '';
 
     try {
-        // 1) Atualiza o álbum (nome, link, capa)
+        // PASSO 1: Atualiza o álbum
         const albumPayload = {
             sheet: 'albuns',
             action: 'edit',
@@ -784,7 +784,7 @@ window.saveAlbumEditor = async () => {
             return;
         }
 
-        // 2) Salva as fotos na aba `fotos`
+        // PASSO 2: Salva as fotos na aba `fotos`
         const fotosPayload = {
             action: 'saveAlbumPhotos',
             password: window.adminState.password,
@@ -814,6 +814,7 @@ window.saveAlbumEditor = async () => {
         setTimeout(() => window.loadAdminTab('albuns'), 500);
 
     } catch (e) {
+        console.error('❌ Erro no saveAlbumEditor:', e);
         alert('Erro de conexão: ' + e.message);
         if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Salvar Álbum'; }
     }
