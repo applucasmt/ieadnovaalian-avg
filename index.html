@@ -124,67 +124,116 @@
         </div>
     </div>
 
-    <!-- ✅ MODAL DE GALERIA DE FOTOS (LIGHTBOX) -->
+    <!-- ✅ MODAL DE GALERIA DE FOTOS (grade + lightbox) -->
     <div id="album-photos-viewer" class="fixed inset-0 z-[90] hidden opacity-0 transition-opacity duration-300" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/95 backdrop-blur-sm" onclick="window.closeAlbumViewer()"></div>
 
         <!-- Botão fechar -->
         <button onclick="window.closeAlbumViewer()"
-                class="absolute top-4 right-4 z-30 bg-black/70 hover:bg-red-600 text-white w-11 h-11 rounded-full flex items-center justify-center transition-all backdrop-blur-md border border-white/20 shadow-lg">
+                class="absolute top-4 right-4 z-40 bg-black/70 hover:bg-red-600 text-white w-11 h-11 rounded-full flex items-center justify-center transition-all backdrop-blur-md border border-white/20 shadow-lg">
             <i class="fas fa-times text-lg"></i>
         </button>
 
-        <!-- ✅ Cabeçalho centralizado: título fixo em cima, nome do álbum embaixo -->
-        <div class="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-1.5 max-w-[80vw] pointer-events-none">
-            <span class="text-white/60 text-[10px] font-bold tracking-[0.25em] uppercase">Galeria</span>
-            <span id="album-viewer-title" class="text-brand-yellow text-lg sm:text-xl font-bold text-center leading-tight drop-shadow-lg"></span>
-            <span id="album-viewer-counter" class="text-white/70 text-xs font-bold bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full"></span>
-        </div>
-
-        <!-- Imagem principal -->
-        <div class="absolute inset-0 flex items-center justify-center p-4 pb-32 pt-24 pointer-events-none">
-            <img id="album-viewer-img"
-                 src=""
-                 class="max-w-full max-h-full object-contain rounded-lg shadow-2xl pointer-events-auto transition-opacity duration-200"
-                 style="opacity: 1;">
-        </div>
-
-        <!-- Botões de navegação -->
-        <button onclick="window.prevAlbumPhoto()"
-                id="album-viewer-prev"
-                class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-brand-yellow hover:text-brand-dark text-white w-12 h-12 rounded-full flex items-center justify-center transition-all backdrop-blur-md border border-white/20 shadow-lg">
-            <i class="fas fa-chevron-left text-xl"></i>
-        </button>
-        <button onclick="window.nextAlbumPhoto()"
-                id="album-viewer-next"
-                class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-brand-yellow hover:text-brand-dark text-white w-12 h-12 rounded-full flex items-center justify-center transition-all backdrop-blur-md border border-white/20 shadow-lg">
-            <i class="fas fa-chevron-right text-xl"></i>
+        <!-- Botão voltar para a grade (só aparece no lightbox) -->
+        <button id="album-viewer-back"
+                onclick="window.backToAlbumGrid()"
+                class="hidden absolute top-4 left-4 z-40 bg-black/70 hover:bg-brand-yellow hover:text-brand-dark text-white w-11 h-11 rounded-full items-center justify-center transition-all backdrop-blur-md border border-white/20 shadow-lg"
+                title="Voltar para a grade">
+            <i class="fas fa-arrow-left text-lg"></i>
         </button>
 
-        <!-- Barra inferior: compartilhar -->
-        <div class="absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/90 to-transparent p-4 pt-12">
-            <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-3">
-                <button onclick="window.shareAlbumPhoto('whatsapp')"
-                        class="flex items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all shadow-lg active:scale-95">
-                    <i class="fab fa-whatsapp text-lg"></i>
-                    <span class="hidden sm:inline">WhatsApp</span>
-                </button>
-                <button onclick="window.shareAlbumPhoto('facebook')"
-                        class="flex items-center gap-2 bg-[#1877F2] hover:bg-[#166fe5] text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all shadow-lg active:scale-95">
-                    <i class="fab fa-facebook-f text-lg"></i>
-                    <span class="hidden sm:inline">Facebook</span>
-                </button>
-                <button onclick="window.shareAlbumPhoto('instagram')"
-                        class="flex items-center gap-2 bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 hover:opacity-90 text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all shadow-lg active:scale-95">
-                    <i class="fab fa-instagram text-lg"></i>
-                    <span class="hidden sm:inline">Instagram</span>
-                </button>
-                <button onclick="window.shareAlbumPhoto('copy')"
-                        id="album-viewer-copy-btn"
-                        class="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all border border-white/20 shadow-lg active:scale-95">
-                    <i class="fas fa-link text-lg"></i>
-                    <span class="hidden sm:inline">Copiar Link</span>
-                </button>
+        <!-- ==================================================
+             TELA 1: GRADE DE FOTOS DO ÁLBUM
+             ================================================== -->
+        <div id="album-viewer-grid-view" class="absolute inset-0 z-20 flex flex-col">
+            <!-- Cabeçalho: título fixo + nome do álbum embaixo -->
+            <div class="flex flex-col items-center pt-4 pb-3 px-4 shrink-0">
+                <span class="text-white/60 text-[10px] font-bold tracking-[0.25em] uppercase">Galeria</span>
+                <span id="album-viewer-grid-title" class="text-brand-yellow text-lg sm:text-2xl font-bold text-center leading-tight drop-shadow-lg mt-0.5"></span>
+                <span id="album-viewer-grid-counter" class="text-white/60 text-xs font-bold mt-1"></span>
+            </div>
+
+            <!-- Grade com scroll -->
+            <div class="flex-1 overflow-y-auto px-3 sm:px-6 pb-24" id="album-viewer-grid-container">
+                <div id="album-viewer-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 max-w-6xl mx-auto"></div>
+            </div>
+
+            <!-- Barra inferior de compartilhar (na grade) -->
+            <div class="absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/95 to-transparent p-4 pt-12">
+                <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-3">
+                    <button onclick="window.shareAlbum('whatsapp')"
+                            class="flex items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all shadow-lg active:scale-95">
+                        <i class="fab fa-whatsapp text-lg"></i>
+                        <span class="hidden sm:inline">WhatsApp</span>
+                    </button>
+                    <button onclick="window.shareAlbum('facebook')"
+                            class="flex items-center gap-2 bg-[#1877F2] hover:bg-[#166fe5] text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all shadow-lg active:scale-95">
+                        <i class="fab fa-facebook-f text-lg"></i>
+                        <span class="hidden sm:inline">Facebook</span>
+                    </button>
+                    <button onclick="window.shareAlbum('copy')"
+                            class="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all border border-white/20 shadow-lg active:scale-95">
+                        <i class="fas fa-link text-lg"></i>
+                        <span class="hidden sm:inline">Copiar Link</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================================================
+             TELA 2: LIGHTBOX (foto individual em tela cheia)
+             ================================================== -->
+        <div id="album-viewer-lightbox-view" class="hidden absolute inset-0 z-30">
+            <!-- Contador no topo -->
+            <div class="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-black/70 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full pointer-events-none">
+                <span id="album-viewer-counter" class="text-white text-sm font-bold"></span>
+            </div>
+
+            <!-- Imagem principal -->
+            <div class="absolute inset-0 flex items-center justify-center p-4 pb-32 pt-20 pointer-events-none">
+                <img id="album-viewer-img"
+                     src=""
+                     class="max-w-full max-h-full object-contain rounded-lg shadow-2xl pointer-events-auto transition-opacity duration-200"
+                     style="opacity: 1;">
+            </div>
+
+            <!-- Botões de navegação -->
+            <button onclick="window.prevAlbumPhoto()"
+                    id="album-viewer-prev"
+                    class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-brand-yellow hover:text-brand-dark text-white w-12 h-12 rounded-full flex items-center justify-center transition-all backdrop-blur-md border border-white/20 shadow-lg">
+                <i class="fas fa-chevron-left text-xl"></i>
+            </button>
+            <button onclick="window.nextAlbumPhoto()"
+                    id="album-viewer-next"
+                    class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-brand-yellow hover:text-brand-dark text-white w-12 h-12 rounded-full flex items-center justify-center transition-all backdrop-blur-md border border-white/20 shadow-lg">
+                <i class="fas fa-chevron-right text-xl"></i>
+            </button>
+
+            <!-- Barra inferior: compartilhar foto -->
+            <div class="absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/90 to-transparent p-4 pt-12">
+                <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-3">
+                    <button onclick="window.shareAlbumPhoto('whatsapp')"
+                            class="flex items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all shadow-lg active:scale-95">
+                        <i class="fab fa-whatsapp text-lg"></i>
+                        <span class="hidden sm:inline">WhatsApp</span>
+                    </button>
+                    <button onclick="window.shareAlbumPhoto('facebook')"
+                            class="flex items-center gap-2 bg-[#1877F2] hover:bg-[#166fe5] text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all shadow-lg active:scale-95">
+                        <i class="fab fa-facebook-f text-lg"></i>
+                        <span class="hidden sm:inline">Facebook</span>
+                    </button>
+                    <button onclick="window.shareAlbumPhoto('instagram')"
+                            class="flex items-center gap-2 bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 hover:opacity-90 text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all shadow-lg active:scale-95">
+                        <i class="fab fa-instagram text-lg"></i>
+                        <span class="hidden sm:inline">Instagram</span>
+                    </button>
+                    <button onclick="window.shareAlbumPhoto('copy')"
+                            id="album-viewer-copy-btn"
+                            class="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all border border-white/20 shadow-lg active:scale-95">
+                        <i class="fas fa-link text-lg"></i>
+                        <span class="hidden sm:inline">Copiar Link</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
