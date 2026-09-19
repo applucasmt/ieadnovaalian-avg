@@ -124,7 +124,7 @@
         </div>
     </div>
 
-    <!-- ✅ NOVO: MODAL DE GALERIA DE FOTOS (LIGHTBOX) -->
+    <!-- ✅ MODAL DE GALERIA DE FOTOS (LIGHTBOX) -->
     <div id="album-photos-viewer" class="fixed inset-0 z-[90] hidden opacity-0 transition-opacity duration-300" aria-modal="true" role="dialog">
         <div class="absolute inset-0 bg-black/95 backdrop-blur-sm" onclick="window.closeAlbumViewer()"></div>
 
@@ -134,18 +134,15 @@
             <i class="fas fa-times text-lg"></i>
         </button>
 
-        <!-- Título do álbum -->
-        <div class="absolute top-4 left-4 z-30 bg-black/70 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full">
-            <span id="album-viewer-title" class="text-white text-sm font-bold"></span>
-        </div>
-
-        <!-- Contador -->
-        <div class="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-black/70 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full">
-            <span id="album-viewer-counter" class="text-white text-sm font-bold"></span>
+        <!-- ✅ Cabeçalho centralizado: título fixo em cima, nome do álbum embaixo -->
+        <div class="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-1.5 max-w-[80vw] pointer-events-none">
+            <span class="text-white/60 text-[10px] font-bold tracking-[0.25em] uppercase">Galeria</span>
+            <span id="album-viewer-title" class="text-brand-yellow text-lg sm:text-xl font-bold text-center leading-tight drop-shadow-lg"></span>
+            <span id="album-viewer-counter" class="text-white/70 text-xs font-bold bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full"></span>
         </div>
 
         <!-- Imagem principal -->
-        <div class="absolute inset-0 flex items-center justify-center p-4 pb-32 pt-20 pointer-events-none">
+        <div class="absolute inset-0 flex items-center justify-center p-4 pb-32 pt-24 pointer-events-none">
             <img id="album-viewer-img"
                  src=""
                  class="max-w-full max-h-full object-contain rounded-lg shadow-2xl pointer-events-auto transition-opacity duration-200"
