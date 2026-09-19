@@ -153,9 +153,17 @@ window.renderRadioContent = () => {
             let fbHtml = '';
 
             if (raw.indexOf('<iframe') !== -1) {
-                // ✅ Extrai o src do iframe e reescreve limpo
+                // ✅ Extrai o src do iframe e reescreve com parâmetros para mobile
                 const srcMatch = raw.match(/src\s*=\s*["']([^"']+)["']/i);
-                const srcUrl = srcMatch ? srcMatch[1] : '';
+                let srcUrl = srcMatch ? srcMatch[1] : '';
+
+                // ✅ Garante parâmetros de compatibilidade mobile
+                if (srcUrl) {
+                    const sep = srcUrl.indexOf('?') === -1 ? '?' : '&';
+                    if (srcUrl.indexOf('playsinline') === -1) srcUrl += sep + 'playsinline=1';
+                    if (srcUrl.indexOf('autoplay') === -1) srcUrl += '&autoplay=1';
+                    if (srcUrl.indexOf('mute') === -1) srcUrl += '&mute=1';
+                }
 
                 fbHtml =
                     '<iframe class="fb-live-iframe" ' +
@@ -172,7 +180,7 @@ window.renderRadioContent = () => {
                 const fbUrl = encodeURIComponent(raw);
                 fbHtml =
                     '<iframe class="fb-live-iframe" ' +
-                        'src="https://www.facebook.com/plugins/video.php?href=' + fbUrl + '&show_text=false&autoplay=1" ' +
+                        'src="https://www.facebook.com/plugins/video.php?href=' + fbUrl + '&show_text=false&autoplay=1&mute=1&playsinline=1" ' +
                         'style="border:0;position:absolute;top:0;left:0;width:100%;height:100%;" ' +
                         'scrolling="no" ' +
                         'frameborder="0" ' +
@@ -198,7 +206,7 @@ window.renderRadioContent = () => {
         state.__modoPlayerRenderizado = modoAtual;
     }
 
-    // ✅ Botão de alternância — agora no TOPO ESQUERDO
+    // ✅ Botão de alternância — no TOPO ESQUERDO
     if (playerContent) {
         const oldBtn = playerContent.querySelector('.radio-toggle-live-btn');
         if (oldBtn) oldBtn.remove();
