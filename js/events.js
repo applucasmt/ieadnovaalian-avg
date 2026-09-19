@@ -232,11 +232,10 @@ window.createCard = (data, type) => {
 };
 
 // ============================================================
-// ✅ NOVO: ABRIR ÁLBUM (lightbox interno ou link externo)
+// ✅ ABRIR ÁLBUM (com cache + filtro no servidor + abertura imediata)
 // ============================================================
 window.openAlbumOrLink = async (albumId, albumUrl, albumName) => {
     if (!albumId) {
-        // Sem ID: abre o link externo direto
         if (albumUrl && albumUrl !== '#') {
             window.open(albumUrl, '_blank');
         } else {
@@ -245,28 +244,70 @@ window.openAlbumOrLink = async (albumId, albumUrl, albumName) => {
         return;
     }
 
-    // Busca as fotos da aba `fotos`
+    // ✅ Abre o lightbox IMEDIATAMENTE com loading, sem esperar fetch
+    const modal = document.getElementById('album-photos-viewer');
+    if (modal) {
+        const titleEl = document.getElementById('album-viewer-title');
+        const counterEl = document.getElementById('album-viewer-counter');
+        const imgEl = document.getElementById('album-viewer-img');
+        const prevBtn = document.getElementById('album-viewer-prev');
+        const nextBtn = document.getElementById('album-viewer-next');
+
+        if (titleEl) titleEl.textContent = albumName || 'Galeria';
+        if (counterEl) counterEl.textContent = 'Carregando...';
+        if (imgEl) { imgEl.src = ''; imgEl.style.opacity = '0.3'; }
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        document.body.style.overflow = 'hidden';
+    }
+
     try {
-        const todasFotos = await window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=fotos', 'cache_fotos_v2', true);
-        const fotosDoAlbum = Array.isArray(todasFotos)
-            ? todasFotos
-                .filter(f => String(f.albumId) === String(albumId))
-                .sort((a, b) => (parseInt(a.ordem) || 0) - (parseInt(b.ordem) || 0))
-                .map(f => f.url)
-                .filter(u => u)
-            : [];
+        // ✅ Cache em memória por álbum — 5 minutos
+        window.__albumsFotosCache = window.__albumsFotosCache || {};
+        const cacheEntry = window.__albumsFotosCache[albumId];
+        const CACHE_TTL = 5 * 60 * 1000;
+        let fotosDoAlbum = null;
+
+        if (cacheEntry && (Date.now() - cacheEntry.ts) < CACHE_TTL) {
+            fotosDoAlbum = cacheEntry.fotos;
+            console.log('⚡ Cache hit do álbum ' + albumId + ': ' + fotosDoAlbum.length + ' fotos');
+        } else {
+            // ✅ Tenta filtro no servidor; se não suportar, filtra no cliente
+            const todasFotos = await window.fetchWithCache(
+                window.CONFIG.scriptUrl + '?sheet=fotos&albumId=' + encodeURIComponent(albumId),
+                'fotos_' + albumId,
+                false
+            );
+
+            fotosDoAlbum = Array.isArray(todasFotos)
+                ? todasFotos
+                    .filter(f => String(f.albumId) === String(albumId))
+                    .sort((a, b) => (parseInt(a.ordem) || 0) - (parseInt(b.ordem) || 0))
+                    .map(f => f.url)
+                    .filter(u => u)
+                : [];
+
+            window.__albumsFotosCache[albumId] = {
+                fotos: fotosDoAlbum,
+                ts: Date.now()
+            };
+        }
 
         if (fotosDoAlbum.length > 0) {
-            // Tem fotos no site → abre o lightbox
-            window.openAlbumViewer(fotosDoAlbum, albumName);
+            window.openAlbumViewer(fotosDoAlbum, albumName, true);
         } else if (albumUrl && albumUrl !== '#') {
-            // Sem fotos no site, mas tem link → abre o link
+            window.closeAlbumViewer();
             window.open(albumUrl, '_blank');
         } else {
+            window.closeAlbumViewer();
             alert('Este álbum não tem fotos cadastradas ainda.');
         }
     } catch (e) {
         console.error('Erro ao carregar álbum:', e);
+        window.closeAlbumViewer();
         if (albumUrl && albumUrl !== '#') {
             window.open(albumUrl, '_blank');
         } else {
@@ -276,9 +317,9 @@ window.openAlbumOrLink = async (albumId, albumUrl, albumName) => {
 };
 
 // ============================================================
-// ✅ NOVO: ABRIR LIGHTBOX DE FOTOS DO ÁLBUM
+// ✅ ABRIR LIGHTBOX DE FOTOS DO ÁLBUM
 // ============================================================
-window.openAlbumViewer = (fotos, albumName) => {
+window.openAlbumViewer = (fotos, albumName, jaAberto) => {
     const modal = document.getElementById('album-photos-viewer');
     if (!modal) return;
 
@@ -287,25 +328,22 @@ window.openAlbumViewer = (fotos, albumName) => {
         return;
     }
 
-    // Estado
     window.__albumViewer = {
         fotos: fotos,
         index: 0,
         albumName: albumName || 'Galeria'
     };
 
-    // Título
     const titleEl = document.getElementById('album-viewer-title');
     if (titleEl) titleEl.textContent = albumName || 'Galeria';
 
-    // Renderiza a primeira
     window.updateAlbumViewer();
 
-    // Mostra o modal
-    modal.classList.remove('hidden');
-    setTimeout(() => modal.classList.remove('opacity-0'), 10);
-
-    document.body.style.overflow = 'hidden';
+    if (!jaAberto) {
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        document.body.style.overflow = 'hidden';
+    }
 };
 
 window.closeAlbumViewer = () => {
@@ -316,6 +354,9 @@ window.closeAlbumViewer = () => {
     setTimeout(() => {
         modal.classList.add('hidden');
         document.body.style.overflow = '';
+        const imgEl = document.getElementById('album-viewer-img');
+        if (imgEl) imgEl.src = '';
+        window.__albumViewer = null;
     }, 300);
 };
 
@@ -327,26 +368,36 @@ window.updateAlbumViewer = () => {
     const counter = document.getElementById('album-viewer-counter');
     const prevBtn = document.getElementById('album-viewer-prev');
     const nextBtn = document.getElementById('album-viewer-next');
-
     if (!img) return;
 
-    // Aplica fade
-    img.style.opacity = '0';
+    const url = state.fotos[state.index];
 
-    // Troca a imagem depois do fade
-    setTimeout(() => {
-        const url = state.fotos[state.index];
-        img.src = window.optimizeImage(url, 1600) || url;
+    // ✅ Preload da foto atual — evita "piscar"
+    img.style.opacity = '0.4';
+    const preload = new Image();
+    preload.onload = () => {
+        img.src = url;
         img.style.opacity = '1';
-    }, 150);
+    };
+    preload.onerror = () => {
+        img.src = url;
+        img.style.opacity = '1';
+    };
+    preload.src = url;
 
-    // Contador
     if (counter) counter.textContent = (state.index + 1) + ' / ' + state.fotos.length;
 
-    // Esconde setas se só tiver 1 foto
     const showNav = state.fotos.length > 1;
     if (prevBtn) prevBtn.style.display = showNav ? 'flex' : 'none';
     if (nextBtn) nextBtn.style.display = showNav ? 'flex' : 'none';
+
+    // ✅ Preload das fotos vizinhas — navegação instantânea
+    if (showNav) {
+        const nextIdx = (state.index + 1) % state.fotos.length;
+        const prevIdx = (state.index - 1 + state.fotos.length) % state.fotos.length;
+        const p1 = new Image(); p1.src = state.fotos[nextIdx];
+        const p2 = new Image(); p2.src = state.fotos[prevIdx];
+    }
 };
 
 window.nextAlbumPhoto = () => {
@@ -364,7 +415,7 @@ window.prevAlbumPhoto = () => {
 };
 
 // ============================================================
-// ✅ NOVO: COMPARTILHAR FOTO
+// ✅ COMPARTILHAR FOTO
 // ============================================================
 window.shareAlbumPhoto = async (rede) => {
     const state = window.__albumViewer;
@@ -389,8 +440,6 @@ window.shareAlbumPhoto = async (rede) => {
     }
 
     if (rede === 'instagram') {
-        // Instagram não tem API de compartilhamento direto.
-        // Copiamos o link + mostramos instrução
         try {
             if (navigator.clipboard) {
                 await navigator.clipboard.writeText(urlCompleta);
