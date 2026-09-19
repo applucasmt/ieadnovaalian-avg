@@ -58,7 +58,7 @@ window.SCHEMAS = {
     albuns: [
         { key: 'albumName', label: 'Nome do Álbum', type: 'text' },
         { key: 'coverImageUrl', label: 'URL da Capa', type: 'text', upload: true },
-        { key: 'albumUrl', label: 'Link do Álbum', type: 'text' }
+        { key: 'albumUrl', label: 'Link do Álbum (opcional — se não tiver fotos no site)', type: 'text' }
     ],
 
     pastor: [
@@ -80,6 +80,89 @@ window.isImageField = (key) => {
 window.notifyDataChanged = () => {
     if (typeof window.loadData === 'function') window.loadData(true);
     if (typeof window.broadcastDataChanged === 'function') window.broadcastDataChanged();
+};
+
+// ============================================================
+// ✅ NOVO: COMPRESSÃO DE IMAGEM PARA WEBP (720px)
+// ============================================================
+window.compressImageToWebP = (file, maxWidth) => {
+    maxWidth = maxWidth || 720;
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                // Calcula novas dimensões mantendo proporção
+                let w = img.width;
+                let h = img.height;
+                if (w > maxWidth) {
+                    h = Math.round((h * maxWidth) / w);
+                    w = maxWidth;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = w;
+                canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+
+                canvas.toBlob(
+                    (blob) => {
+                        if (!blob) { reject(new Error('Falha ao converter pra WebP')); return; }
+                        // Converte Blob em base64 (sem prefixo)
+                        const fr = new FileReader();
+                        fr.onload = () => {
+                            const base64 = String(fr.result).split(',')[1];
+                            resolve({ base64: base64, mimeType: 'image/webp', width: w, height: h });
+                        };
+                        fr.onerror = () => reject(new Error('Erro lendo blob'));
+                        fr.readAsDataURL(blob);
+                    },
+                    'image/webp',
+                    0.82
+                );
+            };
+            img.onerror = () => reject(new Error('Erro carregando imagem'));
+            img.src = e.target.result;
+        };
+        reader.onerror = () => reject(new Error('Erro lendo arquivo'));
+        reader.readAsDataURL(file);
+    });
+};
+
+// ============================================================
+// ✅ NOVO: UPLOAD DE FOTO COMPRIMIDA PRO IMGBB
+// ============================================================
+window.uploadCompressedPhoto = async (file) => {
+    try {
+        const compressed = await window.compressImageToWebP(file, 720);
+
+        const payload = {
+            action: 'uploadImage',
+            password: window.adminState.password,
+            fileName: (file.name || 'foto').replace(/\.[^/.]+$/, '') + '.webp',
+            mimeType: 'image/webp',
+            imageBase64: compressed.base64
+        };
+
+        const res = await fetch(window.CONFIG.scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+
+        if (window.handleServerAuthError(result)) {
+            return { success: false, message: 'Sessão expirada.' };
+        }
+
+        if (!result.success) {
+            return { success: false, message: result.message || 'Erro no upload.' };
+        }
+
+        return { success: true, url: result.url, thumbUrl: result.thumbUrl, deleteUrl: result.deleteUrl };
+    } catch (e) {
+        return { success: false, message: e.message };
+    }
 };
 
 // ============================================================
@@ -266,6 +349,12 @@ window.renderAdminTable = (data, tab) => {
                 : '<span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded ml-2">inativo</span>';
         }
 
+        // ✅ Botão extra de "Fotos" só pra álbuns
+        let btnFotosHtml = '';
+        if (tab === 'albuns') {
+            btnFotosHtml = '<button onclick="window.openAlbumPhotosModal(' + realIndex + ')" class="bg-brand-yellow hover:bg-white text-brand-dark p-2 rounded text-xs font-bold" title="Gerenciar fotos do álbum"><i class="fas fa-camera"></i></button>';
+        }
+
         html += '<div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">' +
                     '<div class="flex items-center overflow-hidden pr-4 w-full">' +
                         imgHtml +
@@ -278,6 +367,7 @@ window.renderAdminTable = (data, tab) => {
                         '</div>' +
                     '</div>' +
                     '<div class="flex gap-2 shrink-0">' +
+                        btnFotosHtml +
                         '<button onclick="window.openEditModal(\'edit\', ' + realIndex + ')" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded text-xs"><i class="fas fa-edit"></i></button>' +
                         '<button onclick="window.deleteAdminItem(' + realIndex + ')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded text-xs"><i class="fas fa-trash"></i></button>' +
                     '</div>' +
@@ -298,7 +388,6 @@ window.renderRadioAdmin = () => {
 
     container.innerHTML =
         '<div class="max-w-4xl mx-auto py-4">' +
-
             '<div class="bg-blue-500/5 p-6 rounded-xl border-2 border-blue-500/30 mb-6">' +
                 '<div class="flex items-start gap-3 mb-4">' +
                     '<div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">' +
@@ -306,50 +395,22 @@ window.renderRadioAdmin = () => {
                     '</div>' +
                     '<div>' +
                         '<h3 class="text-xl font-bold text-white">Transmissão ao Vivo</h3>' +
-                        '<p class="text-sm text-gray-400 mt-1">Cole o <strong>código de incorporação</strong> da live do Facebook. Quando ativado, o site exibe o player automaticamente.</p>' +
+                        '<p class="text-sm text-gray-400 mt-1">Cole o <strong>código de incorporação</strong> da live do Facebook.</p>' +
                     '</div>' +
                 '</div>' +
-
-                '<label class="block text-xs uppercase text-blue-400 font-bold mb-2">' +
-                    '<i class="fas fa-code mr-1"></i> Código de Incorporação do Facebook' +
-                '</label>' +
-                '<textarea ' +
-                    'id="radio-live-url" ' +
-                    'class="admin-field font-mono" ' +
-                    'rows="6" ' +
-                    'placeholder="Cole aqui o código completo do Facebook" ' +
-                    'style="font-size: 0.8rem; padding: 0.85rem 1rem; line-height: 1.4; resize: vertical;" ' +
-                '>' + liveCode.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</textarea>' +
-
-                '<div class="mt-3 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">' +
-                    '<p class="text-xs text-blue-300 leading-relaxed">' +
-                        '<i class="fas fa-info-circle mr-1"></i>' +
-                        '<strong>Como pegar o código:</strong> No Facebook, abra a live, clique em <strong>"Compartilhar" → "Incorporar"</strong>, copie o código inteiro e cole aqui.' +
-                    '</p>' +
-                '</div>' +
-
+                '<textarea id="radio-live-url" class="admin-field font-mono" rows="6" placeholder="Cole o código completo do Facebook" style="font-size: 0.8rem; padding: 0.85rem 1rem; line-height: 1.4; resize: vertical;">' + liveCode.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</textarea>' +
                 '<div class="mt-5 flex items-center gap-3 flex-wrap">' +
                     (isLive ?
-                        '<span class="inline-flex items-center gap-2 bg-red-500/20 text-red-400 border border-red-500/40 px-4 py-2.5 rounded-lg text-sm font-bold">' +
-                            '<span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span> AO VIVO AGORA' +
-                        '</span>' +
-                        '<button onclick="window.stopRadioLive()" class="bg-gray-600 hover:bg-gray-500 text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 transition-colors">' +
-                            '<i class="fas fa-stop"></i> Encerrar Live' +
-                        '</button>'
+                        '<span class="inline-flex items-center gap-2 bg-red-500/20 text-red-400 border border-red-500/40 px-4 py-2.5 rounded-lg text-sm font-bold"><span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span> AO VIVO AGORA</span>' +
+                        '<button onclick="window.stopRadioLive()" class="bg-gray-600 hover:bg-gray-500 text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 transition-colors"><i class="fas fa-stop"></i> Encerrar Live</button>'
                         :
-                        '<button onclick="window.startRadioLive()" class="bg-red-600 hover:bg-red-500 text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 transition-colors shadow-lg">' +
-                            '<i class="fas fa-broadcast-tower"></i> Ativar Transmissão ao Vivo' +
-                        '</button>'
+                        '<button onclick="window.startRadioLive()" class="bg-red-600 hover:bg-red-500 text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 transition-colors shadow-lg"><i class="fas fa-broadcast-tower"></i> Ativar Transmissão ao Vivo</button>'
                     ) +
                     '<span id="radio-live-status" class="text-xs text-gray-500"></span>' +
                 '</div>' +
             '</div>' +
-
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10">' +
-                '<h3 class="text-lg font-bold text-white flex items-center gap-2 mb-2">' +
-                    '<i class="fas fa-list text-brand-yellow"></i> Grade de Programação' +
-                '</h3>' +
-                '<p class="text-xs text-gray-400 mb-4">Cadastre os programas. Quando o horário bater, o site mostra automaticamente o nome do programa no ar.</p>' +
+                '<h3 class="text-lg font-bold text-white flex items-center gap-2 mb-2"><i class="fas fa-list text-brand-yellow"></i> Grade de Programação</h3>' +
                 '<div id="radio-grade-list"></div>' +
             '</div>' +
         '</div>';
@@ -360,51 +421,32 @@ window.renderRadioAdmin = () => {
 window.renderRadioGrade = () => {
     const list = document.getElementById('radio-grade-list');
     if (!list) return;
-
     const data = window.adminState.currentData || [];
-
     if (data.length === 0) {
-        list.innerHTML = '<p class="text-gray-500 text-center py-6">Nenhum programa cadastrado. Clique em "Novo Item" para adicionar.</p>';
+        list.innerHTML = '<p class="text-gray-500 text-center py-6">Nenhum programa cadastrado.</p>';
         return;
     }
-
     let html = '<div class="grid gap-2">';
     const displayData = [...data].reverse();
-
     displayData.forEach((item, index) => {
         const realIndex = data.length - 1 - index;
         const ativo = String(item.ativo).toLowerCase() !== 'false';
-
         const formatHora = (h) => {
             if (!h) return '?';
             const s = String(h);
-            if (s.indexOf('T') !== -1) {
-                const t = s.split('T')[1];
-                return t ? t.substring(0, 5) : '?';
-            }
+            if (s.indexOf('T') !== -1) { const t = s.split('T')[1]; return t ? t.substring(0, 5) : '?'; }
             return s.substring(0, 5);
         };
-
         html += '<div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">' +
                     '<div class="flex items-center overflow-hidden pr-4 w-full">' +
                         '<div class="truncate flex-1">' +
                             '<div class="flex items-center gap-2 flex-wrap">' +
                                 '<span class="font-bold text-white">' + (item.programa || 'Sem nome') + '</span>' +
                                 '<span class="text-xs text-brand-yellow bg-brand-yellow/10 border border-brand-yellow/20 px-2 py-0.5 rounded">' + formatHora(item.inicio) + ' - ' + formatHora(item.fim) + '</span>' +
-                                (item.dias ?
-                                    '<span class="text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded">📅 ' + item.dias + '</span>'
-                                    : '<span class="text-xs text-gray-500 bg-white/5 border border-white/10 px-2 py-0.5 rounded">📅 todos</span>'
-                                ) +
-                                (ativo ?
-                                    '<span class="text-xs text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded">ativo</span>'
-                                    :
-                                    '<span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded">inativo</span>'
-                                ) +
+                                (item.dias ? '<span class="text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded">📅 ' + item.dias + '</span>' : '') +
+                                (ativo ? '<span class="text-xs text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded">ativo</span>' : '<span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded">inativo</span>') +
                             '</div>' +
-                            '<div class="text-xs text-gray-400 mt-1">' +
-                                '📱 ' + (item.whatsapp || 'sem whatsapp') +
-                                (item.textoBotao ? ' · 💬 ' + item.textoBotao : '') +
-                            '</div>' +
+                            '<div class="text-xs text-gray-400 mt-1">📱 ' + (item.whatsapp || 'sem whatsapp') + (item.textoBotao ? ' · 💬 ' + item.textoBotao : '') + '</div>' +
                         '</div>' +
                     '</div>' +
                     '<div class="flex gap-2 shrink-0">' +
@@ -424,71 +466,268 @@ window.startRadioLive = async () => {
     const urlInput = document.getElementById('radio-live-url');
     const statusEl = document.getElementById('radio-live-status');
     const url = urlInput ? urlInput.value.trim() : '';
-
-    if (!url) {
-        alert('Cole o código de incorporação do Facebook antes de ativar.');
-        return;
-    }
-
+    if (!url) { alert('Cole o código de incorporação do Facebook antes de ativar.'); return; }
     if (statusEl) { statusEl.textContent = 'Ativando...'; statusEl.style.color = '#EEBC5A'; }
-
     try {
         const res = await fetch(window.CONFIG.scriptUrl, {
             method: 'POST',
-            body: JSON.stringify({
-                sheet: 'config_radio',
-                action: 'edit',
-                password: window.adminState.password,
-                originalId: 'config_radio',
-                data: { facebookLiveUrl: url, isLive: 'true' }
-            })
+            body: JSON.stringify({ sheet: 'config_radio', action: 'edit', password: window.adminState.password, originalId: 'config_radio', data: { facebookLiveUrl: url, isLive: 'true' } })
         });
         const result = await res.json();
-
         if (window.handleServerAuthError(result)) return;
-
         if (result.success) {
             if (statusEl) { statusEl.textContent = '✅ Live ativada!'; statusEl.style.color = '#22c55e'; }
             window.notifyDataChanged();
             setTimeout(() => window.loadAdminTab('radio'), 500);
-        } else {
-            alert('Erro: ' + result.message);
-        }
-    } catch(e) {
-        alert('Erro de conexão: ' + e.message);
-    }
+        } else { alert('Erro: ' + result.message); }
+    } catch(e) { alert('Erro de conexão: ' + e.message); }
 };
 
 window.stopRadioLive = async () => {
     if (!confirm('Encerrar a transmissão ao vivo?')) return;
-
     const statusEl = document.getElementById('radio-live-status');
     if (statusEl) { statusEl.textContent = 'Encerrando...'; statusEl.style.color = '#EEBC5A'; }
+    try {
+        const res = await fetch(window.CONFIG.scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify({ sheet: 'config_radio', action: 'edit', password: window.adminState.password, originalId: 'config_radio', data: { facebookLiveUrl: '', isLive: 'false' } })
+        });
+        const result = await res.json();
+        if (window.handleServerAuthError(result)) return;
+        if (result.success) {
+            if (statusEl) { statusEl.textContent = '✅ Live encerrada.'; statusEl.style.color = '#22c55e'; }
+            window.notifyDataChanged();
+            setTimeout(() => window.loadAdminTab('radio'), 500);
+        } else { alert('Erro: ' + result.message); }
+    } catch(e) { alert('Erro de conexão: ' + e.message); }
+};
+
+// ============================================================
+// ✅ NOVO: MODAL DE FOTOS DO ÁLBUM
+// ============================================================
+window.openAlbumPhotosModal = async (albumIndex) => {
+    const album = window.adminState.currentData[albumIndex];
+    if (!album) return;
+
+    const albumId = album.id;
+    const albumName = album.albumName || 'Álbum';
+
+    // Cria o modal na hora (se não existir)
+    let modal = document.getElementById('album-photos-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'album-photos-modal';
+        modal.className = 'fixed inset-0 z-[85] hidden flex items-center justify-center p-4';
+        modal.innerHTML =
+            '<div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="window.closeAlbumPhotosModal()"></div>' +
+            '<div class="bg-brand-surface w-full max-w-3xl rounded-xl border border-white/10 relative z-10 shadow-2xl flex flex-col max-h-[90vh]">' +
+                '<div class="p-4 border-b border-white/10 flex justify-between items-center shrink-0">' +
+                    '<h3 class="text-white font-bold text-lg"><i class="fas fa-camera text-brand-yellow mr-2"></i><span id="album-photos-title">Fotos do Álbum</span></h3>' +
+                    '<button onclick="window.closeAlbumPhotosModal()" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>' +
+                '</div>' +
+                '<div class="p-4 border-b border-white/10 bg-white/5 flex flex-wrap gap-3 items-center shrink-0">' +
+                    '<input type="file" id="album-photos-input" accept="image/*" multiple class="hidden">' +
+                    '<button type="button" onclick="document.getElementById(\'album-photos-input\').click()" class="bg-brand-yellow text-brand-dark font-bold px-5 py-2 rounded-lg hover:bg-white transition-colors flex items-center gap-2 text-sm">' +
+                        '<i class="fas fa-upload"></i> Adicionar Fotos do Computador' +
+                    '</button>' +
+                    '<span id="album-photos-status" class="text-xs text-gray-400"></span>' +
+                    '<div class="flex-1"></div>' +
+                    '<span id="album-photos-count" class="text-xs text-gray-400"></span>' +
+                '</div>' +
+                '<div class="p-4 overflow-y-auto flex-grow" id="album-photos-grid" style="min-height: 200px;"></div>' +
+                '<div class="p-4 border-t border-white/10 bg-black/20 flex justify-between items-center shrink-0">' +
+                    '<button onclick="window.closeAlbumPhotosModal()" class="px-4 py-2 text-gray-400 hover:text-white text-sm">Fechar</button>' +
+                    '<button onclick="window.saveAlbumPhotos()" id="btn-save-album-photos" class="bg-brand-yellow text-brand-dark font-bold px-6 py-2 rounded-lg hover:bg-white transition-colors"><i class="fas fa-save mr-1"></i> Salvar Fotos</button>' +
+                '</div>' +
+            '</div>';
+        document.body.appendChild(modal);
+    }
+
+    // Estado do modal
+    window.__albumPhotosState = {
+        albumId: albumId,
+        albumName: albumName,
+        fotos: [],        // array de URLs já existentes no ImgBB
+        salvando: false
+    };
+
+    document.getElementById('album-photos-title').textContent = 'Fotos: ' + albumName;
+    document.getElementById('album-photos-status').textContent = 'Carregando fotos...';
+
+    // Busca fotos existentes da aba `fotos`
+    try {
+        const todasFotos = await window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=fotos', 'admin_fotos_' + albumId, true);
+        if (Array.isArray(todasFotos)) {
+            window.__albumPhotosState.fotos = todasFotos
+                .filter(f => String(f.albumId) === String(albumId))
+                .sort((a, b) => (parseInt(a.ordem) || 0) - (parseInt(b.ordem) || 0))
+                .map(f => f.url)
+                .filter(u => u);
+        }
+    } catch (e) {
+        console.warn('Erro ao carregar fotos:', e);
+    }
+
+    document.getElementById('album-photos-status').textContent = '';
+    window.renderAlbumPhotosGrid();
+
+    // Listener do input file
+    const fileInput = document.getElementById('album-photos-input');
+    fileInput.onchange = (e) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length > 0) {
+            window.handleAlbumPhotosUpload(files);
+        }
+        fileInput.value = '';
+    };
+
+    modal.classList.remove('hidden');
+};
+
+window.closeAlbumPhotosModal = () => {
+    const modal = document.getElementById('album-photos-modal');
+    if (modal) modal.classList.add('hidden');
+};
+
+window.renderAlbumPhotosGrid = () => {
+    const grid = document.getElementById('album-photos-grid');
+    const countEl = document.getElementById('album-photos-count');
+    if (!grid) return;
+
+    const fotos = window.__albumPhotosState.fotos || [];
+
+    if (countEl) countEl.textContent = fotos.length + ' foto(s)';
+
+    if (fotos.length === 0) {
+        grid.innerHTML = '<p class="text-center text-gray-500 py-10">Nenhuma foto ainda. Clique em "Adicionar Fotos" para começar.</p>';
+        return;
+    }
+
+    grid.innerHTML = '<div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">' +
+        fotos.map((url, idx) =>
+            '<div class="relative group aspect-square bg-black/30 rounded-lg overflow-hidden border border-white/10">' +
+                '<img src="' + window.optimizeImage(url, 300) + '" loading="lazy" class="w-full h-full object-cover" onerror="this.style.opacity=\'0.3\'">' +
+                '<button onclick="window.removeAlbumPhoto(' + idx + ')" class="absolute top-1 right-1 bg-red-600 hover:bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity" title="Remover">' +
+                    '<i class="fas fa-times"></i>' +
+                '</button>' +
+                '<div class="absolute bottom-1 left-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded">' + (idx + 1) + '</div>' +
+            '</div>'
+        ).join('') +
+    '</div>';
+};
+
+window.removeAlbumPhoto = (idx) => {
+    if (!window.__albumPhotosState.fotos) return;
+    window.__albumPhotosState.fotos.splice(idx, 1);
+    window.renderAlbumPhotosGrid();
+};
+
+// ============================================================
+// ✅ NOVO: HANDLER DO UPLOAD EM LOTE
+// ============================================================
+window.handleAlbumPhotosUpload = async (files) => {
+    const statusEl = document.getElementById('album-photos-status');
+    const saveBtn = document.getElementById('btn-save-album-photos');
+
+    if (saveBtn) saveBtn.disabled = true;
+
+    const total = files.length;
+    let enviados = 0;
+    let erros = 0;
+
+    const updateStatus = () => {
+        if (statusEl) {
+            statusEl.textContent = 'Enviando ' + enviados + '/' + total + (erros > 0 ? ' (' + erros + ' falharam)' : '') + '...';
+            statusEl.style.color = '#EEBC5A';
+        }
+    };
+
+    updateStatus();
+
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        // Valida se é imagem
+        if (!file.type || file.type.indexOf('image/') !== 0) {
+            erros++;
+            continue;
+        }
+
+        try {
+            const result = await window.uploadCompressedPhoto(file);
+            if (result.success && result.url) {
+                window.__albumPhotosState.fotos.push(result.url);
+                enviados++;
+                window.renderAlbumPhotosGrid();
+            } else {
+                erros++;
+                console.warn('Falha no upload de ' + file.name + ':', result.message);
+            }
+        } catch (e) {
+            erros++;
+            console.warn('Erro no upload de ' + file.name + ':', e.message);
+        }
+
+        updateStatus();
+    }
+
+    if (statusEl) {
+        statusEl.textContent = '✅ ' + enviados + ' foto(s) enviada(s)' + (erros > 0 ? ' · ❌ ' + erros + ' falharam' : '');
+        statusEl.style.color = erros > 0 ? '#f59e0b' : '#22c55e';
+    }
+
+    if (saveBtn) saveBtn.disabled = false;
+};
+
+// ============================================================
+// ✅ NOVO: SALVAR FOTOS DO ÁLBUM (envia tudo pra planilha)
+// ============================================================
+window.saveAlbumPhotos = async () => {
+    const state = window.__albumPhotosState;
+    if (!state) return;
+
+    const saveBtn = document.getElementById('btn-save-album-photos');
+    const statusEl = document.getElementById('album-photos-status');
+
+    if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Salvando...';
+    }
+    if (statusEl) { statusEl.textContent = 'Salvando no servidor...'; statusEl.style.color = '#EEBC5A'; }
 
     try {
         const res = await fetch(window.CONFIG.scriptUrl, {
             method: 'POST',
             body: JSON.stringify({
-                sheet: 'config_radio',
-                action: 'edit',
+                action: 'saveAlbumPhotos',
                 password: window.adminState.password,
-                originalId: 'config_radio',
-                data: { facebookLiveUrl: '', isLive: 'false' }
+                albumId: state.albumId,
+                fotos: state.fotos
             })
         });
         const result = await res.json();
 
-        if (window.handleServerAuthError(result)) return;
+        if (window.handleServerAuthError(result)) {
+            if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Salvar Fotos'; }
+            return;
+        }
 
         if (result.success) {
-            if (statusEl) { statusEl.textContent = '✅ Live encerrada.'; statusEl.style.color = '#22c55e'; }
+            if (statusEl) { statusEl.textContent = '✅ Fotos salvas!'; statusEl.style.color = '#22c55e'; }
             window.notifyDataChanged();
-            setTimeout(() => window.loadAdminTab('radio'), 500);
+            alert('✅ ' + state.fotos.length + ' foto(s) salva(s) com sucesso!');
         } else {
             alert('Erro: ' + result.message);
+            if (statusEl) { statusEl.textContent = '❌ ' + result.message; statusEl.style.color = '#ef4444'; }
         }
     } catch(e) {
         alert('Erro de conexão: ' + e.message);
+        if (statusEl) { statusEl.textContent = '❌ Erro de conexão'; statusEl.style.color = '#ef4444'; }
+    } finally {
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Salvar Fotos';
+        }
     }
 };
 
@@ -497,7 +736,6 @@ window.stopRadioLive = async () => {
 // ============================================================
 window.renderConfigForm = (config) => {
     const container = document.getElementById('admin-content-area');
-
     const logoUrl = config.logoUrl || '';
     const heroUrl = config.heroUrl || '';
     const heroUrlMobile = config.heroUrlMobile || '';
@@ -509,20 +747,14 @@ window.renderConfigForm = (config) => {
     const heroSubtitle = config.heroSubtitle || 'Bem-vindo à casa do pai';
     const heroDescription = config.heroDescription || 'Um lugar de adoração, comunhão e crescimento espiritual.';
 
-    window.heroState = {
-        position: currentPosition, align: currentAlign,
-        posX: currentPosX, posY: currentPosY
-    };
-
+    window.heroState = { position: currentPosition, align: currentAlign, posX: currentPosX, posY: currentPosY };
     const previewBgStyle = heroUrl ? 'background-image: url(\'' + heroUrl + '\');' : 'background: #0f172a;';
 
     container.innerHTML =
         '<div class="max-w-4xl mx-auto py-4">' +
             '<div class="mb-6 pb-4 border-b border-white/10">' +
                 '<h3 class="text-xl font-bold text-white flex items-center gap-2"><i class="fas fa-palette text-brand-yellow"></i> Identidade Visual do Site</h3>' +
-                '<p class="text-xs text-gray-400 mt-1">Altere logo, imagens (PC e celular), posição e textos.</p>' +
             '</div>' +
-
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
                 '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3"><i class="fas fa-eye mr-2"></i> Pré-visualização do Hero</label>' +
                 '<div class="hero-preview-box" id="hero-preview-box" style="' + previewBgStyle + '">' +
@@ -534,71 +766,49 @@ window.renderConfigForm = (config) => {
                     '</div>' +
                 '</div>' +
             '</div>' +
-
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
                 '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3"><i class="fas fa-font mr-2"></i> Textos do Hero</label>' +
                 '<div class="space-y-3">' +
-                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Badge</label><input type="text" id="config-heroSubtitle" class="admin-field" value="' + heroSubtitle + '" oninput="window.updatePreviewText()"></div>' +
-                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Título</label><input type="text" id="config-heroTitle" class="admin-field" value="' + heroTitle + '" oninput="window.updatePreviewText()"></div>' +
-                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Descrição</label><textarea id="config-heroDescription" rows="3" class="admin-field" oninput="window.updatePreviewText()">' + heroDescription + '</textarea></div>' +
+                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Badge</label><input type="text" id="config-heroSubtitle" class="admin-field" value="' + heroSubtitle + '"></div>' +
+                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Título</label><input type="text" id="config-heroTitle" class="admin-field" value="' + heroTitle + '"></div>' +
+                    '<div><label class="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Descrição</label><textarea id="config-heroDescription" rows="3" class="admin-field">' + heroDescription + '</textarea></div>' +
                 '</div>' +
             '</div>' +
-
-            '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
-                '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3"><i class="fas fa-arrows-alt mr-2"></i> Posição do Texto</label>' +
-                '<div class="flex gap-2 mb-4 flex-wrap">' +
-                    '<button class="pos-btn ' + (currentPosition === 'left' ? 'active' : '') + '" onclick="window.setHeroPosition(\'left\')" data-pos="left">Esquerda</button>' +
-                    '<button class="pos-btn ' + (currentPosition === 'center' ? 'active' : '') + '" onclick="window.setHeroPosition(\'center\')" data-pos="center">Centro</button>' +
-                    '<button class="pos-btn ' + (currentPosition === 'right' ? 'active' : '') + '" onclick="window.setHeroPosition(\'right\')" data-pos="right">Direita</button>' +
-                    '<button class="pos-btn ' + (currentPosition === 'custom' ? 'active' : '') + '" onclick="window.setHeroPosition(\'custom\')" data-pos="custom">Custom</button>' +
-                '</div>' +
-            '</div>' +
-
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
                 '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-image mr-2"></i> URL da Logomarca</label>' +
-                '<input type="text" id="config-logoUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + logoUrl + '">' +
+                '<input type="text" id="config-logoUrl" class="admin-field" value="' + logoUrl + '">' +
                 '<div class="mt-2"><input type="file" id="config-logoUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'logoUrl\')"><button type="button" onclick="document.getElementById(\'config-logoUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-upload"></i> Enviar do Computador</button></div>' +
             '</div>' +
-
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
                 '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-desktop mr-2"></i> Hero PC</label>' +
-                '<input type="text" id="config-heroUrl" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrl + '" oninput="window.updateHeroPreviewImage(this.value)">' +
+                '<input type="text" id="config-heroUrl" class="admin-field" value="' + heroUrl + '">' +
                 '<div class="mt-2"><input type="file" id="config-heroUrl-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrl\')"><button type="button" onclick="document.getElementById(\'config-heroUrl-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-upload"></i> Enviar do Computador</button></div>' +
             '</div>' +
-
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
                 '<label class="block text-xs uppercase text-brand-yellow font-bold mb-2"><i class="fas fa-mobile-alt mr-2"></i> Hero Mobile</label>' +
-                '<input type="text" id="config-heroUrlMobile" class="admin-field" placeholder="https://i.ibb.co/..." value="' + heroUrlMobile + '">' +
+                '<input type="text" id="config-heroUrlMobile" class="admin-field" value="' + heroUrlMobile + '">' +
                 '<div class="mt-2"><input type="file" id="config-heroUrlMobile-file" accept="image/*" class="hidden" onchange="window.handleConfigUpload(event, \'heroUrlMobile\')"><button type="button" onclick="document.getElementById(\'config-heroUrlMobile-file\').click()" class="bg-brand-yellow/20 hover:bg-brand-yellow/30 text-brand-yellow border border-brand-yellow/30 px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-upload"></i> Enviar do Computador</button></div>' +
             '</div>' +
-
             '<div class="mt-8 pt-4 border-t border-white/10 flex justify-end">' +
                 '<button onclick="window.saveConfig()" class="bg-brand-yellow text-brand-dark font-bold px-8 py-3 rounded-lg hover:bg-white transition-colors flex items-center gap-2 shadow-lg"><i class="fas fa-save"></i> Salvar Configurações</button>' +
             '</div>' +
         '</div>';
-
-    window.updateHeroPreview();
-    window.updatePreviewText();
 };
 
 window.handleConfigUpload = async (event, targetFieldKey) => {
     const input = event.target;
     const file = input.files && input.files[0];
     if (!file) return;
-
     const statusEl = document.getElementById('config-' + targetFieldKey + '-status');
     const textInput = document.getElementById('config-' + targetFieldKey);
     const setStatus = (msg, color) => { if (statusEl) { statusEl.textContent = msg; statusEl.style.color = color || '#9ca3af'; } };
-
     setStatus('Enviando...', '#EEBC5A');
     const result = await window.uploadImageToImgBB(file);
-
     if (!result.success) {
         setStatus('❌ ' + result.message, '#ef4444');
         input.value = '';
         return;
     }
-
     setStatus('✅ Enviada!', '#22c55e');
     if (textInput) { textInput.value = result.url; textInput.dispatchEvent(new Event('input', { bubbles: true })); }
     input.value = '';
@@ -610,13 +820,6 @@ window.setHeroPosition = (position) => {
         if (b.dataset.pos === position) b.classList.add('active');
         else b.classList.remove('active');
     });
-};
-
-window.updateHeroPreview = () => {};
-window.updatePreviewText = () => {};
-window.updateHeroPreviewImage = (url) => {
-    const box = document.getElementById('hero-preview-box');
-    if (box && url) box.style.backgroundImage = 'url(\'' + url + '\')';
 };
 
 window.saveConfig = async () => {
@@ -635,22 +838,17 @@ window.saveConfig = async () => {
             heroDescription: document.getElementById('config-heroDescription').value
         }
     };
-
     try {
         const res = await fetch(window.CONFIG.scriptUrl, { method: 'POST', body: JSON.stringify(payload) });
         const result = await res.json();
         if (window.handleServerAuthError(result)) return;
-        if (result.success) {
-            window.notifyDataChanged();
-            alert('✅ Configurações salvas!');
-        } else {
-            alert('Erro: ' + result.message);
-        }
+        if (result.success) { window.notifyDataChanged(); alert('✅ Configurações salvas!'); }
+        else { alert('Erro: ' + result.message); }
     } catch(e) { alert('Erro: ' + e.message); }
 };
 
 // ============================================================
-// MODAL DE EDIÇÃO
+// MODAL DE EDIÇÃO DE ITEM (COM BOTÃO DE FOTOS PARA ÁLBUNS)
 // ============================================================
 window.openEditModal = (mode, index) => {
     const modal = document.getElementById('edit-item-modal');
@@ -790,6 +988,19 @@ window.openEditModal = (mode, index) => {
         container.appendChild(wrapper);
     });
 
+    // ✅ Se for álbum e estiver editando, adiciona botão de gerenciar fotos
+    if (tab === 'albuns' && mode === 'edit' && index !== null && index !== undefined) {
+        const photosSection = document.createElement('div');
+        photosSection.className = 'mt-6 pt-6 border-t border-white/10';
+        photosSection.innerHTML =
+            '<h4 class="text-sm font-bold text-brand-yellow mb-3"><i class="fas fa-camera mr-2"></i> Fotos do Álbum</h4>' +
+            '<p class="text-xs text-gray-400 mb-3">Clique para adicionar/remover fotos que vão aparecer no site.</p>' +
+            '<button type="button" onclick="window.closeEditModal(); window.openAlbumPhotosModal(' + index + ')" class="bg-brand-yellow text-brand-dark font-bold px-5 py-2.5 rounded-lg hover:bg-white transition-colors flex items-center gap-2 text-sm">' +
+                '<i class="fas fa-images"></i> Gerenciar Fotos do Álbum' +
+            '</button>';
+        container.appendChild(photosSection);
+    }
+
     modal.classList.remove('hidden');
 };
 
@@ -818,7 +1029,6 @@ window.saveAdminItem = async () => {
         sheet: tab, action: mode,
         password: window.adminState.password, data: newData
     };
-
     if (mode === 'edit') payload.originalId = btn.dataset.originalId;
 
     try {
@@ -859,43 +1069,24 @@ window.saveAdminItem = async () => {
 // ============================================================
 window.deleteAdminItem = async (index) => {
     if (!confirm('Tem certeza que deseja excluir este item?')) return;
-
     const tab = window.adminState.currentTab;
     const item = window.adminState.currentData[index];
     const originalId = item.id || '';
-
-    if (!originalId) {
-        alert('Este item não tem ID.');
-        return;
-    }
-
+    if (!originalId) { alert('Este item não tem ID.'); return; }
     try {
         const res = await fetch(window.CONFIG.scriptUrl, {
             method: 'POST',
-            body: JSON.stringify({
-                sheet: tab, action: 'delete',
-                password: window.adminState.password,
-                originalId: originalId, data: {}
-            })
+            body: JSON.stringify({ sheet: tab, action: 'delete', password: window.adminState.password, originalId: originalId, data: {} })
         });
         const result = await res.json();
-
         if (window.handleServerAuthError(result)) return;
-
         if (result.success) {
             alert('Excluído!');
             window.adminState.currentData.splice(index, 1);
-
-            if (tab === 'radio') {
-                window.renderRadioGrade();
-            } else {
-                window.renderAdminTable(window.adminState.currentData, tab);
-            }
-
+            if (tab === 'radio') { window.renderRadioGrade(); }
+            else { window.renderAdminTable(window.adminState.currentData, tab); }
             window.notifyDataChanged();
-        } else {
-            alert('Erro: ' + result.message);
-        }
+        } else { alert('Erro: ' + result.message); }
     } catch(e) { alert('Erro: ' + e.message); }
 };
 
