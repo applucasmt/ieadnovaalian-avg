@@ -2,6 +2,9 @@
 // IEAD NOVA ALIANÇA - EVENTOS E COMPONENTES DE CARD
 // ============================================================
 
+// ============================================================
+// BADGE DE STATUS DO EVENTO
+// ============================================================
 window.getEventStatusBadge = (start, end) => {
     const now = new Date();
     const startDate = window.parseDate(start);
@@ -15,6 +18,9 @@ window.getEventStatusBadge = (start, end) => {
     return '<span class="bg-gray-500/20 text-gray-400 text-xs font-bold px-2 py-1 rounded border border-gray-500/30 flex items-center gap-1"><i class="fas fa-check"></i> Encerrado</span>';
 };
 
+// ============================================================
+// HELPER: ESCAPAR HTML
+// ============================================================
 function escapeHtml(text) {
     if (text === undefined || text === null) return '';
     const div = document.createElement('div');
@@ -22,6 +28,9 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// ============================================================
+// HELPER: VERIFICAR SE É URL VÁLIDA
+// ============================================================
 function isValidImageUrl(url) {
     if (!url || typeof url !== 'string') return false;
     const trimmed = url.trim();
@@ -29,6 +38,9 @@ function isValidImageUrl(url) {
     return /^https?:\/\/.+\..+/i.test(trimmed);
 }
 
+// ============================================================
+// CRIAR CARDS
+// ============================================================
 window.createCard = (data, type) => {
     if (!data) return '';
 
@@ -103,7 +115,7 @@ window.createCard = (data, type) => {
     }
 
     // ============================================================
-    // TALENTO — versão COMPACTA
+    // TALENTO
     // ============================================================
     if (type === 'talento') {
         const safeNome = escapeHtml(data.nome || '');
@@ -112,29 +124,18 @@ window.createCard = (data, type) => {
         const videoId = window.extractYouTubeId(data.video);
         const videoFormat = (data.videoFormat || data.videoformat || 'auto').toString().toLowerCase().trim();
 
-        // ============================================================
-        // COM VÍDEO
-        // ============================================================
         if (videoId) {
             const embedUrl = window.buildYouTubeEmbed(videoId, {
                 autoplay: true, mute: true, loop: true, controls: false
             });
 
-            // ✅ Aplica a proporção manual IMEDIATAMENTE se for horizontal/vertical
             let initialRatio = '16 / 9';
-            let initialClass = 'talent-video-wrap-horizontal';
-            if (videoFormat === 'vertical') {
-                initialRatio = '9 / 16';
-                initialClass = 'talent-video-wrap-vertical';
-            } else if (videoFormat === 'horizontal') {
-                initialRatio = '16 / 9';
-                initialClass = 'talent-video-wrap-horizontal';
-            }
+            if (videoFormat === 'vertical') initialRatio = '9 / 16';
 
             return '<div class="talent-video-card glass-panel rounded-2xl overflow-hidden group active:scale-95 transition-all flex flex-col h-full relative" ' +
                         'data-video-id="' + videoId + '" ' +
                         'data-video-format="' + videoFormat + '">' +
-                        '<div class="talent-video-wrap ' + initialClass + ' relative w-full overflow-hidden bg-black cursor-pointer" ' +
+                        '<div class="talent-video-wrap relative w-full overflow-hidden bg-black cursor-pointer" ' +
                             'style="aspect-ratio: ' + initialRatio + ';" ' +
                             'onclick="window.openTalentVideoModal(\'' + videoId + '\', \'' + safeNome.replace(/'/g, "\\'") + '\')">' +
                             '<iframe ' +
@@ -168,18 +169,12 @@ window.createCard = (data, type) => {
                     '</div>';
         }
 
-        // ============================================================
-        // SEM VÍDEO — imagem com altura limitada
-        // ============================================================
         const optimizedCapa = window.optimizeImage(data.capa, 800);
-
         if (optimizedCapa) {
             return '<div class="talent-image-card glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">' +
                         '<div class="talent-image-wrap relative w-full bg-brand-dark/50 overflow-hidden">' +
                             '<img src="' + optimizedCapa + '" ' +
-                                'alt="' + safeNome + '" ' +
-                                'loading="lazy" ' +
-                                'decoding="async" ' +
+                                'alt="' + safeNome + '" loading="lazy" decoding="async" ' +
                                 'onerror="this.src=\'https://placehold.co/600x600/1e293b/FFFFFF?text=Talento\'" ' +
                                 'class="talent-image-el w-full h-full object-cover object-center">' +
                             '<div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent"></div>' +
@@ -197,7 +192,6 @@ window.createCard = (data, type) => {
                     '</div>';
         }
 
-        // Sem imagem e sem vídeo
         return '<div class="glass-panel rounded-2xl overflow-hidden group hover:border-brand-yellow/30 transition-all active:scale-95 flex flex-col h-full">' +
                     '<div class="p-4 flex flex-col flex-grow">' +
                         '<h3 class="text-lg font-bold text-white mb-1">' + safeNome + '</h3>' +
@@ -210,12 +204,19 @@ window.createCard = (data, type) => {
                 '</div>';
     }
 
+    // ============================================================
+    // ÁLBUM — abre lightbox interno se tiver fotos, senão vai pro link
+    // ============================================================
     if (type === 'album') {
         const optimizedCover = window.optimizeImage(data.coverImageUrl, 500);
         const safeName = escapeHtml(data.albumName || '');
         const safeUrl = escapeHtml(data.albumUrl || '#');
+        const albumId = data.id || '';
 
-        return '<a href="' + safeUrl + '" target="_blank" class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform bg-brand-dark/50">' +
+        // ✅ Chama função que decide se abre lightbox ou link externo
+        const action = 'onclick="window.openAlbumOrLink(\'' + albumId + '\', \'' + safeUrl.replace(/'/g, "\\'") + '\', \'' + safeName.replace(/'/g, "\\'") + '\'); return false;"';
+
+        return '<a href="#" ' + action + ' class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform bg-brand-dark/50 cursor-pointer">' +
                     '<img src="' + optimizedCover + '" loading="lazy" decoding="async" onerror="this.src=\'https://placehold.co/400x400/1e293b/FFFFFF?text=Galeria\'" class="w-full h-full object-cover">' +
                     '<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">' +
                         '<div class="text-center p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">' +
@@ -231,109 +232,230 @@ window.createCard = (data, type) => {
 };
 
 // ============================================================
-// MODAL DE VÍDEO DO TALENTO
+// ✅ NOVO: ABRIR ÁLBUM (lightbox interno ou link externo)
 // ============================================================
-window.openTalentVideoModal = (videoId, name) => {
-    const modal = document.getElementById('talent-video-modal');
-    const container = document.getElementById('talent-video-container');
-    const box = document.getElementById('talent-video-box');
-    const nameEl = document.getElementById('talent-video-name');
-    if (!modal || !container) return;
-
-    const embedUrl = window.buildYouTubeEmbed(videoId, {
-        autoplay: true,
-        mute: false,
-        loop: true,
-        controls: true
-    });
-
-    container.innerHTML =
-        '<iframe ' +
-            'src="' + embedUrl + '" ' +
-            'class="absolute inset-0 w-full h-full" ' +
-            'frameborder="0" ' +
-            'allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
-            'allowfullscreen>' +
-        '</iframe>';
-
-    if (nameEl) nameEl.textContent = name || '';
-
-    // Tenta descobrir o formato pelo card correspondente
-    const card = document.querySelector('.talent-video-card[data-video-id="' + videoId + '"]');
-    const manualFormat = card ? card.getAttribute('data-video-format') : 'auto';
-
-    window.resolveVideoAspect(manualFormat, videoId).then((ratio) => {
-        if (box) {
-            box.style.aspectRatio = ratio;
-            if (ratio === '9 / 16') {
-                box.style.maxWidth = 'min(90vw, 500px)';
-            } else {
-                box.style.maxWidth = '1280px';
-            }
+window.openAlbumOrLink = async (albumId, albumUrl, albumName) => {
+    if (!albumId) {
+        // Sem ID: abre o link externo direto
+        if (albumUrl && albumUrl !== '#') {
+            window.open(albumUrl, '_blank');
+        } else {
+            alert('Álbum sem fotos cadastradas.');
         }
-    });
+        return;
+    }
 
+    // Busca as fotos da aba `fotos`
+    try {
+        const todasFotos = await window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=fotos', 'cache_fotos_v2', true);
+        const fotosDoAlbum = Array.isArray(todasFotos)
+            ? todasFotos
+                .filter(f => String(f.albumId) === String(albumId))
+                .sort((a, b) => (parseInt(a.ordem) || 0) - (parseInt(b.ordem) || 0))
+                .map(f => f.url)
+                .filter(u => u)
+            : [];
+
+        if (fotosDoAlbum.length > 0) {
+            // Tem fotos no site → abre o lightbox
+            window.openAlbumViewer(fotosDoAlbum, albumName);
+        } else if (albumUrl && albumUrl !== '#') {
+            // Sem fotos no site, mas tem link → abre o link
+            window.open(albumUrl, '_blank');
+        } else {
+            alert('Este álbum não tem fotos cadastradas ainda.');
+        }
+    } catch (e) {
+        console.error('Erro ao carregar álbum:', e);
+        if (albumUrl && albumUrl !== '#') {
+            window.open(albumUrl, '_blank');
+        } else {
+            alert('Erro ao carregar fotos do álbum.');
+        }
+    }
+};
+
+// ============================================================
+// ✅ NOVO: ABRIR LIGHTBOX DE FOTOS DO ÁLBUM
+// ============================================================
+window.openAlbumViewer = (fotos, albumName) => {
+    const modal = document.getElementById('album-photos-viewer');
+    if (!modal) return;
+
+    if (!Array.isArray(fotos) || fotos.length === 0) {
+        alert('Nenhuma foto disponível.');
+        return;
+    }
+
+    // Estado
+    window.__albumViewer = {
+        fotos: fotos,
+        index: 0,
+        albumName: albumName || 'Galeria'
+    };
+
+    // Título
+    const titleEl = document.getElementById('album-viewer-title');
+    if (titleEl) titleEl.textContent = albumName || 'Galeria';
+
+    // Renderiza a primeira
+    window.updateAlbumViewer();
+
+    // Mostra o modal
     modal.classList.remove('hidden');
-    setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        if (box) {
-            box.classList.remove('scale-95');
-            box.classList.add('scale-100');
-        }
-    }, 10);
+    setTimeout(() => modal.classList.remove('opacity-0'), 10);
 
     document.body.style.overflow = 'hidden';
 };
 
-window.closeTalentVideoModal = () => {
-    const modal = document.getElementById('talent-video-modal');
-    const container = document.getElementById('talent-video-container');
-    const box = document.getElementById('talent-video-box');
+window.closeAlbumViewer = () => {
+    const modal = document.getElementById('album-photos-viewer');
     if (!modal) return;
 
     modal.classList.add('opacity-0');
-    if (box) {
-        box.classList.add('scale-95');
-        box.classList.remove('scale-100');
-    }
-
     setTimeout(() => {
         modal.classList.add('hidden');
-        if (container) container.innerHTML = '';
         document.body.style.overflow = '';
     }, 300);
 };
 
-// ============================================================
-// AJUSTAR CARDS DE TALENTO COM VÍDEO
-// ============================================================
-window.adjustTalentVideoCards = () => {
-    const cards = document.querySelectorAll('.talent-video-card[data-video-id]');
-    cards.forEach(card => {
-        const videoId = card.getAttribute('data-video-id');
-        const manualFormat = card.getAttribute('data-video-format') || 'auto';
-        const wrap = card.querySelector('.talent-video-wrap');
-        if (!wrap || !videoId) return;
+window.updateAlbumViewer = () => {
+    const state = window.__albumViewer;
+    if (!state) return;
 
-        if (wrap.dataset.adjusted === '1') return;
-        wrap.dataset.adjusted = '1';
+    const img = document.getElementById('album-viewer-img');
+    const counter = document.getElementById('album-viewer-counter');
+    const prevBtn = document.getElementById('album-viewer-prev');
+    const nextBtn = document.getElementById('album-viewer-next');
 
-        window.resolveVideoAspect(manualFormat, videoId).then((ratio) => {
-            wrap.style.aspectRatio = ratio;
-            wrap.dataset.ratio = ratio;
-            wrap.classList.add('talent-video-ready');
+    if (!img) return;
 
-            const iframe = wrap.querySelector('.talent-video-iframe');
-            if (iframe) {
-                if (ratio === '9 / 16') {
-                    iframe.classList.add('zoom-vertical');
-                } else {
-                    iframe.classList.add('zoom-horizontal');
-                }
-            }
-        });
-    });
+    // Aplica fade
+    img.style.opacity = '0';
+
+    // Troca a imagem depois do fade
+    setTimeout(() => {
+        const url = state.fotos[state.index];
+        img.src = window.optimizeImage(url, 1600) || url;
+        img.style.opacity = '1';
+    }, 150);
+
+    // Contador
+    if (counter) counter.textContent = (state.index + 1) + ' / ' + state.fotos.length;
+
+    // Esconde setas se só tiver 1 foto
+    const showNav = state.fotos.length > 1;
+    if (prevBtn) prevBtn.style.display = showNav ? 'flex' : 'none';
+    if (nextBtn) nextBtn.style.display = showNav ? 'flex' : 'none';
 };
+
+window.nextAlbumPhoto = () => {
+    const state = window.__albumViewer;
+    if (!state) return;
+    state.index = (state.index + 1) % state.fotos.length;
+    window.updateAlbumViewer();
+};
+
+window.prevAlbumPhoto = () => {
+    const state = window.__albumViewer;
+    if (!state) return;
+    state.index = (state.index - 1 + state.fotos.length) % state.fotos.length;
+    window.updateAlbumViewer();
+};
+
+// ============================================================
+// ✅ NOVO: COMPARTILHAR FOTO
+// ============================================================
+window.shareAlbumPhoto = async (rede) => {
+    const state = window.__albumViewer;
+    if (!state) return;
+
+    const url = state.fotos[state.index];
+    if (!url) return;
+
+    const urlCompleta = String(url);
+    const texto = '📸 ' + state.albumName + ' — Confira esta foto!';
+
+    if (rede === 'whatsapp') {
+        const whatsUrl = 'https://wa.me/?text=' + encodeURIComponent(texto + '\n' + urlCompleta);
+        window.open(whatsUrl, '_blank');
+        return;
+    }
+
+    if (rede === 'facebook') {
+        const fbUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(urlCompleta);
+        window.open(fbUrl, '_blank', 'width=600,height=500');
+        return;
+    }
+
+    if (rede === 'instagram') {
+        // Instagram não tem API de compartilhamento direto.
+        // Copiamos o link + mostramos instrução
+        try {
+            if (navigator.clipboard) {
+                await navigator.clipboard.writeText(urlCompleta);
+            }
+        } catch(e) {}
+        alert('📷 Link da foto copiado!\n\nCole no Instagram para compartilhar.');
+        return;
+    }
+
+    if (rede === 'copy') {
+        try {
+            if (navigator.clipboard) {
+                await navigator.clipboard.writeText(urlCompleta);
+                const btn = document.getElementById('album-viewer-copy-btn');
+                if (btn) {
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check text-lg"></i><span class="hidden sm:inline">Copiado!</span>';
+                    setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
+                }
+            } else {
+                alert('Copie o link:\n' + urlCompleta);
+            }
+        } catch(e) {
+            alert('Copie o link:\n' + urlCompleta);
+        }
+        return;
+    }
+};
+
+// ============================================================
+// NAVEGAÇÃO POR TECLADO NO LIGHTBOX
+// ============================================================
+document.addEventListener('keydown', (e) => {
+    const modal = document.getElementById('album-photos-viewer');
+    if (!modal || modal.classList.contains('hidden')) return;
+
+    if (e.key === 'ArrowRight') { e.preventDefault(); window.nextAlbumPhoto(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); window.prevAlbumPhoto(); }
+    if (e.key === 'Escape') { e.preventDefault(); window.closeAlbumViewer(); }
+});
+
+// ============================================================
+// SWIPE NO LIGHTBOX (MOBILE)
+// ============================================================
+(function setupAlbumSwipe() {
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+        const modal = document.getElementById('album-photos-viewer');
+        if (!modal || modal.classList.contains('hidden')) return;
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+        const modal = document.getElementById('album-photos-viewer');
+        if (!modal || modal.classList.contains('hidden')) return;
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) window.nextAlbumPhoto();
+            else window.prevAlbumPhoto();
+        }
+    }, { passive: true });
+})();
 
 // ============================================================
 // RENDERIZAR CARROSSEL DE AVISOS
@@ -395,7 +517,6 @@ window.renderAvisosCarousel = (avisos) => {
     }
 
     const imageWidth = 1920;
-
     slidesContainer.innerHTML = '';
     dotsContainer.innerHTML = '';
 
@@ -418,9 +539,7 @@ window.renderAvisosCarousel = (avisos) => {
                 if (img.naturalWidth && img.naturalHeight) {
                     const ratio = img.naturalWidth + ' / ' + img.naturalHeight;
                     ratiosCache[index] = ratio;
-                    if (index === currentIndexRef.value) {
-                        applyRatioToCarousel(ratio);
-                    }
+                    if (index === currentIndexRef.value) applyRatioToCarousel(ratio);
                 }
             };
             img.src = imgUrl;
@@ -457,9 +576,7 @@ window.renderAvisosCarousel = (avisos) => {
                         const ratio = img.naturalWidth + ' / ' + img.naturalHeight;
                         slide.dataset.ratio = ratio;
                         ratiosCache[index] = ratio;
-                        if (index === currentIndexRef.value) {
-                            applyRatioToCarousel(ratio);
-                        }
+                        if (index === currentIndexRef.value) applyRatioToCarousel(ratio);
                     }
                 };
                 img.src = imgUrl;
@@ -477,9 +594,7 @@ window.renderAvisosCarousel = (avisos) => {
 
         const hasAnyText = hasTitle || hasTexto || hasSubtitle || hasDescription || hasButton;
 
-        if (hasImage && !hasAnyText) {
-            slide.classList.add('image-only');
-        }
+        if (hasImage && !hasAnyText) slide.classList.add('image-only');
 
         if (hasAnyText) {
             const content = document.createElement('div');
@@ -501,19 +616,12 @@ window.renderAvisosCarousel = (avisos) => {
 
             let contentHTML = '';
 
-            if (hasSubtitle) {
-                contentHTML += '<div class="aviso-subtitle">' + escapeHtml(String(aviso.subtitle).trim()) + '</div>';
-            }
-
+            if (hasSubtitle) contentHTML += '<div class="aviso-subtitle">' + escapeHtml(String(aviso.subtitle).trim()) + '</div>';
             if (hasTitle || hasTexto) {
                 const title = hasTitle ? aviso.title : aviso.texto;
                 contentHTML += '<h2 class="aviso-title" style="color: ' + textColor + '">' + escapeHtml(String(title).trim()) + '</h2>';
             }
-
-            if (hasDescription) {
-                contentHTML += '<p class="aviso-description" style="color: ' + textColor + '">' + escapeHtml(String(aviso.description).trim()) + '</p>';
-            }
-
+            if (hasDescription) contentHTML += '<p class="aviso-description" style="color: ' + textColor + '">' + escapeHtml(String(aviso.description).trim()) + '</p>';
             if (hasButton) {
                 contentHTML += '<a href="' + escapeHtml(String(aviso.buttonUrl).trim()) + '" class="aviso-button"' +
                     (String(aviso.buttonUrl).trim().startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '') +
