@@ -1092,12 +1092,14 @@ behold-widget a { text-decoration: none; }
 .avisos-carousel.single .aviso-dots { display: none; }
 
 /* ============================================================
-   RADIO — PLAYER (responsivo, sem barra preta)
+   RADIO — PLAYER (limitado no desktop, full no mobile)
    ============================================================ */
 
 .radio-player-wrap {
     position: relative;
     width: 100%;
+    /* ✅ Largura máxima: 900px no desktop — não fica gigante */
+    max-width: 900px;
     aspect-ratio: 16 / 9;
     background: #000;
     margin: 0 auto;
@@ -1163,6 +1165,45 @@ behold-widget a { text-decoration: none; }
     background: #fff;
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(238, 188, 90, 0.6);
+}
+
+/* ============================================================
+   RADIO — RESPONSIVO
+   ============================================================ */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .radio-player-wrap {
+        max-width: 100%;
+    }
+}
+
+/* Mobile — mantém 16:10 pra caber a barra do Facebook */
+@media (max-width: 768px) {
+    .radio-player-wrap {
+        aspect-ratio: 16 / 10;
+        max-width: 100%;
+        border-radius: 10px;
+    }
+    .radio-toggle-live-btn-top {
+        top: 0.6rem !important;
+        left: 0.6rem !important;
+        padding: 0.5rem 0.8rem;
+        font-size: 0.72rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .radio-player-wrap {
+        aspect-ratio: 16 / 11;
+        border-radius: 8px;
+    }
+    .radio-toggle-live-btn-top {
+        top: 0.5rem !important;
+        left: 0.5rem !important;
+        padding: 0.45rem 0.7rem;
+        font-size: 0.68rem;
+    }
 }
 
 /* ============================================================
