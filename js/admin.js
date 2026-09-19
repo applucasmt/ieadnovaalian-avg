@@ -55,10 +55,10 @@ window.SCHEMAS = {
         { key: 'ativo', label: '✅ Ativo?', type: 'select', options: ['true', 'false'], default: 'true' }
     ],
 
+    // ✅ ÁLBUM: só nome e link. Fotos e capa são gerenciadas no modal.
     albuns: [
         { key: 'albumName', label: 'Nome do Álbum', type: 'text' },
-        { key: 'coverImageUrl', label: 'URL da Capa', type: 'text', upload: true },
-        { key: 'albumUrl', label: 'Link do Álbum (opcional — se não tiver fotos no site)', type: 'text' }
+        { key: 'albumUrl', label: 'Link externo (opcional — só se você quiser usar um link em vez das fotos)', type: 'text' }
     ],
 
     pastor: [
@@ -83,7 +83,7 @@ window.notifyDataChanged = () => {
 };
 
 // ============================================================
-// ✅ NOVO: COMPRESSÃO DE IMAGEM PARA WEBP (720px)
+// COMPRESSÃO DE IMAGEM PARA WEBP (720px)
 // ============================================================
 window.compressImageToWebP = (file, maxWidth) => {
     maxWidth = maxWidth || 720;
@@ -92,7 +92,6 @@ window.compressImageToWebP = (file, maxWidth) => {
         reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
-                // Calcula novas dimensões mantendo proporção
                 let w = img.width;
                 let h = img.height;
                 if (w > maxWidth) {
@@ -109,7 +108,6 @@ window.compressImageToWebP = (file, maxWidth) => {
                 canvas.toBlob(
                     (blob) => {
                         if (!blob) { reject(new Error('Falha ao converter pra WebP')); return; }
-                        // Converte Blob em base64 (sem prefixo)
                         const fr = new FileReader();
                         fr.onload = () => {
                             const base64 = String(fr.result).split(',')[1];
@@ -130,9 +128,6 @@ window.compressImageToWebP = (file, maxWidth) => {
     });
 };
 
-// ============================================================
-// ✅ NOVO: UPLOAD DE FOTO COMPRIMIDA PRO IMGBB
-// ============================================================
 window.uploadCompressedPhoto = async (file) => {
     try {
         const compressed = await window.compressImageToWebP(file, 720);
@@ -331,6 +326,7 @@ window.renderAdminTable = (data, tab) => {
     if (data[0].nome) displayKey = 'nome';
     if (data[0].titulo) displayKey = 'titulo';
     if (data[0].title) displayKey = 'title';
+    if (data[0].albumName) displayKey = 'albumName';
 
     let html = '<div class="grid gap-2">';
     const displayData = [...data].reverse();
@@ -349,10 +345,10 @@ window.renderAdminTable = (data, tab) => {
                 : '<span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded ml-2">inativo</span>';
         }
 
-        // ✅ Botão extra de "Fotos" só pra álbuns
+        // ✅ Botão "Gerenciar Fotos" só para álbuns
         let btnFotosHtml = '';
         if (tab === 'albuns') {
-            btnFotosHtml = '<button onclick="window.openAlbumPhotosModal(' + realIndex + ')" class="bg-brand-yellow hover:bg-white text-brand-dark p-2 rounded text-xs font-bold" title="Gerenciar fotos do álbum"><i class="fas fa-camera"></i></button>';
+            btnFotosHtml = '<button onclick="window.openAlbumEditor(' + realIndex + ')" class="bg-brand-yellow hover:bg-white text-brand-dark p-2 rounded text-xs font-bold" title="Gerenciar fotos"><i class="fas fa-camera"></i> Fotos</button>';
         }
 
         html += '<div class="bg-white/5 p-3 rounded-lg flex justify-between items-center border border-white/5 hover:bg-white/10 transition-colors">' +
@@ -390,13 +386,8 @@ window.renderRadioAdmin = () => {
         '<div class="max-w-4xl mx-auto py-4">' +
             '<div class="bg-blue-500/5 p-6 rounded-xl border-2 border-blue-500/30 mb-6">' +
                 '<div class="flex items-start gap-3 mb-4">' +
-                    '<div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">' +
-                        '<i class="fab fa-facebook-f text-blue-400 text-xl"></i>' +
-                    '</div>' +
-                    '<div>' +
-                        '<h3 class="text-xl font-bold text-white">Transmissão ao Vivo</h3>' +
-                        '<p class="text-sm text-gray-400 mt-1">Cole o <strong>código de incorporação</strong> da live do Facebook.</p>' +
-                    '</div>' +
+                    '<div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0"><i class="fab fa-facebook-f text-blue-400 text-xl"></i></div>' +
+                    '<div><h3 class="text-xl font-bold text-white">Transmissão ao Vivo</h3><p class="text-sm text-gray-400 mt-1">Cole o <strong>código de incorporação</strong> da live do Facebook.</p></div>' +
                 '</div>' +
                 '<textarea id="radio-live-url" class="admin-field font-mono" rows="6" placeholder="Cole o código completo do Facebook" style="font-size: 0.8rem; padding: 0.85rem 1rem; line-height: 1.4; resize: vertical;">' + liveCode.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</textarea>' +
                 '<div class="mt-5 flex items-center gap-3 flex-wrap">' +
@@ -503,133 +494,181 @@ window.stopRadioLive = async () => {
 };
 
 // ============================================================
-// ✅ NOVO: MODAL DE FOTOS DO ÁLBUM
+// ✅ NOVO: MODAL DE EDIÇÃO DE ÁLBUM (fotos + capa)
 // ============================================================
-window.openAlbumPhotosModal = async (albumIndex) => {
+window.openAlbumEditor = async (albumIndex) => {
     const album = window.adminState.currentData[albumIndex];
     if (!album) return;
 
     const albumId = album.id;
     const albumName = album.albumName || 'Álbum';
+    const albumUrl = album.albumUrl || '';
 
-    // Cria o modal na hora (se não existir)
-    let modal = document.getElementById('album-photos-modal');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'album-photos-modal';
-        modal.className = 'fixed inset-0 z-[85] hidden flex items-center justify-center p-4';
-        modal.innerHTML =
-            '<div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="window.closeAlbumPhotosModal()"></div>' +
-            '<div class="bg-brand-surface w-full max-w-3xl rounded-xl border border-white/10 relative z-10 shadow-2xl flex flex-col max-h-[90vh]">' +
-                '<div class="p-4 border-b border-white/10 flex justify-between items-center shrink-0">' +
-                    '<h3 class="text-white font-bold text-lg"><i class="fas fa-camera text-brand-yellow mr-2"></i><span id="album-photos-title">Fotos do Álbum</span></h3>' +
-                    '<button onclick="window.closeAlbumPhotosModal()" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>' +
-                '</div>' +
-                '<div class="p-4 border-b border-white/10 bg-white/5 flex flex-wrap gap-3 items-center shrink-0">' +
-                    '<input type="file" id="album-photos-input" accept="image/*" multiple class="hidden">' +
-                    '<button type="button" onclick="document.getElementById(\'album-photos-input\').click()" class="bg-brand-yellow text-brand-dark font-bold px-5 py-2 rounded-lg hover:bg-white transition-colors flex items-center gap-2 text-sm">' +
-                        '<i class="fas fa-upload"></i> Adicionar Fotos do Computador' +
-                    '</button>' +
-                    '<span id="album-photos-status" class="text-xs text-gray-400"></span>' +
-                    '<div class="flex-1"></div>' +
-                    '<span id="album-photos-count" class="text-xs text-gray-400"></span>' +
-                '</div>' +
-                '<div class="p-4 overflow-y-auto flex-grow" id="album-photos-grid" style="min-height: 200px;"></div>' +
-                '<div class="p-4 border-t border-white/10 bg-black/20 flex justify-between items-center shrink-0">' +
-                    '<button onclick="window.closeAlbumPhotosModal()" class="px-4 py-2 text-gray-400 hover:text-white text-sm">Fechar</button>' +
-                    '<button onclick="window.saveAlbumPhotos()" id="btn-save-album-photos" class="bg-brand-yellow text-brand-dark font-bold px-6 py-2 rounded-lg hover:bg-white transition-colors"><i class="fas fa-save mr-1"></i> Salvar Fotos</button>' +
-                '</div>' +
-            '</div>';
-        document.body.appendChild(modal);
-    }
-
-    // Estado do modal
-    window.__albumPhotosState = {
+    // Estado do editor
+    window.__albumEditor = {
         albumId: albumId,
         albumName: albumName,
-        fotos: [],        // array de URLs já existentes no ImgBB
-        salvando: false
+        albumUrl: albumUrl,
+        fotos: [],
+        capaIndex: 0,
+        subindo: false
     };
 
-    document.getElementById('album-photos-title').textContent = 'Fotos: ' + albumName;
-    document.getElementById('album-photos-status').textContent = 'Carregando fotos...';
-
-    // Busca fotos existentes da aba `fotos`
+    // Busca fotos existentes
     try {
         const todasFotos = await window.fetchWithCache(window.CONFIG.scriptUrl + '?sheet=fotos', 'admin_fotos_' + albumId, true);
         if (Array.isArray(todasFotos)) {
-            window.__albumPhotosState.fotos = todasFotos
+            window.__albumEditor.fotos = todasFotos
                 .filter(f => String(f.albumId) === String(albumId))
                 .sort((a, b) => (parseInt(a.ordem) || 0) - (parseInt(b.ordem) || 0))
                 .map(f => f.url)
                 .filter(u => u);
         }
-    } catch (e) {
-        console.warn('Erro ao carregar fotos:', e);
+    } catch (e) { console.warn('Erro ao carregar fotos:', e); }
+
+    window.renderAlbumEditor();
+};
+
+window.renderAlbumEditor = () => {
+    const state = window.__albumEditor;
+    if (!state) return;
+
+    let modal = document.getElementById('album-editor-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'album-editor-modal';
+        modal.className = 'fixed inset-0 z-[85] hidden items-center justify-center p-4';
+        document.body.appendChild(modal);
     }
 
-    document.getElementById('album-photos-status').textContent = '';
-    window.renderAlbumPhotosGrid();
+    const capaUrl = state.fotos[state.capaIndex] || '';
 
-    // Listener do input file
-    const fileInput = document.getElementById('album-photos-input');
+    modal.innerHTML =
+        '<div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="window.closeAlbumEditor()"></div>' +
+        '<div class="bg-brand-surface w-full max-w-4xl rounded-xl border border-white/10 relative z-10 shadow-2xl flex flex-col max-h-[92vh]">' +
+
+            // Header
+            '<div class="p-4 border-b border-white/10 flex justify-between items-center shrink-0">' +
+                '<h3 class="text-white font-bold text-lg"><i class="fas fa-camera text-brand-yellow mr-2"></i> Gerenciar Fotos — ' + state.albumName + '</h3>' +
+                '<button onclick="window.closeAlbumEditor()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>' +
+            '</div>' +
+
+            // Barra de upload
+            '<div class="p-4 border-b border-white/10 bg-white/5 flex flex-wrap gap-3 items-center shrink-0">' +
+                '<input type="file" id="album-editor-input" accept="image/*" multiple class="hidden">' +
+                '<button type="button" onclick="document.getElementById(\'album-editor-input\').click()" class="bg-brand-yellow text-brand-dark font-bold px-5 py-2.5 rounded-lg hover:bg-white transition-colors flex items-center gap-2 text-sm">' +
+                    '<i class="fas fa-upload"></i> Adicionar Fotos do Computador' +
+                '</button>' +
+                '<span id="album-editor-status" class="text-xs text-gray-400"></span>' +
+                '<div class="flex-1"></div>' +
+                '<span id="album-editor-count" class="text-xs text-gray-400">' + state.fotos.length + ' foto(s)</span>' +
+            '</div>' +
+
+            // Grid de fotos
+            '<div class="p-4 overflow-y-auto flex-grow" id="album-editor-grid" style="min-height: 200px;"></div>' +
+
+            // Footer com capa + salvar
+            '<div class="p-4 border-t border-white/10 bg-black/20 flex flex-wrap gap-3 justify-between items-center shrink-0">' +
+                '<div class="flex items-center gap-3">' +
+                    '<span class="text-xs text-gray-400 font-bold uppercase">Capa do álbum:</span>' +
+                    '<div class="w-12 h-12 bg-black/40 rounded-lg border-2 border-brand-yellow overflow-hidden flex items-center justify-center">' +
+                        (capaUrl ? '<img src="' + window.optimizeImage(capaUrl, 100) + '" class="w-full h-full object-cover">' : '<i class="fas fa-image text-gray-600 text-xs"></i>') +
+                    '</div>' +
+                '</div>' +
+                '<div class="flex gap-2">' +
+                    '<button onclick="window.closeAlbumEditor()" class="px-4 py-2 text-gray-400 hover:text-white text-sm">Cancelar</button>' +
+                    '<button onclick="window.saveAlbumEditor()" id="btn-save-album" class="bg-brand-yellow text-brand-dark font-bold px-6 py-2 rounded-lg hover:bg-white transition-colors"><i class="fas fa-save mr-1"></i> Salvar Álbum</button>' +
+                '</div>' +
+            '</div>' +
+
+        '</div>';
+
+    // Listener do input
+    const fileInput = document.getElementById('album-editor-input');
     fileInput.onchange = (e) => {
         const files = Array.from(e.target.files || []);
-        if (files.length > 0) {
-            window.handleAlbumPhotosUpload(files);
-        }
+        if (files.length > 0) window.handleAlbumEditorUpload(files);
         fileInput.value = '';
     };
 
+    window.renderAlbumEditorGrid();
     modal.classList.remove('hidden');
+    modal.classList.add('flex');
 };
 
-window.closeAlbumPhotosModal = () => {
-    const modal = document.getElementById('album-photos-modal');
-    if (modal) modal.classList.add('hidden');
-};
+window.renderAlbumEditorGrid = () => {
+    const state = window.__albumEditor;
+    const grid = document.getElementById('album-editor-grid');
+    const countEl = document.getElementById('album-editor-count');
+    if (!grid || !state) return;
 
-window.renderAlbumPhotosGrid = () => {
-    const grid = document.getElementById('album-photos-grid');
-    const countEl = document.getElementById('album-photos-count');
-    if (!grid) return;
+    if (countEl) countEl.textContent = state.fotos.length + ' foto(s)';
 
-    const fotos = window.__albumPhotosState.fotos || [];
-
-    if (countEl) countEl.textContent = fotos.length + ' foto(s)';
-
-    if (fotos.length === 0) {
-        grid.innerHTML = '<p class="text-center text-gray-500 py-10">Nenhuma foto ainda. Clique em "Adicionar Fotos" para começar.</p>';
+    if (state.fotos.length === 0) {
+        grid.innerHTML = '<div class="text-center py-12 text-gray-500">' +
+                            '<i class="fas fa-images text-5xl mb-4 opacity-30"></i>' +
+                            '<p>Nenhuma foto ainda.</p>' +
+                            '<p class="text-xs mt-2">Clique em "Adicionar Fotos" e escolha as imagens do seu computador.</p>' +
+                        '</div>';
         return;
     }
 
     grid.innerHTML = '<div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">' +
-        fotos.map((url, idx) =>
-            '<div class="relative group aspect-square bg-black/30 rounded-lg overflow-hidden border border-white/10">' +
-                '<img src="' + window.optimizeImage(url, 300) + '" loading="lazy" class="w-full h-full object-cover" onerror="this.style.opacity=\'0.3\'">' +
-                '<button onclick="window.removeAlbumPhoto(' + idx + ')" class="absolute top-1 right-1 bg-red-600 hover:bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity" title="Remover">' +
-                    '<i class="fas fa-times"></i>' +
-                '</button>' +
-                '<div class="absolute bottom-1 left-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded">' + (idx + 1) + '</div>' +
-            '</div>'
-        ).join('') +
+        state.fotos.map((url, idx) => {
+            const isCapa = idx === state.capaIndex;
+            return '<div class="relative group aspect-square bg-black/30 rounded-lg overflow-hidden border-2 ' + (isCapa ? 'border-brand-yellow' : 'border-white/10') + '">' +
+                        '<img src="' + window.optimizeImage(url, 300) + '" loading="lazy" class="w-full h-full object-cover" onerror="this.style.opacity=\'0.3\'">' +
+
+                        (isCapa ?
+                            '<div class="absolute top-1 left-1 bg-brand-yellow text-brand-dark text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><i class="fas fa-star"></i> CAPA</div>'
+                            :
+                            '<button onclick="window.setAlbumCapa(' + idx + ')" class="absolute top-1 left-1 bg-black/70 hover:bg-brand-yellow hover:text-brand-dark text-white text-[10px] font-bold px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">Definir capa</button>'
+                        ) +
+
+                        '<button onclick="window.removeAlbumEditorPhoto(' + idx + ')" class="absolute top-1 right-1 bg-red-600 hover:bg-red-500 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity" title="Remover">' +
+                            '<i class="fas fa-times"></i>' +
+                        '</button>' +
+
+                        '<div class="absolute bottom-1 left-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded">' + (idx + 1) + '</div>' +
+                    '</div>';
+        }).join('') +
     '</div>';
 };
 
-window.removeAlbumPhoto = (idx) => {
-    if (!window.__albumPhotosState.fotos) return;
-    window.__albumPhotosState.fotos.splice(idx, 1);
-    window.renderAlbumPhotosGrid();
+window.setAlbumCapa = (idx) => {
+    if (!window.__albumEditor) return;
+    window.__albumEditor.capaIndex = idx;
+    window.renderAlbumEditor();
+};
+
+window.removeAlbumEditorPhoto = (idx) => {
+    const state = window.__albumEditor;
+    if (!state) return;
+    state.fotos.splice(idx, 1);
+    if (state.capaIndex >= state.fotos.length) state.capaIndex = Math.max(0, state.fotos.length - 1);
+    window.renderAlbumEditor();
+};
+
+window.closeAlbumEditor = () => {
+    const modal = document.getElementById('album-editor-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+    window.__albumEditor = null;
 };
 
 // ============================================================
-// ✅ NOVO: HANDLER DO UPLOAD EM LOTE
+// ✅ NOVO: UPLOAD EM LOTE NO EDITOR DE ÁLBUM
 // ============================================================
-window.handleAlbumPhotosUpload = async (files) => {
-    const statusEl = document.getElementById('album-photos-status');
-    const saveBtn = document.getElementById('btn-save-album-photos');
+window.handleAlbumEditorUpload = async (files) => {
+    const state = window.__albumEditor;
+    if (!state) return;
 
+    const statusEl = document.getElementById('album-editor-status');
+    const saveBtn = document.getElementById('btn-save-album');
     if (saveBtn) saveBtn.disabled = true;
+    state.subindo = true;
 
     const total = files.length;
     let enviados = 0;
@@ -646,19 +685,14 @@ window.handleAlbumPhotosUpload = async (files) => {
 
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
-
-        // Valida se é imagem
-        if (!file.type || file.type.indexOf('image/') !== 0) {
-            erros++;
-            continue;
-        }
+        if (!file.type || file.type.indexOf('image/') !== 0) { erros++; continue; }
 
         try {
             const result = await window.uploadCompressedPhoto(file);
             if (result.success && result.url) {
-                window.__albumPhotosState.fotos.push(result.url);
+                state.fotos.push(result.url);
                 enviados++;
-                window.renderAlbumPhotosGrid();
+                window.renderAlbumEditorGrid();
             } else {
                 erros++;
                 console.warn('Falha no upload de ' + file.name + ':', result.message);
@@ -667,7 +701,6 @@ window.handleAlbumPhotosUpload = async (files) => {
             erros++;
             console.warn('Erro no upload de ' + file.name + ':', e.message);
         }
-
         updateStatus();
     }
 
@@ -676,58 +709,86 @@ window.handleAlbumPhotosUpload = async (files) => {
         statusEl.style.color = erros > 0 ? '#f59e0b' : '#22c55e';
     }
 
+    state.subindo = false;
     if (saveBtn) saveBtn.disabled = false;
 };
 
 // ============================================================
-// ✅ NOVO: SALVAR FOTOS DO ÁLBUM (envia tudo pra planilha)
+// ✅ NOVO: SALVAR ÁLBUM (fotos + capa)
 // ============================================================
-window.saveAlbumPhotos = async () => {
-    const state = window.__albumPhotosState;
+window.saveAlbumEditor = async () => {
+    const state = window.__albumEditor;
     if (!state) return;
 
-    const saveBtn = document.getElementById('btn-save-album-photos');
-    const statusEl = document.getElementById('album-photos-status');
+    const saveBtn = document.getElementById('btn-save-album');
+    const statusEl = document.getElementById('album-editor-status');
 
-    if (saveBtn) {
-        saveBtn.disabled = true;
-        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Salvando...';
-    }
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Salvando...'; }
     if (statusEl) { statusEl.textContent = 'Salvando no servidor...'; statusEl.style.color = '#EEBC5A'; }
 
-    try {
-        const res = await fetch(window.CONFIG.scriptUrl, {
-            method: 'POST',
-            body: JSON.stringify({
-                action: 'saveAlbumPhotos',
-                password: window.adminState.password,
-                albumId: state.albumId,
-                fotos: state.fotos
-            })
-        });
-        const result = await res.json();
+    // Pega a URL da capa (se tiver fotos)
+    const capaUrl = state.fotos[state.capaIndex] || '';
 
-        if (window.handleServerAuthError(result)) {
-            if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Salvar Fotos'; }
+    try {
+        // 1) Atualiza o álbum (nome, link, capa)
+        const albumPayload = {
+            sheet: 'albuns',
+            action: 'edit',
+            password: window.adminState.password,
+            originalId: state.albumId,
+            data: {
+                albumName: state.albumName,
+                albumUrl: state.albumUrl,
+                coverImageUrl: capaUrl
+            }
+        };
+
+        const resAlbum = await fetch(window.CONFIG.scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify(albumPayload)
+        });
+        const resultAlbum = await resAlbum.json();
+
+        if (window.handleServerAuthError(resultAlbum)) return;
+        if (!resultAlbum.success) {
+            alert('Erro ao salvar álbum: ' + resultAlbum.message);
+            if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Salvar Álbum'; }
             return;
         }
 
-        if (result.success) {
-            if (statusEl) { statusEl.textContent = '✅ Fotos salvas!'; statusEl.style.color = '#22c55e'; }
-            window.notifyDataChanged();
-            alert('✅ ' + state.fotos.length + ' foto(s) salva(s) com sucesso!');
-        } else {
-            alert('Erro: ' + result.message);
-            if (statusEl) { statusEl.textContent = '❌ ' + result.message; statusEl.style.color = '#ef4444'; }
+        // 2) Salva as fotos na aba `fotos`
+        const fotosPayload = {
+            action: 'saveAlbumPhotos',
+            password: window.adminState.password,
+            albumId: state.albumId,
+            fotos: state.fotos
+        };
+
+        const resFotos = await fetch(window.CONFIG.scriptUrl, {
+            method: 'POST',
+            body: JSON.stringify(fotosPayload)
+        });
+        const resultFotos = await resFotos.json();
+
+        if (window.handleServerAuthError(resultFotos)) return;
+        if (!resultFotos.success) {
+            alert('Erro ao salvar fotos: ' + resultFotos.message);
+            if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Salvar Álbum'; }
+            return;
         }
-    } catch(e) {
+
+        if (statusEl) { statusEl.textContent = '✅ Tudo salvo!'; statusEl.style.color = '#22c55e'; }
+
+        window.notifyDataChanged();
+        alert('✅ Álbum salvo com sucesso!\n' + state.fotos.length + ' foto(s) + capa definida.');
+        window.closeAlbumEditor();
+
+        // Recarrega a tabela admin
+        setTimeout(() => window.loadAdminTab('albuns'), 500);
+
+    } catch (e) {
         alert('Erro de conexão: ' + e.message);
-        if (statusEl) { statusEl.textContent = '❌ Erro de conexão'; statusEl.style.color = '#ef4444'; }
-    } finally {
-        if (saveBtn) {
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Salvar Fotos';
-        }
+        if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Salvar Álbum'; }
     }
 };
 
@@ -752,9 +813,7 @@ window.renderConfigForm = (config) => {
 
     container.innerHTML =
         '<div class="max-w-4xl mx-auto py-4">' +
-            '<div class="mb-6 pb-4 border-b border-white/10">' +
-                '<h3 class="text-xl font-bold text-white flex items-center gap-2"><i class="fas fa-palette text-brand-yellow"></i> Identidade Visual do Site</h3>' +
-            '</div>' +
+            '<div class="mb-6 pb-4 border-b border-white/10"><h3 class="text-xl font-bold text-white flex items-center gap-2"><i class="fas fa-palette text-brand-yellow"></i> Identidade Visual do Site</h3></div>' +
             '<div class="bg-white/5 p-5 rounded-xl border border-white/10 mb-6">' +
                 '<label class="block text-xs uppercase text-brand-yellow font-bold mb-3"><i class="fas fa-eye mr-2"></i> Pré-visualização do Hero</label>' +
                 '<div class="hero-preview-box" id="hero-preview-box" style="' + previewBgStyle + '">' +
@@ -848,7 +907,7 @@ window.saveConfig = async () => {
 };
 
 // ============================================================
-// MODAL DE EDIÇÃO DE ITEM (COM BOTÃO DE FOTOS PARA ÁLBUNS)
+// MODAL DE EDIÇÃO DE ITEM
 // ============================================================
 window.openEditModal = (mode, index) => {
     const modal = document.getElementById('edit-item-modal');
@@ -988,16 +1047,28 @@ window.openEditModal = (mode, index) => {
         container.appendChild(wrapper);
     });
 
-    // ✅ Se for álbum e estiver editando, adiciona botão de gerenciar fotos
-    if (tab === 'albuns' && mode === 'edit' && index !== null && index !== undefined) {
+    // ✅ Se for álbum, adiciona botão para gerenciar fotos
+    if (tab === 'albuns') {
         const photosSection = document.createElement('div');
         photosSection.className = 'mt-6 pt-6 border-t border-white/10';
-        photosSection.innerHTML =
-            '<h4 class="text-sm font-bold text-brand-yellow mb-3"><i class="fas fa-camera mr-2"></i> Fotos do Álbum</h4>' +
-            '<p class="text-xs text-gray-400 mb-3">Clique para adicionar/remover fotos que vão aparecer no site.</p>' +
-            '<button type="button" onclick="window.closeEditModal(); window.openAlbumPhotosModal(' + index + ')" class="bg-brand-yellow text-brand-dark font-bold px-5 py-2.5 rounded-lg hover:bg-white transition-colors flex items-center gap-2 text-sm">' +
-                '<i class="fas fa-images"></i> Gerenciar Fotos do Álbum' +
-            '</button>';
+
+        if (mode === 'edit' && index !== null && index !== undefined) {
+            // Álbum já existe → botão direto
+            photosSection.innerHTML =
+                '<h4 class="text-sm font-bold text-brand-yellow mb-3"><i class="fas fa-camera mr-2"></i> Fotos do Álbum</h4>' +
+                '<p class="text-xs text-gray-400 mb-3">Adicione/remova fotos e escolha a capa do álbum.</p>' +
+                '<button type="button" onclick="window.closeEditModal(); window.openAlbumEditor(' + index + ')" class="bg-brand-yellow text-brand-dark font-bold px-5 py-2.5 rounded-lg hover:bg-white transition-colors flex items-center gap-2 text-sm">' +
+                    '<i class="fas fa-images"></i> Gerenciar Fotos e Capa' +
+                '</button>';
+        } else {
+            // Álbum novo → aviso
+            photosSection.innerHTML =
+                '<h4 class="text-sm font-bold text-brand-yellow mb-3"><i class="fas fa-camera mr-2"></i> Fotos do Álbum</h4>' +
+                '<p class="text-xs text-gray-400 mb-3">Para adicionar fotos, primeiro <strong>salve o álbum</strong>. Depois você poderá subir as fotos e escolher a capa.</p>' +
+                '<div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 text-xs text-yellow-300">' +
+                    '<i class="fas fa-info-circle mr-1"></i> Salve o álbum primeiro para poder subir as fotos.' +
+                '</div>';
+        }
         container.appendChild(photosSection);
     }
 
