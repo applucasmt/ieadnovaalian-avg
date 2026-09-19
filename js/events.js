@@ -205,7 +205,7 @@ window.createCard = (data, type) => {
     }
 
     // ============================================================
-    // ÁLBUM — abre lightbox interno se tiver fotos, senão vai pro link
+    // ÁLBUM — título embaixo da imagem, clique abre grade de fotos
     // ============================================================
     if (type === 'album') {
         const optimizedCover = window.optimizeImage(data.coverImageUrl, 500);
@@ -213,17 +213,20 @@ window.createCard = (data, type) => {
         const safeUrl = escapeHtml(data.albumUrl || '#');
         const albumId = data.id || '';
 
-        // ✅ Chama função que decide se abre lightbox ou link externo
         const action = 'onclick="window.openAlbumOrLink(\'' + albumId + '\', \'' + safeUrl.replace(/'/g, "\\'") + '\', \'' + safeName.replace(/'/g, "\\'") + '\'); return false;"';
 
-        return '<a href="#" ' + action + ' class="glass-panel rounded-2xl overflow-hidden group block relative aspect-square active:scale-95 transition-transform bg-brand-dark/50 cursor-pointer">' +
-                    '<img src="' + optimizedCover + '" loading="lazy" decoding="async" onerror="this.src=\'https://placehold.co/400x400/1e293b/FFFFFF?text=Galeria\'" class="w-full h-full object-cover">' +
-                    '<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">' +
-                        '<div class="text-center p-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">' +
-                            '<i class="fas fa-images text-3xl text-brand-yellow mb-2"></i>' +
-                            '<h3 class="font-bold text-white text-lg">' + safeName + '</h3>' +
-                            '<p class="text-sm text-gray-300 mt-1">Ver fotos</p>' +
+        return '<a href="#" ' + action + ' class="glass-panel rounded-2xl overflow-hidden group block active:scale-95 transition-transform bg-brand-dark/50 cursor-pointer">' +
+                    '<div class="relative aspect-square overflow-hidden">' +
+                        '<img src="' + optimizedCover + '" loading="lazy" decoding="async" onerror="this.src=\'https://placehold.co/400x400/1e293b/FFFFFF?text=Galeria\'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">' +
+                        '<div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">' +
+                            '<div class="bg-brand-yellow text-brand-dark px-4 py-2 rounded-full font-bold flex items-center gap-2 shadow-2xl transform scale-90 group-hover:scale-100 transition-transform text-sm">' +
+                                '<i class="fas fa-images"></i> Ver Fotos' +
+                            '</div>' +
                         '</div>' +
+                    '</div>' +
+                    // ✅ Título ABAIXO da imagem
+                    '<div class="px-4 py-3 border-t border-white/5">' +
+                        '<h3 class="font-bold text-white text-sm sm:text-base text-center leading-tight line-clamp-2 group-hover:text-brand-yellow transition-colors">' + safeName + '</h3>' +
                     '</div>' +
                 '</a>';
     }
@@ -232,7 +235,7 @@ window.createCard = (data, type) => {
 };
 
 // ============================================================
-// ✅ ABRIR ÁLBUM (com cache + filtro no servidor + abertura imediata)
+// ✅ ABRIR ÁLBUM — abre direto a GRADE de fotos
 // ============================================================
 window.openAlbumOrLink = async (albumId, albumUrl, albumName) => {
     if (!albumId) {
@@ -244,20 +247,23 @@ window.openAlbumOrLink = async (albumId, albumUrl, albumName) => {
         return;
     }
 
-    // ✅ Abre o lightbox IMEDIATAMENTE com loading, sem esperar fetch
+    // ✅ Abre imediatamente o modal no modo GRADE com loading
     const modal = document.getElementById('album-photos-viewer');
     if (modal) {
-        const titleEl = document.getElementById('album-viewer-title');
-        const counterEl = document.getElementById('album-viewer-counter');
-        const imgEl = document.getElementById('album-viewer-img');
-        const prevBtn = document.getElementById('album-viewer-prev');
-        const nextBtn = document.getElementById('album-viewer-next');
+        window.__showAlbumView('grid');
 
+        const titleEl = document.getElementById('album-viewer-grid-title');
+        const counterEl = document.getElementById('album-viewer-grid-counter');
+        const gridEl = document.getElementById('album-viewer-grid');
         if (titleEl) titleEl.textContent = albumName || 'Galeria';
         if (counterEl) counterEl.textContent = 'Carregando...';
-        if (imgEl) { imgEl.src = ''; imgEl.style.opacity = '0.3'; }
-        if (prevBtn) prevBtn.style.display = 'none';
-        if (nextBtn) nextBtn.style.display = 'none';
+        if (gridEl) {
+            gridEl.innerHTML =
+                '<div class="col-span-full text-center py-16">' +
+                    '<i class="fas fa-circle-notch fa-spin text-4xl text-brand-yellow"></i>' +
+                    '<p class="text-gray-400 mt-3 text-sm">Carregando fotos...</p>' +
+                '</div>';
+        }
 
         modal.classList.remove('hidden');
         setTimeout(() => modal.classList.remove('opacity-0'), 10);
@@ -275,7 +281,6 @@ window.openAlbumOrLink = async (albumId, albumUrl, albumName) => {
             fotosDoAlbum = cacheEntry.fotos;
             console.log('⚡ Cache hit do álbum ' + albumId + ': ' + fotosDoAlbum.length + ' fotos');
         } else {
-            // ✅ Tenta filtro no servidor; se não suportar, filtra no cliente
             const todasFotos = await window.fetchWithCache(
                 window.CONFIG.scriptUrl + '?sheet=fotos&albumId=' + encodeURIComponent(albumId),
                 'fotos_' + albumId,
@@ -317,7 +322,30 @@ window.openAlbumOrLink = async (albumId, albumUrl, albumName) => {
 };
 
 // ============================================================
-// ✅ ABRIR LIGHTBOX DE FOTOS DO ÁLBUM
+// ✅ CONTROLE DE TELAS (grade ↔ lightbox)
+// ============================================================
+window.__showAlbumView = (view) => {
+    const gridView = document.getElementById('album-viewer-grid-view');
+    const lightboxView = document.getElementById('album-viewer-lightbox-view');
+    const backBtn = document.getElementById('album-viewer-back');
+    const modal = document.getElementById('album-photos-viewer');
+    if (!gridView || !lightboxView) return;
+
+    if (view === 'lightbox') {
+        gridView.classList.add('hidden');
+        lightboxView.classList.remove('hidden');
+        if (backBtn) { backBtn.classList.remove('hidden'); backBtn.classList.add('flex'); }
+        if (modal) modal.classList.add('album-lightbox-open');
+    } else {
+        gridView.classList.remove('hidden');
+        lightboxView.classList.add('hidden');
+        if (backBtn) { backBtn.classList.add('hidden'); backBtn.classList.remove('flex'); }
+        if (modal) modal.classList.remove('album-lightbox-open');
+    }
+};
+
+// ============================================================
+// ✅ ABRIR O MODAL DE ÁLBUM (grade)
 // ============================================================
 window.openAlbumViewer = (fotos, albumName, jaAberto) => {
     const modal = document.getElementById('album-photos-viewer');
@@ -334,16 +362,70 @@ window.openAlbumViewer = (fotos, albumName, jaAberto) => {
         albumName: albumName || 'Galeria'
     };
 
-    const titleEl = document.getElementById('album-viewer-title');
-    if (titleEl) titleEl.textContent = albumName || 'Galeria';
+    const gridTitle = document.getElementById('album-viewer-grid-title');
+    const gridCounter = document.getElementById('album-viewer-grid-counter');
+    if (gridTitle) gridTitle.textContent = albumName || 'Galeria';
+    if (gridCounter) gridCounter.textContent = fotos.length + ' foto' + (fotos.length === 1 ? '' : 's');
 
-    window.updateAlbumViewer();
+    window.renderAlbumGrid();
+    window.__showAlbumView('grid');
 
     if (!jaAberto) {
         modal.classList.remove('hidden');
         setTimeout(() => modal.classList.remove('opacity-0'), 10);
         document.body.style.overflow = 'hidden';
     }
+};
+
+// ============================================================
+// ✅ RENDERIZAR A GRADE DE FOTOS
+// ============================================================
+window.renderAlbumGrid = () => {
+    const state = window.__albumViewer;
+    const gridEl = document.getElementById('album-viewer-grid');
+    if (!state || !gridEl) return;
+
+    if (state.fotos.length === 0) {
+        gridEl.innerHTML =
+            '<div class="col-span-full text-center py-16 text-gray-500">' +
+                '<i class="fas fa-images text-5xl mb-4 opacity-30"></i>' +
+                '<p>Nenhuma foto neste álbum.</p>' +
+            '</div>';
+        return;
+    }
+
+    gridEl.innerHTML = state.fotos.map((url, idx) => {
+        return '<button onclick="window.openPhotoInLightbox(' + idx + ')" ' +
+                    'class="relative aspect-square overflow-hidden rounded-lg bg-black/40 group active:scale-95 transition-transform focus:outline-none focus:ring-2 focus:ring-brand-yellow">' +
+                    '<img src="' + window.optimizeImage(url, 400) + '" ' +
+                        'loading="lazy" decoding="async" ' +
+                        'class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" ' +
+                        'onerror="this.style.opacity=\'0.3\'">' +
+                    '<div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">' +
+                        '<i class="fas fa-expand text-white text-xl opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg"></i>' +
+                    '</div>' +
+                '</button>';
+    }).join('');
+};
+
+// ============================================================
+// ✅ CLICAR NUMA FOTO DA GRADE → ABRE O LIGHTBOX
+// ============================================================
+window.openPhotoInLightbox = (idx) => {
+    const state = window.__albumViewer;
+    if (!state) return;
+    if (idx < 0 || idx >= state.fotos.length) return;
+
+    state.index = idx;
+    window.__showAlbumView('lightbox');
+    window.updateAlbumViewer();
+};
+
+// ============================================================
+// ✅ VOLTAR DO LIGHTBOX PARA A GRADE
+// ============================================================
+window.backToAlbumGrid = () => {
+    window.__showAlbumView('grid');
 };
 
 window.closeAlbumViewer = () => {
@@ -353,13 +435,18 @@ window.closeAlbumViewer = () => {
     modal.classList.add('opacity-0');
     setTimeout(() => {
         modal.classList.add('hidden');
+        modal.classList.remove('album-lightbox-open');
         document.body.style.overflow = '';
         const imgEl = document.getElementById('album-viewer-img');
         if (imgEl) imgEl.src = '';
+        window.__showAlbumView('grid');
         window.__albumViewer = null;
     }, 300);
 };
 
+// ============================================================
+// ✅ ATUALIZAR O LIGHTBOX (foto individual)
+// ============================================================
 window.updateAlbumViewer = () => {
     const state = window.__albumViewer;
     if (!state) return;
@@ -372,7 +459,6 @@ window.updateAlbumViewer = () => {
 
     const url = state.fotos[state.index];
 
-    // ✅ Preload da foto atual — evita "piscar"
     img.style.opacity = '0.4';
     const preload = new Image();
     preload.onload = () => {
@@ -391,7 +477,6 @@ window.updateAlbumViewer = () => {
     if (prevBtn) prevBtn.style.display = showNav ? 'flex' : 'none';
     if (nextBtn) nextBtn.style.display = showNav ? 'flex' : 'none';
 
-    // ✅ Preload das fotos vizinhas — navegação instantânea
     if (showNav) {
         const nextIdx = (state.index + 1) % state.fotos.length;
         const prevIdx = (state.index - 1 + state.fotos.length) % state.fotos.length;
@@ -415,8 +500,38 @@ window.prevAlbumPhoto = () => {
 };
 
 // ============================================================
-// ✅ COMPARTILHAR FOTO
+// ✅ COMPARTILHAR (na GRADE e no LIGHTBOX)
 // ============================================================
+window.shareAlbum = async (rede) => {
+    const state = window.__albumViewer;
+    if (!state) return;
+
+    const url = state.fotos[0] || '';
+    const texto = '📸 ' + state.albumName + ' — Confira as fotos!';
+
+    if (rede === 'whatsapp') {
+        window.open('https://wa.me/?text=' + encodeURIComponent(texto + '\n' + url), '_blank');
+        return;
+    }
+    if (rede === 'facebook') {
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url), '_blank', 'width=600,height=500');
+        return;
+    }
+    if (rede === 'copy') {
+        try {
+            if (navigator.clipboard) {
+                await navigator.clipboard.writeText(url);
+                alert('✅ Link copiado!');
+            } else {
+                alert('Copie o link:\n' + url);
+            }
+        } catch(e) {
+            alert('Copie o link:\n' + url);
+        }
+        return;
+    }
+};
+
 window.shareAlbumPhoto = async (rede) => {
     const state = window.__albumViewer;
     if (!state) return;
@@ -428,27 +543,20 @@ window.shareAlbumPhoto = async (rede) => {
     const texto = '📸 ' + state.albumName + ' — Confira esta foto!';
 
     if (rede === 'whatsapp') {
-        const whatsUrl = 'https://wa.me/?text=' + encodeURIComponent(texto + '\n' + urlCompleta);
-        window.open(whatsUrl, '_blank');
+        window.open('https://wa.me/?text=' + encodeURIComponent(texto + '\n' + urlCompleta), '_blank');
         return;
     }
-
     if (rede === 'facebook') {
-        const fbUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(urlCompleta);
-        window.open(fbUrl, '_blank', 'width=600,height=500');
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(urlCompleta), '_blank', 'width=600,height=500');
         return;
     }
-
     if (rede === 'instagram') {
         try {
-            if (navigator.clipboard) {
-                await navigator.clipboard.writeText(urlCompleta);
-            }
+            if (navigator.clipboard) await navigator.clipboard.writeText(urlCompleta);
         } catch(e) {}
         alert('📷 Link da foto copiado!\n\nCole no Instagram para compartilhar.');
         return;
     }
-
     if (rede === 'copy') {
         try {
             if (navigator.clipboard) {
@@ -470,34 +578,44 @@ window.shareAlbumPhoto = async (rede) => {
 };
 
 // ============================================================
-// NAVEGAÇÃO POR TECLADO NO LIGHTBOX
+// TECLADO (só age no modo LIGHTBOX)
 // ============================================================
 document.addEventListener('keydown', (e) => {
     const modal = document.getElementById('album-photos-viewer');
     if (!modal || modal.classList.contains('hidden')) return;
 
+    const lightboxView = document.getElementById('album-viewer-lightbox-view');
+    const lightboxAberto = lightboxView && !lightboxView.classList.contains('hidden');
+    if (!lightboxAberto) return;
+
     if (e.key === 'ArrowRight') { e.preventDefault(); window.nextAlbumPhoto(); }
     if (e.key === 'ArrowLeft') { e.preventDefault(); window.prevAlbumPhoto(); }
-    if (e.key === 'Escape') { e.preventDefault(); window.closeAlbumViewer(); }
+    if (e.key === 'Escape') { e.preventDefault(); window.backToAlbumGrid(); }
 });
 
 // ============================================================
-// SWIPE NO LIGHTBOX (MOBILE)
+// SWIPE (só age no modo LIGHTBOX)
 // ============================================================
 (function setupAlbumSwipe() {
     let touchStartX = 0;
-    let touchEndX = 0;
 
     document.addEventListener('touchstart', (e) => {
         const modal = document.getElementById('album-photos-viewer');
         if (!modal || modal.classList.contains('hidden')) return;
+        const lightboxView = document.getElementById('album-viewer-lightbox-view');
+        const lightboxAberto = lightboxView && !lightboxView.classList.contains('hidden');
+        if (!lightboxAberto) return;
         touchStartX = e.changedTouches[0].screenX;
     }, { passive: true });
 
     document.addEventListener('touchend', (e) => {
         const modal = document.getElementById('album-photos-viewer');
         if (!modal || modal.classList.contains('hidden')) return;
-        touchEndX = e.changedTouches[0].screenX;
+        const lightboxView = document.getElementById('album-viewer-lightbox-view');
+        const lightboxAberto = lightboxView && !lightboxView.classList.contains('hidden');
+        if (!lightboxAberto) return;
+
+        const touchEndX = e.changedTouches[0].screenX;
         const diff = touchStartX - touchEndX;
         if (Math.abs(diff) > 50) {
             if (diff > 0) window.nextAlbumPhoto();
