@@ -124,6 +124,74 @@
         </div>
     </div>
 
+    <!-- ✅ NOVO: MODAL DE GALERIA DE FOTOS (LIGHTBOX) -->
+    <div id="album-photos-viewer" class="fixed inset-0 z-[90] hidden opacity-0 transition-opacity duration-300" aria-modal="true" role="dialog">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-sm" onclick="window.closeAlbumViewer()"></div>
+
+        <!-- Botão fechar -->
+        <button onclick="window.closeAlbumViewer()"
+                class="absolute top-4 right-4 z-30 bg-black/70 hover:bg-red-600 text-white w-11 h-11 rounded-full flex items-center justify-center transition-all backdrop-blur-md border border-white/20 shadow-lg">
+            <i class="fas fa-times text-lg"></i>
+        </button>
+
+        <!-- Título do álbum -->
+        <div class="absolute top-4 left-4 z-30 bg-black/70 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full">
+            <span id="album-viewer-title" class="text-white text-sm font-bold"></span>
+        </div>
+
+        <!-- Contador -->
+        <div class="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-black/70 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full">
+            <span id="album-viewer-counter" class="text-white text-sm font-bold"></span>
+        </div>
+
+        <!-- Imagem principal -->
+        <div class="absolute inset-0 flex items-center justify-center p-4 pb-32 pt-20 pointer-events-none">
+            <img id="album-viewer-img"
+                 src=""
+                 class="max-w-full max-h-full object-contain rounded-lg shadow-2xl pointer-events-auto transition-opacity duration-200"
+                 style="opacity: 1;">
+        </div>
+
+        <!-- Botões de navegação -->
+        <button onclick="window.prevAlbumPhoto()"
+                id="album-viewer-prev"
+                class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-brand-yellow hover:text-brand-dark text-white w-12 h-12 rounded-full flex items-center justify-center transition-all backdrop-blur-md border border-white/20 shadow-lg">
+            <i class="fas fa-chevron-left text-xl"></i>
+        </button>
+        <button onclick="window.nextAlbumPhoto()"
+                id="album-viewer-next"
+                class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-brand-yellow hover:text-brand-dark text-white w-12 h-12 rounded-full flex items-center justify-center transition-all backdrop-blur-md border border-white/20 shadow-lg">
+            <i class="fas fa-chevron-right text-xl"></i>
+        </button>
+
+        <!-- Barra inferior: compartilhar -->
+        <div class="absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/90 to-transparent p-4 pt-12">
+            <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-3">
+                <button onclick="window.shareAlbumPhoto('whatsapp')"
+                        class="flex items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all shadow-lg active:scale-95">
+                    <i class="fab fa-whatsapp text-lg"></i>
+                    <span class="hidden sm:inline">WhatsApp</span>
+                </button>
+                <button onclick="window.shareAlbumPhoto('facebook')"
+                        class="flex items-center gap-2 bg-[#1877F2] hover:bg-[#166fe5] text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all shadow-lg active:scale-95">
+                    <i class="fab fa-facebook-f text-lg"></i>
+                    <span class="hidden sm:inline">Facebook</span>
+                </button>
+                <button onclick="window.shareAlbumPhoto('instagram')"
+                        class="flex items-center gap-2 bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 hover:opacity-90 text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all shadow-lg active:scale-95">
+                    <i class="fab fa-instagram text-lg"></i>
+                    <span class="hidden sm:inline">Instagram</span>
+                </button>
+                <button onclick="window.shareAlbumPhoto('copy')"
+                        id="album-viewer-copy-btn"
+                        class="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2.5 rounded-full text-sm transition-all border border-white/20 shadow-lg active:scale-95">
+                    <i class="fas fa-link text-lg"></i>
+                    <span class="hidden sm:inline">Copiar Link</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DO MARKETING -->
     <div id="marketing-modal" class="fixed inset-0 z-[75] hidden items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="window.closeMarketingModal()"></div>
@@ -524,14 +592,12 @@
                         <p class="text-gray-400 mb-6 max-w-2xl mx-auto text-sm sm:text-base">Louvor, adoração e a palavra de Deus 24 horas por dia.</p>
                     </div>
 
-                    <!-- PLAYER -->
                     <div class="glass-panel p-2 rounded-2xl shadow-[0_0_50px_rgba(73,73,133,0.2)] mb-8">
-                        <div id="radio-player-wrapper" class="radio-player-wrap rounded-xl bg-black relative">
-    <div id="radio-player-content"></div>
-</div>
+                        <div id="radio-player-wrapper" class="radio-player-wrap rounded-xl overflow-hidden bg-black relative">
+                            <div id="radio-player-content" class="absolute inset-0 z-20 w-full h-full"></div>
+                        </div>
                     </div>
 
-                    <!-- BOTÕES DE CONTATO -->
                     <div class="flex flex-col sm:flex-row justify-center gap-4 mb-10">
                         <div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-3">
                             <i class="fas fa-globe text-brand-yellow text-2xl"></i>
@@ -549,7 +615,6 @@
                         </a>
                     </div>
 
-                    <!-- ✅ GRID DE PROGRAMAÇÃO COM ABAS DE DIAS -->
                     <div id="radio-grid-container" class="hidden">
                         <div class="text-center mb-6">
                             <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">
@@ -560,22 +625,17 @@
                             <p class="text-sm text-gray-400 mt-3">Clique em um dia para ver a programação</p>
                         </div>
 
-                        <!-- ✅ ABAS DE DIAS -->
                         <div id="radio-days-tabs" class="radio-days-tabs"></div>
 
-                        <!-- ✅ TÍTULO DO DIA SELECIONADO -->
                         <div id="radio-grid-title" class="radio-grid-title"></div>
 
-                        <!-- ✅ LISTA DE PROGRAMAS -->
                         <div id="radio-grid-list" class="radio-grid-list"></div>
 
-                        <!-- ✅ MENSAGEM DE VAZIO -->
                         <div id="radio-grid-empty" class="radio-grid-empty hidden">
                             <i class="far fa-calendar-times"></i>
                             <p>Nenhum programa neste dia</p>
                         </div>
 
-                        <!-- ✅ DESTAQUE DO PROGRAMA ATUAL -->
                         <div id="radio-now-highlight" class="hidden mt-6"></div>
                     </div>
                 </div>
